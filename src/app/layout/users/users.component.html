@@ -1,0 +1,39 @@
+<div [@routerTransition]>
+  <app-page-header [heading]="'Users'" [icon]="'fa-users'"></app-page-header>
+  
+  <div class="card mb-3">
+    <div class="card-header">Accounts management</div>
+    <table class="card-body table table-hover">
+        <thead>
+          <tr>
+              <th>#</th>
+              <th>Username</th>
+              <th>Exhange keys</th>
+              <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users | async; let i = index">
+              <th>
+                {{ i + 1 }}
+              </th>
+              <td>
+                {{ user.userName }}
+              </td>
+              <td>
+                <span *ngFor="let market of markets">
+                  <span *ngIf="hasExchangeKeys(user, market.name)" class="badge badge-info">{{ market.label }}</span>
+                </span>
+              </td>
+              <td>
+                <a [routerLink]="['/users/edit', user.id]" class="btn btn-success btn-sm">Edit</a>
+                <a (click)="destroy(user)" class="btn btn-danger btn-sm">Delete</a>
+              </td>
+          </tr>
+          
+        </tbody>
+    </table>
+  </div>
+</div>
+
+<button (click)="create()" class="btn btn-info btn-lg">Create user</button>
