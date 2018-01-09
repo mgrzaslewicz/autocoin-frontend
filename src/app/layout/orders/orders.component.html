@@ -1,0 +1,29 @@
+<div [@routerTransition]>
+  <app-page-header [heading]="'Open orders'" [icon]="'fa-calendar'"></app-page-header>
+  
+  <div class="card mb-3">
+    <div class="card-header">Orders</div>
+    <table class="card-body table table-hover">
+        <thead>
+          <tr>
+              <th>#</th>
+              
+              <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let order of orders | async; let i = index">
+              <th>
+                {{ i + 1 }}
+              </th>
+              <td>
+                <!-- <a (click)="orderDelete.destroy(order)" class="btn btn-danger btn-sm">Cancel</a> -->
+              </td>
+          </tr>
+          
+        </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- <app-order-delete #orderDelete></app-order-delete> -->

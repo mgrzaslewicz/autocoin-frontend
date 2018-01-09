@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TruncateModule } from 'ng2-truncate';
 
 import { UsersComponent } from './users.component';
 import { PageHeaderModule } from '../../shared';
@@ -17,8 +16,7 @@ import { UserDeleteComponent } from './user-delete/user-delete.component';
     PageHeaderModule,
     UsersRoutingModule,
     FormsModule,
-    NgbModule.forRoot(),
-    TruncateModule
+    NgbModule.forRoot()
   ],
   declarations: [
     UsersComponent,

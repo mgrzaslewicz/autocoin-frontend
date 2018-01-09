@@ -7,6 +7,14 @@
         <a routerLink="/users" [routerLinkActive]="['router-link-active']" class="list-group-item">
             <i class="fa fa-fw fa-users"></i>&nbsp;{{ 'Users' | translate }}
         </a>
+
+        <a routerLink="/orders" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-fw fa-calendar"></i>&nbsp;{{ 'Open orders' | translate }}
+        </a>
+
+        <a routerLink="/settings" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-fw fa-cog"></i>&nbsp;{{ 'Settings' | translate }}
+        </a>
         
         
     </div>
