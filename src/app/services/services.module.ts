@@ -4,6 +4,7 @@ import { UsersService } from './users.service';
 import { MarketsService } from './markets.service';
 import { ApiService } from './api/api.service';
 import { HttpClientModule } from '@angular/common/http';
+import { ToastService } from './toast.service';
 
 @NgModule({
   imports: [
@@ -14,7 +15,8 @@ import { HttpClientModule } from '@angular/common/http';
   providers: [
     UsersService,
     MarketsService,
-    ApiService
+    ApiService,
+    ToastService
   ]
 })
 export class ServicesModule { }

@@ -4,3 +4,7 @@
 @import "utils";
 @import "rtl";
 @import "responsive";
+
+html, body {
+    min-height: 100%;
+}

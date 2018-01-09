@@ -4,6 +4,7 @@ import { UsersService } from '../../services/users.service';
 import { Observable } from 'rxjs/Observable';
 import { User } from '../../models/user';
 import { MarketsService } from '../../services/markets.service';
+import { ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-users',
@@ -33,12 +34,8 @@ export class UsersComponent implements OnInit {
     return exchangeKeys.publicKey && exchangeKeys.secretKey;    
   }
 
-  destroy(user: User) {
-    
-  }
-
-  create() {
-    
-  }
+  // destroy(user: User) {
+  //   console.log(this.userDelete); 
+  // }
 
 }

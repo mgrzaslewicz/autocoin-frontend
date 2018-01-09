@@ -27,7 +27,7 @@
               </td>
               <td>
                 <a [routerLink]="['/users/edit', user.id]" class="btn btn-success btn-sm">Edit</a>
-                <a (click)="destroy(user)" class="btn btn-danger btn-sm">Delete</a>
+                <a (click)="userDelete.destroy(user)" class="btn btn-danger btn-sm">Delete</a>
               </td>
           </tr>
           
@@ -36,4 +36,6 @@
   </div>
 </div>
 
-<button (click)="create()" class="btn btn-info btn-lg">Create user</button>
+<a routerLink="/users/create" class="btn btn-info btn-lg">Create user</a>
+
+<app-user-delete #userDelete></app-user-delete>

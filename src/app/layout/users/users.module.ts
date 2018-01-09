@@ -8,6 +8,8 @@ import { PageHeaderModule } from '../../shared';
 import { UserEditComponent } from './user-edit/user-edit.component';
 import { UsersRoutingModule } from './users-routing.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { UserCreateComponent } from './user-create/user-create.component';
+import { UserDeleteComponent } from './user-delete/user-delete.component';
 
 @NgModule({
   imports: [
@@ -20,7 +22,9 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
   ],
   declarations: [
     UsersComponent,
-    UserEditComponent
+    UserEditComponent,
+    UserCreateComponent,
+    UserDeleteComponent
   ]
 })
 export class UsersModule { }

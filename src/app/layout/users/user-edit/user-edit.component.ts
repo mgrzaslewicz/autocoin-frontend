@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { User } from '../../../models/user';
 import { UsersService } from '../../../services/users.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-user-edit',
@@ -21,6 +22,7 @@ export class UserEditComponent implements OnInit {
   constructor(
     private marketsService: MarketsService,
     private usersService: UsersService,
+    private toastService: ToastService,
     private router: Router,
     private route: ActivatedRoute
   ) { }
@@ -39,6 +41,7 @@ export class UserEditComponent implements OnInit {
   onSubmit() {
     console.log(this.user);
 
+    this.toastService.success('User data has been updated.');
     this.router.navigate(['/users']);
   }
 
