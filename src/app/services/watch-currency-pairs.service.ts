@@ -31,6 +31,12 @@ export class WatchCurrencyPairsService {
     this.localStore();
   }
 
+  removeAll() {
+    this.pairs = [];
+
+    this.localStore();
+  }
+
   all(): Array<CurrencyPair> {
     return this.pairs;
   }
