@@ -1,0 +1,25 @@
+<ng-template #content let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title">Cancel order confirmation</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>You're about to cancelling the order.</p>
+          
+        <p>
+          <strong>Order ID:</strong> {{ order.orderId }}<br>
+          <strong>Currency Pair:</strong> {{ order.currencyPair().symbol() }}<br>
+          <strong>Type:</strong> {{ order.orderType }}<br>
+          <strong>Amount:</strong> {{ order.orderedAmount }}<br>
+          <strong>Price:</strong> {{ order.price }}<br>
+        </p>
+
+        <p>Proceed?</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="c('delete')">Yes. I am sure.</button>
+        <button type="button" class="btn btn-secondary" (click)="d('Dismiss')">Dismiss</button>
+    </div>
+  </ng-template>

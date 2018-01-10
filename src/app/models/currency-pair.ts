@@ -1,7 +1,12 @@
 export class CurrencyPair {
 
-  public entryCurrencyCode: String;
+  constructor(
+    public entryCurrencyCode: String|null = null, 
+    public exitCurrencyCode: String|null = null
+  ) {}
 
-  public exitCurrencyCode: String;
+  symbol() {
+    return `${this.entryCurrencyCode}/${this.exitCurrencyCode}`;
+  }
 
 }

@@ -22,7 +22,7 @@ export class UsersService {
         ]
       },
       { 
-        userName: 'wayne', subscriptionKey: '', exchangeKeys: [
+        userName: 'wayne', subscriptionKey: '8380b711902655ebbd35a24224dcfc0a', exchangeKeys: [
           { exchangeName: 'binance', secretKey: '0287f4c0888daf1fc88fb8f65f7c2f0f', publicKey: '84e32fb3ae01e4e5f8a0730585c32d2e' }
         ]
       },
@@ -64,6 +64,7 @@ export class UsersService {
 
     user.userName = userData.userName;
     user.subscriptionKey = userData.subscriptionKey;
+    user.id = userData.subscriptionKey;
 
     for (let exchangeKeyData of userData.exchangeKeys || []) {
       let exchangeKey = new ExchangeKey;

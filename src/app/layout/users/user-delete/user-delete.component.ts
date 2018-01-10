@@ -26,8 +26,7 @@ export class UserDeleteComponent implements OnInit {
 
   destroy(user: User) {
     this.user = user;
-    //console.log(user);
-
+    
     this.modalService.open(this.content).result.then(result => {
       if (result === 'delete') {
         this.toastService.success('User has been deleted.');

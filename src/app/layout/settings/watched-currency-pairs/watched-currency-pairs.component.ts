@@ -60,10 +60,7 @@ export class WatchedCurrencyPairsComponent implements OnInit {
   parseCurrencyPair(symbol: string): CurrencyPair {
     let symbolArray = symbol.toUpperCase().replace(/\s+/g, '').split('/');
     
-    let pair = new CurrencyPair;
-    pair.entryCurrencyCode = symbolArray[0];
-    pair.exitCurrencyCode = symbolArray[1];
-    return pair;
+    return new CurrencyPair(symbolArray[0], symbolArray[1]);
   }
 
   removePair(pair) {

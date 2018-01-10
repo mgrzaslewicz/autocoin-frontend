@@ -5,7 +5,7 @@ export class User {
 
   id: String;
   
-  _userName: String;
+  userName: String;
   
   subscriptionKey: String;
   
@@ -13,18 +13,7 @@ export class User {
   
   children: Array<User>;
   
-  constructor() {
-
-  }
-
-  get userName() {
-    return this._userName;
-  }
-
-  set userName(value) {
-    this._userName = value;
-    this.id = sha1(value);
-  }
+  constructor() { }
 
   getExchangeKeysForMarket(marketname) {
     let exchangeKeys = this.exchangeKeys.find(keys => keys.exchangeName == marketname);

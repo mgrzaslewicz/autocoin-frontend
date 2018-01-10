@@ -7,23 +7,65 @@
         <thead>
           <tr>
               <th>#</th>
-              
+              <th>Exchange</th>
+              <th>Order ID</th>
+              <th>Currency pair</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th>Amount</th>
+              <th>Price</th>
+              <th>Date</th>
               <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let order of orders | async; let i = index">
-              <th>
-                {{ i + 1 }}
-              </th>
-              <td>
-                <!-- <a (click)="orderDelete.destroy(order)" class="btn btn-danger btn-sm">Cancel</a> -->
-              </td>
-          </tr>
+
+          <ng-container *ngFor="let user of sortedUsers | async">
+            <tr>
+              <th colspan="10">{{ user.userName }}</th>
+
+            </tr>
+
+            <tr *ngFor="let order of ordersForUser(user); let i = index">
+                <th>
+                  {{ i + 1 }}
+                </th>
+                <td>
+                  {{ order.exchangeName }}
+                </td>
+                <td>
+                  {{ order.orderId }}
+                </td>
+                <td>
+                  {{ order.currencyPair().symbol() }}
+                </td>
+                <td>
+                  {{ order.orderType }}
+                </td>
+                <td>
+                  {{ order.orderStatus }}
+                </td>
+                <td>
+                  {{ order.orderedAmount }}
+                </td>
+                <td>
+                  {{ order.price }}
+                </td>
+                <td>
+                  {{ order.timestamp * 1000 | date: 'y-MM-dd HH:mm:ss' }}
+                </td>
+                <td>
+                  <button (click)="orderDelete.destroy(order)" class="btn btn-danger btn-sm">Cancel</button>
+                </td>
+            </tr>
+            <tr *ngIf="ordersForUser(user).length == 0">
+                <td colspan="10">No open orders</td>
+            </tr>
+          </ng-container>
           
         </tbody>
     </table>
   </div>
 </div>
 
-<!-- <app-order-delete #orderDelete></app-order-delete> -->
+<app-order-delete #orderDelete></app-order-delete>

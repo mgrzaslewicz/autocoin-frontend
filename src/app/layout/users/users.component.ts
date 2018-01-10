@@ -1,10 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { routerTransition } from '../../router.animations';
 import { UsersService } from '../../services/users.service';
 import { Observable } from 'rxjs/Observable';
 import { User } from '../../models/user';
 import { MarketsService } from '../../services/markets.service';
-import { ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-users',
