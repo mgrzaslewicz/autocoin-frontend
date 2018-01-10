@@ -1,0 +1,34 @@
+<div class="card mb-3">
+  <div class="card-header">Watched currency pairs</div>
+  <div class="card-body">
+  
+  <label for="newPair">Add new pair</label>
+
+  <div class="row">
+    <div class="col is-2 pr-0">
+        <input type="text" class="form-control" id="newPair" placeholder="ie. ETH/BTC" [(ngModel)]="pairSymbol" [formControl]="pairSymbolControl" (keyup.enter)="onAdd()">
+    </div>
+    <div class="col is-2">
+      <button type="submit" class="btn btn-primary" [disabled]="pairSymbolControl.invalid" (click)="onAdd()">Add</button>
+    </div>
+  </div>
+  
+  <ul class="list-group mt-3">
+    <li class="list-group-item" *ngFor="let pair of allPairs()">
+      <div class="media">
+        <div class="media-body align-self-center">
+          {{ pair.entryCurrencyCode }}/{{ pair.exitCurrencyCode }}
+        </div>
+
+        <button class="btn btn-danger btn-sm" (click)="removePair(pair)">
+          <span aria-hidden="true">&times; Remove</span>
+        </button>
+      </div>
+    </li>
+  </ul>
+  
+    
+
+  
+  </div>
+</div>

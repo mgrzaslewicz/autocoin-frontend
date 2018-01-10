@@ -5,6 +5,7 @@ import { MarketsService } from './markets.service';
 import { ApiService } from './api/api.service';
 import { HttpClientModule } from '@angular/common/http';
 import { ToastService } from './toast.service';
+import { WatchCurrencyPairsService } from './watch-currency-pairs.service';
 
 @NgModule({
   imports: [
@@ -16,7 +17,8 @@ import { ToastService } from './toast.service';
     UsersService,
     MarketsService,
     ApiService,
-    ToastService
+    ToastService,
+    WatchCurrencyPairsService
   ]
 })
 export class ServicesModule { }
