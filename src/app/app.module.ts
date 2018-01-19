@@ -9,7 +9,7 @@ import { ServicesModule } from './services/services.module';
 import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
-import { AuthGuard } from './shared';
+import { AuthGuard, GuestGuard } from './shared';
 import 'rxjs/Rx';
 
 // AoT requires an exported function for factories
@@ -36,7 +36,7 @@ export function createTranslateLoader(http: HttpClient) {
         ServicesModule
     ],
     declarations: [ AppComponent ],
-    providers: [ AuthGuard ],
+    providers: [ AuthGuard, GuestGuard ],
     bootstrap: [ AppComponent ]
 })
 export class AppModule {}
