@@ -22,18 +22,7 @@ export class LoginComponent implements OnInit {
         private toastService: ToastService
     ) {}
 
-    ngOnInit() {
-        
-
-        setTimeout(() => this.devFillForm(), 0);
-    }
-
-    devFillForm() {
-        this.loginForm.setValue({
-            email: 'admin@autocoin-trader.com',
-            password: 'P@ssw0rd12#'  
-        });
-    }
+    ngOnInit() { }
 
     onLogIn(loginForm) {
         this.authService.login(loginForm.value.email, loginForm.value.password)
