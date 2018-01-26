@@ -10,6 +10,7 @@ const routes: Routes = [
             { path: '', redirectTo: 'dashboard' },
             { path: 'dashboard', loadChildren: './dashboard/dashboard.module#DashboardModule' },
             { path: 'users', loadChildren: './users/users.module#UsersModule' },
+            { path: 'wallets', loadChildren: './wallets/wallets.module#WalletsModule' },
             { path: 'orders', loadChildren: './orders/orders.module#OrdersModule' },
             { path: 'settings', loadChildren: './settings/settings.module#SettingsModule' },
         ]
