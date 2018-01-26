@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import $ from 'jquery';
+import * as $ from 'jquery';
 import 'bootstrap-notify';
 
 @Injectable()
