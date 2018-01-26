@@ -13,7 +13,7 @@ import { MarketsService } from '../../services/markets.service';
 })
 export class UsersComponent implements OnInit {
 
-  private users: Observable<User[]>;
+  public users: Observable<User[]>;
 
   private markets = [];
 

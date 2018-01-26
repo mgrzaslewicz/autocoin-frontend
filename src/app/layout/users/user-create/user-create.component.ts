@@ -13,9 +13,9 @@ import { ToastService } from '../../../services/toast.service';
 })
 export class UserCreateComponent implements OnInit {
 
-  private markets = [];
+  public markets = [];
 
-  private user: User;
+  public user: User;
 
   constructor(
     private marketsService: MarketsService,
