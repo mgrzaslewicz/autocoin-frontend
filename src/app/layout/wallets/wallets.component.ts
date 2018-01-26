@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { routerTransition } from '../../router.animations';
-import { UsersService } from '../../services/users.service';
+import { ClientsService } from '../../services/api/clients/clients.service';
 
 @Component({
   selector: 'app-wallets',
@@ -11,14 +11,14 @@ import { UsersService } from '../../services/users.service';
 export class WalletsComponent implements OnInit {
 
   constructor(
-    private usersService: UsersService,
+    private clientsService: ClientsService,
   ) { }
 
   ngOnInit() {
   }
 
-  get users() {
-    return this.usersService.get();
+  get clients() {
+    return this.clientsService.getClients();
   }
 
 }

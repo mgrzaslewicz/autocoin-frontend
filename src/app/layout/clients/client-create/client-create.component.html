@@ -1,0 +1,16 @@
+<div [@routerTransition]>
+  <app-page-header [heading]="'Create client'" [icon]="'fa-user'" [parents]="[ { heading: 'Clients', link: '/clients', icon: 'users' } ]"></app-page-header>
+  
+  <form (ngSubmit)="onSubmit(createForm)" #createForm="ngForm">
+      <div class="row">
+          <div class="col-md-6">
+              <fieldset class="form-group">
+                  <label>Name</label>
+                  <input class="form-control" name="name" ngModel required>
+              </fieldset>
+
+              <button type="submit" class="btn btn-primary" [disabled]="createForm.invalid || loading">Save</button>
+          </div>
+      </div>
+  </form>
+</div>

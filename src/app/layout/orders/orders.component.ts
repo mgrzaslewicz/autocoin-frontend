@@ -1,9 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { routerTransition } from '../../router.animations';
-import { UsersService } from '../../services/users.service';
 import { OrdersService } from '../../services/orders.service';
 import { Subscription } from 'rxjs/Subscription';
-import { User } from '../../models/user';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-orders',
@@ -17,12 +16,17 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
   private orders = [];
 
+  private usersService;
+
   constructor(
-    private usersService: UsersService,
     private orderService: OrdersService
   ) { }
 
   ngOnInit() {
+    this.usersService = Observable.of([
+
+    ]);
+
     this.ordersSubscription = this.orderService.get().subscribe(orders => {
       this.orders = orders;
     });
@@ -36,7 +40,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
     return this.usersService.get();
   }
 
-  ordersForUser(user: User) {
+  ordersForUser(user) {
     if (! user) {
       return [];
     }

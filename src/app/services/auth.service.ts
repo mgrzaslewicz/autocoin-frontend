@@ -4,6 +4,8 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 @Injectable()
 export class AuthService {
 
+  private usersApiToken = 'https://users-api.autocoin-trader.com/ids/connect/token';
+
   constructor(
     private http: HttpClient
   ) { }
@@ -26,7 +28,7 @@ export class AuthService {
       headers
     };
 
-    return this.http.post('https://users-api.autocoin-trader.com/ids/connect/token', body, options)
+    return this.http.post(this.usersApiToken, body, options)
       .do(response => {
         this.storeAccessToken(response['access_token']);
       });

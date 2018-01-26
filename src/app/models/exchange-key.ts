@@ -1,9 +1,11 @@
 export class ExchangeKey {
 
-  public exchangeName: String;
+  public exchangeId: String;
+  
+  public clientId: String;
 
+  public apiKey: String;
+  
   public secretKey: String;
   
-  public publicKey: String;
-
 }
