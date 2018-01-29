@@ -10,7 +10,7 @@ import { ClientsService } from '../../../services/api';
 })
 export class ClientCreateComponent implements OnInit {
 
-  private loading = false;
+  public loading = false;
 
   constructor(
     private router: Router,

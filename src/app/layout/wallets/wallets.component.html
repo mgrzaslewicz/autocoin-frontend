@@ -2,7 +2,7 @@
   <app-page-header [heading]="'Wallets'" [icon]="'fa-money'"></app-page-header>
   
 
-  <ng-container *ngFor="let user of users | async">
+  <ng-container *ngFor="let user of clients | async">
 
   <div class="card mb-3">
     <div class="card-header">{{ user.userName }}</div>
