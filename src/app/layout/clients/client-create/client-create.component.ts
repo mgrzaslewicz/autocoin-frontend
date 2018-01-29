@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { routerTransition } from '../../../router.animations';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../services/toast.service';
 import { ClientsService } from '../../../services/api';
@@ -7,8 +6,7 @@ import { ClientsService } from '../../../services/api';
 @Component({
   selector: 'app-client-create',
   templateUrl: './client-create.component.html',
-  styleUrls: ['./client-create.component.scss'],
-  animations: [routerTransition()]
+  styleUrls: ['./client-create.component.scss']
 })
 export class ClientCreateComponent implements OnInit {
 

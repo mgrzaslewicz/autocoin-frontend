@@ -25,6 +25,10 @@ export class ApiService {
     return this.http.post(this.url+endpoint, data, this.options());
   }
 
+  put(endpoint, data) {
+    return this.http.put(this.url+endpoint, data, this.options());
+  }
+
   delete(endpoint) {
     return this.http.delete(this.url+endpoint, this.options());
   }

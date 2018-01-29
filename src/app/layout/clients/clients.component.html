@@ -1,40 +1,37 @@
-<div [@routerTransition]>
-  <app-page-header [heading]="'Clients'" [icon]="'fa-users'"></app-page-header>
+<app-page-header [heading]="'Clients'" [icon]="'fa-users'"></app-page-header>
   
-  <div class="card mb-3">
-    <div class="card-header">Clients management</div>
-    <table class="card-body table table-hover">
-        <thead>
-          <tr>
-              <th>#</th>
-              <th>Name</th>
-              <th>Exhange keys</th>
-              <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let client of clients; let i = index">
-              <th>
-                {{ i + 1 }}
-              </th>
-              <td>
-                {{ client.name }}
-              </td>
-              <td>
-                <span *ngFor="let name of getExchangesNamesOfClient(client)">
-                  <span class="badge badge-info">{{ name }}</span>
-                </span>
-              </td>
-              <td>
-                <!-- <button [routerLink]="['/clients/edit', client.id]" class="btn btn-success btn-sm">Edit</button>
-                 -->
-                <button (click)="clientDelete.destroy(client)" class="btn btn-danger btn-sm">Delete</button>
-              </td>
-          </tr>
-          
-        </tbody>
-    </table>
-  </div>
+<div class="card mb-3">
+  <div class="card-header">Clients management</div>
+  <table class="card-body table table-hover">
+      <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Exhange keys</th>
+            <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let client of clients; let i = index">
+            <th>
+              {{ i + 1 }}
+            </th>
+            <td>
+              {{ client.name }}
+            </td>
+            <td>
+              <span *ngFor="let name of getExchangesNamesOfClient(client)">
+                <span class="badge badge-info">{{ name }}</span>
+              </span>
+            </td>
+            <td>
+              <button [routerLink]="['/clients/edit', client.id]" class="btn btn-success btn-sm">Edit</button>
+              <button (click)="clientDelete.destroy(client)" class="btn btn-danger btn-sm">Delete</button>
+            </td>
+        </tr>
+        
+      </tbody>
+  </table>
 </div>
 
 <a routerLink="/clients/create" class="btn btn-info btn-lg">Create client</a>

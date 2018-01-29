@@ -1,4 +1,4 @@
-<div [@routerTransition]>
+<div>
   <app-page-header [heading]="'Create client'" [icon]="'fa-user'" [parents]="[ { heading: 'Clients', link: '/clients', icon: 'users' } ]"></app-page-header>
   
   <form (ngSubmit)="onSubmit(createForm)" #createForm="ngForm">

@@ -7,5 +7,7 @@ export class ExchangeKey {
   public apiKey: String;
   
   public secretKey: String;
+
+  public keyIsFilled: Boolean;
   
 }

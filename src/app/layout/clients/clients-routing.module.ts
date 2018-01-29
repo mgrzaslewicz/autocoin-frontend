@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ClientsComponent } from './clients.component';
 import { ClientCreateComponent } from './client-create/client-create.component';
+import { ClientEditComponent } from './client-edit/client-edit.component';
 
 const routes: Routes = [
   {
@@ -9,7 +10,10 @@ const routes: Routes = [
   },
   {
     path: 'create', component: ClientCreateComponent
-  }
+  },
+  {
+    path: 'edit/:clientId', component: ClientEditComponent
+  },
 ];
 
 @NgModule({

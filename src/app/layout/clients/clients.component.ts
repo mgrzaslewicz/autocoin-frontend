@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { routerTransition } from '../../router.animations';
 import { Observable } from 'rxjs/Observable';
 import { ClientsService } from '../../services/api';
 import { Client, Exchange, ExchangeKey } from '../../models';
@@ -7,8 +6,7 @@ import { Client, Exchange, ExchangeKey } from '../../models';
 @Component({
   selector: 'app-clients',
   templateUrl: './clients.component.html',
-  styleUrls: ['./clients.component.scss'],
-  animations: [routerTransition()]
+  styleUrls: ['./clients.component.scss']
 })
 export class ClientsComponent implements OnInit {
 
