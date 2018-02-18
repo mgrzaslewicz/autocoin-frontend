@@ -1,53 +1,52 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 
 @Injectable()
 export class AuthService {
 
-  private usersApiToken = 'https://users-api.autocoin-trader.com/ids/connect/token';
+    private usersApiToken = 'https://users-api.autocoin-trader.com/ids/connect/token';
 
-  constructor(
-    private http: HttpClient
-  ) { }
+    constructor(private http: HttpClient) {
+    }
 
-  login(username, password) {
-    let body = new HttpParams() 
-      .set('client_id', 'SPA')
-      .set('client_secret', 'superSecretPassword')
-      .set('userName', username)
-      .set('password', password)
-      .set('grant_type', 'username_password')
-      .set('scopes', 'API.read');
-  
+    login(username, password) {
+        let body = new HttpParams()
+            .set('client_id', 'SPA')
+            .set('client_secret', 'superSecretPassword')
+            .set('userName', username)
+            .set('password', password)
+            .set('grant_type', 'username_password')
+            .set('scopes', 'API.read');
 
-    let headers = new HttpHeaders()
-      .append('Cache-Control', 'no-cache')
-      .append('Content-Type', 'application/x-www-form-urlencoded');
 
-    let options = {
-      headers
-    };
+        let headers = new HttpHeaders()
+            .append('Cache-Control', 'no-cache')
+            .append('Content-Type', 'application/x-www-form-urlencoded');
 
-    return this.http.post(this.usersApiToken, body, options)
-      .do(response => {
-        this.storeAccessToken(response['access_token']);
-      });
-  }
+        let options = {
+            headers
+        };
 
-  check() {
-    return this.token() != null;
-  }
+        return this.http.post(this.usersApiToken, body, options)
+            .do(response => {
+                this.storeAccessToken(response['access_token']);
+            });
+    }
 
-  token() {
-    return localStorage.getItem('token');
-  }
+    check() {
+        return this.token() != null;
+    }
 
-  logout() {
-    localStorage.removeItem('token');
-  }
+    token() {
+        return localStorage.getItem('token');
+    }
 
-  private storeAccessToken(accessToken) {
-    localStorage.setItem('token', accessToken);
-  }
+    logout() {
+        localStorage.removeItem('token');
+    }
+
+    private storeAccessToken(accessToken) {
+        localStorage.setItem('token', accessToken);
+    }
 
 }

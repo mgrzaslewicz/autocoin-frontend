@@ -1,43 +1,36 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
-import { AuthService } from '../auth.service';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {environment} from '../../../environments/environment';
+import {AuthService} from '../auth.service';
 
 @Injectable()
 export class ApiService {
 
-  private url;
+    constructor(private http: HttpClient,
+                private authService: AuthService) {
+    }
 
-  constructor(
-    private http: HttpClient,
-    private authService: AuthService
-  ) { }
+    get(url) {
+        return this.http.get(url, this.options());
+    }
 
-  setApiUrl(url) {
-    this.url = url;
-  }
+    post(url, data) {
+        return this.http.post(url, data, this.options());
+    }
 
-  get(endpoint) {
-    return this.http.get(this.url+endpoint, this.options());
-  }
+    put(url, data) {
+        return this.http.put(url, data, this.options());
+    }
 
-  post(endpoint, data) {
-    return this.http.post(this.url+endpoint, data, this.options());
-  }
+    delete(url) {
+        return this.http.delete(url, this.options());
+    }
 
-  put(endpoint, data) {
-    return this.http.put(this.url+endpoint, data, this.options());
-  }
-
-  delete(endpoint) {
-    return this.http.delete(this.url+endpoint, this.options());
-  }
-
-  private options() {
-    let headers = new HttpHeaders()
-      .append('Authorization', 'Bearer '+this.authService.token());
-
-    return { headers };
-  }
+    private options() {
+        let headers = new HttpHeaders()
+            .append('Authorization', 'Bearer ' + this.authService.token());
+        console.log(`Adding token: ${this.authService.token()}`);
+        return {headers};
+    }
 
 }

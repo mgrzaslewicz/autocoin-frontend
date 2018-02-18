@@ -1,10 +1,11 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {routerTransition} from '../../router.animations';
 import {OrdersService} from '../../services/orders.service';
 import {Subscription} from 'rxjs/Subscription';
-import {Observable} from 'rxjs/Observable';
 import {Order} from '../../models/order';
 import {CurrencyPair} from '../../models/currency-pair';
+import {ClientsService} from '../../services/api';
+import {Client} from '../../models';
 
 @Component({
     selector: 'app-orders',
@@ -15,19 +16,15 @@ import {CurrencyPair} from '../../models/currency-pair';
 export class OrdersComponent implements OnInit, OnDestroy {
 
     private ordersSubscription: Subscription;
+    private openOrders: Order[] = [];
 
-    private orders: Order[] = [];
-
-    private usersService;
-
-    constructor(private orderService: OrdersService) {
+    constructor(private orderService: OrdersService, private clientsService: ClientsService) {
     }
 
     ngOnInit() {
-        this.usersService = Observable.of([]);
         let currencyPairs: CurrencyPair[] = [];
         this.ordersSubscription = this.orderService.getOpenOrders(currencyPairs).subscribe(orders => {
-            this.orders = orders;
+            this.openOrders = orders;
         });
     }
 
@@ -35,16 +32,16 @@ export class OrdersComponent implements OnInit, OnDestroy {
         this.ordersSubscription.unsubscribe();
     }
 
-    get sortedUsers() {
-        return this.usersService.get();
+    get sortedClients() {
+        console.log(`OrdersComponent.sortedClients: Getting clients`);
+        return this.clientsService.getClients();
     }
 
-    ordersForUser(user) {
-        if (!user) {
+    ordersForClient(client: Client) {
+        if (!client) {
             return [];
         }
-
-        return this.orders.filter(order => order.userId == user.id);
+        return this.openOrders.filter(order => order.clientId === client.id);
     }
 
 }

@@ -1,39 +1,41 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
 import {OpenOrdersRequestDto, Order} from '../models/order';
 import {Observable} from 'rxjs/Observable';
+import 'rxjs/add/operator/map';
 import {CurrencyPair} from '../models/currency-pair';
+import {ApiService} from './api/api.service';
 
 @Injectable()
 export class OrdersService {
 
     private ordersApiUrl = 'https://orders-api.autocoin-trader.com';
+    private openOrdersUrl = `${this.ordersApiUrl}/client/open-orders`;
 
-    constructor(private http: HttpClient) {
+    constructor(private api: ApiService) {
     }
 
     getOpenOrders(currencyPairs: CurrencyPair[]): Observable<Order[]> {
-        let openOrdersRequestDto: OpenOrdersRequestDto = {
-          currencyPairs = currencyPairs;
-        }
-        return this.http.post<Order[]>(`${this.ordersApiUrl}/client/open-orders`, openOrdersRequestDto)
-            .map(result => {
-                result.json().results.map(item => {
-                    return new Order(
-                        item.clientId,
-                        item.exchangeName,
-                        item.orderId,
-                        item.entryCurrencyCode,
-                        item.exitCurrencyCode,
-                        item.orderType,
-                        item.orderStatus,
-                        item.orderedAmount,
-                        item.filledAmount,
-                        item.price,
-                        item.timestamp
-                    );
-                });
-            });
+        const openOrdersRequestDto: OpenOrdersRequestDto = {
+            currencyPairs: currencyPairs
+        };
+        return this.api.post(this.openOrdersUrl, openOrdersRequestDto)
+            .map(response => Object.values(response).map(data => this.newOrder(data)));
+    }
+
+    private newOrder(data): Order {
+        return new Order(
+            data.clientId,
+            data.exchangeName,
+            data.orderId,
+            data.entryCurrencyCode,
+            data.exitCurrencyCode,
+            data.orderType,
+            data.orderStatus,
+            data.orderedAmount,
+            data.filledAmount,
+            data.price,
+            data.timestamp
+        );
     }
 
 }

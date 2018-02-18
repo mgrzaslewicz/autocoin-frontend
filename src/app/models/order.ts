@@ -13,7 +13,7 @@ export interface OpenOrdersRequestDto {
 }
 
 export class Order {
-    userId: String;
+    clientId: String;
     exchangeName: String;
     orderId: String;
     entryCurrencyCode: String;
@@ -26,7 +26,7 @@ export class Order {
     timestamp: Number;
 
     constructor(userId: String, exchangeName: String, orderId: String, entryCurrencyCode: String, exitCurrencyCode: String, orderType: String, orderStatus: String, orderedAmount: Number, filledAmount: Number, price: Number, timestamp: Number) {
-        this.userId = userId;
+        this.clientId = userId;
         this.exchangeName = exchangeName;
         this.orderId = orderId;
         this.entryCurrencyCode = entryCurrencyCode;
