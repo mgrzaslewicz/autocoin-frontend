@@ -25,7 +25,6 @@
                     <th colspan="10">{{ client.name }}</th>
                 </tr>
 
-                <!--<tr *ngFor="let order of openOrders">-->
                 <tr *ngFor="let order of ordersForClient(client)">
 
                     <th>
@@ -56,7 +55,7 @@
                         {{ order.timestamp * 1000 | date: 'y-MM-dd HH:mm:ss' }}
                     </td>
                     <td>
-                        <button (click)="orderDelete.destroy(order)" class="btn btn-danger btn-sm">Cancel</button>
+                        <button (click)="cancelOpenOrder(order)" class="btn btn-danger btn-sm">Cancel</button>
                     </td>
                 </tr>
                 <tr *ngIf="ordersForClient(client).length == 0">

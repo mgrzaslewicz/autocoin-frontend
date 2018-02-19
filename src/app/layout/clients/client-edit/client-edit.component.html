@@ -1,6 +1,6 @@
 <div>
   <app-page-header [heading]="'Create client'" [icon]="'fa-user'" [parents]="[ { heading: 'Clients', link: '/clients', icon: 'users' } ]"></app-page-header>
-  
+
   <form (ngSubmit)="onSubmit(createForm)" *ngIf="client" #createForm="ngForm">
       <div class="row">
           <div class="col-md-6">
@@ -15,20 +15,20 @@
               <ngb-accordion [closeOthers]="false">
                   <ngb-panel *ngFor="let exchange of exchanges">
                       <ng-template ngbPanelTitle>
-                        {{ exchange.name }} 
+                        {{ exchange.name }}
                         <span class="badge badge-info" *ngIf="isExchangeKeyFilled(exchange)">Filled</span>
                       </ng-template>
                       <ng-template ngbPanelContent>
-                        
-                        <div ngModelGroup="exchangesKeys"> 
+
+                        <div ngModelGroup="exchangesKeys">
+
+                            <fieldset class="form-group" [ngModelGroup]="exchange.id">
+                                <label>API Key</label>
+                                <input class="form-control" name="apiKey" ngModel>
+                            </fieldset>
 
                             <fieldset class="form-group" [ngModelGroup]="exchange.id">
                                 <label>Secret Key</label>
-                                <input class="form-control" name="apiKey" ngModel>
-                            </fieldset>
-            
-                            <fieldset class="form-group" [ngModelGroup]="exchange.id">
-                                <label>Public Key</label>
                                 <input class="form-control" name="secretKey" ngModel>
                             </fieldset>
 

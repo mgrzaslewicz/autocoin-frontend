@@ -3,7 +3,6 @@ import {routerTransition} from '../../router.animations';
 import {OrdersService} from '../../services/orders.service';
 import {Subscription} from 'rxjs/Subscription';
 import {Order} from '../../models/order';
-import {CurrencyPair} from '../../models/currency-pair';
 import {ClientsService} from '../../services/api';
 import {Client} from '../../models';
 
@@ -24,8 +23,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        let currencyPairs: CurrencyPair[] = [];
-        this.ordersSubscription = this.orderService.getOpenOrders(currencyPairs)
+        this.ordersSubscription = this.orderService.getOpenOrders()
             .subscribe(orders => {
                 this.openOrders = orders;
             });
@@ -44,8 +42,12 @@ export class OrdersComponent implements OnInit, OnDestroy {
             console.log(`No client`);
             return [];
         }
-        console.log(`Filtering ${this.openOrders.length} open orders`);
+        console.log(`Filtering ${this.openOrders.length} open orders for client with id ${client.id}`);
         return this.openOrders.filter(order => order.clientId === client.id);
+    }
+
+    cancelOpenOrder(openOrder: Order) {
+        this.orderService.cancelOpenOrder(openOrder);
     }
 
 }

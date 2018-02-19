@@ -1,10 +1,9 @@
 import {CurrencyPair} from './currency-pair';
 
 export interface CancelOrderRequestDto {
-    clientId: string;
-    exchangeId: string;
-    exchangeName: string;
-    orderId: string;
+    clientId: String;
+    exchangeId: String;
+    orderId: String;
     currencyPair: CurrencyPair;
 }
 
@@ -15,6 +14,7 @@ export interface OpenOrdersRequestDto {
 export class Order {
     clientId: String;
     exchangeName: String;
+    exchangeId: String;
     orderId: String;
     entryCurrencyCode: String;
     exitCurrencyCode: String;

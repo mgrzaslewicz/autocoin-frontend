@@ -1,26 +1,38 @@
 import {Injectable} from '@angular/core';
-import {OpenOrdersRequestDto, Order} from '../models/order';
+import {CancelOrderRequestDto, OpenOrdersRequestDto, Order} from '../models/order';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
-import {CurrencyPair} from '../models/currency-pair';
 import {ApiService} from './api/api.service';
+import {WatchCurrencyPairsService} from './watch-currency-pairs.service';
 
 @Injectable()
 export class OrdersService {
 
     private ordersApiUrl = 'https://orders-api.autocoin-trader.com';
-    private openOrdersUrl = `${this.ordersApiUrl}/clients/open-orders`;
+    private openOrdersUrl = `${this.ordersApiUrl}/get-open-orders`;
+    private cancelOrderUrl = `${this.ordersApiUrl}/cancel-order`;
+    private cancelOrdersUrl = `${this.ordersApiUrl}/cancel-orders`;
 
-    constructor(private api: ApiService) {
+    constructor(private api: ApiService, private currencyPairsService: WatchCurrencyPairsService) {
     }
 
-    getOpenOrders(currencyPairs: CurrencyPair[]): Observable<Order[]> {
+    getOpenOrders(): Observable<Order[]> {
         const openOrdersRequestDto: OpenOrdersRequestDto = {
-            currencyPairs: currencyPairs
+            currencyPairs: this.currencyPairsService.all()
         };
         console.log('Requesting open orders');
         return this.api.post(this.openOrdersUrl, openOrdersRequestDto)
             .map(response => Object.values(response).map(data => this.newOrder(data)));
+    }
+
+    cancelOpenOrder(openOrder: Order) {
+        const cancelOrderRequestDto: CancelOrderRequestDto = {
+            clientId: openOrder.clientId,
+            exchangeId: openOrder.exchangeId,
+            orderId: openOrder.orderId,
+            currencyPair: openOrder.currencyPair()
+        };
+        return this.api.post(this.cancelOrderUrl, cancelOrderRequestDto);
     }
 
     private newOrder(data): Order {
