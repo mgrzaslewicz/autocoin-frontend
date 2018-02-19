@@ -27,35 +27,19 @@
 
                 <tr *ngFor="let order of ordersForClient(client)">
 
-                    <th>
-                        <input type="checkbox">
-                    </th>
+                    <th><input type="checkbox"></th>
+                    <td>{{ order.exchangeName }}</td>
+                    <td>{{ order.orderId }}</td>
+                    <td>{{ order.currencyPairSymbol() }}</td>
+                    <td>{{ order.orderType }}</td>
+                    <td>{{ order.orderStatus }}</td>
+                    <td>{{ order.orderedAmount }}</td>
+                    <td>{{ order.price }}</td>
+                    <td>{{ order.timestamp | date: 'y-MM-dd HH:mm:ss' }}</td>
                     <td>
-                        {{ order.exchangeName }}
-                    </td>
-                    <td>
-                        {{ order.orderId }}
-                    </td>
-                    <td>
-                        {{ order.currencyPairSymbol() }}
-                    </td>
-                    <td>
-                        {{ order.orderType }}
-                    </td>
-                    <td>
-                        {{ order.orderStatus }}
-                    </td>
-                    <td>
-                        {{ order.orderedAmount }}
-                    </td>
-                    <td>
-                        {{ order.price }}
-                    </td>
-                    <td>
-                        {{ order.timestamp | date: 'y-MM-dd HH:mm:ss' }}
-                    </td>
-                    <td>
-                        <button (click)="cancelOpenOrder(order)" class="btn btn-danger btn-sm">Cancel</button>
+                        <button (click)="cancelOpenOrder(order)" class="btn btn-danger btn-sm">
+                            Cancel
+                        </button>
                     </td>
                 </tr>
                 <tr *ngIf="ordersForClient(client).length == 0">

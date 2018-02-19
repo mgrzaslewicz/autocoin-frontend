@@ -4,7 +4,8 @@ import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 @Injectable()
 export class AuthService {
 
-    private usersApiToken = 'https://users-api.autocoin-trader.com/ids/connect/token';
+    usersApiToken = 'https://users-api.autocoin-trader.com/ids/connect/token';
+    userName: String;
 
     constructor(private http: HttpClient) {
     }
@@ -18,7 +19,6 @@ export class AuthService {
             .set('grant_type', 'username_password')
             .set('scopes', 'API.read');
 
-
         let headers = new HttpHeaders()
             .append('Cache-Control', 'no-cache')
             .append('Content-Type', 'application/x-www-form-urlencoded');
@@ -30,6 +30,7 @@ export class AuthService {
         return this.http.post(this.usersApiToken, body, options)
             .do(response => {
                 this.storeAccessToken(response['access_token']);
+                this.userName = username;
             });
     }
 

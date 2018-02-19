@@ -9,8 +9,8 @@ import {AuthService} from '../../../services/auth.service';
     styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
-    pushRightClass: string = 'push-right';
-    private userName: string = 'username';
+    pushRightClass = 'push-right';
+    private userName: String;
 
     constructor(private translate: TranslateService,
                 public router: Router,
@@ -22,17 +22,16 @@ export class HeaderComponent implements OnInit {
         this.translate.use(browserLang.match(/en|fr|ur|es|it|fa|de/) ? browserLang : 'en');
 
         this.router.events.subscribe(val => {
-            if (
-                val instanceof NavigationEnd &&
+            if (val instanceof NavigationEnd &&
                 window.innerWidth <= 992 &&
-                this.isToggled()
-            ) {
+                this.isToggled()) {
                 this.toggleSidebar();
             }
         });
     }
 
     ngOnInit() {
+        this.userName = this.authService.userName;
     }
 
     isToggled(): boolean {
