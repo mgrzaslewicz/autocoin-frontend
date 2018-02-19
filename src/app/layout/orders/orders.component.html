@@ -1,70 +1,73 @@
 <div [@routerTransition]>
-  <app-page-header [heading]="'Open orders'" [icon]="'fa-calendar'"></app-page-header>
+    <app-page-header [heading]="'Open orders'" [icon]="'fa-calendar'"></app-page-header>
 
-  <div class="card mb-3">
-    <div class="card-header">Orders</div>
-    <table class="card-body table table-hover">
-        <thead>
-          <tr>
-              <th>#</th>
-              <th>Exchange</th>
-              <th>Order ID</th>
-              <th>Currency pair</th>
-              <th>Type</th>
-              <th>Status</th>
-              <th>Amount</th>
-              <th>Price</th>
-              <th>Date</th>
-              <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-
-          <ng-container *ngFor="let client of sortedClients | async">
+    <div class="card mb-3">
+        <div class="card-header">Orders</div>
+        <table class="card-body table table-hover">
+            <thead>
             <tr>
-              <th colspan="10">{{ client.name }}</th>
+                <th>#</th>
+                <th>Exchange</th>
+                <th>Order ID</th>
+                <th>Currency pair</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Amount</th>
+                <th>Price</th>
+                <th>Date</th>
+                <th>Actions</th>
             </tr>
+            </thead>
+            <tbody>
 
-            <tr *ngFor="let order of ordersForClient(client)">
-                <th>
-                  <input type="checkbox">
-                </th>
-                <td>
-                  {{ order.exchangeName }}
-                </td>
-                <td>
-                  {{ order.orderId }}
-                </td>
-                <td>
-                  {{ order.currencyPairSymbol() }}
-                </td>
-                <td>
-                  {{ order.orderType }}
-                </td>
-                <td>
-                  {{ order.orderStatus }}
-                </td>
-                <td>
-                  {{ order.orderedAmount }}
-                </td>
-                <td>
-                  {{ order.price }}
-                </td>
-                <td>
-                  {{ order.timestamp * 1000 | date: 'y-MM-dd HH:mm:ss' }}
-                </td>
-                <td>
-                  <button (click)="orderDelete.destroy(order)" class="btn btn-danger btn-sm">Cancel</button>
-                </td>
-            </tr>
-            <tr *ngIf="ordersForClient(client).length == 0">
-                <td colspan="10">No open orders</td>
-            </tr>
-          </ng-container>
+            <ng-container *ngFor="let client of clients">
+                <tr>
+                    <th colspan="10">{{ client.name }}</th>
+                </tr>
 
-        </tbody>
-    </table>
-  </div>
+                <!--<tr *ngFor="let order of openOrders">-->
+                <tr *ngFor="let order of ordersForClient(client)">
+
+                    <th>
+                        <input type="checkbox">
+                    </th>
+                    <td>
+                        {{ order.exchangeName }}
+                    </td>
+                    <td>
+                        {{ order.orderId }}
+                    </td>
+                    <td>
+                        {{ order.currencyPairSymbol() }}
+                    </td>
+                    <td>
+                        {{ order.orderType }}
+                    </td>
+                    <td>
+                        {{ order.orderStatus }}
+                    </td>
+                    <td>
+                        {{ order.orderedAmount }}
+                    </td>
+                    <td>
+                        {{ order.price }}
+                    </td>
+                    <td>
+                        {{ order.timestamp * 1000 | date: 'y-MM-dd HH:mm:ss' }}
+                    </td>
+                    <td>
+                        <button (click)="orderDelete.destroy(order)" class="btn btn-danger btn-sm">Cancel</button>
+                    </td>
+                </tr>
+                <tr *ngIf="ordersForClient(client).length == 0">
+                <tr *ngIf="openOrders.length == 0">
+                    <td colspan="10">No open orders</td>
+                </tr>
+            </ng-container>
+
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <app-order-delete #orderDelete></app-order-delete>

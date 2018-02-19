@@ -9,7 +9,7 @@ import {ApiService} from './api/api.service';
 export class OrdersService {
 
     private ordersApiUrl = 'https://orders-api.autocoin-trader.com';
-    private openOrdersUrl = `${this.ordersApiUrl}/client/open-orders`;
+    private openOrdersUrl = `${this.ordersApiUrl}/clients/open-orders`;
 
     constructor(private api: ApiService) {
     }
@@ -18,6 +18,7 @@ export class OrdersService {
         const openOrdersRequestDto: OpenOrdersRequestDto = {
             currencyPairs: currencyPairs
         };
+        console.log('Requesting open orders');
         return this.api.post(this.openOrdersUrl, openOrdersRequestDto)
             .map(response => Object.values(response).map(data => this.newOrder(data)));
     }

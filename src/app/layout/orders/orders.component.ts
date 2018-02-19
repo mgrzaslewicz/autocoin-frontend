@@ -16,31 +16,35 @@ import {Client} from '../../models';
 export class OrdersComponent implements OnInit, OnDestroy {
 
     private ordersSubscription: Subscription;
+    private clientsSubscription: Subscription;
     private openOrders: Order[] = [];
+    private clients: Client[] = [];
 
     constructor(private orderService: OrdersService, private clientsService: ClientsService) {
     }
 
     ngOnInit() {
         let currencyPairs: CurrencyPair[] = [];
-        this.ordersSubscription = this.orderService.getOpenOrders(currencyPairs).subscribe(orders => {
-            this.openOrders = orders;
-        });
+        this.ordersSubscription = this.orderService.getOpenOrders(currencyPairs)
+            .subscribe(orders => {
+                this.openOrders = orders;
+            });
+        this.clientsSubscription = this.clientsService.getClients()
+            .subscribe(clients => {
+                this.clients = clients;
+            });
     }
 
     ngOnDestroy() {
         this.ordersSubscription.unsubscribe();
     }
 
-    get sortedClients() {
-        console.log(`OrdersComponent.sortedClients: Getting clients`);
-        return this.clientsService.getClients();
-    }
-
     ordersForClient(client: Client) {
         if (!client) {
+            console.log(`No client`);
             return [];
         }
+        console.log(`Filtering ${this.openOrders.length} open orders`);
         return this.openOrders.filter(order => order.clientId === client.id);
     }
 
