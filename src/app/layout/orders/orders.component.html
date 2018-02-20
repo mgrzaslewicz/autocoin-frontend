@@ -37,7 +37,7 @@
                     <td>{{ order.price }}</td>
                     <td>{{ order.timestamp | date: 'y-MM-dd HH:mm:ss' }}</td>
                     <td>
-                        <button (click)="cancelOpenOrder(order)" class="btn btn-danger btn-sm">
+                        <button disabled (click)="cancelOpenOrder(order)" class="btn btn-danger btn-sm">
                             Cancel
                         </button>
                     </td>
