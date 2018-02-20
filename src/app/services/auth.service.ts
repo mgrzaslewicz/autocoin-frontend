@@ -5,7 +5,6 @@ import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 export class AuthService {
 
     usersApiToken = 'https://users-api.autocoin-trader.com/ids/connect/token';
-    userName: String;
 
     constructor(private http: HttpClient) {
     }
@@ -30,16 +29,20 @@ export class AuthService {
         return this.http.post(this.usersApiToken, body, options)
             .do(response => {
                 this.storeAccessToken(response['access_token']);
-                this.userName = username;
+                this.storeUserName(username);
             });
     }
 
-    check() {
+    oauthTokenExists(): Boolean {
         return this.token() != null;
     }
 
     token() {
         return localStorage.getItem('token');
+    }
+
+    userName(): String {
+        return localStorage.getItem('userName');
     }
 
     logout() {
@@ -48,6 +51,10 @@ export class AuthService {
 
     private storeAccessToken(accessToken) {
         localStorage.setItem('token', accessToken);
+    }
+
+    private storeUserName(userName) {
+        localStorage.setItem('userName', userName);
     }
 
 }

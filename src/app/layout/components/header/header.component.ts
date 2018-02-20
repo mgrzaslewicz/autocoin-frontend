@@ -31,7 +31,7 @@ export class HeaderComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.userName = this.authService.userName;
+        this.userName = this.authService.userName();
     }
 
     isToggled(): boolean {

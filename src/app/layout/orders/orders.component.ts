@@ -47,7 +47,9 @@ export class OrdersComponent implements OnInit, OnDestroy {
     }
 
     cancelOpenOrder(openOrder: Order) {
-        this.orderService.cancelOpenOrder(openOrder);
+        this.orderService.cancelOpenOrder(openOrder).do(() => {
+            this.openOrders = this.openOrders.filter(order => order.orderId === openOrder.orderId);
+        });
     }
 
 }
