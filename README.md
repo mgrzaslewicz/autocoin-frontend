@@ -1,4 +1,18 @@
-# SB Admin rewritten in Angular5 and Bootstrap 4
+# Autocoin Trader Frontend
+
+### Production deploy
+
+Run commands below as **autocoin** user on the production server:
+
+```bash
+$ cd /var/www/autocoin-trader-frontend
+$ ./production-deploy.sh
+```
+
+The script pulls from master branch and builds fresh docker container. 
+Type password if necessery to allow sudo commands.
+
+## SB Admin rewritten in Angular5 and Bootstrap 4
 
 Simple Dashboard Admin App built using Angular 5 and Bootstrap 4
 
