@@ -16,7 +16,7 @@ COPY . /autocoin-trader-front
 WORKDIR /autocoin-trader-front
 
 ## Build the angular app in production mode and store the artifacts in dist folder
-RUN $(npm bin)/ng build --prod --build-optimizer
+RUN npm run build
 
 
 ### STAGE 2: Setup ###
