@@ -10,7 +10,7 @@ import {AuthService} from '../../../services/auth.service';
 })
 export class HeaderComponent implements OnInit {
     pushRightClass = 'push-right';
-    private userName: String;
+    userName: String;
 
     constructor(private translate: TranslateService,
                 public router: Router,

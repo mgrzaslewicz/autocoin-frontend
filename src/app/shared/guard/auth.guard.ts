@@ -9,7 +9,7 @@ export class AuthGuard implements CanActivate {
                 private authService: AuthService) {
     }
 
-    canActivate(): Boolean {
+    canActivate(): boolean {
         if (!this.authService.oauthTokenExists()) {
             this.router.navigate(['/login']);
             return false;

@@ -16,8 +16,8 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
     private ordersSubscription: Subscription;
     private clientsSubscription: Subscription;
-    private openOrders: Order[] = [];
-    private clients: Client[] = [];
+    openOrders: Order[] = [];
+    clients: Client[] = [];
 
     constructor(private orderService: OrdersService, private clientsService: ClientsService) {
     }
