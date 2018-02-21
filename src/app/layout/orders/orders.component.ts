@@ -1,5 +1,4 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {routerTransition} from '../../router.animations';
 import {OrdersService} from '../../services/orders.service';
 import {Subscription} from 'rxjs/Subscription';
 import {Order} from '../../models/order';
@@ -9,8 +8,7 @@ import {Client} from '../../models';
 @Component({
     selector: 'app-orders',
     templateUrl: './orders.component.html',
-    styleUrls: ['./orders.component.scss'],
-    animations: [routerTransition()]
+    styleUrls: ['./orders.component.scss']
 })
 export class OrdersComponent implements OnInit, OnDestroy {
 
@@ -23,6 +21,10 @@ export class OrdersComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        this.loadData();
+    }
+
+    loadData() {
         this.ordersSubscription = this.orderService.getOpenOrders()
             .subscribe(orders => {
                 this.openOrders = orders;
@@ -42,13 +44,13 @@ export class OrdersComponent implements OnInit, OnDestroy {
             console.log(`No client`);
             return [];
         }
-        console.log(`Filtering ${this.openOrders.length} open orders for client with id ${client.id}`);
+        //console.log(`Filtering ${this.openOrders.length} open orders for client with id ${client.id}`);
         return this.openOrders.filter(order => order.clientId === client.id);
     }
 
     cancelOpenOrder(openOrder: Order) {
-        this.orderService.cancelOpenOrder(openOrder).do(() => {
-            this.openOrders = this.openOrders.filter(order => order.orderId === openOrder.orderId);
+        this.orderService.cancelOpenOrder(openOrder).subscribe(() => {
+            this.loadData();
         });
     }
 

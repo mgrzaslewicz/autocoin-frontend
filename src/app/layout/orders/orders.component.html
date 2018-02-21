@@ -1,4 +1,4 @@
-<div [@routerTransition]>
+<div>
     <app-page-header [heading]="'Open orders'" [icon]="'fa-calendar'"></app-page-header>
 
     <div class="card mb-3">
@@ -37,7 +37,7 @@
                     <td>{{ order.price }}</td>
                     <td>{{ order.timestamp | date: 'y-MM-dd HH:mm:ss' }}</td>
                     <td>
-                        <button disabled (click)="cancelOpenOrder(order)" class="btn btn-danger btn-sm">
+                        <button (click)="cancelOpenOrder(order)" class="btn btn-danger btn-sm">
                             Cancel
                         </button>
                     </td>

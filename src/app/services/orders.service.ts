@@ -32,13 +32,15 @@ export class OrdersService {
             orderId: openOrder.orderId,
             currencyPair: openOrder.currencyPair()
         };
-        console.log('Requesting cancel order');
+        
+        console.log('Requesting cancel order', this.cancelOrderUrl, cancelOrderRequestDto);
         return this.api.post(this.cancelOrderUrl, cancelOrderRequestDto);
     }
 
     private newOrder(data): Order {
         return new Order(
             data.clientId,
+            data.exchangeId,
             data.exchangeName,
             data.orderId,
             data.entryCurrencyCode,

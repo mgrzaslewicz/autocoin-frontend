@@ -12,31 +12,21 @@ export interface OpenOrdersRequestDto {
 }
 
 export class Order {
-    clientId: String;
-    exchangeName: String;
-    exchangeId: String;
-    orderId: String;
-    entryCurrencyCode: String;
-    exitCurrencyCode: String;
-    orderType: String;
-    orderStatus: String;
-    orderedAmount: Number;
-    filledAmount: Number;
-    price: Number;
-    timestamp: Number;
+    constructor(
+        public clientId: String,
+        public exchangeId: String,
+        public exchangeName: String,
+        public orderId: String,
+        public entryCurrencyCode: String,
+        public exitCurrencyCode: String,
+        public orderType: String,
+        public orderStatus: String,
+        public orderedAmount: Number,
+        public filledAmount: Number,
+        public price: Number,
+        public timestamp: Number
+    ) {
 
-    constructor(userId: String, exchangeName: String, orderId: String, entryCurrencyCode: String, exitCurrencyCode: String, orderType: String, orderStatus: String, orderedAmount: Number, filledAmount: Number, price: Number, timestamp: Number) {
-        this.clientId = userId;
-        this.exchangeName = exchangeName;
-        this.orderId = orderId;
-        this.entryCurrencyCode = entryCurrencyCode;
-        this.exitCurrencyCode = exitCurrencyCode;
-        this.orderType = orderType;
-        this.orderStatus = orderStatus;
-        this.orderedAmount = orderedAmount;
-        this.filledAmount = filledAmount;
-        this.price = price;
-        this.timestamp = timestamp;
     }
 
     currencyPair(): CurrencyPair {

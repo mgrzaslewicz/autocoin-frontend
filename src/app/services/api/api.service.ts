@@ -29,7 +29,7 @@ export class ApiService {
     private options() {
         let headers = new HttpHeaders()
             .append('Authorization', 'Bearer ' + this.authService.token());
-        console.log(`Adding token: ${this.authService.token()}`);
+        
         return {headers};
     }
 
