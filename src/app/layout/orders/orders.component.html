@@ -31,7 +31,7 @@
 
                 <tr *ngFor="let order of ordersForClient(client)" [class]="'view-state-'+order.viewState">
 
-                    <th><input type="checkbox"></th>
+                    <th><input type="checkbox" (change)="onSelectOrder($event.target.checked, order)"></th>
                     <td>{{ order.exchangeName }}</td>
                     <td>{{ order.orderId }}</td>
                     <td>{{ order.currencyPairSymbol() }}</td>
@@ -55,6 +55,8 @@
             </tbody>
         </table>
     </div>
+
+    <button class="btn btn-danger btn-sm" (click)="cancelSeletedOrders()" [disabled]="pending || selectedOrders.length == 0"><i class="fa fa-trash-o"></i> Cancel selected orders</button>
 </div>
 
 <app-order-delete #orderDelete></app-order-delete>

@@ -12,6 +12,14 @@ export interface CancelOrderResponseDto {
     success: Boolean;
 }
 
+export interface CancelOrdersRequestDto {
+    orders: CancelOrderRequestDto[]
+}
+
+export interface CancelOrdersResponseDto {
+    orders: CancelOrderResponseDto[]
+}
+
 export interface OpenOrdersRequestDto {
     currencyPairs: CurrencyPair[];
 }

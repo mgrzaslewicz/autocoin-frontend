@@ -19,6 +19,8 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
     pending: boolean;
 
+    selectedOrders: Order[] = [];
+
     constructor(private orderService: OrdersService, private clientsService: ClientsService) {
     }
 
@@ -61,6 +63,26 @@ export class OrdersComponent implements OnInit, OnDestroy {
         this.orderService.cancelOpenOrder(openOrder).subscribe(cancelledOrder => {
             let order = this.openOrders.find(order => order.orderId == cancelledOrder.orderId);
             order.viewState = 'disabled';
+        });
+    }
+
+    onSelectOrder(checked, order) {
+        if (checked) {
+            this.selectedOrders.push(order);
+        } else {
+            let index = this.selectedOrders.indexOf(order);
+            this.selectedOrders.splice(index, 1);
+        }
+    }
+
+    cancelSeletedOrders() {
+        this.selectedOrders.forEach(order => order.viewState = 'pending');
+
+        this.orderService.cancelOpenOrders(this.selectedOrders).subscribe(cancelledOrders => {
+            cancelledOrders.orders.forEach(cancelledOrder => {
+                let order = this.openOrders.find(order => order.orderId == cancelledOrder.orderId);
+                order.viewState = 'disabled';
+            });
         });
     }
 
