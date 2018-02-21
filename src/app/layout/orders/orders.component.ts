@@ -30,6 +30,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
     loadData() {
         this.pending = true;
+        this.selectedOrders = [];
 
         this.openOrdersSubsciprion = Observable.forkJoin(
             this.orderService.getOpenOrders(),
