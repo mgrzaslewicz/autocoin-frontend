@@ -2,7 +2,11 @@
     <app-page-header [heading]="'Open orders'" [icon]="'fa-calendar'"></app-page-header>
 
     <div class="card mb-3">
-        <div class="card-header">Orders</div>
+        <div class="card-header">
+            Orders
+
+            <button class="btn btn-info" (click)="loadData()" [disabled]="pending"><i class="fa fa-refresh" [class.is-pending]="pending"></i> Refresh orders</button>
+        </div>
         <table class="card-body table table-hover">
             <thead>
             <tr>
@@ -25,7 +29,7 @@
                     <th colspan="10">{{ client.name }}</th>
                 </tr>
 
-                <tr *ngFor="let order of ordersForClient(client)">
+                <tr *ngFor="let order of ordersForClient(client)" [class]="'view-state-'+order.viewState">
 
                     <th><input type="checkbox"></th>
                     <td>{{ order.exchangeName }}</td>
@@ -37,7 +41,7 @@
                     <td>{{ order.price }}</td>
                     <td>{{ order.timestamp | date: 'y-MM-dd HH:mm:ss' }}</td>
                     <td>
-                        <button (click)="cancelOpenOrder(order)" class="btn btn-danger btn-sm">
+                        <button (click)="cancelOpenOrder(order)" class="btn btn-danger btn-sm" [disabled]="order.viewState != 'enabled'">
                             Cancel
                         </button>
                     </td>

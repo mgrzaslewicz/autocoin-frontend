@@ -7,11 +7,18 @@ export interface CancelOrderRequestDto {
     currencyPair: CurrencyPair;
 }
 
+export interface CancelOrderResponseDto {
+    orderId: String;
+    success: Boolean;
+}
+
 export interface OpenOrdersRequestDto {
     currencyPairs: CurrencyPair[];
 }
 
 export class Order {
+    public viewState = 'enabled';
+
     constructor(
         public clientId: String,
         public exchangeId: String,

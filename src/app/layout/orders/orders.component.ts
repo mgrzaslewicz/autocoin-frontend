@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {OrdersService} from '../../services/orders.service';
-import {Subscription} from 'rxjs/Subscription';
+import {Subscription, Observable} from 'rxjs';
 import {Order} from '../../models/order';
 import {ClientsService} from '../../services/api';
 import {Client} from '../../models';
@@ -12,10 +12,12 @@ import {Client} from '../../models';
 })
 export class OrdersComponent implements OnInit, OnDestroy {
 
-    private ordersSubscription: Subscription;
-    private clientsSubscription: Subscription;
+    private openOrdersSubsciprion: Subscription;
+    
     openOrders: Order[] = [];
     clients: Client[] = [];
+
+    pending: boolean;
 
     constructor(private orderService: OrdersService, private clientsService: ClientsService) {
     }
@@ -25,18 +27,23 @@ export class OrdersComponent implements OnInit, OnDestroy {
     }
 
     loadData() {
-        this.ordersSubscription = this.orderService.getOpenOrders()
-            .subscribe(orders => {
-                this.openOrders = orders;
-            });
-        this.clientsSubscription = this.clientsService.getClients()
-            .subscribe(clients => {
-                this.clients = clients;
-            });
+        this.pending = true;
+
+        this.openOrdersSubsciprion = Observable.forkJoin(
+            this.orderService.getOpenOrders(),
+            this.clientsService.getClients()
+        ).subscribe(([orders, clients]) => {
+            this.openOrders = orders;
+            this.openOrders.forEach(order => order.viewState = 'enabled');
+            
+            this.clients = clients;
+
+            this.pending = false;
+        });
     }
 
     ngOnDestroy() {
-        this.ordersSubscription.unsubscribe();
+        this.openOrdersSubsciprion.unsubscribe();
     }
 
     ordersForClient(client: Client) {
@@ -44,13 +51,16 @@ export class OrdersComponent implements OnInit, OnDestroy {
             console.log(`No client`);
             return [];
         }
-        //console.log(`Filtering ${this.openOrders.length} open orders for client with id ${client.id}`);
+        
         return this.openOrders.filter(order => order.clientId === client.id);
     }
 
     cancelOpenOrder(openOrder: Order) {
-        this.orderService.cancelOpenOrder(openOrder).subscribe(() => {
-            this.loadData();
+        openOrder.viewState = 'pending';
+
+        this.orderService.cancelOpenOrder(openOrder).subscribe(cancelledOrder => {
+            let order = this.openOrders.find(order => order.orderId == cancelledOrder.orderId);
+            order.viewState = 'disabled';
         });
     }
 
