@@ -1,5 +1,12 @@
 import {Injectable} from '@angular/core';
-import {CancelOrderRequestDto, OpenOrdersRequestDto, CancelOrderResponseDto, Order, CancelOrdersRequestDto, CancelOrdersResponseDto} from '../models/order';
+import {
+    CancelOrderRequestDto,
+    OpenOrdersRequestDto,
+    CancelOrderResponseDto,
+    Order,
+    CancelOrdersRequestDto,
+    CancelOrdersResponseDto
+} from '../models/order';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import {ApiService} from './api/api.service';
@@ -20,14 +27,14 @@ export class OrdersService {
         const openOrdersRequestDto: OpenOrdersRequestDto = {
             currencyPairs: this.currencyPairsService.all()
         };
-        
+
         return this.api.post(this.openOrdersUrl, openOrdersRequestDto)
             .map(response => Object.values(response).map(data => this.newOrder(data)));
     }
 
     cancelOpenOrder(openOrder: Order) {
         const cancelOrderRequestDto = this.prepareCancelOrderRequestDto(openOrder);
-        
+
         return this.api.post(this.cancelOrderUrl, cancelOrderRequestDto) as Observable<CancelOrderResponseDto>;
     }
 
@@ -36,14 +43,15 @@ export class OrdersService {
             return this.prepareCancelOrderRequestDto(openOrder);
         });
 
-        const cancelOrdersRequestDto: CancelOrdersRequestDto = { orders };
+        const cancelOrdersRequestDto: CancelOrdersRequestDto = {orders};
 
         return this.api.post(this.cancelOrdersUrl, cancelOrdersRequestDto) as Observable<CancelOrdersResponseDto>;
     }
 
-    private prepareCancelOrderRequestDto(openOrder: Order) : CancelOrderRequestDto {
+    private prepareCancelOrderRequestDto(openOrder: Order): CancelOrderRequestDto {
         return {
             clientId: openOrder.clientId,
+            orderType: openOrder.orderType,
             exchangeId: openOrder.exchangeId,
             orderId: openOrder.orderId,
             currencyPair: openOrder.currencyPair()

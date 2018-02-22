@@ -12,8 +12,8 @@ import {Client} from '../../models';
 })
 export class OrdersComponent implements OnInit, OnDestroy {
 
-    private openOrdersSubsciprion: Subscription;
-    
+    private openOrdersSubscription: Subscription;
+
     openOrders: Order[] = [];
     clients: Client[] = [];
 
@@ -32,13 +32,13 @@ export class OrdersComponent implements OnInit, OnDestroy {
         this.pending = true;
         this.selectedOrders = [];
 
-        this.openOrdersSubsciprion = Observable.forkJoin(
+        this.openOrdersSubscription = Observable.forkJoin(
             this.orderService.getOpenOrders(),
             this.clientsService.getClients()
         ).subscribe(([orders, clients]) => {
             this.openOrders = orders;
             this.openOrders.forEach(order => order.viewState = 'enabled');
-            
+
             this.clients = clients;
 
             this.pending = false;
@@ -46,7 +46,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.openOrdersSubsciprion.unsubscribe();
+        this.openOrdersSubscription.unsubscribe();
     }
 
     ordersForClient(client: Client) {
@@ -54,7 +54,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
             console.log(`No client`);
             return [];
         }
-        
+
         return this.openOrders.filter(order => order.clientId === client.id);
     }
 
@@ -62,7 +62,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
         openOrder.viewState = 'pending';
 
         this.orderService.cancelOpenOrder(openOrder).subscribe(cancelledOrder => {
-            let order = this.openOrders.find(order => order.orderId == cancelledOrder.orderId);
+            let order = this.openOrders.find(order => order.orderId === cancelledOrder.orderId);
             order.viewState = 'disabled';
         });
     }
@@ -81,7 +81,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
         this.orderService.cancelOpenOrders(this.selectedOrders).subscribe(cancelledOrders => {
             cancelledOrders.orders.forEach(cancelledOrder => {
-                let order = this.openOrders.find(order => order.orderId == cancelledOrder.orderId);
+                let order = this.openOrders.find(order => order.orderId === cancelledOrder.orderId);
                 order.viewState = 'disabled';
             });
         });
