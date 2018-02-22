@@ -1,9 +1,9 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {OrdersService} from '../../services/orders.service';
-import {Subscription, Observable} from 'rxjs';
-import {Order} from '../../models/order';
-import {ClientsService} from '../../services/api';
-import {Client} from '../../models';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription, Observable } from 'rxjs';
+import { OrdersService } from '../../services/orders.service';
+import { ClientsService } from '../../services/api';
+import { ToastService } from '../../services/toast.service';
+import { Order, Client } from '../../models';
 
 @Component({
     selector: 'app-orders',
@@ -21,7 +21,11 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
     selectedOrders: Order[] = [];
 
-    constructor(private orderService: OrdersService, private clientsService: ClientsService) {
+    constructor(
+        private orderService: OrdersService, 
+        private clientsService: ClientsService,
+        private toastService: ToastService
+    ) {
     }
 
     ngOnInit() {
@@ -42,6 +46,12 @@ export class OrdersComponent implements OnInit, OnDestroy {
             this.clients = clients;
 
             this.pending = false;
+        }, error => {
+            this.pending = false;
+            this.openOrders = [];
+            this.clients = [];
+
+            this.toastService.danger('Sorry, something went wrong. Could not get open orders');
         });
     }
 
