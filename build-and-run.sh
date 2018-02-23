@@ -1,5 +1,7 @@
 #!/bin/bash
 
+dockerprocs="$(docker ps -a -q  --filter ancestor=autocoin-trader-frontend)"
+
 buildFrontend() {
     echo "Pulling repository"
     cd /var/www/autocoin-trader-frontend
@@ -11,8 +13,8 @@ buildFrontend() {
 
 removeOldContainer() {
     echo "Removing old containers"
-    docker stop $(docker ps -a -q  --filter ancestor=autocoin-trader-frontend)
-    docker rm $(docker ps -a -q  --filter ancestor=autocoin-trader-frontend)
+    docker stop $dockerprocs
+    docker rm $dockerprocs
 }
 
 startContainer() {
