@@ -1,0 +1,17 @@
+.make-order-modal {
+    .modal-dialog {
+        max-width: 970px;
+    }
+
+    .exchange-pair-input {
+        text-transform: uppercase;
+    }
+}
+
+.make-order-modal + .modal-backdrop {
+    z-index: 1050;
+}
+
+.confirm-order-modal {
+    z-index: 1060;
+}

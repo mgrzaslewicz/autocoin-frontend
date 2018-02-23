@@ -2,27 +2,28 @@
   
 <div class="card mb-3">
   <div class="card-header">Clients management</div>
-  <table class="card-body table table-hover">
+  <table class="card-body table">
       <thead>
         <tr>
-            <th>#</th>
             <th>Name</th>
             <th>Exhange keys</th>
             <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let client of clients; let i = index">
-            <th>
-              {{ i + 1 }}
-            </th>
+        <tr *ngFor="let client of clients">
             <td>
               {{ client.name }}
             </td>
             <td>
-              <span *ngFor="let name of getExchangesNamesOfClient(client)">
-                <span class="badge badge-info">{{ name }}</span>
-              </span>
+              <p *ngFor="let exchangeName of getExchangesNamesOfClient(client)">
+                  <span class="badge" 
+                    [class.badge-light]="! isClientExchangeSelected(client, exchangeName)" 
+                    [class.badge-warning]="isClientExchangeSelected(client, exchangeName)" 
+                    (click)="onSelectClientExchangeName(client, exchangeName)">
+                    {{ exchangeName }}
+                  </span>
+              </p>
             </td>
             <td>
               <button [routerLink]="['/clients/edit', client.id]" class="btn btn-success btn-sm">Edit</button>
@@ -34,6 +35,9 @@
   </table>
 </div>
 
-<a routerLink="/clients/create" class="btn btn-info btn-lg">Create client</a>
+<button class="btn btn-success" [disabled]="selectedClientsExchanges.length == 0" (click)="makeOrder.generateFor(selectedClientsExchanges)">Make order</button>
+<a routerLink="/clients/create" class="btn btn-info">Create client</a>
 
 <app-client-delete #clientDelete (refresh)="loadData()"></app-client-delete>
+
+<app-make-order #makeOrder (success)="selectedClientsExchanges = []"></app-make-order>

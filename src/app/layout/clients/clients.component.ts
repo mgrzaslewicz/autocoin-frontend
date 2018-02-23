@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { ClientsService } from '../../services/api';
 import { Client, Exchange, ExchangeKey } from '../../models';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-clients',
@@ -16,13 +17,20 @@ export class ClientsComponent implements OnInit {
 
   public exchangesKeys: ExchangeKey[];
 
-  constructor(private clientsService: ClientsService) { }
+  public selectedClientsExchanges = [];
+
+  constructor(
+    private clientsService: ClientsService,
+    private toastService: ToastService
+  ) { }
 
   ngOnInit() {
     this.loadData();
   }
 
   loadData() {
+    this.selectedClientsExchanges = [];
+
     Observable.forkJoin(
       this.clientsService.getClients(),
       this.clientsService.getExchanges(),
@@ -31,6 +39,10 @@ export class ClientsComponent implements OnInit {
       this.clients = clients;
       this.exchanges = exchanges;
       this.exchangesKeys = exchangesKeys;
+    }, error => {
+      this.clients = [];
+
+      this.toastService.danger('Sorry, something went wrong. Could not get clients.');
     });
   }
 
@@ -46,6 +58,26 @@ export class ClientsComponent implements OnInit {
     });
     
     return names;
+  }
+
+  onSelectClientExchangeName(client, exchangeName) {
+    let index = this.findClientExchangeIndex(client, exchangeName);
+    
+    if (index !== -1) {
+      this.selectedClientsExchanges.splice(index, 1);
+    } else {
+      this.selectedClientsExchanges.push({ client, exchangeName });
+    }
+  }
+
+  isClientExchangeSelected(client, exchangeName) {
+    return this.findClientExchangeIndex(client, exchangeName) !== -1;
+  }
+
+  findClientExchangeIndex(client, exchangeName) {
+    return this.selectedClientsExchanges.findIndex(object => {
+      return object.client === client && object.exchangeName === exchangeName;
+    });
   }
 
 }

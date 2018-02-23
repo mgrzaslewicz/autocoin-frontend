@@ -6,7 +6,7 @@ export class CurrencyPair {
   ) {}
 
   symbol() {
-    return `${this.entryCurrencyCode}/${this.exitCurrencyCode}`;
+    return `${this.entryCurrencyCode.toUpperCase()}/${this.exitCurrencyCode.toUpperCase()}`;
   }
 
 }
