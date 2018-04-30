@@ -2,8 +2,8 @@
     <app-page-header [heading]="'Wallets'" [icon]="'fa-money'"></app-page-header>
     <div *ngFor="let client of clients" class="card mb-3">
         <h3>{{ client.name }}</h3>
-        <button class="btn btn-info" (click)="fetchExchangeBalancesForClient(client)"><i
-            class="fa fa-trash-o"></i>Refresh
+        <button class="btn btn-info" (click)="fetchExchangeBalancesForClient(client)" [disabled]="pending">
+            <i class="fa fa-refresh" [class.is-pending]="pending"></i>Refresh
         </button>
         <p>Last refresh: {{ getLastRefreshTime(client) | date: 'y-MM-dd HH:mm:ss' || '-' }}</p>
         <ng-container *ngFor="let exchangeBalance of exchangeBalancesForClient(client)">

@@ -30,6 +30,7 @@ export interface AccountInfoResponseDto {
 })
 export class WalletsComponent implements OnInit {
     clients: Client[] = [];
+    pending: boolean = false;
     private clientsSubscription: Subscription;
 
     constructor(
@@ -67,11 +68,14 @@ export class WalletsComponent implements OnInit {
     }
 
     fetchExchangeBalancesForClient(client: Client) {
+        this.pending = true;
         this.exchangeAccountService.getAccountBalances(client.id).subscribe(
             accountBalances => {
                 localStorage.setItem('client-portfolio-refresh-time-' + client.id, new Date().getTime().toString());
                 localStorage.setItem('client-portfolio-balances-' + client.id, JSON.stringify(accountBalances.exchangeBalances));
+                this.pending = false;
             }, error => {
+                this.pending = false;
                 this.toastService.danger('Sorry, something went wrong. Could not get client account balance list');
             }
         );
