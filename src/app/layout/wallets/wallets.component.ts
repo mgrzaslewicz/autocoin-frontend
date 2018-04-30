@@ -29,7 +29,7 @@ export interface AccountInfoResponseDto {
     animations: [routerTransition()]
 })
 export class WalletsComponent implements OnInit {
-    private clients: Client[] = [];
+    clients: Client[] = [];
     private clientsSubscription: Subscription;
 
     constructor(
