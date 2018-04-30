@@ -1,4 +1,4 @@
 export class Client {
-    public id: String;
-    public name: String;
+    public id: string;
+    public name: string;
 }

@@ -34,7 +34,7 @@ export class ClientsComponent implements OnInit {
     Observable.forkJoin(
       this.clientsService.getClients(),
       this.clientsService.getExchanges(),
-      this.clientsService.getExchangesKeys()  
+      this.clientsService.getExchangesKeys()
     ).subscribe(([clients, exchanges, exchangesKeys]) => {
       this.clients = clients;
       this.exchanges = exchanges;
@@ -56,13 +56,13 @@ export class ClientsComponent implements OnInit {
 
       names.push(exchange.name);
     });
-    
+
     return names;
   }
 
   onSelectClientExchangeName(client, exchangeName) {
     let index = this.findClientExchangeIndex(client, exchangeName);
-    
+
     if (index !== -1) {
       this.selectedClientsExchanges.splice(index, 1);
     } else {

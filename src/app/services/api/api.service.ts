@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {environment} from '../../../environments/environment';
 import {AuthService} from '../auth.service';
+import {Observable} from 'rxjs/Observable';
 
 @Injectable()
 export class ApiService {
@@ -10,8 +10,8 @@ export class ApiService {
                 private authService: AuthService) {
     }
 
-    get(url) {
-        return this.http.get(url, this.options());
+    get<T>(url): Observable<T> {
+        return this.http.get<T>(url, this.options());
     }
 
     post(url, data) {
@@ -29,7 +29,7 @@ export class ApiService {
     private options() {
         let headers = new HttpHeaders()
             .append('Authorization', 'Bearer ' + this.authService.token());
-        
+
         return {headers};
     }
 

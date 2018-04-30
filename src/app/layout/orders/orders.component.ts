@@ -22,7 +22,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
     selectedOrders: Order[] = [];
 
     constructor(
-        private orderService: OrdersService, 
+        private orderService: OrdersService,
         private clientsService: ClientsService,
         private toastService: ToastService
     ) {

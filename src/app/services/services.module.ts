@@ -8,6 +8,7 @@ import { WatchCurrencyPairsService } from './watch-currency-pairs.service';
 import { OrdersService } from './orders.service';
 import { AuthService } from './auth.service';
 import { ClientsService } from './api/clients/clients.service';
+import {ExchangeAccountService} from './exchange-account.service';
 
 @NgModule({
   imports: [
@@ -19,6 +20,7 @@ import { ClientsService } from './api/clients/clients.service';
     AuthService,
     ApiService,
     ClientsService,
+    ExchangeAccountService,
 
     MarketsService,
     ToastService,
