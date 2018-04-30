@@ -1,35 +1,33 @@
 <div [@routerTransition]>
     <app-page-header [heading]="'Wallets'" [icon]="'fa-money'"></app-page-header>
-    <div class="card mb-3">
-        <table class="card-body table table-hover">
-            <thead>
-            <tr>
-                <th>Client</th>
-                <th>Exchange</th>
-                <th>Currency</th>
-                <th>Available amount</th>
-                <th>When refreshed</th>
-                <th>Action</th>
-            </tr>
-            </thead>
-            <tbody>
-            <ng-container *ngFor="let client of clients">
+    <div *ngFor="let client of clients" class="card mb-3">
+        <h3>{{ client.name }}</h3>
+        <button class="btn btn-info" (click)="fetchExchangeBalancesForClient(client)"><i
+            class="fa fa-trash-o"></i>Refresh
+        </button>
+        <p>Last refresh: {{ getLastRefreshTime(client) | date: 'y-MM-dd HH:mm:ss' || '-' }}</p>
+        <ng-container *ngFor="let exchangeBalance of exchangeBalancesForClient(client)">
+            <h4>{{ exchangeBalance.exchangeName }}</h4>
+            <span *ngIf="exchangeBalance.errorMessage != null" class="badge badge-warning">
+                {{ exchangeBalance.errorMessage }}
+            </span>
+            <span *ngIf="exchangeBalance.currencyBalances.length == 0 && exchangeBalance.errorMessage == null"
+                  class="badge badge-info">No currencies hold</span>
+            <table *ngIf="exchangeBalance.currencyBalances.length > 0 && exchangeBalance.errorMessage == null"
+                   class="card-body table table-hover">
+                <thead>
                 <tr>
-                    <th colspan="10">
-                        <button (click)="fetchExchangeBalancesForClient(client)"><i class="fa fa-trash-o"></i>Refresh</button>
-                    </th>
-                    <th colspan="10">{{ client.name }}</th>
-                    <th colspan="10">Last refresh: {{ getLastRefreshTime(client) | date: 'y-MM-dd HH:mm:ss' || '-' }}</th>
+                    <th>Currency</th>
+                    <th>Available amount</th>
                 </tr>
-                <tr *ngFor="let exchangeBalance of exchangeBalancesForClient(client)">
-
-                    <th>{{ exchangeBalance.exchangeName }}</th>
-                    <td *ngIf="exchangeBalance.errorMessage != null">{{ exchangeBalance.errorMessage }}</td>
-                    <td *ngIf="exchangeBalance.errorMessage == null">{{ exchangeBalance.currencyCode }}</td>
-                    <td *ngIf="exchangeBalance.errorMessage == null">{{ exchangeBalance.available }}</td>
+                </thead>
+                <tbody>
+                <tr *ngFor="let currencyBalance of exchangeBalance.currencyBalances">
+                    <td>{{ currencyBalance.currencyCode }}</td>
+                    <td>{{ currencyBalance.available }}</td>
                 </tr>
-            </ng-container>
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </ng-container>
     </div>
 </div>

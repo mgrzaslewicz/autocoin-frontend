@@ -70,7 +70,7 @@ export class WalletsComponent implements OnInit {
         this.exchangeAccountService.getAccountBalances(client.id).subscribe(
             accountBalances => {
                 localStorage.setItem('client-portfolio-refresh-time-' + client.id, new Date().getTime().toString());
-                localStorage.setItem('client-portfolio-balances-' + client.id, JSON.stringify(accountBalances));
+                localStorage.setItem('client-portfolio-balances-' + client.id, JSON.stringify(accountBalances.exchangeBalances));
             }, error => {
                 this.toastService.danger('Sorry, something went wrong. Could not get client account balance list');
             }
