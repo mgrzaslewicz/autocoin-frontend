@@ -5,7 +5,7 @@ import {
     CancelOrderResponseDto,
     Order,
     CancelOrdersRequestDto,
-    CancelOrdersResponseDto
+    CancelOrdersResponseDto, OpenOrdersResponseDto
 } from '../models/order';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
@@ -23,13 +23,19 @@ export class OrdersService {
     constructor(private api: ApiService, private currencyPairsService: WatchCurrencyPairsService) {
     }
 
-    getOpenOrders(): Observable<Order[]> {
+    getOpenOrders(): Observable<OpenOrdersResponseDto> {
         const openOrdersRequestDto: OpenOrdersRequestDto = {
             currencyPairs: this.currencyPairsService.all()
         };
+        return this.api.post<OpenOrdersResponseDto>(this.openOrdersUrl, openOrdersRequestDto)
+            .map(response => this.toOpenOrdersResponseDto(response));
+    }
 
-        return this.api.post(this.openOrdersUrl, openOrdersRequestDto)
-            .map(response => Object.values(response).map(data => this.newOrder(data)));
+    private toOpenOrdersResponseDto(response): OpenOrdersResponseDto {
+        return {
+            failedExchanges: response.failedExchanges,
+            openOrders: response.openOrders.map(item => this.newOrder(item))
+        };
     }
 
     cancelOpenOrder(openOrder: Order) {

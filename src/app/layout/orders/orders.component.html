@@ -26,7 +26,10 @@
 
             <ng-container *ngFor="let client of clients">
                 <tr>
-                    <th colspan="10">{{ client.name }}</th>
+                    <th colspan="10">
+                        {{ client.name }}
+                        <span *ngIf="failedExchanges.length > 0" class="badge badge-warning">There might be more open orders. Failed getting orders for: {{ failedExchanges.join(',') }}</span>
+                    </th>
                 </tr>
 
                 <tr *ngFor="let order of ordersForClient(client)" [class]="'view-state-'+order.viewState">

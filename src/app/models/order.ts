@@ -14,15 +14,20 @@ export interface CancelOrderResponseDto {
 }
 
 export interface CancelOrdersRequestDto {
-    orders: CancelOrderRequestDto[]
+    orders: CancelOrderRequestDto[];
 }
 
 export interface CancelOrdersResponseDto {
-    orders: CancelOrderResponseDto[]
+    orders: CancelOrderResponseDto[];
 }
 
 export interface OpenOrdersRequestDto {
     currencyPairs: CurrencyPair[];
+}
+
+export interface OpenOrdersResponseDto {
+    failedExchanges: string[];
+    openOrders: Order[];
 }
 
 export class Order {

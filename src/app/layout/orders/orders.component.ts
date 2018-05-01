@@ -1,9 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription, Observable } from 'rxjs';
-import { OrdersService } from '../../services/orders.service';
-import { ClientsService } from '../../services/api';
-import { ToastService } from '../../services/toast.service';
-import { Order, Client } from '../../models';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Subscription, Observable} from 'rxjs';
+import {OrdersService} from '../../services/orders.service';
+import {ClientsService} from '../../services/api';
+import {ToastService} from '../../services/toast.service';
+import {Order, Client} from '../../models';
 
 @Component({
     selector: 'app-orders',
@@ -15,6 +15,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
     private openOrdersSubscription: Subscription;
 
     openOrders: Order[] = [];
+    failedExchanges: string[] = [];
     clients: Client[] = [];
 
     pending: boolean;
@@ -39,8 +40,9 @@ export class OrdersComponent implements OnInit, OnDestroy {
         this.openOrdersSubscription = Observable.forkJoin(
             this.orderService.getOpenOrders(),
             this.clientsService.getClients()
-        ).subscribe(([orders, clients]) => {
-            this.openOrders = orders;
+        ).subscribe(([ordersResponseDto, clients]) => {
+            this.openOrders = ordersResponseDto.openOrders;
+            this.failedExchanges = ordersResponseDto.failedExchanges;
             this.openOrders.forEach(order => order.viewState = 'enabled');
 
             this.clients = clients;
