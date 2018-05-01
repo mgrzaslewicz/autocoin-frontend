@@ -11,6 +11,7 @@ const routes: Routes = [
             { path: 'dashboard', loadChildren: './dashboard/dashboard.module#DashboardModule' },
             { path: 'clients', loadChildren: './clients/clients.module#ClientsModule' },
             { path: 'wallets', loadChildren: './wallets/wallets.module#WalletsModule' },
+            { path: 'automation', loadChildren: './automation/automation.module#AutomationModule' },
             { path: 'orders', loadChildren: './orders/orders.module#OrdersModule' },
             { path: 'settings', loadChildren: './settings/settings.module#SettingsModule' },
         ]
