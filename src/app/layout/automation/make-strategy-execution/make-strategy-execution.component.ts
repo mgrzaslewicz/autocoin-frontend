@@ -10,11 +10,11 @@ import { StrategiesService } from '../../../services/automation/strategies.servi
 import { Strategy } from '../../../models/strategy';
 
 @Component({
-  selector: 'app-make-order',
-  templateUrl: './make-order.component.html',
-  styleUrls: ['./make-order.component.scss']
+  selector: 'app-make-strategy-execution',
+  templateUrl: './make-strategy-execution.component.html',
+  styleUrls: ['./make-strategy-execution.component.scss']
 })
-export class MakeOrderComponent implements OnInit {
+export class MakeStrategyExecutionComponent implements OnInit {
 
   public exchangeName;
 
@@ -85,7 +85,7 @@ export class MakeOrderComponent implements OnInit {
     }, () => {});
   }
 
-  canMakeOrder()
+  canMakeStrategyExecution()
   {
     return this.filteredSelectedClients().length > 0
       && this.makeOrderForm.valid;

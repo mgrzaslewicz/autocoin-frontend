@@ -7,7 +7,7 @@ import { PageHeaderModule } from '../../shared';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { StrategiesService } from '../../services/automation/strategies.service';
 import { ExchangesService } from '../../services/automation/exchanges.service';
-import { MakeOrderComponent } from './make-order/make-order.component';
+import { MakeStrategyExecutionComponent } from './make-strategy-execution/make-strategy-execution.component';
 import { ValidatorsModule } from '../../validators/validators.module';
 import { FormsModule } from '@angular/forms';
 import { StrategiesExecutionsService } from '../../services/automation/strategies-executions.service';
@@ -21,7 +21,7 @@ import { StrategiesExecutionsService } from '../../services/automation/strategie
     ValidatorsModule,
     FormsModule,
   ],
-  declarations: [AutomationComponent, MakeOrderComponent],
+  declarations: [AutomationComponent, MakeStrategyExecutionComponent],
   providers: [
     StrategiesService,
     StrategiesExecutionsService,
