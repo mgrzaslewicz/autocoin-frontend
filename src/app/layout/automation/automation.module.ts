@@ -5,6 +5,8 @@ import { AutomationRoutingModule } from './automation-routing.module';
 import { AutomationComponent } from './automation.component';
 import { PageHeaderModule } from '../../shared';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { StrategiesService } from '../../services/strategies.service';
+import { ExchangesService } from '../../services/automation/exchanges.service';
 
 @NgModule({
   imports: [
@@ -13,6 +15,10 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     PageHeaderModule,
     NgbModule.forRoot()
   ],
-  declarations: [AutomationComponent]
+  declarations: [AutomationComponent],
+  providers: [
+    StrategiesService,
+    ExchangesService
+  ]
 })
 export class AutomationModule { }

@@ -1,3 +1,20 @@
 <app-page-header [heading]="'Automation'" [icon]="'fa-magic'"></app-page-header>
 
-<p>It's nothing here... yet.</p>
+<div class="card mb-3" *ngFor="let exchange of exchanges">
+    <div class="card-header">
+        {{ exchange.name }}
+    </div>
+    <table class="card-body table table-hover">
+        <thead>
+        <tr>
+            <th>#</th>
+            
+        </tr>
+        </thead>
+        <tbody>
+
+        
+
+        </tbody>
+    </table>
+</div>
