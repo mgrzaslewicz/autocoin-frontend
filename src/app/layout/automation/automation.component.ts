@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { StrategiesService } from '../../services/automation/strategies.service';
+import { StrategiesExecutionsService } from '../../services/automation/strategies-executions.service';
 import { Observable } from 'rxjs';
 import { ToastService } from '../../services/toast.service';
 import { Exchange } from '../../models';
@@ -15,12 +15,12 @@ export class AutomationComponent implements OnInit {
 
   private exchanges: Exchange[];
 
-  private strategies: StrategyExecutionResponseDto[];
+  private strategiesExecutions: StrategyExecutionResponseDto[];
 
   constructor(
     private toastService: ToastService,
     private exchangesService: ExchangesService,
-    private strategiesService: StrategiesService
+    private strategiesExecutionsService: StrategiesExecutionsService
   ) { }
 
   ngOnInit() {
@@ -30,10 +30,10 @@ export class AutomationComponent implements OnInit {
   loadData() {
     Observable.forkJoin(
       this.exchangesService.getExchanges(),
-      this.strategiesService.getStrategies()
-    ).subscribe(([exchanges, strategies]) => {
+      this.strategiesExecutionsService.getStrategiesExecutions()
+    ).subscribe(([exchanges, strategiesExecutions]) => {
       this.exchanges = exchanges;
-      this.strategies = strategies;
+      this.strategiesExecutions = strategiesExecutions;
     }, error => {
       this.toastService.danger('Sorry, something went wrong.');
     });

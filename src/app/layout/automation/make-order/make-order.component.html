@@ -1,0 +1,60 @@
+<app-page-header [heading]="'Add strategy execution order'" [icon]="'fa-magic'"></app-page-header>
+
+<form #makeOrderForm="ngForm">
+
+  <div class="form-group">
+    <label>Exchange Name</label>
+    
+    <div class="form-control">
+      <strong>{{ exchangeName }}</strong>
+    </div>
+  </div>
+
+  <div class="form-group">
+      <label>Strategy</label>
+      
+      <select class="form-control">
+          <option *ngFor="let strategy of strategies">{{ strategy.name }}</option>
+      </select>
+    </div>
+
+  <div class="form-group">
+    <label for="currency-pair-typeahead">Exchange currency pair</label>
+    <input name="exchangePair" id="currency-pair-typeahead" type="text" class="form-control exchange-pair-input"
+      [class.is-invalid]="makeOrderForm.controls.exchangePair && makeOrderForm.controls.exchangePair.invalid && makeOrderForm.controls.exchangePair.touched"
+      required validateCurrencyPairSymbol
+      [(ngModel)]="exchangePair" [ngbTypeahead]="searchExchangePair" (input)="$event.target.value = $event.target.value.toUpperCase()">
+    <div class="invalid-feedback">Provide valid exchange pair</div>
+  </div>
+
+  <div class="form-group">
+      <label>Clients</label>
+
+      <div class="checkbox" *ngFor="let selectedClient of selectedClients">
+          <label>
+              <input type="checkbox" name="selectedClients" [value]="true" [(ngModel)]="selectedClient.checked"> {{ selectedClient.client.name }}
+          </label>
+      </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary" (click)="showConfirmModal()" [disabled]="! canMakeOrder()">Add strategy execution</button>
+
+</form>
+
+<ng-template #confirmContent let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title">Strategy execution confirmation</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>
+          Do you want to make new strategy execution?
+        </p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="c('delete')">Yes. I am sure.</button>
+        <button type="button" class="btn btn-secondary" (click)="d('Dismiss')">Dismiss</button>
+    </div>
+  </ng-template>

@@ -35,3 +35,7 @@ export interface StrategyExecutionResponseDto {
     strategyParameters: StrategyParametersResponseDto;
     orders: LocalOrderDto[];
 }
+
+export class Strategy {
+    public name: string;
+}

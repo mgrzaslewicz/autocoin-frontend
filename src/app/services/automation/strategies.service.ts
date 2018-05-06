@@ -1,19 +1,18 @@
 import { Injectable } from '@angular/core';
-import {Observable} from 'rxjs/Observable';
-import { StrategyExecutionResponseDto } from '../../models/strategy';
-import { ApiService } from '../api/api.service';
+import { Strategy } from '../../models/strategy';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class StrategiesService {
 
-  private stragetiesApiUrl = 'https://strategies-api.autocoin-trader.com';
-  private getStrategiesUrl = `${this.stragetiesApiUrl}/strategies`;
-  private postStragetyUrl = `${this.stragetiesApiUrl}/strategy`;
+  getStrategies() : Observable<Strategy[]> {
+    let strategies = [];
 
-  constructor(private api: ApiService) { }
+    let buyLowerAndLowerStrategy = new Strategy;
+    buyLowerAndLowerStrategy.name = 'BuyLowerAndLower';
+    strategies.push(buyLowerAndLowerStrategy);
 
-  getStrategies(): Observable<StrategyExecutionResponseDto[]> {
-    return this.api.get(this.getStrategiesUrl);
+    return Observable.of(strategies);
   }
 
 }
