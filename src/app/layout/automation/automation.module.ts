@@ -5,7 +5,7 @@ import { AutomationRoutingModule } from './automation-routing.module';
 import { AutomationComponent } from './automation.component';
 import { PageHeaderModule } from '../../shared';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { StrategiesService } from '../../services/strategies.service';
+import { StrategiesService } from '../../services/automation/strategies.service';
 import { ExchangesService } from '../../services/automation/exchanges.service';
 
 @NgModule({
