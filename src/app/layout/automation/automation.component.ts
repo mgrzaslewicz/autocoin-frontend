@@ -45,4 +45,10 @@ export class AutomationComponent implements OnInit {
       return strategyExecution.exchangeName == exchangeName;
     });
   }
+
+  deleteStrategyExecution(strategyExecution) {
+    this.strategiesExecutionsService.deleteStrategyExecution(strategyExecution.id).subscribe(() => {
+      this.loadData();
+    });
+  }
 }

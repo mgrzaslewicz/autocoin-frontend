@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { StrategyExecutionResponseDto, StrategyParametersRequestDto } from '../../models/strategy';
 import { ApiService } from '../api/api.service';
+import * as _ from 'underscore';
 
 @Injectable()
 export class StrategiesExecutionsService {
 
   private stragetiesApiUrl = 'https://strategies-api.autocoin-trader.com';
   private getStrategiesUrl = `${this.stragetiesApiUrl}/strategies`;
-  private postStragetyUrl = `${this.stragetiesApiUrl}/strategy`;
+  private stragetyUrl = `${this.stragetiesApiUrl}/strategy`;
 
   constructor(private api: ApiService) { }
 
@@ -17,7 +18,18 @@ export class StrategiesExecutionsService {
   }
 
   public postStrategyExecution(parameters: StrategyParametersRequestDto) {
-    return this.api.post(this.postStragetyUrl, parameters);
+    let postParameters = _.clone<any>(parameters);
+
+    postParameters.strategySpecificParameters = {};
+    for (let [k, v] of Array.from(parameters.strategySpecificParameters)) {
+      postParameters.strategySpecificParameters[k] = v;
+    }
+
+    return this.api.post(this.stragetyUrl, postParameters);
+  }
+
+  public deleteStrategyExecution(strategyExecutionId: string) {
+    return this.api.delete(`${this.stragetyUrl}/${strategyExecutionId}`);
   }
 
 }
