@@ -16,7 +16,9 @@
         </tr>
         </thead>
         <tbody>
-
+            <tr *ngFor="let strategyExecution of getStrategiesExecutionsByExchangeName(exchange.name)">
+                <td>{{ strategyExecution | json }}</td>
+            </tr>
         
 
         </tbody>

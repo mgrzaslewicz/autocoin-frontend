@@ -34,8 +34,15 @@ export class AutomationComponent implements OnInit {
     ).subscribe(([exchanges, strategiesExecutions]) => {
       this.exchanges = exchanges;
       this.strategiesExecutions = strategiesExecutions;
+      console.log(this.strategiesExecutions);
     }, error => {
       this.toastService.danger('Sorry, something went wrong.');
+    });
+  }
+
+  getStrategiesExecutionsByExchangeName(exchangeName) {
+    return this.strategiesExecutions.filter(strategyExecution => {
+      return strategyExecution.exchangeName == exchangeName;
     });
   }
 }

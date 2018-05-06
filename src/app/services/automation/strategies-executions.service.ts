@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { StrategyExecutionResponseDto } from '../../models/strategy';
+import { StrategyExecutionResponseDto, StrategyParametersRequestDto } from '../../models/strategy';
 import { ApiService } from '../api/api.service';
 
 @Injectable()
@@ -14,6 +14,10 @@ export class StrategiesExecutionsService {
 
   public getStrategiesExecutions(): Observable<StrategyExecutionResponseDto[]> {
     return this.api.get(this.getStrategiesUrl);
+  }
+
+  public postStrategyExecution(parameters: StrategyParametersRequestDto) {
+    return this.api.post(this.postStragetyUrl, parameters);
   }
 
 }

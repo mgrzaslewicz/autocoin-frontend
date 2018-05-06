@@ -2,40 +2,80 @@
 
 <form #makeOrderForm="ngForm">
 
-  <div class="form-group">
-    <label>Exchange Name</label>
-    
-    <div class="form-control">
-      <strong>{{ exchangeName }}</strong>
+    <div class="row">
+        <div class="col-md-6">
+
+
+            <div class="form-group">
+                <label>Exchange Name</label>
+                
+                <div class="form-control">
+                <strong>{{ exchangeName }}</strong>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Strategy</label>
+                
+                <select class="form-control" name="selectedStrategy" [(ngModel)]="selectedStrategy">
+                    <option *ngFor="let strategy of strategies" [value]="strategy.name">{{ strategy.name }}</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="currency-pair-typeahead">Exchange currency pair</label>
+                <input name="exchangePair" id="currency-pair-typeahead" type="text" class="form-control exchange-pair-input"
+                [class.is-invalid]="makeOrderForm.controls.exchangePair && makeOrderForm.controls.exchangePair.invalid && makeOrderForm.controls.exchangePair.touched"
+                required validateCurrencyPairSymbol
+                [(ngModel)]="exchangePair" [ngbTypeahead]="searchExchangePair" (input)="$event.target.value = $event.target.value.toUpperCase()">
+                <div class="invalid-feedback">Provide valid exchange pair</div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="exitCurrencyPercentageForBuying">Exit Currency Percentage For Buying</label>
+                        <div class="input-group">
+                            <input name="exitCurrencyPercentageForBuying" type="number" class="form-control" min="1" max="100" [value]="exitCurrencyFractionForBuying * 100" (input)="onExitCurrencyPercentageForBuying($event.target)">
+                            <div class="input-group-append">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="maxExitCurrencyPercentForBuying">Max Exit Currency Percent For Buying</label>
+                        <div class="input-group">
+                            <input name="maxExitCurrencyPercentForBuying" type="number" class="form-control" min="1" max="100" [value]="maxExitCurrencyPercentForBuying" (input)="onMaxExitCurrencyPercentForBuying($event.target)">
+                            <div class="input-group-append">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <app-buy-lower-and-lower-specific-parameters (speciticParametersChanged)="onSpecificParameters($event)" *ngIf="selectedStrategy == 'BuyLowerAndLower'"></app-buy-lower-and-lower-specific-parameters>
+            
+        </div>
+        <div class="col-md-6">
+
+            <div class="form-group">
+                <label>Clients</label>
+            
+                <div class="checkbox" *ngFor="let selectedClient of selectedClients">
+                    <label>
+                        <input type="checkbox" name="selectedClients" [value]="true" [(ngModel)]="selectedClient.checked"> {{ selectedClient.client.name }}
+                    </label>
+                </div>
+            </div>
+            
+        </div>
+
     </div>
-  </div>
 
-  <div class="form-group">
-      <label>Strategy</label>
-      
-      <select class="form-control">
-          <option *ngFor="let strategy of strategies">{{ strategy.name }}</option>
-      </select>
-    </div>
-
-  <div class="form-group">
-    <label for="currency-pair-typeahead">Exchange currency pair</label>
-    <input name="exchangePair" id="currency-pair-typeahead" type="text" class="form-control exchange-pair-input"
-      [class.is-invalid]="makeOrderForm.controls.exchangePair && makeOrderForm.controls.exchangePair.invalid && makeOrderForm.controls.exchangePair.touched"
-      required validateCurrencyPairSymbol
-      [(ngModel)]="exchangePair" [ngbTypeahead]="searchExchangePair" (input)="$event.target.value = $event.target.value.toUpperCase()">
-    <div class="invalid-feedback">Provide valid exchange pair</div>
-  </div>
-
-  <div class="form-group">
-      <label>Clients</label>
-
-      <div class="checkbox" *ngFor="let selectedClient of selectedClients">
-          <label>
-              <input type="checkbox" name="selectedClients" [value]="true" [(ngModel)]="selectedClient.checked"> {{ selectedClient.client.name }}
-          </label>
-      </div>
-  </div>
+  
 
   <button type="submit" class="btn btn-primary" (click)="showConfirmModal()" [disabled]="! canMakeStrategyExecution()">Add strategy execution</button>
 

@@ -9,6 +9,17 @@ export interface StrategyParametersRequestDto {
     strategySpecificParameters: Map<string, number>;
 }
 
+export class StrategyParametersRequest implements StrategyParametersRequestDto {
+    clientId: string;
+    exchangeName: string;
+    strategyName: string;
+    entryCurrencyCode: string;
+    exitCurrencyCode: string;
+    exitCurrencyFractionForBuying: number;
+    maxExitCurrencyPercentForBuying: number;
+    strategySpecificParameters: Map<string, number> = new Map<string, number>();
+}
+
 export interface LocalOrderDto {
     exchangeName: string;
     exchangeOrderId: string;

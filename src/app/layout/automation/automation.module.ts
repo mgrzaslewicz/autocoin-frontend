@@ -11,6 +11,7 @@ import { MakeStrategyExecutionComponent } from './make-strategy-execution/make-s
 import { ValidatorsModule } from '../../validators/validators.module';
 import { FormsModule } from '@angular/forms';
 import { StrategiesExecutionsService } from '../../services/automation/strategies-executions.service';
+import { BuyLowerAndLowerSpecificParametersComponent } from './make-strategy-execution/buy-lower-and-lower-specific-parameters/buy-lower-and-lower-specific-parameters.component';
 
 @NgModule({
   imports: [
@@ -21,7 +22,7 @@ import { StrategiesExecutionsService } from '../../services/automation/strategie
     ValidatorsModule,
     FormsModule,
   ],
-  declarations: [AutomationComponent, MakeStrategyExecutionComponent],
+  declarations: [AutomationComponent, MakeStrategyExecutionComponent, BuyLowerAndLowerSpecificParametersComponent],
   providers: [
     StrategiesService,
     StrategiesExecutionsService,
