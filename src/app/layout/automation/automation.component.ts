@@ -13,7 +13,7 @@ import { StrategyExecutionResponseDto } from '../../models/strategy';
 })
 export class AutomationComponent implements OnInit {
 
-  private exchanges: Exchange[];
+  exchanges: Exchange[];
 
   private strategiesExecutions: StrategyExecutionResponseDto[];
 
