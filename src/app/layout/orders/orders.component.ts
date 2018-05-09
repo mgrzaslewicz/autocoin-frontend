@@ -4,6 +4,7 @@ import {OrdersService} from '../../services/orders.service';
 import {ClientsService} from '../../services/api';
 import {ToastService} from '../../services/toast.service';
 import {Order, Client} from '../../models';
+import {OpenOrdersResponseDto} from '../../models/order';
 
 @Component({
     selector: 'app-orders',
@@ -14,10 +15,9 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
     private openOrdersSubscription: Subscription;
 
-    openOrders: Order[] = [];
-    failedExchanges: string[] = [];
+    openOrders: OpenOrdersResponseDto[] = [];
     clients: Client[] = [];
-
+    orderViewState: Map<string, string> = new Map();
     pending: boolean;
 
     selectedOrders: Order[] = [];
@@ -36,17 +36,19 @@ export class OrdersComponent implements OnInit, OnDestroy {
     loadData() {
         this.pending = true;
         this.selectedOrders = [];
+        this.orderViewState.clear();
 
         this.openOrdersSubscription = Observable.forkJoin(
             this.orderService.getOpenOrders(),
             this.clientsService.getClients()
         ).subscribe(([ordersResponseDto, clients]) => {
-            this.openOrders = ordersResponseDto.openOrders;
-            this.failedExchanges = ordersResponseDto.failedExchanges;
-            this.openOrders.forEach(order => order.viewState = 'enabled');
-
+            this.openOrders = ordersResponseDto;
+            this.openOrders.forEach(openOrdersAtExchange => {
+                openOrdersAtExchange.openOrders.forEach(openOrder => {
+                    this.orderViewState[openOrder.orderId] = 'enabled';
+                });
+            });
             this.clients = clients;
-
             this.pending = false;
         }, error => {
             this.pending = false;
@@ -57,25 +59,34 @@ export class OrdersComponent implements OnInit, OnDestroy {
         });
     }
 
+    getFailedExchangesForClient(client: Client): string[] {
+        return Array.from(
+            this.openOrders.filter(ordersAtExchange => ordersAtExchange.clientId === client.id && ordersAtExchange.errorMessage != null)
+                .map(ordersAtExchange => ordersAtExchange.exchangeName + ': ' + ordersAtExchange.errorMessage)
+        );
+    }
+
     ngOnDestroy() {
         this.openOrdersSubscription.unsubscribe();
     }
 
-    ordersForClient(client: Client) {
+    ordersForClient(client: Client): Order[] {
         if (!client) {
             console.log(`No client`);
             return [];
         }
-
-        return this.openOrders.filter(order => order.clientId === client.id);
+        const openOrdersOfClient: Order[][] = Array.from(
+            this.openOrders.filter(ordersAtExchange => ordersAtExchange.clientId === client.id && ordersAtExchange.openOrders.length > 0)
+                .map(ordersAtExchange => ordersAtExchange.openOrders)
+                .values()
+        );
+        return [].concat.apply([], openOrdersOfClient);
     }
 
     cancelOpenOrder(openOrder: Order) {
-        openOrder.viewState = 'pending';
-
-        this.orderService.cancelOpenOrder(openOrder).subscribe(cancelledOrder => {
-            let order = this.openOrders.find(order => order.orderId === cancelledOrder.orderId);
-            order.viewState = 'disabled';
+        this.orderViewState[openOrder.orderId] = 'enabled';
+        this.orderService.cancelOpenOrder(openOrder).subscribe(canceledOrder => {
+            this.orderViewState[canceledOrder.orderId] = 'disabled';
         });
     }
 
@@ -83,18 +94,21 @@ export class OrdersComponent implements OnInit, OnDestroy {
         if (checked) {
             this.selectedOrders.push(order);
         } else {
-            let index = this.selectedOrders.indexOf(order);
+            const index = this.selectedOrders.indexOf(order);
             this.selectedOrders.splice(index, 1);
         }
     }
 
-    cancelSeletedOrders() {
-        this.selectedOrders.forEach(order => order.viewState = 'pending');
+    getOrderCurrencyPairSymbol(order: Order): string {
+        return `${order.entryCurrencyCode}/${order.exitCurrencyCode}`;
+    }
+
+    cancelSelectedOrders() {
+        this.selectedOrders.forEach(order => this.orderViewState[order.orderId] = 'pending');
 
         this.orderService.cancelOpenOrders(this.selectedOrders).subscribe(cancelledOrders => {
-            cancelledOrders.orders.forEach(cancelledOrder => {
-                let order = this.openOrders.find(order => order.orderId === cancelledOrder.orderId);
-                order.viewState = 'disabled';
+            cancelledOrders.orders.forEach(canceledOrder => {
+                this.orderViewState[canceledOrder.orderId] = 'disabled';
             });
         });
     }

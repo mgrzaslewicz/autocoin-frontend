@@ -1,7 +1,4 @@
 export class Exchange {
-
-  public id: String;
-  
-  public name: String;
-  
+    public id: string;
+    public name: string;
 }

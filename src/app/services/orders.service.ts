@@ -1,16 +1,18 @@
 import {Injectable} from '@angular/core';
 import {
     CancelOrderRequestDto,
-    OpenOrdersRequestDto,
     CancelOrderResponseDto,
-    Order,
     CancelOrdersRequestDto,
-    CancelOrdersResponseDto, OpenOrdersResponseDto
+    CancelOrdersResponseDto,
+    OpenOrdersRequestDto,
+    OpenOrdersResponseDto,
+    Order
 } from '../models/order';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import {ApiService} from './api/api.service';
 import {WatchCurrencyPairsService} from './watch-currency-pairs.service';
+import {CurrencyPair} from '../models';
 
 @Injectable()
 export class OrdersService {
@@ -23,19 +25,11 @@ export class OrdersService {
     constructor(private api: ApiService, private currencyPairsService: WatchCurrencyPairsService) {
     }
 
-    getOpenOrders(): Observable<OpenOrdersResponseDto> {
+    getOpenOrders(): Observable<OpenOrdersResponseDto[]> {
         const openOrdersRequestDto: OpenOrdersRequestDto = {
             currencyPairs: this.currencyPairsService.all()
         };
-        return this.api.post<OpenOrdersResponseDto>(this.openOrdersUrl, openOrdersRequestDto)
-            .map(response => this.toOpenOrdersResponseDto(response));
-    }
-
-    private toOpenOrdersResponseDto(response): OpenOrdersResponseDto {
-        return {
-            failedExchanges: response.failedExchanges,
-            openOrders: response.openOrders.map(item => this.newOrder(item))
-        };
+        return this.api.post<OpenOrdersResponseDto[]>(this.openOrdersUrl, openOrdersRequestDto);
     }
 
     cancelOpenOrder(openOrder: Order) {
@@ -60,25 +54,8 @@ export class OrdersService {
             orderType: openOrder.orderType,
             exchangeId: openOrder.exchangeId,
             orderId: openOrder.orderId,
-            currencyPair: openOrder.currencyPair()
+            currencyPair: new CurrencyPair(openOrder.entryCurrencyCode, openOrder.exitCurrencyCode)
         };
-    }
-
-    private newOrder(data): Order {
-        return new Order(
-            data.clientId,
-            data.exchangeId,
-            data.exchangeName,
-            data.orderId,
-            data.entryCurrencyCode,
-            data.exitCurrencyCode,
-            data.orderType,
-            data.orderStatus,
-            data.orderedAmount,
-            data.filledAmount,
-            data.price,
-            data.timestamp
-        );
     }
 
 }

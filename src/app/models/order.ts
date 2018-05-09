@@ -9,7 +9,7 @@ export interface CancelOrderRequestDto {
 }
 
 export interface CancelOrderResponseDto {
-    orderId: String;
+    orderId: string;
     success: Boolean;
 }
 
@@ -26,36 +26,23 @@ export interface OpenOrdersRequestDto {
 }
 
 export interface OpenOrdersResponseDto {
-    failedExchanges: string[];
+    exchangeName: string;
+    clientId: string;
+    errorMessage: string;
     openOrders: Order[];
 }
 
-export class Order {
-    public viewState = 'enabled';
-
-    constructor(
-        public clientId: String,
-        public exchangeId: String,
-        public exchangeName: String,
-        public orderId: String,
-        public entryCurrencyCode: String,
-        public exitCurrencyCode: String,
-        public orderType: String,
-        public orderStatus: String,
-        public orderedAmount: Number,
-        public filledAmount: Number,
-        public price: Number,
-        public timestamp: Number
-    ) {
-
-    }
-
-    currencyPair(): CurrencyPair {
-        return new CurrencyPair(this.entryCurrencyCode, this.exitCurrencyCode);
-    }
-
-    currencyPairSymbol(): string {
-        return `${this.entryCurrencyCode}/${this.exitCurrencyCode}`;
-    }
-
+export interface Order {
+    clientId: String;
+    exchangeId: String;
+    exchangeName: String;
+    orderId: string;
+    entryCurrencyCode: String;
+    exitCurrencyCode: String;
+    orderType: String;
+    orderStatus: String;
+    orderedAmount: Number;
+    filledAmount: Number;
+    price: Number;
+    timestamp: Number;
 }

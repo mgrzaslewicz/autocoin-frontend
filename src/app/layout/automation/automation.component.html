@@ -5,7 +5,7 @@
         <div class="row justify-content-between align-items-center px-2">
             <span>{{ exchange.name }}</span>
 
-            <a [routerLink]="['/automation/make-strategy-execution', exchange.name]" class="btn btn-success">Add stretegy execution order</a>
+            <a [routerLink]="['/automation/make-strategy-execution', exchange.name]" class="btn btn-success">Add strategy</a>
         </div>
     </div>
     <table class="card-body table table-hover">
@@ -19,10 +19,10 @@
             <tr *ngFor="let strategyExecution of getStrategiesExecutionsByExchangeName(exchange.name)">
                 <td>{{ strategyExecution | json }}</td>
                 <td>
-                    <button (click)="deleteStrategyExecution(strategyExecution)" class="btn btn-danger">Delete</button>
+                    <button (click)="deleteStrategyExecution(strategyExecution)" class="btn btn-danger">Delete strategy</button>
                 </td>
             </tr>
-        
+
 
         </tbody>
     </table>
