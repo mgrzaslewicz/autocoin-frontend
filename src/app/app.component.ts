@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { versions } from '../environments/versions';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
     selector: 'app-root',
@@ -8,9 +7,6 @@ import { versions } from '../environments/versions';
 })
 export class AppComponent implements OnInit {
     constructor() {
-        if (versions.hash) {
-            console.log(`%c${versions.hash}`, "color: white; font-weight: bold; background: #273c75; padding: 1px 4px; border-radius: 4px");
-        }
     }
 
     ngOnInit() {
