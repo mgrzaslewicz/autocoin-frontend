@@ -35,7 +35,7 @@ export class WalletsComponent implements OnInit {
     pending: boolean = false;
     pendingPriceRefresh: boolean = false;
     private clientsSubscription: Subscription;
-    private currencyPairPrices: Map<string, number> = new Map();
+    private currencyPairPrices: Map<string, number> = new Map<string, number>();
 
     constructor(
         private clientsService: ClientsService,
@@ -103,11 +103,11 @@ export class WalletsComponent implements OnInit {
         const currencyPair = `${currencyBalance.currencyCode}-${targetCurrencyCode}`;
         if (this.currencyPairPrices.has(currencyPair)) {
             const currencyPrice = this.currencyPairPrices.get(currencyPair);
-            let currencyValueInBtc = 0;
             if (currencyPrice !== 0) {
-                currencyValueInBtc = (currencyBalance.available / currencyPrice).toFixed(4);
+                return (currencyBalance.available / currencyPrice);
+            } else {
+                return 0.0;
             }
-            return currencyValueInBtc;
         } else {
             return null;
         }

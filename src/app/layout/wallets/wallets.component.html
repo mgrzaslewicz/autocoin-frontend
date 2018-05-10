@@ -33,8 +33,8 @@
                 <tr *ngFor="let currencyBalance of exchangeBalance.currencyBalances">
                     <td>{{ currencyBalance.currencyCode }}</td>
                     <td>{{ currencyBalance.available }}</td>
-                    <td>{{ getValue(currencyBalance, 'BTC') || '-' }}</td>
-                    <td>{{ getValue(currencyBalance, 'USD') || '-' }}</td>
+                    <td>{{ getValue(currencyBalance, 'BTC') | number : '1.4' || '-' }}</td>
+                    <td>{{ getValue(currencyBalance, 'USD') | number : '1.4' || '-' }}</td>
                 </tr>
                 </tbody>
             </table>
