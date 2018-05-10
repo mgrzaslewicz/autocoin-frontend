@@ -181,8 +181,8 @@ export class WalletsComponent implements OnInit {
         const currencyKey = `price-${currencyPrice.currencyCode}-BTC`;
         localStorage.setItem(currencyKey, currencyPrice.priceInBtc.toString());
         localStorage.setItem('price-BTC-USD', currencyPrice.btcUsdPrice.toString());
-        this.currencyPairPrices[`${currencyPrice.currencyCode}-BTC`] = currencyPrice.priceInBtc;
-        this.currencyPairPrices['BTC-USD'] = currencyPrice.btcUsdPrice;
+        this.currencyPairPrices.set(`${currencyPrice.currencyCode}-BTC`, currencyPrice.priceInBtc);
+        this.currencyPairPrices.set('BTC-USD', currencyPrice.btcUsdPrice);
     }
 
 }
