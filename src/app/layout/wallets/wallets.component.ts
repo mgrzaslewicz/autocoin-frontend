@@ -31,7 +31,9 @@ export interface AccountInfoResponseDto {
 export class WalletsComponent implements OnInit {
     clients: Client[] = [];
     pending: boolean = false;
+    pendingPriceRefresh: boolean = true;
     private clientsSubscription: Subscription;
+    private currencyPairPrices: Map<string, number> = new Map();
 
     constructor(
         private clientsService: ClientsService,
@@ -51,16 +53,24 @@ export class WalletsComponent implements OnInit {
         });
     }
 
-    getLastRefreshTime(client: Client): Date {
-        const lastRefreshTimeString = localStorage.getItem('client-portfolio-refresh-time-' + client.id);
-        if (lastRefreshTimeString != null) {
-            const lastRefreshTimeMs = Number(localStorage.getItem('client-portfolio-refresh-time-' + client.id));
-            const lastRefreshTime: Date = new Date();
-            lastRefreshTime.setTime(lastRefreshTimeMs);
-            return lastRefreshTime;
+    getLastClientWalletRefreshTime(client: Client): Date {
+        return this.getLocalStorageKeyAsDate('client-portfolio-refresh-time-' + client.id);
+    }
+
+    private getLocalStorageKeyAsDate(key: string): Date {
+        const timeString = localStorage.getItem(key);
+        if (timeString != null) {
+            const timeMs = Number(timeString);
+            const date: Date = new Date();
+            date.setTime(timeMs);
+            return date;
         } else {
             return null;
         }
+    }
+
+    getLastPriceRefreshTime(): Date {
+        return this.getLocalStorageKeyAsDate('prices-refresh-time');
     }
 
     exchangeBalancesForClient(client: Client): ExchangeBalanceDto[] {
@@ -83,6 +93,20 @@ export class WalletsComponent implements OnInit {
 
     ngOnDestroy() {
         this.clientsSubscription.unsubscribe();
+    }
+
+    getValue(currencyBalance: CurrencyBalanceDto, targetCurrencyCode: string): number {
+        const currencyPair = `${currencyBalance.currencyCode}-${targetCurrencyCode}`;
+        if (this.currencyPairPrices.has(currencyPair)) {
+            const currencyPrice = this.currencyPairPrices[currencyPair];
+            return currencyPrice * currencyBalance.available;
+        } else {
+            return null;
+        }
+    }
+
+    fetchPrices() {
+
     }
 
 }

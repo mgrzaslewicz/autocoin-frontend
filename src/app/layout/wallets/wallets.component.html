@@ -1,11 +1,17 @@
 <div [@routerTransition]>
     <app-page-header [heading]="'Wallets'" [icon]="'fa-money'"></app-page-header>
+    <div class="card mb-3">
+        <button class="btn btn-info" (click)="fetchPrices()" [disabled]="pendingPriceRefresh">
+            <i class="fa fa-refresh" [class.is-pending]="pending"></i>Refresh prices (not available yet)
+        </button>
+        <p>Last prices refresh: {{ getLastPriceRefreshTime() | date: 'y-MM-dd HH:mm:ss' || '-' }}</p>
+    </div>
     <div *ngFor="let client of clients" class="card mb-3">
         <h3>{{ client.name }}</h3>
         <button class="btn btn-info" (click)="fetchExchangeBalancesForClient(client)" [disabled]="pending">
-            <i class="fa fa-refresh" [class.is-pending]="pending"></i>Refresh
+            <i class="fa fa-refresh" [class.is-pending]="pending"></i>Refresh amounts
         </button>
-        <p>Last refresh: {{ getLastRefreshTime(client) | date: 'y-MM-dd HH:mm:ss' || '-' }}</p>
+        <p>Last refresh: {{ getLastClientWalletRefreshTime(client) | date: 'y-MM-dd HH:mm:ss' || '-' }}</p>
         <ng-container *ngFor="let exchangeBalance of exchangeBalancesForClient(client)">
             <h4>{{ exchangeBalance.exchangeName }}</h4>
             <span *ngIf="exchangeBalance.errorMessage != null" class="badge badge-warning">
@@ -19,12 +25,16 @@
                 <tr>
                     <th>Currency</th>
                     <th>Available amount</th>
+                    <th>BTC value</th>
+                    <th>USD value</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr *ngFor="let currencyBalance of exchangeBalance.currencyBalances">
                     <td>{{ currencyBalance.currencyCode }}</td>
                     <td>{{ currencyBalance.available }}</td>
+                    <td>{{ getValue(currencyBalance, 'BTC') || '-' }}</td>
+                    <td>{{ getValue(currencyBalance, 'USD') || '-' }}</td>
                 </tr>
                 </tbody>
             </table>
