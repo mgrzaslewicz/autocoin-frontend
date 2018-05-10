@@ -5,6 +5,8 @@ import {Client} from '../../models';
 import {Observable, Subscription} from '../../../../node_modules/rxjs';
 import {ToastService} from '../../services/toast.service';
 import {ExchangeAccountService} from '../../services/exchange-account.service';
+import * as _ from 'underscore';
+import {CurrencyPrice, PriceService} from '../../services/price.service';
 
 export interface CurrencyBalanceDto {
     currencyCode: string;
@@ -14,7 +16,7 @@ export interface CurrencyBalanceDto {
 export interface ExchangeBalanceDto {
     exchangeName: string;
     currencyBalances: CurrencyBalanceDto[];
-    errorMessage: string;
+    errorMessage?: string;
 }
 
 export interface AccountInfoResponseDto {
@@ -31,14 +33,15 @@ export interface AccountInfoResponseDto {
 export class WalletsComponent implements OnInit {
     clients: Client[] = [];
     pending: boolean = false;
-    pendingPriceRefresh: boolean = true;
+    pendingPriceRefresh: boolean = false;
     private clientsSubscription: Subscription;
     private currencyPairPrices: Map<string, number> = new Map();
 
     constructor(
         private clientsService: ClientsService,
         private exchangeAccountService: ExchangeAccountService,
-        private toastService: ToastService
+        private toastService: ToastService,
+        private priceService: PriceService
     ) {
     }
 
@@ -47,6 +50,7 @@ export class WalletsComponent implements OnInit {
             this.clientsService.getClients()
         ).subscribe(([clients]) => {
             this.clients = clients;
+            this.restorePricesFromLocalStorage();
         }, error => {
             this.clients = [];
             this.toastService.danger('Sorry, something went wrong. Could not get client list');
@@ -98,15 +102,87 @@ export class WalletsComponent implements OnInit {
     getValue(currencyBalance: CurrencyBalanceDto, targetCurrencyCode: string): number {
         const currencyPair = `${currencyBalance.currencyCode}-${targetCurrencyCode}`;
         if (this.currencyPairPrices.has(currencyPair)) {
-            const currencyPrice = this.currencyPairPrices[currencyPair];
-            return currencyPrice * currencyBalance.available;
+            const currencyPrice = this.currencyPairPrices.get(currencyPair);
+            let currencyValueInBtc = 0;
+            if (currencyPrice !== 0) {
+                currencyValueInBtc = (currencyBalance.available / currencyPrice).toFixed(4);
+            }
+            return currencyValueInBtc;
         } else {
             return null;
         }
     }
 
-    fetchPrices() {
+    private getDistinctCurrencyCodesInWallets(): string[] {
+        return _.uniq(
+            _.flatten(_.filter(this.clients, client => client != null).map(client =>
+                    _.filter(this.exchangeBalancesForClient(client), balance => balance != null)
+                        .map(exchangeBalanceDto =>
+                            exchangeBalanceDto.currencyBalances
+                                .map(exchangeCurrencyBalance => exchangeCurrencyBalance.currencyCode)
+                        )
+                )
+            )
+        ).sort(function (a, b) {
+            return a.localeCompare(b);
+        });
+    }
 
+    private restorePricesFromLocalStorage() {
+        console.log('Restoring prices from local storage');
+        this.currencyPairPrices.clear();
+        const distinctCurrencyCodesString = localStorage.getItem('wallet-distinct-currency-codes');
+        if (distinctCurrencyCodesString != null) {
+            const btcUsdPrice = Number(localStorage.getItem('price-BTC-USD'));
+            this.currencyPairPrices['BTC-USD'] = btcUsdPrice;
+            const distinctCurrencyCodes: string[] = JSON.parse(distinctCurrencyCodesString);
+            console.log(`Found ${distinctCurrencyCodes.length} prices to restore`);
+            distinctCurrencyCodes.forEach(currencyCode => {
+                const currencyBtcPrice = Number(localStorage.getItem(`price-${currencyCode}-BTC`));
+                this.currencyPairPrices.set(`${currencyCode}-BTC`, currencyBtcPrice);
+            });
+        }
+        console.log('Prices restored');
+        console.log(this.currencyPairPrices);
+    }
+
+    fetchPrices() {
+        console.log('Fetching prices');
+        const distinctCurrencyCodes: string[] = this.getDistinctCurrencyCodesInWallets();
+        console.log(distinctCurrencyCodes);
+
+        localStorage.setItem('wallet-distinct-currency-codes', JSON.stringify(distinctCurrencyCodes));
+        localStorage.setItem('prices-refresh-time', new Date().getTime().toString());
+
+        this.pendingPriceRefresh = true;
+
+        const numberOfCurrencyCodes = distinctCurrencyCodes.length;
+        let numberOfFetchedCurrencyCodes = 0;
+
+        distinctCurrencyCodes.forEach(currencyCode => {
+            this.priceService.getPrice(currencyCode).subscribe(currencyPrice => {
+                    this.savePrice(currencyPrice);
+                    numberOfFetchedCurrencyCodes++;
+                    if (numberOfCurrencyCodes === numberOfFetchedCurrencyCodes) {
+                        this.pendingPriceRefresh = false;
+                    }
+                },
+                error => {
+                    numberOfFetchedCurrencyCodes++;
+                    if (numberOfCurrencyCodes === numberOfFetchedCurrencyCodes) {
+                        this.pendingPriceRefresh = false;
+                    }
+                });
+        });
+        return distinctCurrencyCodes;
+    }
+
+    private savePrice(currencyPrice: CurrencyPrice) {
+        const currencyKey = `price-${currencyPrice.currencyCode}-BTC`;
+        localStorage.setItem(currencyKey, currencyPrice.priceInBtc.toString());
+        localStorage.setItem('price-BTC-USD', currencyPrice.btcUsdPrice.toString());
+        this.currencyPairPrices[`${currencyPrice.currencyCode}-BTC`] = currencyPrice.priceInBtc;
+        this.currencyPairPrices['BTC-USD'] = currencyPrice.btcUsdPrice;
     }
 
 }

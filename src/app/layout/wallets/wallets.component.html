@@ -2,7 +2,7 @@
     <app-page-header [heading]="'Wallets'" [icon]="'fa-money'"></app-page-header>
     <div class="card mb-3">
         <button class="btn btn-info" (click)="fetchPrices()" [disabled]="pendingPriceRefresh">
-            <i class="fa fa-refresh" [class.is-pending]="pending"></i>Refresh prices (not available yet)
+            <i class="fa fa-refresh" [class.is-pending]="pending"></i>Refresh prices
         </button>
         <p>Last prices refresh: {{ getLastPriceRefreshTime() | date: 'y-MM-dd HH:mm:ss' || '-' }}</p>
     </div>
@@ -18,7 +18,7 @@
                 {{ exchangeBalance.errorMessage }}
             </span>
             <span *ngIf="exchangeBalance.currencyBalances.length == 0 && exchangeBalance.errorMessage == null"
-                  class="badge badge-info">No currencies hold</span>
+                  class="badge badge-secondary">No currencies hold</span>
             <table *ngIf="exchangeBalance.currencyBalances.length > 0 && exchangeBalance.errorMessage == null"
                    class="card-body table table-hover">
                 <thead>

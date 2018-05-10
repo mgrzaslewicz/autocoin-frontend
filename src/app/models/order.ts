@@ -28,7 +28,7 @@ export interface OpenOrdersRequestDto {
 export interface OpenOrdersResponseDto {
     exchangeName: string;
     clientId: string;
-    errorMessage: string;
+    errorMessage?: string;
     openOrders: Order[];
 }
 

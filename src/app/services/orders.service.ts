@@ -32,13 +32,13 @@ export class OrdersService {
         return this.api.post<OpenOrdersResponseDto[]>(this.openOrdersUrl, openOrdersRequestDto);
     }
 
-    cancelOpenOrder(openOrder: Order) {
+    cancelOpenOrder(openOrder: Order): Observable<CancelOrderResponseDto> {
         const cancelOrderRequestDto = this.prepareCancelOrderRequestDto(openOrder);
 
         return this.api.post(this.cancelOrderUrl, cancelOrderRequestDto) as Observable<CancelOrderResponseDto>;
     }
 
-    cancelOpenOrders(openOrders: Order[]) {
+    cancelOpenOrders(openOrders: Order[]): Observable<CancelOrdersResponseDto> {
         const orders = openOrders.map(openOrder => {
             return this.prepareCancelOrderRequestDto(openOrder);
         });
