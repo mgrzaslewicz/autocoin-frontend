@@ -35,7 +35,7 @@ export class WalletsComponent implements OnInit {
     pending: boolean = false;
     pendingPriceRefresh: boolean = false;
     private clientsSubscription: Subscription;
-    private currencyPairPrices: Map<string, number> = new Map<string, number>();
+    private currencyPairPrices: Map<string, number> = new Map();
 
     constructor(
         private clientsService: ClientsService,
@@ -99,8 +99,8 @@ export class WalletsComponent implements OnInit {
         this.clientsSubscription.unsubscribe();
     }
 
-    getValue(currencyBalance: CurrencyBalanceDto, targetCurrencyCode: string): number {
-        const currencyPair = `${currencyBalance.currencyCode}-${targetCurrencyCode}`;
+    getBtcValue(currencyBalance: CurrencyBalanceDto): number {
+        const currencyPair = `${currencyBalance.currencyCode}-BTC`;
         if (this.currencyPairPrices.has(currencyPair)) {
             const currencyPrice = this.currencyPairPrices.get(currencyPair);
             if (currencyPrice !== 0) {
@@ -108,6 +108,17 @@ export class WalletsComponent implements OnInit {
             } else {
                 return 0.0;
             }
+        } else {
+            return null;
+        }
+    }
+
+    getUsdValue(currencyBalance: CurrencyBalanceDto): number {
+        const currencyBtcValue = this.getBtcValue(currencyBalance);
+        const usdBtcPair = `USD-BTC`;
+        if (this.currencyPairPrices.has(usdBtcPair) && currencyBtcValue !== null) {
+            const usdBtcPrice = this.currencyPairPrices.get(usdBtcPair);
+            return currencyBtcValue * usdBtcPrice;
         } else {
             return null;
         }
