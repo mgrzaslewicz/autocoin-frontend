@@ -37,6 +37,16 @@
                         <td>{{ getBtcValue(currencyBalance) | number : '1.8' || '-' }}</td>
                         <td>{{ getUsdValue(currencyBalance) | number : '1.2' || '-' }}</td>
                     </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td class="font-weight-bold">
+                            {{ getTotalExchangeBtcValue(exchangeBalance) | number : '1.8' }}
+                        </td>
+                        <td class="font-weight-bold">
+                            {{ getTotalExchangeUsdValue(exchangeBalance) | number : '1.2' }}
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
             </ng-container>

@@ -124,6 +124,25 @@ export class WalletsComponent implements OnInit {
         }
     }
 
+    getTotalExchangeBtcValue(exchangeBalance: ExchangeBalanceDto): number {
+        let totalBtc = 0.0;
+        exchangeBalance.currencyBalances.forEach(item => {
+            totalBtc += this.getBtcValue(item);
+        });
+        return totalBtc;
+    }
+
+    getTotalExchangeUsdValue(exchangeBalance: ExchangeBalanceDto): number {
+        const totalBtcValue = this.getTotalExchangeBtcValue(exchangeBalance);
+        const usdBtcPair = `USD-BTC`;
+        if (this.currencyPairPrices.has(usdBtcPair) && totalBtcValue !== null) {
+            const usdBtcPrice = this.currencyPairPrices.get(usdBtcPair);
+            return totalBtcValue * usdBtcPrice;
+        } else {
+            return null;
+        }
+    }
+
     private getDistinctCurrencyCodesInWallets(): string[] {
         return _.uniq(
             _.flatten(_.filter(this.clients, client => client != null).map(client =>
