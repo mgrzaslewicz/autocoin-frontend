@@ -30,12 +30,12 @@
                         <th>Available</th>
                         <th>Frozen</th>
                         <th>Total</th>
-                        <th>BTC value</th>
+                        <th>BTC value <i class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
                         <th>USD value</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr *ngFor="let currencyBalance of exchangeBalance.currencyBalances">
+                    <tr *ngFor="let currencyBalance of getSortedBalances(exchangeBalance.currencyBalances)">
                         <td>{{ currencyBalance.currencyCode }}</td>
                         <td>{{ currencyBalance.available }}</td>
                         <td>{{ currencyBalance.frozen }}</td>

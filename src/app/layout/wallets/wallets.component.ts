@@ -26,6 +26,15 @@ export interface AccountInfoResponseDto {
     exchangeBalances: ExchangeBalanceDto[];
 }
 
+interface CurrencyBalanceTableRow {
+    currencyCode: string;
+    available: number;
+    frozen: number;
+    total: number;
+    btcValue: number;
+    usdValue: number;
+}
+
 @Component({
     selector: 'app-wallets',
     templateUrl: './wallets.component.html',
@@ -197,13 +206,16 @@ export class WalletsComponent implements OnInit {
         console.log(this.currencyPairPrices);
     }
 
+    private savePriceRefreshTime() {
+        localStorage.setItem('prices-refresh-time', new Date().getTime().toString());
+    }
+
     fetchPrices() {
         console.log('Fetching prices');
         const distinctCurrencyCodes: string[] = this.getDistinctCurrencyCodesInWallets();
         console.log(distinctCurrencyCodes);
 
         localStorage.setItem('wallet-distinct-currency-codes', JSON.stringify(distinctCurrencyCodes));
-        localStorage.setItem('prices-refresh-time', new Date().getTime().toString());
 
         this.pendingPriceRefresh = true;
 
@@ -216,12 +228,14 @@ export class WalletsComponent implements OnInit {
                     numberOfFetchedCurrencyCodes++;
                     if (numberOfCurrencyCodes === numberOfFetchedCurrencyCodes) {
                         this.pendingPriceRefresh = false;
+                        this.savePriceRefreshTime();
                     }
                 },
                 error => {
                     numberOfFetchedCurrencyCodes++;
                     if (numberOfCurrencyCodes === numberOfFetchedCurrencyCodes) {
                         this.pendingPriceRefresh = false;
+                        this.savePriceRefreshTime();
                     }
                 });
         });
@@ -236,4 +250,20 @@ export class WalletsComponent implements OnInit {
         this.currencyPairPrices.set('BTC-USD', currencyPrice.btcUsdPrice);
     }
 
+    getSortedBalances(currencyBalances: CurrencyBalanceDto[]): CurrencyBalanceTableRow[] {
+        return currencyBalances
+            .map(currencyBalance => this.toCurrencyBalanceTableRow(currencyBalance))
+            .sort((a, b) => a.btcValue - b.btcValue);
+    }
+
+    private toCurrencyBalanceTableRow(currencyBalance: CurrencyBalanceDto): CurrencyBalanceTableRow {
+        return {
+            currencyCode: currencyBalance.currencyCode,
+            available: currencyBalance.available,
+            frozen: currencyBalance.frozen,
+            total: currencyBalance.total,
+            btcValue: this.getBtcValue(currencyBalance),
+            usdValue: this.getUsdValue(currencyBalance)
+        };
+    }
 }
