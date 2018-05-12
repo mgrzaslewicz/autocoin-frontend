@@ -253,7 +253,7 @@ export class WalletsComponent implements OnInit {
     getSortedBalances(currencyBalances: CurrencyBalanceDto[]): CurrencyBalanceTableRow[] {
         return currencyBalances
             .map(currencyBalance => this.toCurrencyBalanceTableRow(currencyBalance))
-            .sort((a, b) => a.btcValue - b.btcValue);
+            .sort((a, b) => b.btcValue - a.btcValue);
     }
 
     private toCurrencyBalanceTableRow(currencyBalance: CurrencyBalanceDto): CurrencyBalanceTableRow {

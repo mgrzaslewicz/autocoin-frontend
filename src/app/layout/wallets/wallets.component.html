@@ -30,7 +30,7 @@
                         <th>Available</th>
                         <th>Frozen</th>
                         <th>Total</th>
-                        <th>BTC value <i class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
+                        <th>BTC value <i class="fa fa-sort-amount-desc" aria-hidden="true"></i></th>
                         <th>USD value</th>
                     </tr>
                     </thead>
@@ -40,8 +40,8 @@
                         <td>{{ currencyBalance.available }}</td>
                         <td>{{ currencyBalance.frozen }}</td>
                         <td>{{ currencyBalance.total }}</td>
-                        <td>{{ getBtcValue(currencyBalance) | number : '1.8' || '-' }}</td>
-                        <td>{{ getUsdValue(currencyBalance) | number : '1.2' || '-' }}</td>
+                        <td>{{ currencyBalance.btcValue | number : '1.8' || '-' }}</td>
+                        <td>{{ currencyBalance.usdValue | number : '1.2' || '-' }}</td>
                     </tr>
                     <tr>
                         <td></td>
