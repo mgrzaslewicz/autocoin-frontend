@@ -11,6 +11,8 @@ import {CurrencyPrice, PriceService} from '../../services/price.service';
 export interface CurrencyBalanceDto {
     currencyCode: string;
     available: number;
+    frozen: number;
+    total: number;
 }
 
 export interface ExchangeBalanceDto {
@@ -104,7 +106,7 @@ export class WalletsComponent implements OnInit {
         if (this.currencyPairPrices.has(currencyPair)) {
             const currencyPrice = this.currencyPairPrices.get(currencyPair);
             if (currencyPrice !== 0) {
-                return (currencyBalance.available / currencyPrice);
+                return (currencyBalance.total / currencyPrice);
             } else {
                 return 0.0;
             }

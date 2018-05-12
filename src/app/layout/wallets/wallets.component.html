@@ -27,7 +27,9 @@
                     <thead>
                     <tr>
                         <th>Currency</th>
-                        <th>Available amount</th>
+                        <th>Available</th>
+                        <th>Frozen</th>
+                        <th>Total</th>
                         <th>BTC value</th>
                         <th>USD value</th>
                     </tr>
@@ -36,10 +38,14 @@
                     <tr *ngFor="let currencyBalance of exchangeBalance.currencyBalances">
                         <td>{{ currencyBalance.currencyCode }}</td>
                         <td>{{ currencyBalance.available }}</td>
+                        <td>{{ currencyBalance.frozen }}</td>
+                        <td>{{ currencyBalance.total }}</td>
                         <td>{{ getBtcValue(currencyBalance) | number : '1.8' || '-' }}</td>
                         <td>{{ getUsdValue(currencyBalance) | number : '1.2' || '-' }}</td>
                     </tr>
                     <tr>
+                        <td></td>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td class="font-weight-bold">
