@@ -1,41 +1,41 @@
 <app-page-header [heading]="'Clients'" [icon]="'fa-users'"></app-page-header>
-  
+
 <div class="card mb-3">
-  <div class="card-header">Clients management</div>
-  <table class="card-body table">
-      <thead>
+    <div class="card-header">Clients management</div>
+    <table class="card-body table">
+        <thead>
         <tr>
             <th>Name</th>
             <th>Exhange keys</th>
             <th>Actions</th>
         </tr>
-      </thead>
-      <tbody>
+        </thead>
+        <tbody>
         <tr *ngFor="let client of clients">
             <td>
-              {{ client.name }}
+                {{ client.name }}
             </td>
             <td>
-              <p *ngFor="let exchangeName of getExchangesNamesOfClient(client)">
-                  <span class="badge" 
-                    [class.badge-light]="! isClientExchangeSelected(client, exchangeName)" 
-                    [class.badge-warning]="isClientExchangeSelected(client, exchangeName)" 
-                    (click)="onSelectClientExchangeName(client, exchangeName)">
+                  <span class="badge" *ngFor="let exchangeName of getExchangesNamesOfClient(client)"
+                        [class.badge-light]="!isClientExchangeSelected(client, exchangeName)"
+                        [class.badge-warning]="isClientExchangeSelected(client, exchangeName)"
+                        (click)="onSelectClientExchangeName(client, exchangeName)">
                     {{ exchangeName }}
                   </span>
-              </p>
             </td>
             <td>
-              <button [routerLink]="['/clients/edit', client.id]" class="btn btn-success btn-sm">Edit</button>
-              <button (click)="clientDelete.destroy(client)" class="btn btn-danger btn-sm">Delete</button>
+                <button [routerLink]="['/clients/edit', client.id]" class="btn btn-success btn-sm">Edit</button>
+                <button (click)="clientDelete.destroy(client)" class="btn btn-danger btn-sm">Delete</button>
             </td>
         </tr>
-        
-      </tbody>
-  </table>
+
+        </tbody>
+    </table>
 </div>
 
-<button class="btn btn-success" [disabled]="selectedClientsExchanges.length == 0" (click)="makeOrder.generateFor(selectedClientsExchanges)">Make order</button>
+<button class="btn btn-success" [disabled]="selectedClientsExchanges.length == 0"
+        (click)="makeOrder.generateFor(selectedClientsExchanges)">Make order
+</button>
 <a routerLink="/clients/create" class="btn btn-info">Create client</a>
 
 <app-client-delete #clientDelete (refresh)="loadData()"></app-client-delete>
