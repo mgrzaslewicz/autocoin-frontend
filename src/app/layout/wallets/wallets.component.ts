@@ -47,6 +47,8 @@ export class WalletsComponent implements OnInit {
     pendingPriceRefresh: boolean = false;
     private clientsSubscription: Subscription;
     private currencyPairPrices: Map<string, number> = new Map();
+    private btcUsd = 'BTC-USD';
+    private btcUsdPriceKey = 'price-BTC-USD';
 
     constructor(
         private clientsService: ClientsService,
@@ -126,11 +128,11 @@ export class WalletsComponent implements OnInit {
 
     getUsdValue(currencyBalance: CurrencyBalanceDto): number {
         const currencyBtcValue = this.getBtcValue(currencyBalance);
-        const usdBtcPair = `USD-BTC`;
-        if (this.currencyPairPrices.has(usdBtcPair) && currencyBtcValue !== null) {
-            const usdBtcPrice = this.currencyPairPrices.get(usdBtcPair);
+        if (this.currencyPairPrices.has(this.btcUsd) && currencyBtcValue !== null) {
+            const usdBtcPrice = this.currencyPairPrices.get(this.btcUsd);
             return currencyBtcValue * usdBtcPrice;
         } else {
+            console.log(`No USD-BTC price when calculating value of currency ${currencyBalance.currencyCode}`);
             return null;
         }
     }
@@ -145,9 +147,8 @@ export class WalletsComponent implements OnInit {
 
     getTotalExchangeUsdValue(exchangeBalance: ExchangeBalanceDto): number {
         const totalBtcValue = this.getTotalExchangeBtcValue(exchangeBalance);
-        const usdBtcPair = `USD-BTC`;
-        if (this.currencyPairPrices.has(usdBtcPair) && totalBtcValue !== null) {
-            const usdBtcPrice = this.currencyPairPrices.get(usdBtcPair);
+        if (this.currencyPairPrices.has(this.btcUsd) && totalBtcValue !== null) {
+            const usdBtcPrice = this.currencyPairPrices.get(this.btcUsd);
             return totalBtcValue * usdBtcPrice;
         } else {
             return null;
@@ -156,17 +157,17 @@ export class WalletsComponent implements OnInit {
 
     getTotalClientBtcValue(client: Client): number {
         let totalBtc = 0.0;
-        this.exchangeBalancesForClient(client).forEach(exchange => {
-            totalBtc += this.getTotalExchangeBtcValue(exchange);
-        });
+        _.filter(this.exchangeBalancesForClient(client), exchange => exchange != null)
+            .forEach(exchange => {
+                totalBtc += this.getTotalExchangeBtcValue(exchange);
+            });
         return totalBtc;
     }
 
     getTotalClientUsdValue(client: Client): number {
         const totalBtcValue = this.getTotalClientBtcValue(client);
-        const usdBtcPair = `USD-BTC`;
-        if (this.currencyPairPrices.has(usdBtcPair) && totalBtcValue !== null) {
-            const usdBtcPrice = this.currencyPairPrices.get(usdBtcPair);
+        if (this.currencyPairPrices.has(this.btcUsd) && totalBtcValue !== null) {
+            const usdBtcPrice = this.currencyPairPrices.get(this.btcUsd);
             return totalBtcValue * usdBtcPrice;
         } else {
             return null;
@@ -193,8 +194,8 @@ export class WalletsComponent implements OnInit {
         this.currencyPairPrices.clear();
         const distinctCurrencyCodesString = localStorage.getItem('wallet-distinct-currency-codes');
         if (distinctCurrencyCodesString != null) {
-            const btcUsdPrice = Number(localStorage.getItem('price-BTC-USD'));
-            this.currencyPairPrices['BTC-USD'] = btcUsdPrice;
+            const btcUsdPrice = Number(localStorage.getItem(this.btcUsdPriceKey));
+            this.currencyPairPrices.set(this.btcUsd, btcUsdPrice);
             const distinctCurrencyCodes: string[] = JSON.parse(distinctCurrencyCodesString);
             console.log(`Found ${distinctCurrencyCodes.length} prices to restore`);
             distinctCurrencyCodes.forEach(currencyCode => {
@@ -245,9 +246,9 @@ export class WalletsComponent implements OnInit {
     private savePrice(currencyPrice: CurrencyPrice) {
         const currencyKey = `price-${currencyPrice.currencyCode}-BTC`;
         localStorage.setItem(currencyKey, currencyPrice.priceInBtc.toString());
-        localStorage.setItem('price-BTC-USD', currencyPrice.btcUsdPrice.toString());
+        localStorage.setItem(this.btcUsdPriceKey, currencyPrice.btcUsdPrice.toString());
         this.currencyPairPrices.set(`${currencyPrice.currencyCode}-BTC`, currencyPrice.priceInBtc);
-        this.currencyPairPrices.set('BTC-USD', currencyPrice.btcUsdPrice);
+        this.currencyPairPrices.set(this.btcUsd, currencyPrice.btcUsdPrice);
     }
 
     getSortedBalances(currencyBalances: CurrencyBalanceDto[]): CurrencyBalanceTableRow[] {
