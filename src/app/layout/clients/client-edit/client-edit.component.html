@@ -1,43 +1,48 @@
 <div>
-  <app-page-header [heading]="'Create client'" [icon]="'fa-user'" [parents]="[ { heading: 'Clients', link: '/clients', icon: 'users' } ]"></app-page-header>
+    <app-page-header [heading]="'Create client'" [icon]="'fa-user'"
+                     [parents]="[ { heading: 'Clients', link: '/clients', icon: 'users' } ]"></app-page-header>
 
-  <form (ngSubmit)="onSubmit(createForm)" *ngIf="client" #createForm="ngForm">
-      <div class="row">
-          <div class="col-md-6">
-              <fieldset class="form-group">
-                  <label>Name</label>
-                  <input class="form-control" [(ngModel)]="client.name" name="name" required>
-              </fieldset>
+    <form (ngSubmit)="onSubmit(createForm)" *ngIf="client" #createForm="ngForm">
+        <div class="row">
+            <div class="col-md-6">
+                <fieldset class="form-group">
+                    <label>Name</label>
+                    <input class="form-control" [(ngModel)]="client.name" name="name" required>
+                </fieldset>
 
-              <button type="submit" class="btn btn-primary" [disabled]="createForm.invalid || loading">Save</button>
-          </div>
-          <div class="col-md-6">
-              <ngb-accordion [closeOthers]="false">
-                  <ngb-panel *ngFor="let exchange of exchanges">
-                      <ng-template ngbPanelTitle>
-                        {{ exchange.name }}
-                        <span class="badge badge-info" *ngIf="isExchangeKeyFilled(exchange)">Filled</span>
-                      </ng-template>
-                      <ng-template ngbPanelContent>
+                <button type="submit" class="btn btn-primary" [disabled]="createForm.invalid || loading">Save</button>
+                <div class="alert alert-primary" role="alert">
+                    Some exchanges require enabling API key and confirming by email. Make sure keys you provide are
+                    enabled
+                </div>
+            </div>
+            <div class="col-md-6">
+                <ngb-accordion [closeOthers]="false">
+                    <ngb-panel *ngFor="let exchange of exchanges">
+                        <ng-template ngbPanelTitle>
+                            {{ exchange.name }}
+                            <span class="badge badge-info" *ngIf="isExchangeKeyFilled(exchange)">Filled</span>
+                        </ng-template>
+                        <ng-template ngbPanelContent>
 
-                        <div ngModelGroup="exchangesKeys">
+                            <div ngModelGroup="exchangesKeys">
 
-                            <fieldset class="form-group" [ngModelGroup]="exchange.id">
-                                <label>API Key</label>
-                                <input class="form-control" name="apiKey" ngModel>
-                            </fieldset>
+                                <fieldset class="form-group" [ngModelGroup]="exchange.id">
+                                    <label>API Key</label>
+                                    <input class="form-control" name="apiKey" ngModel>
+                                </fieldset>
 
-                            <fieldset class="form-group" [ngModelGroup]="exchange.id">
-                                <label>Secret Key</label>
-                                <input class="form-control" name="secretKey" ngModel>
-                            </fieldset>
+                                <fieldset class="form-group" [ngModelGroup]="exchange.id">
+                                    <label>Secret Key</label>
+                                    <input class="form-control" name="secretKey" ngModel>
+                                </fieldset>
 
-                        </div>
+                            </div>
 
-                      </ng-template>
-                  </ngb-panel>
-              </ngb-accordion>
-          </div>
-      </div>
-  </form>
+                        </ng-template>
+                    </ngb-panel>
+                </ngb-accordion>
+            </div>
+        </div>
+    </form>
 </div>
