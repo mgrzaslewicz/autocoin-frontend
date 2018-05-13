@@ -10,13 +10,13 @@
 
     <div class="modal-body">
       <div class="form-group">
-        <label>Clients</label>
+        <label>Users</label>
         <ul class="list-group">
           <li class="list-group-item" *ngFor="let clientExchange of selectedClientsExchanges">
             <span class="badge badge-info">
               {{ clientExchange.exchangeName }}
             </span>
-            of 
+            of
             {{ clientExchange.client.name }}
           </li>
         </ul>
@@ -75,7 +75,7 @@
   <div class="modal-body">
       <p>
         Do you want to make new order of
-        
+
         <span *ngIf="orderType == 'buy'">buying {{ entryCurrency }} for {{ walletPercentage }}% of {{ exitCurrency }}</span>
         <span *ngIf="orderType == 'sell'">selling {{ walletPercentage }}% {{ entryCurrency }} to {{ exitCurrency }}</span>
 

@@ -1,6 +1,6 @@
 <div>
-    <app-page-header [heading]="'Create client'" [icon]="'fa-user'"
-                     [parents]="[ { heading: 'Clients', link: '/clients', icon: 'users' } ]"></app-page-header>
+    <app-page-header [heading]="'Edit user'" [icon]="'fa-user'"
+                     [parents]="[ { heading: 'Users', link: '/clients', icon: 'users' } ]"></app-page-header>
 
     <form (ngSubmit)="onSubmit(createForm)" *ngIf="client" #createForm="ngForm">
         <div class="row">

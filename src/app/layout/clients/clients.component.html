@@ -1,7 +1,7 @@
-<app-page-header [heading]="'Clients'" [icon]="'fa-users'"></app-page-header>
+<app-page-header [heading]="'Users'" [icon]="'fa-users'"></app-page-header>
 
 <div class="card mb-3">
-    <div class="card-header">Clients management</div>
+    <div class="card-header">Users and exchange keys</div>
     <table class="card-body table">
         <thead>
         <tr>
@@ -36,7 +36,7 @@
 <button class="btn btn-success" [disabled]="selectedClientsExchanges.length == 0"
         (click)="makeOrder.generateFor(selectedClientsExchanges)">Make order
 </button>
-<a routerLink="/clients/create" class="btn btn-info">Create client</a>
+<a routerLink="/clients/create" class="btn btn-info">Add user</a>
 
 <app-client-delete #clientDelete (refresh)="loadData()"></app-client-delete>
 
