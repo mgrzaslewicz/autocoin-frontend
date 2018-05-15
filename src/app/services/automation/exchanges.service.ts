@@ -19,10 +19,9 @@ export class ExchangesService {
         ]).map(([exchanges, exchangesKeys]) => {
 
             exchangesKeys = _.pluck(exchangesKeys, 'exchangeId');
-
             return exchanges.filter((exchange: Exchange) => {
                 return exchangesKeys.indexOf(exchange.id) !== -1;
-            });
+            }).sort((a, b) => a.name.localeCompare(b.name));
         });
     }
 
