@@ -2,11 +2,14 @@
 
 <div class="card mb-3">
     <div class="card-header">Users and exchange keys</div>
+    <div *ngIf="!isLoading && clients.length == 0" class="alert alert-primary">
+        Start with adding your first user, that might be your name and then assign exchange keys
+    </div>
     <table class="card-body table">
         <thead>
         <tr>
             <th>Name</th>
-            <th>Exhange keys</th>
+            <th>Exchange keys</th>
             <th>Actions</th>
         </tr>
         </thead>

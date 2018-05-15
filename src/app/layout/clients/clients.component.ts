@@ -10,14 +10,11 @@ import {ToastService} from '../../services/toast.service';
     styleUrls: ['./clients.component.scss']
 })
 export class ClientsComponent implements OnInit {
-
-    public clients: Client[];
-
+    public clients: Client[] = [];
     public exchanges: Exchange[];
-
     public exchangesKeys: ExchangeKey[];
-
     public selectedClientsExchanges = [];
+    public isLoading = true;
 
     constructor(
         private clientsService: ClientsService,
@@ -40,9 +37,10 @@ export class ClientsComponent implements OnInit {
             this.clients = clients;
             this.exchanges = exchanges;
             this.exchangesKeys = exchangesKeys;
+            this.isLoading = false;
         }, error => {
             this.clients = [];
-
+            this.isLoading = false;
             this.toastService.danger('Sorry, something went wrong. Could not get clients.');
         });
     }
