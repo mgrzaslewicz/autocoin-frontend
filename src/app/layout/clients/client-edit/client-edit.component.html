@@ -15,6 +15,9 @@
                     Some exchanges require enabling API key and confirming by email. Make sure keys you provide are
                     enabled
                 </div>
+                <div class="alert alert-primary" role="alert">
+                    Keys should have following permissions: read balance, read user transactions, create/cancel buy and sell limit order, get open orders. Add keys without permission for withdrawing from exchange, autocoin does not need them
+                </div>
             </div>
             <div class="col-md-6">
                 <ngb-accordion [closeOthers]="false">
