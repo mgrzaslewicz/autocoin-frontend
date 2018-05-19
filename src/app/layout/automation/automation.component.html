@@ -4,26 +4,36 @@
     <div class="card-header">
         <div class="row justify-content-between align-items-center px-2">
             <span>{{ exchange.name }}</span>
-
-            <a [routerLink]="['/automation/make-strategy-execution', exchange.name]" class="btn btn-success">Add strategy</a>
+            <a [routerLink]="['/automation/make-strategy-execution', exchange.name]" class="btn btn-success">
+                Add strategy
+            </a>
         </div>
     </div>
-    <table class="card-body table table-hover">
+    <table *ngIf="getStrategiesExecutionsByExchangeName(exchange.name).length > 0"
+           class="card-body table table-hover">
         <thead>
         <tr>
-            <th>#</th>
-            <th></th>
+            <th>User</th>
+            <th>Strategy name</th>
+            <th>Currency pair</th>
+            <th>Parameters</th>
+            <th>Created orders</th>
         </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let strategyExecution of getStrategiesExecutionsByExchangeName(exchange.name)">
-                <td>{{ strategyExecution | json }}</td>
-                <td>
-                    <button (click)="deleteStrategyExecution(strategyExecution)" class="btn btn-danger">Delete strategy</button>
-                </td>
-            </tr>
-
-
+        <tr *ngFor="let strategyExecution of getStrategiesExecutionsByExchangeName(exchange.name)">
+            <td>{{ getClientNameById(strategyExecution.clientId) }}</td>
+            <td>{{ strategyExecution.strategyName }}</td>
+            <td>{{ strategyExecution.entryCurrencyCode }}/{{ strategyExecution.exitCurrencyCode }}</td>
+            <td >{{ strategyExecution.strategyParameters | json }}</td>
+            <td *ngIf="strategyExecution.orders.length > 0">{{ strategyExecution.orders | json }}</td>
+            <td *ngIf="strategyExecution.orders.length == 0">-</td>
+            <td>
+                <button (click)="deleteStrategyExecution(strategyExecution)" class="btn btn-danger">
+                    Delete strategy
+                </button>
+            </td>
+        </tr>
         </tbody>
     </table>
 </div>

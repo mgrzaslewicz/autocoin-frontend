@@ -1,5 +1,9 @@
 <app-page-header [heading]="'Add strategy'" [icon]="'fa-magic'"></app-page-header>
-
+<div class="badge badge-primary">
+    You can find description of strategies here:
+    <a class="badge badge-primary" href="http://bit.ly/2LeSq1b" target="_blank">en</a> |
+    <a class="badge badge-primary" href="http://bit.ly/2rWp6nh" target="_blank">pl</a>
+</div>
 <form #makeOrderForm="ngForm">
 
     <div class="row">
@@ -10,7 +14,7 @@
                 <label>Exchange Name</label>
 
                 <div class="form-control">
-                <strong>{{ exchangeName }}</strong>
+                    <strong>{{ exchangeName }}</strong>
                 </div>
             </div>
 
@@ -24,10 +28,12 @@
 
             <div class="form-group">
                 <label for="currency-pair-typeahead">Exchange currency pair</label>
-                <input name="exchangePair" id="currency-pair-typeahead" type="text" class="form-control exchange-pair-input"
-                [class.is-invalid]="makeOrderForm.controls.exchangePair && makeOrderForm.controls.exchangePair.invalid && makeOrderForm.controls.exchangePair.touched"
-                required validateCurrencyPairSymbol
-                [(ngModel)]="exchangePair" [ngbTypeahead]="searchExchangePair" (input)="$event.target.value = $event.target.value.toUpperCase()">
+                <input name="exchangePair" id="currency-pair-typeahead" type="text"
+                       class="form-control exchange-pair-input"
+                       [class.is-invalid]="makeOrderForm.controls.exchangePair && makeOrderForm.controls.exchangePair.invalid && makeOrderForm.controls.exchangePair.touched"
+                       required validateCurrencyPairSymbol
+                       [(ngModel)]="exchangePair" [ngbTypeahead]="searchExchangePair"
+                       (input)="$event.target.value = $event.target.value.toUpperCase()">
                 <div class="invalid-feedback">Provide valid exchange pair</div>
             </div>
 
@@ -36,7 +42,9 @@
                     <div class="form-group">
                         <label for="exitCurrencyPercentageForBuying">Exit Currency Percentage For Buying</label>
                         <div class="input-group">
-                            <input name="exitCurrencyPercentageForBuying" type="number" class="form-control" min="1" max="100" [value]="exitCurrencyFractionForBuying * 100" (input)="onExitCurrencyPercentageForBuying($event.target)">
+                            <input name="exitCurrencyPercentageForBuying" type="number" class="form-control" min="1"
+                                   max="100" [value]="exitCurrencyFractionForBuying * 100"
+                                   (input)="onExitCurrencyPercentageForBuying($event.target)">
                             <div class="input-group-append">
                                 <span class="input-group-text">%</span>
                             </div>
@@ -47,7 +55,9 @@
                     <div class="form-group">
                         <label for="maxExitCurrencyPercentForBuying">Max Exit Currency Percent For Buying</label>
                         <div class="input-group">
-                            <input name="maxExitCurrencyPercentForBuying" type="number" class="form-control" min="1" max="100" [value]="maxExitCurrencyPercentForBuying" (input)="onMaxExitCurrencyPercentForBuying($event.target)">
+                            <input name="maxExitCurrencyPercentForBuying" type="number" class="form-control" min="1"
+                                   max="100" [value]="maxExitCurrencyPercentForBuying"
+                                   (input)="onMaxExitCurrencyPercentForBuying($event.target)">
                             <div class="input-group-append">
                                 <span class="input-group-text">%</span>
                             </div>
@@ -56,7 +66,8 @@
                 </div>
             </div>
 
-            <app-buy-lower-and-lower-specific-parameters (speciticParametersChanged)="onSpecificParameters($event)" *ngIf="selectedStrategy == 'BuyLowerAndLower'"></app-buy-lower-and-lower-specific-parameters>
+            <app-buy-lower-and-lower-specific-parameters (speciticParametersChanged)="onSpecificParameters($event)"
+                                                         *ngIf="selectedStrategy == 'BuyLowerAndLower'"></app-buy-lower-and-lower-specific-parameters>
 
         </div>
         <div class="col-md-6">
@@ -66,7 +77,8 @@
 
                 <div class="checkbox" *ngFor="let selectedClient of selectedClients">
                     <label>
-                        <input type="checkbox" name="selectedClients" [value]="true" [(ngModel)]="selectedClient.checked"> {{ selectedClient.client.name }}
+                        <input type="checkbox" name="selectedClients" [value]="true"
+                               [(ngModel)]="selectedClient.checked"> {{ selectedClient.client.name }}
                     </label>
                 </div>
             </div>
@@ -76,8 +88,10 @@
     </div>
 
 
-
-  <button type="submit" class="btn btn-primary" (click)="showConfirmModal()" [disabled]="! canMakeStrategyExecution()">Add strategy</button>
+    <button type="submit" class="btn btn-primary" (click)="showConfirmModal()"
+            [disabled]="!canMakeStrategyExecution() || true">
+        Add strategy (available soon)
+    </button>
 
 </form>
 
@@ -90,11 +104,11 @@
     </div>
     <div class="modal-body">
         <p>
-          Do you want to make new strategy execution?
+            Do you want to make new strategy execution?
         </p>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-danger" (click)="c('delete')">Yes. I am sure.</button>
         <button type="button" class="btn btn-secondary" (click)="d('Dismiss')">Dismiss</button>
     </div>
-  </ng-template>
+</ng-template>
