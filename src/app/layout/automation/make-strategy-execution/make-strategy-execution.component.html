@@ -4,7 +4,25 @@
     <a class="badge badge-primary" href="http://bit.ly/2LeSq1b" target="_blank">en</a> |
     <a class="badge badge-primary" href="http://bit.ly/2rWp6nh" target="_blank">pl</a>
 </div>
-<form #makeOrderForm="ngForm">
+<div *ngIf="creatingStrategiesInProgress || finishedCreatingStrategies">
+    <div *ngFor="let strategyCreatedFor of strategiesCreatedFor" class="alert alert-success">
+        Finished creating strategy for {{ strategyCreatedFor }}
+    </div>
+    <div *ngFor="let strategyNotCreatedFor of strategiesNotCreatedFor" class="alert alert-danger">
+        Failed creating strategy for {{ strategyNotCreatedFor }}
+    </div>
+    <div *ngIf="!finishedCreatingStrategies" class="alert alert-warning">
+        <i class="fa fa-refresh is-pending"></i>
+        Creating strategies in progress
+    </div>
+    <div *ngIf="finishedCreatingStrategies">
+        <a [routerLink]="'/automation'" class="btn btn-success">
+            Go back
+        </a>
+    </div>
+
+</div>
+<form #makeOrderForm="ngForm" *ngIf="!creatingStrategiesInProgress && !finishedCreatingStrategies">
 
     <div class="row">
         <div class="col-md-6">
@@ -42,7 +60,7 @@
                     <div class="form-group">
                         <label for="exitCurrencyPercentageForBuying">Exit Currency Percentage For Buying</label>
                         <div class="input-group">
-                            <input name="exitCurrencyPercentageForBuying" type="number" class="form-control" min="1"
+                            <input name="exitCurrencyPercentageForBuying" type="number" class="form-control" min="0.1"
                                    max="100" [value]="exitCurrencyFractionForBuying * 100"
                                    (input)="onExitCurrencyPercentageForBuying($event.target)">
                             <div class="input-group-append">
@@ -66,8 +84,9 @@
                 </div>
             </div>
 
-            <app-buy-lower-and-lower-specific-parameters *ngIf="selectedStrategy == 'BuyLowerAndLower'">
-                (speciticParametersChanged)="onSpecificParameters($event)"
+            <app-buy-lower-and-lower-specific-parameters
+                *ngIf="selectedStrategy == 'BuyLowerAndLower'"
+                (specificParametersChanged)="onSpecificParameters($event)">
             </app-buy-lower-and-lower-specific-parameters>
 
         </div>
@@ -93,7 +112,7 @@
             [disabled]="!canMakeStrategyExecution()">
         Add strategy (available soon)
     </button>
-    <a [routerLink]="'/automation'" class="btn btn-danger">
+    <a [routerLink]="'/automation'" class="btn btn-secondary">
         Cancel
     </a>
 
@@ -112,7 +131,7 @@
         </p>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-danger" (click)="c('delete')">Yes. I am sure.</button>
+        <button type="button" class="btn btn-danger" (click)="c('delete')">Yes. I am sure</button>
         <button type="button" class="btn btn-secondary" (click)="d('Dismiss')">Dismiss</button>
     </div>
 </ng-template>

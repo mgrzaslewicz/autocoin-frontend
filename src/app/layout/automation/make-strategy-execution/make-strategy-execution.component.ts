@@ -20,22 +20,18 @@ import {FEATURE_CREATE_STRATEGY, FeatureToggle, FeatureToggleToken} from '../../
 export class MakeStrategyExecutionComponent implements OnInit {
 
     public exchangeName;
-
     public allExchangePairs: CurrencyPair[];
-
     public exchangePair: string;
-
     public selectedClients = [];
-
     public strategies: Strategy[];
-
     public selectedStrategy = 'BuyLowerAndLower';
-
-    public exitCurrencyFractionForBuying: number = 0.2;
-
-    public maxExitCurrencyPercentForBuying: number = 50;
-
-    public strategySpecificParameters: Map<string, number>;
+    public exitCurrencyFractionForBuying = 0.2;
+    public maxExitCurrencyPercentForBuying = 50;
+    public strategySpecificParameters: any;
+    public creatingStrategiesInProgress = false;
+    public finishedCreatingStrategies = false;
+    public strategiesNotCreatedFor: string[] = [];
+    public strategiesCreatedFor: string[] = [];
 
     @ViewChild('confirmContent')
     confirmContentModal;
@@ -59,6 +55,10 @@ export class MakeStrategyExecutionComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.creatingStrategiesInProgress = false;
+        this.finishedCreatingStrategies = false;
+        this.strategiesNotCreatedFor = [];
+        this.strategiesCreatedFor = [];
         this.route.params.subscribe(params => {
             this.exchangeName = params.exchangeName;
         });
@@ -82,7 +82,7 @@ export class MakeStrategyExecutionComponent implements OnInit {
 
     private loadClients() {
         this.clientsService.getClients().subscribe(clients => {
-            for (let client of clients) {
+            for (const client of clients) {
                 this.selectedClients.push({client: client, checked: false});
             }
         });
@@ -94,7 +94,7 @@ export class MakeStrategyExecutionComponent implements OnInit {
 
     showConfirmModal() {
         this.modalService.open(this.confirmContentModal, {windowClass: 'confirm-order-modal'}).result.then(result => {
-            this.sendRequest();
+            this.createStrategy();
         }, () => {
         });
     }
@@ -113,33 +113,29 @@ export class MakeStrategyExecutionComponent implements OnInit {
 
     onExitCurrencyPercentageForBuying(control) {
         if (control.value) {
-            control.value = Math.min(Math.max(control.value, 1), 100);
+            control.value = Math.min(Math.max(control.value, 0.1), 100);
             this.exitCurrencyFractionForBuying = control.value / 100;
         }
     }
 
     onMaxExitCurrencyPercentForBuying(control) {
         if (control.value) {
-            control.value = Math.min(Math.max(control.value, 1), 100);
+            control.value = Math.min(Math.max(control.value, 0.1), 100);
             this.maxExitCurrencyPercentForBuying = Number(control.value);
         }
     }
 
     onSpecificParameters(parameters) {
-        this.strategySpecificParameters = new Map<string, number>();
-
-        for (let parameterName in parameters) {
-            let parameterValue = parameters[parameterName];
-
-            this.strategySpecificParameters.set(parameterName, parameterValue);
-        }
+        this.strategySpecificParameters = parameters;
     }
 
-    sendRequest() {
-        for (let selectedClient of this.selectedClients) {
-            let client = selectedClient.client;
+    createStrategy() {
+        this.creatingStrategiesInProgress = true;
+        let howManyStrategiesToCreateLeft = this.selectedClients.length;
+        for (const selectedClient of this.selectedClients) {
+            const client = selectedClient.client;
 
-            let parameters = new StrategyParametersRequest;
+            const parameters = new StrategyParametersRequest();
             parameters.clientId = client.id;
             parameters.exchangeName = this.exchangeName;
             parameters.strategyName = this.selectedStrategy;
@@ -149,8 +145,17 @@ export class MakeStrategyExecutionComponent implements OnInit {
             parameters.maxExitCurrencyPercentForBuying = this.maxExitCurrencyPercentForBuying;
             parameters.strategySpecificParameters = this.strategySpecificParameters;
 
-            this.strategiesExecutionsService.postStrategyExecution(parameters).subscribe(() => {
-                this.toastService.success(`Strategy execution stored for ${client.name}`);
+            this.strategiesExecutionsService.createStrategyExecution(parameters).subscribe(() => {
+                howManyStrategiesToCreateLeft--;
+                this.strategiesCreatedFor.push(client.name);
+                this.creatingStrategiesInProgress = howManyStrategiesToCreateLeft > 0;
+                this.finishedCreatingStrategies = howManyStrategiesToCreateLeft === 0;
+            }, error => {
+                console.log(error);
+                howManyStrategiesToCreateLeft--;
+                this.strategiesNotCreatedFor.push(client.name);
+                this.creatingStrategiesInProgress = howManyStrategiesToCreateLeft > 0;
+                this.finishedCreatingStrategies = howManyStrategiesToCreateLeft === 0;
             });
         }
     }

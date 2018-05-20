@@ -7,9 +7,9 @@ import * as _ from 'underscore';
 @Injectable()
 export class StrategiesExecutionsService {
 
-  private stragetiesApiUrl = 'https://strategies-api.autocoin-trader.com';
-  private getStrategiesUrl = `${this.stragetiesApiUrl}/strategies`;
-  private stragetyUrl = `${this.stragetiesApiUrl}/strategy`;
+  private strategiesApiUrl = 'https://strategies-api.autocoin-trader.com';
+  private getStrategiesUrl = `${this.strategiesApiUrl}/strategies`;
+  private strategyUrl = `${this.strategiesApiUrl}/strategy`;
 
   constructor(private api: ApiService) { }
 
@@ -17,19 +17,12 @@ export class StrategiesExecutionsService {
     return this.api.get(this.getStrategiesUrl);
   }
 
-  public postStrategyExecution(parameters: StrategyParametersRequestDto) {
-    let postParameters = _.clone<any>(parameters);
-
-    postParameters.strategySpecificParameters = {};
-    for (let [k, v] of Array.from(parameters.strategySpecificParameters)) {
-      postParameters.strategySpecificParameters[k] = v;
-    }
-
-    return this.api.post(this.stragetyUrl, postParameters);
+  public createStrategyExecution(parameters: StrategyParametersRequestDto): Observable<StrategyExecutionResponseDto> {
+    return this.api.post(this.strategyUrl, parameters);
   }
 
   public deleteStrategyExecution(strategyExecutionId: string) {
-    return this.api.delete(`${this.stragetyUrl}/${strategyExecutionId}`);
+    return this.api.delete(`${this.strategyUrl}/${strategyExecutionId}`);
   }
 
 }
