@@ -31,7 +31,7 @@ export class BuyLowerAndLowerSpecificParametersComponent implements OnInit {
 
   onDropToBuyNextRelativePercent(control) {
     if (control.value) {
-      control.value = Math.min(Math.max(control.value, 1), 100);
+      control.value = Math.min(Math.max(control.value, 0.1), 50);
       this.strategySpecificParameters.dropToBuyNextRelativePercent = control.value;
       this.emitInput();
     }

@@ -27,7 +27,7 @@
             </div>
 
             <div class="form-group">
-                <label for="currency-pair-typeahead">Exchange currency pair</label>
+                <label for="currency-pair-typeahead">Exchange currency pair (eg XRP/BTC if you want to buy XRP)</label>
                 <input name="exchangePair" id="currency-pair-typeahead" type="text"
                        class="form-control exchange-pair-input"
                        [class.is-invalid]="makeOrderForm.controls.exchangePair && makeOrderForm.controls.exchangePair.invalid && makeOrderForm.controls.exchangePair.touched"
@@ -55,7 +55,7 @@
                     <div class="form-group">
                         <label for="maxExitCurrencyPercentForBuying">Max Exit Currency Percent For Buying</label>
                         <div class="input-group">
-                            <input name="maxExitCurrencyPercentForBuying" type="number" class="form-control" min="1"
+                            <input name="maxExitCurrencyPercentForBuying" type="number" class="form-control" min="0.1"
                                    max="100" [value]="maxExitCurrencyPercentForBuying"
                                    (input)="onMaxExitCurrencyPercentForBuying($event.target)">
                             <div class="input-group-append">
@@ -93,6 +93,9 @@
             [disabled]="!canMakeStrategyExecution()">
         Add strategy (available soon)
     </button>
+    <a [routerLink]="'/automation'" class="btn btn-danger">
+        Cancel
+    </a>
 
 </form>
 
