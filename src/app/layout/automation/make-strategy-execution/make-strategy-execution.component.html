@@ -66,8 +66,9 @@
                 </div>
             </div>
 
-            <app-buy-lower-and-lower-specific-parameters (speciticParametersChanged)="onSpecificParameters($event)"
-                                                         *ngIf="selectedStrategy == 'BuyLowerAndLower'"></app-buy-lower-and-lower-specific-parameters>
+            <app-buy-lower-and-lower-specific-parameters *ngIf="selectedStrategy == 'BuyLowerAndLower'">
+                (speciticParametersChanged)="onSpecificParameters($event)"
+            </app-buy-lower-and-lower-specific-parameters>
 
         </div>
         <div class="col-md-6">
@@ -89,7 +90,7 @@
 
 
     <button type="submit" class="btn btn-primary" (click)="showConfirmModal()"
-            [disabled]="!canMakeStrategyExecution() || true">
+            [disabled]="!canMakeStrategyExecution()">
         Add strategy (available soon)
     </button>
 
