@@ -17,6 +17,7 @@ export class AutomationComponent implements OnInit {
     exchanges: Exchange[] = [];
     clients: Client[] = [];
     private strategiesExecutions: StrategyExecutionResponseDto[];
+    public supportedExchanges = ['bittrex'];
 
     constructor(
         private toastService: ToastService,
@@ -28,6 +29,10 @@ export class AutomationComponent implements OnInit {
 
     ngOnInit() {
         this.loadData();
+    }
+
+    public isSupported(exchangeName: string): boolean {
+        return this.supportedExchanges.find(it => it === exchangeName) != null;
     }
 
     loadData() {

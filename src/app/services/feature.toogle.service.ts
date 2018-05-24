@@ -10,7 +10,25 @@ export const FeatureToggleToken = new InjectionToken('FeatureToggle');
 
 @Injectable()
 export class LocalStorageFeatureToggle implements FeatureToggle {
+
     isActive(toggleName: string): boolean {
-        return localStorage.getItem(`toggle.${toggleName}`) === 'true';
+        const localStorageToggle = localStorage.getItem(`toggle.${toggleName}`);
+        if (localStorageToggle != null) {
+            return localStorageToggle === 'true';
+        } else {
+            return this.isActiveByDefault(toggleName);
+        }
     }
+
+    private isActiveByDefault(toggleName: string) {
+        switch (toggleName) {
+            case FEATURE_CREATE_STRATEGY: {
+                return true;
+            }
+            default: {
+                return false;
+            }
+        }
+    }
+
 }

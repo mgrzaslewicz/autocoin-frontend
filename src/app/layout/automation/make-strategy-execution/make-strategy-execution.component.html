@@ -1,5 +1,5 @@
 <app-page-header [heading]="'Add strategy'" [icon]="'fa-magic'"></app-page-header>
-<div class="badge badge-primary">
+<div class="alert alert-primary">
     You can find description of strategies here:
     <a class="badge badge-primary" href="http://bit.ly/2LeSq1b" target="_blank">en</a> |
     <a class="badge badge-primary" href="http://bit.ly/2rWp6nh" target="_blank">pl</a>
@@ -110,7 +110,7 @@
 
     <button type="submit" class="btn btn-primary" (click)="showConfirmModal()"
             [disabled]="!canMakeStrategyExecution()">
-        Add strategy (available soon)
+        Add strategy
     </button>
     <a [routerLink]="'/automation'" class="btn btn-secondary">
         Cancel
