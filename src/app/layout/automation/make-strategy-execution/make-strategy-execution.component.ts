@@ -85,6 +85,9 @@ export class MakeStrategyExecutionComponent implements OnInit {
             for (const client of clients) {
                 this.selectedClients.push({client: client, checked: false});
             }
+            if (clients.length === 1) {
+                this.selectedClients[0].checked = true;
+            }
         });
     }
 
