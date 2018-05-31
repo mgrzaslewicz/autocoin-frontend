@@ -31,6 +31,7 @@ interface CurrencyBalanceTableRow {
     available: number;
     frozen: number;
     total: number;
+    btcPrice: number;
     btcValue: number;
     usdValue: number;
 }
@@ -110,6 +111,16 @@ export class WalletsComponent implements OnInit {
 
     ngOnDestroy() {
         this.clientsSubscription.unsubscribe();
+    }
+
+    getBtcPrice(currencyBalance: CurrencyBalanceDto): number {
+        const currencyPair = `${currencyBalance.currencyCode}-BTC`;
+        if (this.currencyPairPrices.has(currencyPair)) {
+            const currencyPrice = this.currencyPairPrices.get(currencyPair);
+            return 1 / currencyPrice;
+        } else {
+            return null;
+        }
     }
 
     getBtcValue(currencyBalance: CurrencyBalanceDto): number {
@@ -263,6 +274,7 @@ export class WalletsComponent implements OnInit {
             available: currencyBalance.available,
             frozen: currencyBalance.frozen,
             total: currencyBalance.total,
+            btcPrice: this.getBtcPrice(currencyBalance),
             btcValue: this.getBtcValue(currencyBalance),
             usdValue: this.getUsdValue(currencyBalance)
         };

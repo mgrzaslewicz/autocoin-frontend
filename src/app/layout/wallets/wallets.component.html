@@ -34,6 +34,7 @@
                         <th>Available</th>
                         <th>Frozen</th>
                         <th>Total</th>
+                        <th>BTC Price</th>
                         <th>BTC value <i class="fa fa-sort-amount-desc" aria-hidden="true"></i></th>
                         <th>USD value</th>
                     </tr>
@@ -43,11 +44,13 @@
                         <td class="sensitive-data">{{ currencyBalance.currencyCode }}</td>
                         <td class="sensitive-data">{{ currencyBalance.available }}</td>
                         <td class="sensitive-data">{{ currencyBalance.frozen }}</td>
-                        <td class="sensitive-data">{{ currencyBalance.total }}</td>
+                        <td class="sensitive-data">{{ currencyBalance.total | number : '1.8-8' }}</td>
+                        <td class="sensitive-data">{{ currencyBalance.btcPrice | number : '1.8-8' }}</td>
                         <td class="sensitive-data">{{ currencyBalance.btcValue | number : '1.8' || '-' }}</td>
                         <td class="sensitive-data">{{ currencyBalance.usdValue | number : '1.2' || '-' }}</td>
                     </tr>
                     <tr>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
