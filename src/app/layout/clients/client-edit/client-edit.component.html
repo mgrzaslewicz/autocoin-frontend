@@ -36,6 +36,11 @@
 
                             <div ngModelGroup="exchangesKeys">
 
+                                <fieldset *ngIf="exchange.name === 'bitstamp'" class="form-group" [ngModelGroup]="exchange.id">
+                                    <label>User name</label>
+                                    <input class="form-control" name="userName" ngModel>
+                                </fieldset>
+
                                 <fieldset class="form-group" [ngModelGroup]="exchange.id">
                                     <label>API Key</label>
                                     <input class="form-control" name="apiKey" ngModel>

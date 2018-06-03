@@ -47,23 +47,21 @@ export class ClientEditComponent implements OnInit {
         });
     }
 
-    isExchangeKeyFilled(exchange) {
+    isExchangeKeyFilled(exchange: Exchange) {
         return _(this.exchangesKeys).find({exchangeId: exchange.id});
     }
 
     onSubmit(createForm) {
         this.loading = true;
 
-        let subscriptions = [
-            this.updateClientName()
-        ];
+        const subscriptions = [this.updateClientName()];
 
-        let exchangesKeys = createForm.value.exchangesKeys;
-        for (let exchangeId in exchangesKeys) {
-            let values = exchangesKeys[exchangeId];
-
-            if (values.apiKey && values.secretKey) {
-                let subscription = this.clientsService.updateClientExchangesKeys(this.client.id, exchangeId, values);
+        const exchangesKeys = createForm.value.exchangesKeys;
+        for (const exchangeId in exchangesKeys) {
+            const formKeys = exchangesKeys[exchangeId];
+            const requestData = this.getRequestData(exchangeId, formKeys);
+            if (requestData != null) {
+                const subscription = this.clientsService.updateClientExchangesKeys(this.client.id, exchangeId, requestData);
                 subscriptions.push(subscription);
             }
         }
@@ -75,6 +73,29 @@ export class ClientEditComponent implements OnInit {
             this.toastService.danger(error.message);
             this.loading = false;
         });
+    }
+
+    private getRequestData(exchangeId: string, formKeys): any {
+        const areKeysFilled = formKeys.apiKey && formKeys.secretKey;
+        let formData = null;
+        if (areKeysFilled) {
+            if (this.exchangeIdToExchangeName(exchangeId) === 'bitstamp' && formKeys.userName) {
+                formData = {
+                    apiKey: formKeys.userName + '$$$' + formKeys.apiKey,
+                    secretKey: formKeys.secretKey
+                };
+            } else {
+                formData = {
+                    apiKey: formKeys.apiKey,
+                    secretKey: formKeys.secretKey
+                };
+            }
+        }
+        return formData;
+    }
+
+    private exchangeIdToExchangeName(exchangeId: string): string {
+        return this.exchanges.find(exchange => exchange.id ===  exchangeId).name;
     }
 
     private updateClientName() {
