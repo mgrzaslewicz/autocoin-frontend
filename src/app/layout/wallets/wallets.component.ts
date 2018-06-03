@@ -99,8 +99,10 @@ export class WalletsComponent implements OnInit {
         this.pending = true;
         this.exchangeAccountService.getAccountBalances(client.id).subscribe(
             accountBalances => {
+                const accountBalancesSortedByExchangeAZ = accountBalances.exchangeBalances
+                    .sort((a, b) => a.exchangeName.localeCompare(b.exchangeName));
                 localStorage.setItem('client-portfolio-refresh-time-' + client.id, new Date().getTime().toString());
-                localStorage.setItem('client-portfolio-balances-' + client.id, JSON.stringify(accountBalances.exchangeBalances));
+                localStorage.setItem('client-portfolio-balances-' + client.id, JSON.stringify(accountBalancesSortedByExchangeAZ));
                 this.pending = false;
             }, error => {
                 this.pending = false;
