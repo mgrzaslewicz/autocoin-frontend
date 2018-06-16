@@ -17,7 +17,7 @@ export class AutomationComponent implements OnInit {
     exchanges: Exchange[] = [];
     clients: Client[] = [];
     private strategiesExecutions: StrategyExecutionResponseDto[];
-    public supportedExchanges = ['bittrex'];
+    public supportedExchanges = ['bittrex', 'kucoin'];
 
     constructor(
         private toastService: ToastService,
