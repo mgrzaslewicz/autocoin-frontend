@@ -29,7 +29,7 @@
         <tr *ngFor="let strategyExecution of getStrategiesExecutionsByExchangeName(exchange.name)">
             <td>{{ getClientNameById(strategyExecution.clientId) }}</td>
             <td>{{ strategyExecution.strategyName }}</td>
-            <td>{{ strategyExecution.entryCurrencyCode }}/{{ strategyExecution.exitCurrencyCode }}</td>
+            <td>{{ strategyExecution.baseCurrencyCode }}/{{ strategyExecution.counterCurrencyCode }}</td>
             <td >{{ strategyExecution.strategyParameters | json }}</td>
             <td *ngIf="strategyExecution.orders.length > 0">{{ strategyExecution.orders | json }}</td>
             <td *ngIf="strategyExecution.orders.length == 0">-</td>

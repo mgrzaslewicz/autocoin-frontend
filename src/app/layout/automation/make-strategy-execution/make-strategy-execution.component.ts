@@ -25,8 +25,8 @@ export class MakeStrategyExecutionComponent implements OnInit {
     public selectedClients = [];
     public strategies: Strategy[];
     public selectedStrategy = 'BuyLowerAndLower';
-    public exitCurrencyFractionForBuying = 0.2;
-    public maxExitCurrencyPercentForBuying = 50;
+    public counterCurrencyFractionForBuying = 0.2;
+    public maxCounterCurrencyPercentForBuying = 50;
     public strategySpecificParameters: any;
     public creatingStrategiesInProgress = false;
     public finishedCreatingStrategies = false;
@@ -114,17 +114,17 @@ export class MakeStrategyExecutionComponent implements OnInit {
         });
     }
 
-    onExitCurrencyPercentageForBuying(control) {
+    onCounterCurrencyPercentageForBuying(control) {
         if (control.value) {
             control.value = Math.min(Math.max(control.value, 0.1), 100);
-            this.exitCurrencyFractionForBuying = control.value / 100;
+            this.counterCurrencyFractionForBuying = control.value / 100;
         }
     }
 
-    onMaxExitCurrencyPercentForBuying(control) {
+    onMaxCounterCurrencyPercentForBuying(control) {
         if (control.value) {
             control.value = Math.min(Math.max(control.value, 0.1), 100);
-            this.maxExitCurrencyPercentForBuying = Number(control.value);
+            this.maxCounterCurrencyPercentForBuying = Number(control.value);
         }
     }
 
@@ -142,10 +142,10 @@ export class MakeStrategyExecutionComponent implements OnInit {
             parameters.clientId = client.id;
             parameters.exchangeName = this.exchangeName;
             parameters.strategyName = this.selectedStrategy;
-            parameters.entryCurrencyCode = this.entryCurrency;
-            parameters.exitCurrencyCode = this.exitCurrency;
-            parameters.exitCurrencyFractionForBuying = this.exitCurrencyFractionForBuying;
-            parameters.maxExitCurrencyPercentForBuying = this.maxExitCurrencyPercentForBuying;
+            parameters.baseCurrencyCode = this.baseCurrency;
+            parameters.counterCurrencyCode = this.counterCurrency;
+            parameters.counterCurrencyFractionForBuying = this.counterCurrencyFractionForBuying;
+            parameters.maxCounterCurrencyPercentForBuying = this.maxCounterCurrencyPercentForBuying;
             parameters.strategySpecificParameters = this.strategySpecificParameters;
 
             this.strategiesExecutionsService.createStrategyExecution(parameters).subscribe(() => {
@@ -163,11 +163,11 @@ export class MakeStrategyExecutionComponent implements OnInit {
         }
     }
 
-    get entryCurrency() {
+    get baseCurrency() {
         return this.exchangePair.split('/')[0];
     }
 
-    get exitCurrency() {
+    get counterCurrency() {
         return this.exchangePair.split('/')[1];
     }
 

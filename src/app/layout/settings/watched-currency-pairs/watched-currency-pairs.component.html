@@ -1,7 +1,7 @@
 <div class="card mb-3">
   <div class="card-header">Watched currency pairs</div>
   <div class="card-body">
-  
+
     <label for="newPair">Add new pair</label>
 
     <div class="row">
@@ -17,7 +17,7 @@
       <li class="list-group-item" *ngFor="let pair of allPairs()">
         <div class="media">
           <div class="media-body align-self-center">
-            {{ pair.entryCurrencyCode }}/{{ pair.exitCurrencyCode }}
+            {{ pair.baseCurrencyCode }}/{{ pair.counterCurrencyCode }}
           </div>
 
           <button class="btn btn-danger btn-sm" (click)="removePair(pair)">

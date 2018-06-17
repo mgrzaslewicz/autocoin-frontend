@@ -37,8 +37,8 @@ export interface Order {
     exchangeId: String;
     exchangeName: String;
     orderId: string;
-    entryCurrencyCode: String;
-    exitCurrencyCode: String;
+    baseCurrencyCode: String;
+    counterCurrencyCode: String;
     orderType: String;
     orderStatus: String;
     orderedAmount: Number;

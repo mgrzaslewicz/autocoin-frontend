@@ -54,7 +54,7 @@ export class OrdersService {
             orderType: openOrder.orderType,
             exchangeId: openOrder.exchangeId,
             orderId: openOrder.orderId,
-            currencyPair: new CurrencyPair(openOrder.entryCurrencyCode, openOrder.exitCurrencyCode)
+            currencyPair: new CurrencyPair(openOrder.baseCurrencyCode, openOrder.counterCurrencyCode)
         };
     }
 

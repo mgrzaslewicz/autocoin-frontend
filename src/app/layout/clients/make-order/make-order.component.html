@@ -76,8 +76,8 @@
       <p>
         Do you want to make new order of
 
-        <span *ngIf="orderType == 'buy'">buying {{ entryCurrency }} for {{ walletPercentage }}% of {{ exitCurrency }}</span>
-        <span *ngIf="orderType == 'sell'">selling {{ walletPercentage }}% {{ entryCurrency }} to {{ exitCurrency }}</span>
+        <span *ngIf="orderType == 'buy'">buying {{ baseCurrency }} for {{ walletPercentage }}% of {{ counterCurrency }}</span>
+        <span *ngIf="orderType == 'sell'">selling {{ walletPercentage }}% {{ baseCurrency }} to {{ counterCurrency }}</span>
 
       </p>
   </div>

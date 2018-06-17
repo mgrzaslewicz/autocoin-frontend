@@ -72,18 +72,18 @@ export class MakeOrderComponent implements OnInit {
 
   showConfirmOrder() {
     this.modalService.open(this.confirmOrderContentModal, { windowClass: 'confirm-order-modal' }).result.then(result => {
-      
+
       this.makeOrderModal.close();
       this.toastService.success('Orders has been placed correctly.');
       this.successEmmiter.emit();
     }, () => {});
   }
 
-  get entryCurrency() {
+  get baseCurrency() {
     return this.exchangePair.split('/')[0];
   }
 
-  get exitCurrency() {
+  get counterCurrency() {
     return this.exchangePair.split('/')[1];
   }
 

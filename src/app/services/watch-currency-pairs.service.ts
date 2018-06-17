@@ -13,8 +13,8 @@ export class WatchCurrencyPairsService {
 
   has(pair: CurrencyPair) {
     return this.pairs.find(existingPair => {
-      return existingPair.entryCurrencyCode === pair.entryCurrencyCode
-        && existingPair.exitCurrencyCode == pair.exitCurrencyCode;
+      return existingPair.baseCurrencyCode === pair.baseCurrencyCode
+        && existingPair.counterCurrencyCode == pair.counterCurrencyCode;
     }) !== undefined;
   }
 

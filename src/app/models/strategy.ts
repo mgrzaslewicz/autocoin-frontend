@@ -2,10 +2,10 @@ export interface StrategyParametersRequestDto {
     clientId: string;
     exchangeName: string;
     strategyName: string;
-    entryCurrencyCode: string;
-    exitCurrencyCode: string;
-    exitCurrencyFractionForBuying: number;
-    maxExitCurrencyPercentForBuying: number;
+    baseCurrencyCode: string;
+    counterCurrencyCode: string;
+    counterCurrencyFractionForBuying: number;
+    maxCounterCurrencyPercentForBuying: number;
     strategySpecificParameters: Map<string, number>;
 }
 
@@ -13,10 +13,10 @@ export class StrategyParametersRequest implements StrategyParametersRequestDto {
     clientId: string;
     exchangeName: string;
     strategyName: string;
-    entryCurrencyCode: string;
-    exitCurrencyCode: string;
-    exitCurrencyFractionForBuying: number;
-    maxExitCurrencyPercentForBuying: number;
+    baseCurrencyCode: string;
+    counterCurrencyCode: string;
+    counterCurrencyFractionForBuying: number;
+    maxCounterCurrencyPercentForBuying: number;
     strategySpecificParameters: Map<string, number> = new Map<string, number>();
 }
 
@@ -32,8 +32,8 @@ export interface LocalOrderDto {
 }
 
 export interface StrategyParametersResponseDto {
-    maxExitCurrencyPercentForBuying: number;
-    exitCurrencyFractionForBuying: number;
+    maxCounterCurrencyPercentForBuying: number;
+    counterCurrencyFractionForBuying: number;
     strategySpecificParameters: Map<string, number>;
 }
 export interface StrategyExecutionResponseDto {
@@ -41,8 +41,8 @@ export interface StrategyExecutionResponseDto {
     clientId: string;
     exchangeName: string;
     strategyName: string;
-    entryCurrencyCode: string;
-    exitCurrencyCode: string;
+    baseCurrencyCode: string;
+    counterCurrencyCode: string;
     strategyParameters: StrategyParametersResponseDto;
     orders: LocalOrderDto[];
 }

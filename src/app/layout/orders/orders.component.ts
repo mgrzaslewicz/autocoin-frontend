@@ -100,7 +100,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
     }
 
     getOrderCurrencyPairSymbol(order: Order): string {
-        return `${order.entryCurrencyCode}/${order.exitCurrencyCode}`;
+        return `${order.baseCurrencyCode}/${order.counterCurrencyCode}`;
     }
 
     cancelSelectedOrders() {
