@@ -15,7 +15,9 @@ export class StrategyParametersRequest implements StrategyParametersRequestDto {
     strategyName: string;
     baseCurrencyCode: string;
     counterCurrencyCode: string;
+    baseCurrencyFractionForSelling: number;
     counterCurrencyFractionForBuying: number;
+    maxBaseCurrencyPercentForSelling: number;
     maxCounterCurrencyPercentForBuying: number;
     strategySpecificParameters: Map<string, number> = new Map<string, number>();
 }

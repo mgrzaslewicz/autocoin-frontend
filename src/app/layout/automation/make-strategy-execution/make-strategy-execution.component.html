@@ -45,7 +45,7 @@
             </div>
 
             <div class="form-group">
-                <label for="currency-pair-typeahead">Exchange currency pair (eg XRP/BTC if you want to buy XRP)</label>
+                <label for="currency-pair-typeahead">Currency pair base/counter (eg XRP/BTC if you want to buy or sell XRP)</label>
                 <input name="exchangePair" id="currency-pair-typeahead" type="text"
                        class="form-control exchange-pair-input"
                        [class.is-invalid]="makeOrderForm.controls.exchangePair && makeOrderForm.controls.exchangePair.invalid && makeOrderForm.controls.exchangePair.touched"
@@ -58,11 +58,12 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="counterCurrencyPercentageForBuying">Counter Currency Percentage For Buying</label>
+                        <label for="counterCurrencyPercentForBuying">Counter currency for buying</label>
                         <div class="input-group">
-                            <input name="counterCurrencyPercentageForBuying" type="number" class="form-control" min="0.1"
+                            <input name="counterCurrencyPercentForBuying" type="number" class="form-control"
+                                   min="0.1"
                                    max="100" [value]="counterCurrencyFractionForBuying * 100"
-                                   (input)="onCounterCurrencyPercentageForBuying($event.target)">
+                                   (input)="onCounterCurrencyPercentForBuying($event.target)">
                             <div class="input-group-append">
                                 <span class="input-group-text">%</span>
                             </div>
@@ -71,9 +72,25 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="maxCounterCurrencyPercentForBuying">Max Counter Currency Percent For Buying</label>
+                        <label for="baseCurrencyPercentForSelling">Base currency for selling</label>
                         <div class="input-group">
-                            <input name="maxCounterCurrencyPercentForBuying" type="number" class="form-control" min="0.1"
+                            <input name="baseCurrencyPercentForSelling" type="number" class="form-control" min="0.1"
+                                   max="100" [value]="baseCurrencyFractionForSelling * 100"
+                                   (input)="onBaseCurrencyPercentForSelling($event.target)">
+                            <div class="input-group-append">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="maxCounterCurrencyPercentForBuying">Max counter currency for buying</label>
+                        <div class="input-group">
+                            <input name="maxCounterCurrencyPercentForBuying" type="number" class="form-control"
+                                   min="0.1"
                                    max="100" [value]="maxCounterCurrencyPercentForBuying"
                                    (input)="onMaxCounterCurrencyPercentForBuying($event.target)">
                             <div class="input-group-append">
@@ -82,31 +99,46 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <app-buy-lower-and-lower-specific-parameters
-                *ngIf="selectedStrategy == 'BuyLowerAndLower'"
-                (specificParametersChanged)="onSpecificParameters($event)">
-            </app-buy-lower-and-lower-specific-parameters>
-
-        </div>
-        <div *ngIf="selectedClients.length > 1" class="col-md-6">
-
-            <div class="form-group">
-                <label>Users</label>
-
-                <div class="checkbox" *ngFor="let selectedClient of selectedClients">
-                    <label>
-                        <input type="checkbox" name="selectedClients" [value]="true"
-                               [(ngModel)]="selectedClient.checked"> {{ selectedClient.client.name }}
-                    </label>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="maxBaseCurrencyPercentForSelling">Max base currency for selling</label>
+                        <div class="input-group">
+                            <input name="maxCounterCurrencyPercentForBuying" type="number" class="form-control"
+                                   min="0.1"
+                                   max="100" [value]="maxBaseCurrencyPercentForSelling"
+                                   (input)="onMaxBaseCurrencyPercentForSelling($event.target)">
+                            <div class="input-group-append">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
+        <app-buy-lower-and-lower-specific-parameters
+            *ngIf="selectedStrategy == 'BuyLowerAndLower'"
+            (specificParametersChanged)="onSpecificParameters($event)">
+        </app-buy-lower-and-lower-specific-parameters>
+        <app-sell-higher-and-higher-specific-parameters
+            *ngIf="selectedStrategy == 'SellHigherAndHigher'"
+            (specificParametersChanged)="onSpecificParameters($event)">
+        </app-sell-higher-and-higher-specific-parameters>
 
+    </div>
+    <div *ngIf="selectedClients.length > 1" class="col-md-6">
+
+        <div class="form-group">
+            <label>Users</label>
+
+            <div class="checkbox" *ngFor="let selectedClient of selectedClients">
+                <label>
+                    <input type="checkbox" name="selectedClients" [value]="true"
+                           [(ngModel)]="selectedClient.checked"> {{ selectedClient.client.name }}
+                </label>
+            </div>
         </div>
 
     </div>
-
 
     <button type="submit" class="btn btn-primary" (click)="showConfirmModal()"
             [disabled]="!canMakeStrategyExecution()">

@@ -11,6 +11,7 @@ import {Strategy, StrategyParametersRequest} from '../../../models/strategy';
 import {BuyLowerAndLowerSpecificParametersComponent} from './buy-lower-and-lower-specific-parameters/buy-lower-and-lower-specific-parameters.component';
 import {StrategiesExecutionsService} from '../../../services/automation/strategies-executions.service';
 import {FEATURE_CREATE_STRATEGY, FeatureToggle, FeatureToggleToken} from '../../../services/feature.toogle.service';
+import {SellHigherAndHigherSpecificParametersComponent} from './sell-higher-and-higher-specific-parameters/sell-higher-and-higher-specific-parameters.component';
 
 @Component({
     selector: 'app-make-strategy-execution',
@@ -26,7 +27,9 @@ export class MakeStrategyExecutionComponent implements OnInit {
     public strategies: Strategy[];
     public selectedStrategy = 'BuyLowerAndLower';
     public counterCurrencyFractionForBuying = 0.2;
+    public baseCurrencyFractionForSelling = 0.2;
     public maxCounterCurrencyPercentForBuying = 50;
+    public maxBaseCurrencyPercentForSelling = 50;
     public strategySpecificParameters: any;
     public creatingStrategiesInProgress = false;
     public finishedCreatingStrategies = false;
@@ -41,6 +44,9 @@ export class MakeStrategyExecutionComponent implements OnInit {
 
     @ViewChild('buyLowerAndLowerSpecificParameters')
     buyLowerAndLowerSpecificParametersComponent: BuyLowerAndLowerSpecificParametersComponent;
+
+    @ViewChild('sellHigherAndHigherSpecificParameters')
+    sellHigherAndHigherSpecificParametersComponent: SellHigherAndHigherSpecificParametersComponent;
 
     constructor(
         private route: ActivatedRoute,
@@ -114,10 +120,17 @@ export class MakeStrategyExecutionComponent implements OnInit {
         });
     }
 
-    onCounterCurrencyPercentageForBuying(control) {
+    onCounterCurrencyPercentForBuying(control) {
         if (control.value) {
             control.value = Math.min(Math.max(control.value, 0.1), 100);
             this.counterCurrencyFractionForBuying = control.value / 100;
+        }
+    }
+
+    onBaseCurrencyPercentForSelling(control) {
+        if (control.value) {
+            control.value = Math.min(Math.max(control.value, 0.1), 100);
+            this.baseCurrencyFractionForSelling = control.value / 100;
         }
     }
 
@@ -125,6 +138,13 @@ export class MakeStrategyExecutionComponent implements OnInit {
         if (control.value) {
             control.value = Math.min(Math.max(control.value, 0.1), 100);
             this.maxCounterCurrencyPercentForBuying = Number(control.value);
+        }
+    }
+
+    onMaxBaseCurrencyPercentForSelling(control) {
+        if (control.value) {
+            control.value = Math.min(Math.max(control.value, 0.1), 100);
+            this.maxBaseCurrencyPercentForSelling = Number(control.value);
         }
     }
 
@@ -144,7 +164,9 @@ export class MakeStrategyExecutionComponent implements OnInit {
             parameters.strategyName = this.selectedStrategy;
             parameters.baseCurrencyCode = this.baseCurrency;
             parameters.counterCurrencyCode = this.counterCurrency;
+            parameters.baseCurrencyFractionForSelling = this.baseCurrencyFractionForSelling;
             parameters.counterCurrencyFractionForBuying = this.counterCurrencyFractionForBuying;
+            parameters.maxBaseCurrencyPercentForSelling = this.maxBaseCurrencyPercentForSelling;
             parameters.maxCounterCurrencyPercentForBuying = this.maxCounterCurrencyPercentForBuying;
             parameters.strategySpecificParameters = this.strategySpecificParameters;
 

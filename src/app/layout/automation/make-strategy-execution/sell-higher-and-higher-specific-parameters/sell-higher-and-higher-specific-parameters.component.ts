@@ -1,16 +1,16 @@
 import {Component, OnInit, Input, EventEmitter, Output} from '@angular/core';
 
 @Component({
-    selector: 'app-buy-lower-and-lower-specific-parameters',
-    templateUrl: './buy-lower-and-lower-specific-parameters.component.html',
-    styleUrls: ['./buy-lower-and-lower-specific-parameters.component.scss']
+    selector: 'app-sell-higher-and-higher-specific-parameters',
+    templateUrl: './sell-higher-and-higher-specific-parameters.component.html',
+    styleUrls: ['./sell-higher-and-higher-specific-parameters.component.scss']
 })
-export class BuyLowerAndLowerSpecificParametersComponent implements OnInit {
+export class SellHigherAndHigherSpecificParametersComponent implements OnInit {
 
     @Input()
     strategySpecificParameters = {
-        maxBuyPrice: 0,
-        dropToBuyNextRelativePercent: 0.5
+        minSellPrice: 0,
+        growToSellNextRelativePercent: 0.5
     };
 
     @Output('specificParametersChanged')
@@ -23,17 +23,17 @@ export class BuyLowerAndLowerSpecificParametersComponent implements OnInit {
         this.emitInput();
     }
 
-    onMaxBuyPrice(control) {
+    onMinSellPrice(control) {
         if (control.value) {
-            this.strategySpecificParameters.maxBuyPrice = control.value;
+            this.strategySpecificParameters.minSellPrice = control.value;
             this.emitInput();
         }
     }
 
-    onDropToBuyNextRelativePercent(control) {
+    onGrowToSellNextRelativePercent(control) {
         if (control.value) {
             control.value = Math.min(Math.max(control.value, 0.1), 50);
-            this.strategySpecificParameters.dropToBuyNextRelativePercent = control.value;
+            this.strategySpecificParameters.growToSellNextRelativePercent = control.value;
             this.emitInput();
         }
     }

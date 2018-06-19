@@ -1,18 +1,22 @@
-import { Injectable } from '@angular/core';
-import { Strategy } from '../../models/strategy';
-import { Observable } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {Strategy} from '../../models/strategy';
+import {Observable} from 'rxjs';
 
 @Injectable()
 export class StrategiesService {
 
-  getStrategies() : Observable<Strategy[]> {
-    let strategies = [];
+    getStrategies(): Observable<Strategy[]> {
+        const strategies = [];
 
-    let buyLowerAndLowerStrategy = new Strategy;
-    buyLowerAndLowerStrategy.name = 'BuyLowerAndLower';
-    strategies.push(buyLowerAndLowerStrategy);
+        const buyLowerAndLowerStrategy = new Strategy;
+        buyLowerAndLowerStrategy.name = 'BuyLowerAndLower';
+        strategies.push(buyLowerAndLowerStrategy);
 
-    return Observable.of(strategies);
-  }
+        const sellHigherAndHigherStrategy = new Strategy;
+        sellHigherAndHigherStrategy.name = 'SellHigherAndHigher';
+        strategies.push(sellHigherAndHigherStrategy);
+
+        return Observable.of(strategies);
+    }
 
 }
