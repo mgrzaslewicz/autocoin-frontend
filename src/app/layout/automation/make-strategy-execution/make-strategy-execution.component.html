@@ -125,15 +125,15 @@
         </app-sell-higher-and-higher-specific-parameters>
 
     </div>
-    <div *ngIf="selectedClients.length > 1" class="col-md-6">
+    <div *ngIf="clients.length > 1" class="col-md-6">
 
         <div class="form-group">
             <label>Users</label>
 
-            <div class="checkbox" *ngFor="let selectedClient of selectedClients">
+            <div class="checkbox" *ngFor="let client of clients">
                 <label>
                     <input type="checkbox" name="selectedClients" [value]="true"
-                           [(ngModel)]="selectedClient.checked"> {{ selectedClient.client.name }}
+                           [(ngModel)]="client.checked"> {{ client.client.name }}
                 </label>
             </div>
         </div>

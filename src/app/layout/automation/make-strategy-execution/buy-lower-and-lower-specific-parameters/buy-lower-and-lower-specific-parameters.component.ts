@@ -9,7 +9,7 @@ export class BuyLowerAndLowerSpecificParametersComponent implements OnInit {
 
     @Input()
     strategySpecificParameters = {
-        maxBuyPrice: 0,
+        maxBuyPrice: 0.0,
         dropToBuyNextRelativePercent: 0.5
     };
 
@@ -23,9 +23,24 @@ export class BuyLowerAndLowerSpecificParametersComponent implements OnInit {
         this.emitInput();
     }
 
+    private precision(a) {
+        if (!isFinite(a)) {
+            return 0;
+        }
+        let e = 1, p = 0;
+        while (Math.round(a * e) / e !== a) {
+            e *= 10;
+            p++;
+        }
+        return p;
+    }
+
     onMaxBuyPrice(control) {
         if (control.value) {
-            this.strategySpecificParameters.maxBuyPrice = control.value;
+            const value = Math.min(Math.max(control.value, 0.00000001), 9999999999);
+            const precision = this.precision(value);
+            control.value = Number(value).toFixed(precision);
+            this.strategySpecificParameters.maxBuyPrice = Number(control.value); // no idea why control.value has string type at this point so create number
             this.emitInput();
         }
     }

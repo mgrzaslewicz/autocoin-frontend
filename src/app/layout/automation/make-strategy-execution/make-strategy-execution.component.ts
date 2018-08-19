@@ -23,7 +23,7 @@ export class MakeStrategyExecutionComponent implements OnInit {
     public exchangeName;
     public allExchangePairs: CurrencyPair[];
     public exchangePair: string;
-    public selectedClients = [];
+    public clients = [];
     public strategies: Strategy[];
     public selectedStrategy = 'BuyLowerAndLower';
     public counterCurrencyFractionForBuying = 0.2;
@@ -89,16 +89,16 @@ export class MakeStrategyExecutionComponent implements OnInit {
     private loadClients() {
         this.clientsService.getClients().subscribe(clients => {
             for (const client of clients) {
-                this.selectedClients.push({client: client, checked: false});
+                this.clients.push({client: client, checked: false});
             }
             if (clients.length === 1) {
-                this.selectedClients[0].checked = true;
+                this.clients[0].checked = true;
             }
         });
     }
 
-    filteredSelectedClients() {
-        return this.selectedClients.filter(client => client.checked);
+    getSelectedClients() {
+        return this.clients.filter(client => client.checked);
     }
 
     showConfirmModal() {
@@ -109,7 +109,7 @@ export class MakeStrategyExecutionComponent implements OnInit {
     }
 
     canMakeStrategyExecution() {
-        return this.filteredSelectedClients().length > 0
+        return this.getSelectedClients().length > 0
             && this.makeOrderForm.valid
             && this.featureToggle.isActive(FEATURE_CREATE_STRATEGY);
     }
@@ -154,8 +154,9 @@ export class MakeStrategyExecutionComponent implements OnInit {
 
     createStrategy() {
         this.creatingStrategiesInProgress = true;
-        let howManyStrategiesToCreateLeft = this.selectedClients.length;
-        for (const selectedClient of this.selectedClients) {
+        const selectedClients = this.getSelectedClients();
+        let howManyStrategiesToCreateLeft = selectedClients.length;
+        for (const selectedClient of selectedClients) {
             const client = selectedClient.client;
 
             const parameters = new StrategyParametersRequest();

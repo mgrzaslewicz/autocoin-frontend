@@ -19,7 +19,7 @@ export class StrategyParametersRequest implements StrategyParametersRequestDto {
     counterCurrencyFractionForBuying: number;
     maxBaseCurrencyPercentForSelling: number;
     maxCounterCurrencyPercentForBuying: number;
-    strategySpecificParameters: Map<string, number> = new Map<string, number>();
+    strategySpecificParameters: Map<string, any> = new Map<string, any>();
 }
 
 export interface LocalOrderDto {
