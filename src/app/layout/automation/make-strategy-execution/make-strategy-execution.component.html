@@ -123,6 +123,10 @@
             *ngIf="selectedStrategy == 'SellHigherAndHigher'"
             (specificParametersChanged)="onSpecificParameters($event)">
         </app-sell-higher-and-higher-specific-parameters>
+        <app-sell-when-second-currency-grows-specific-parameters
+            *ngIf="selectedStrategy == 'SellWhenSecondCurrencyGrows'"
+            (specificParametersChanged)="onSpecificParameters($event)">
+        </app-sell-when-second-currency-grows-specific-parameters>
 
     </div>
     <div *ngIf="clients.length > 1" class="col-md-6">

@@ -13,6 +13,7 @@ import {FormsModule} from '@angular/forms';
 import {StrategiesExecutionsService} from '../../services/automation/strategies-executions.service';
 import {BuyLowerAndLowerSpecificParametersComponent} from './make-strategy-execution/buy-lower-and-lower-specific-parameters/buy-lower-and-lower-specific-parameters.component';
 import {SellHigherAndHigherSpecificParametersComponent} from './make-strategy-execution/sell-higher-and-higher-specific-parameters/sell-higher-and-higher-specific-parameters.component';
+import {SellWhenSecondCurrencyGrowsParametersComponent} from './make-strategy-execution/sell-when-second-currency-grows-parameters/sell-when-second-currency-grows-parameters.component';
 
 @NgModule({
     imports: [
@@ -27,7 +28,8 @@ import {SellHigherAndHigherSpecificParametersComponent} from './make-strategy-ex
         AutomationComponent,
         MakeStrategyExecutionComponent,
         BuyLowerAndLowerSpecificParametersComponent,
-        SellHigherAndHigherSpecificParametersComponent
+        SellHigherAndHigherSpecificParametersComponent,
+        SellWhenSecondCurrencyGrowsParametersComponent
     ],
     providers: [
         StrategiesService,

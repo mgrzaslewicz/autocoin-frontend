@@ -12,6 +12,7 @@ import {BuyLowerAndLowerSpecificParametersComponent} from './buy-lower-and-lower
 import {StrategiesExecutionsService} from '../../../services/automation/strategies-executions.service';
 import {FEATURE_CREATE_STRATEGY, FeatureToggle, FeatureToggleToken} from '../../../services/feature.toogle.service';
 import {SellHigherAndHigherSpecificParametersComponent} from './sell-higher-and-higher-specific-parameters/sell-higher-and-higher-specific-parameters.component';
+import {SellWhenSecondCurrencyGrowsParametersComponent} from './sell-when-second-currency-grows-parameters/sell-when-second-currency-grows-parameters.component';
 
 @Component({
     selector: 'app-make-strategy-execution',
@@ -47,6 +48,9 @@ export class MakeStrategyExecutionComponent implements OnInit {
 
     @ViewChild('sellHigherAndHigherSpecificParameters')
     sellHigherAndHigherSpecificParametersComponent: SellHigherAndHigherSpecificParametersComponent;
+
+    @ViewChild('sellWhenOtherCurrencyGrowsSpecificParameters')
+    sellWhenSecondCurrencyGrowsParametersComponent: SellWhenSecondCurrencyGrowsParametersComponent;
 
     constructor(
         private route: ActivatedRoute,
