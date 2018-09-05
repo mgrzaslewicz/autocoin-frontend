@@ -1,7 +1,12 @@
 import {Inject, Injectable} from '@angular/core';
 import {Strategy} from '../../models/strategy';
 import {Observable} from 'rxjs';
-import {FEATURE_STRATEGY_SELL_WHEN_SECOND_CURRENCY_GROWS, FeatureToggle, FeatureToggleToken} from '../feature.toogle.service';
+import {
+    FEATURE_STRATEGY_SELL_NOW,
+    FEATURE_STRATEGY_SELL_WHEN_SECOND_CURRENCY_GROWS,
+    FeatureToggle,
+    FeatureToggleToken
+} from '../feature.toogle.service';
 
 @Injectable()
 export class StrategiesService {
@@ -24,6 +29,12 @@ export class StrategiesService {
             const sellWhenSecondCurrencyGrowsStrategy = new Strategy;
             sellWhenSecondCurrencyGrowsStrategy.name = 'SellWhenSecondCurrencyGrows';
             strategies.push(sellWhenSecondCurrencyGrowsStrategy);
+        }
+
+        if (this.featureToggle.isActive(FEATURE_STRATEGY_SELL_NOW)) {
+            const sellNowStrategy = new Strategy;
+            sellNowStrategy.name = 'SellNow';
+            strategies.push(sellNowStrategy);
         }
 
         return Observable.of(strategies);
