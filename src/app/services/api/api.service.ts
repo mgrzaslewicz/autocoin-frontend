@@ -3,6 +3,13 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {AuthService} from '../auth.service';
 import {Observable} from 'rxjs/Observable';
 
+export interface WithMessageDto<T> {
+    result?: T;
+    infoMessageList?: String[];
+    warningMessageList?: String[];
+    errorMessageList?: String[];
+}
+
 @Injectable()
 export class ApiService {
 

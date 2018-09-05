@@ -7,12 +7,13 @@ import {ClientsService} from '../../../services/api';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToastService} from '../../../services/toast.service';
 import {StrategiesService} from '../../../services/automation/strategies.service';
-import {Strategy, StrategyParametersRequest} from '../../../models/strategy';
+import {Strategy, StrategyExecutionResponseDto, StrategyParametersRequest} from '../../../models/strategy';
 import {BuyLowerAndLowerSpecificParametersComponent} from './buy-lower-and-lower-specific-parameters/buy-lower-and-lower-specific-parameters.component';
 import {StrategiesExecutionsService} from '../../../services/automation/strategies-executions.service';
 import {FEATURE_CREATE_STRATEGY, FeatureToggle, FeatureToggleToken} from '../../../services/feature.toogle.service';
 import {SellHigherAndHigherSpecificParametersComponent} from './sell-higher-and-higher-specific-parameters/sell-higher-and-higher-specific-parameters.component';
 import {SellWhenSecondCurrencyGrowsParametersComponent} from './sell-when-second-currency-grows-parameters/sell-when-second-currency-grows-parameters.component';
+import {WithMessageDto} from '../../../services/api/api.service';
 
 @Component({
     selector: 'app-make-strategy-execution',
@@ -175,18 +176,19 @@ export class MakeStrategyExecutionComponent implements OnInit {
             parameters.maxCounterCurrencyPercentForBuying = this.maxCounterCurrencyPercentForBuying;
             parameters.strategySpecificParameters = this.strategySpecificParameters;
 
-            this.strategiesExecutionsService.createStrategyExecution(parameters).subscribe(() => {
-                howManyStrategiesToCreateLeft--;
-                this.strategiesCreatedFor.push(client.name);
-                this.creatingStrategiesInProgress = howManyStrategiesToCreateLeft > 0;
-                this.finishedCreatingStrategies = howManyStrategiesToCreateLeft === 0;
-            }, error => {
-                console.log(error);
-                howManyStrategiesToCreateLeft--;
-                this.strategiesNotCreatedFor.push(client.name);
-                this.creatingStrategiesInProgress = howManyStrategiesToCreateLeft > 0;
-                this.finishedCreatingStrategies = howManyStrategiesToCreateLeft === 0;
-            });
+            this.strategiesExecutionsService.createStrategyExecution(parameters)
+                .subscribe((response: WithMessageDto<StrategyExecutionResponseDto>) => {
+                    howManyStrategiesToCreateLeft--;
+                    this.strategiesCreatedFor.push(client.name);
+                    this.creatingStrategiesInProgress = howManyStrategiesToCreateLeft > 0;
+                    this.finishedCreatingStrategies = howManyStrategiesToCreateLeft === 0;
+                }, error => {
+                    console.log(error);
+                    howManyStrategiesToCreateLeft--;
+                    this.strategiesNotCreatedFor.push(client.name);
+                    this.creatingStrategiesInProgress = howManyStrategiesToCreateLeft > 0;
+                    this.finishedCreatingStrategies = howManyStrategiesToCreateLeft === 0;
+                });
         }
     }
 
