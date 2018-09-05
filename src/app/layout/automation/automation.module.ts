@@ -14,6 +14,8 @@ import {StrategiesExecutionsService} from '../../services/automation/strategies-
 import {BuyLowerAndLowerSpecificParametersComponent} from './make-strategy-execution/buy-lower-and-lower-specific-parameters/buy-lower-and-lower-specific-parameters.component';
 import {SellHigherAndHigherSpecificParametersComponent} from './make-strategy-execution/sell-higher-and-higher-specific-parameters/sell-higher-and-higher-specific-parameters.component';
 import {SellWhenSecondCurrencyGrowsParametersComponent} from './make-strategy-execution/sell-when-second-currency-grows-parameters/sell-when-second-currency-grows-parameters.component';
+import {BuyNowParametersComponent} from './make-strategy-execution/buy-now-parameters/buy-now-parameters.component';
+import {SellNowParametersComponent} from './make-strategy-execution/sell-now-parameters/sell-now-parameters.component';
 
 @NgModule({
     imports: [
@@ -29,7 +31,9 @@ import {SellWhenSecondCurrencyGrowsParametersComponent} from './make-strategy-ex
         MakeStrategyExecutionComponent,
         BuyLowerAndLowerSpecificParametersComponent,
         SellHigherAndHigherSpecificParametersComponent,
-        SellWhenSecondCurrencyGrowsParametersComponent
+        SellWhenSecondCurrencyGrowsParametersComponent,
+        BuyNowParametersComponent,
+        SellNowParametersComponent
     ],
     providers: [
         StrategiesService,

@@ -14,6 +14,8 @@ import {FEATURE_CREATE_STRATEGY, FeatureToggle, FeatureToggleToken} from '../../
 import {SellHigherAndHigherSpecificParametersComponent} from './sell-higher-and-higher-specific-parameters/sell-higher-and-higher-specific-parameters.component';
 import {SellWhenSecondCurrencyGrowsParametersComponent} from './sell-when-second-currency-grows-parameters/sell-when-second-currency-grows-parameters.component';
 import {WithMessageDto} from '../../../services/api/api.service';
+import {SellNowParametersComponent} from './sell-now-parameters/sell-now-parameters.component';
+import {BuyNowParametersComponent} from './buy-now-parameters/buy-now-parameters.component';
 
 @Component({
     selector: 'app-make-strategy-execution',
@@ -52,6 +54,12 @@ export class MakeStrategyExecutionComponent implements OnInit {
 
     @ViewChild('sellWhenOtherCurrencyGrowsSpecificParameters')
     sellWhenSecondCurrencyGrowsParametersComponent: SellWhenSecondCurrencyGrowsParametersComponent;
+
+    @ViewChild('sellNowSpecificParameters')
+    sellNowParametersComponent: SellNowParametersComponent;
+
+    @ViewChild('buyNowSpecificParameters')
+    buyNowParametersComponent: BuyNowParametersComponent;
 
     constructor(
         private route: ActivatedRoute,
