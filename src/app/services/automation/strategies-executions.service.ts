@@ -13,7 +13,7 @@ export class StrategiesExecutionsService {
     constructor(private api: ApiService) {
     }
 
-    public getStrategiesExecutions(): Observable<WithMessageDto<StrategyExecutionResponseDto[]>> {
+    public getStrategiesExecutions(): Observable<StrategyExecutionResponseDto[]> {
         return this.api.get(this.getStrategiesUrl);
     }
 
