@@ -131,6 +131,10 @@
             *ngIf="selectedStrategy == 'SellNow'"
             (specificParametersChanged)="onSpecificParameters($event)">
         </app-sell-now-parameters>
+        <app-buy-now-parameters
+            *ngIf="selectedStrategy == 'BuyNow'"
+            (specificParametersChanged)="onSpecificParameters($event)">
+        </app-buy-now-parameters>
 
     </div>
     <div *ngIf="clients.length > 1" class="col-md-6">

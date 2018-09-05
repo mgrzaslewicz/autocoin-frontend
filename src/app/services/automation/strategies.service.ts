@@ -2,6 +2,7 @@ import {Inject, Injectable} from '@angular/core';
 import {Strategy} from '../../models/strategy';
 import {Observable} from 'rxjs';
 import {
+    FEATURE_STRATEGY_BUY_NOW,
     FEATURE_STRATEGY_SELL_NOW,
     FEATURE_STRATEGY_SELL_WHEN_SECOND_CURRENCY_GROWS,
     FeatureToggle,
@@ -35,6 +36,12 @@ export class StrategiesService {
             const sellNowStrategy = new Strategy;
             sellNowStrategy.name = 'SellNow';
             strategies.push(sellNowStrategy);
+        }
+
+        if (this.featureToggle.isActive(FEATURE_STRATEGY_BUY_NOW)) {
+            const buyNowStrategy = new Strategy;
+            buyNowStrategy.name = 'BuyNow';
+            strategies.push(buyNowStrategy);
         }
 
         return Observable.of(strategies);

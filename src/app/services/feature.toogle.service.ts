@@ -7,6 +7,7 @@ export interface FeatureToggle {
 export const FEATURE_CREATE_STRATEGY = 'createStrategy';
 export const FEATURE_STRATEGY_SELL_WHEN_SECOND_CURRENCY_GROWS = 'strategySellWhenSecondCurrencyGrows';
 export const FEATURE_STRATEGY_SELL_NOW = 'strategySellNow';
+export const FEATURE_STRATEGY_BUY_NOW = 'strategyBuyNow';
 
 export const FeatureToggleToken = new InjectionToken('FeatureToggle');
 
