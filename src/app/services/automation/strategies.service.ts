@@ -20,27 +20,37 @@ export class StrategiesService {
 
         const buyLowerAndLowerStrategy = new Strategy;
         buyLowerAndLowerStrategy.name = 'BuyLowerAndLower';
+        buyLowerAndLowerStrategy.isBuying = true;
+        buyLowerAndLowerStrategy.isSelling = false;
         strategies.push(buyLowerAndLowerStrategy);
 
         const sellHigherAndHigherStrategy = new Strategy;
         sellHigherAndHigherStrategy.name = 'SellHigherAndHigher';
+        sellHigherAndHigherStrategy.isBuying = false;
+        sellHigherAndHigherStrategy.isSelling = true;
         strategies.push(sellHigherAndHigherStrategy);
 
         if (this.featureToggle.isActive(FEATURE_STRATEGY_SELL_WHEN_SECOND_CURRENCY_GROWS)) {
             const sellWhenSecondCurrencyGrowsStrategy = new Strategy;
             sellWhenSecondCurrencyGrowsStrategy.name = 'SellWhenSecondCurrencyGrows';
+            sellWhenSecondCurrencyGrowsStrategy.isBuying = false;
+            sellWhenSecondCurrencyGrowsStrategy.isSelling = true;
             strategies.push(sellWhenSecondCurrencyGrowsStrategy);
         }
 
         if (this.featureToggle.isActive(FEATURE_STRATEGY_SELL_NOW)) {
             const sellNowStrategy = new Strategy;
             sellNowStrategy.name = 'SellNow';
+            sellNowStrategy.isBuying = false;
+            sellNowStrategy.isSelling = true;
             strategies.push(sellNowStrategy);
         }
 
         if (this.featureToggle.isActive(FEATURE_STRATEGY_BUY_NOW)) {
             const buyNowStrategy = new Strategy;
             buyNowStrategy.name = 'BuyNow';
+            buyNowStrategy.isBuying = true;
+            buyNowStrategy.isSelling = false;
             strategies.push(buyNowStrategy);
         }
 

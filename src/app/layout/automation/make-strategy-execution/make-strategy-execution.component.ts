@@ -29,7 +29,7 @@ export class MakeStrategyExecutionComponent implements OnInit {
     public exchangePair: string;
     public clients = [];
     public strategies: Strategy[];
-    public selectedStrategy = 'BuyLowerAndLower';
+    public selectedStrategyName = 'BuyLowerAndLower';
     public counterCurrencyFractionForBuying = 0.2;
     public baseCurrencyFractionForSelling = 0.2;
     public maxCounterCurrencyPercentForBuying = 50;
@@ -97,7 +97,7 @@ export class MakeStrategyExecutionComponent implements OnInit {
                 return this.allExchangePairs.filter(pair => pair.symbol().indexOf(exchangePairSymbol) > -1).slice(0, 10);
             })
             .map(pairs => pairs.map(pair => pair.symbol()));
-    };
+    }
 
     private loadClients() {
         this.clientsService.getClients().subscribe(clients => {
@@ -175,7 +175,7 @@ export class MakeStrategyExecutionComponent implements OnInit {
             const parameters = new StrategyParametersRequest();
             parameters.clientId = client.id;
             parameters.exchangeName = this.exchangeName;
-            parameters.strategyName = this.selectedStrategy;
+            parameters.strategyName = this.selectedStrategyName;
             parameters.baseCurrencyCode = this.baseCurrency;
             parameters.counterCurrencyCode = this.counterCurrency;
             parameters.baseCurrencyFractionForSelling = this.baseCurrencyFractionForSelling;
@@ -208,4 +208,11 @@ export class MakeStrategyExecutionComponent implements OnInit {
         return this.exchangePair.split('/')[1];
     }
 
+    public isBuying(): boolean {
+        return this.strategies.find(strategy => strategy.name === this.selectedStrategyName).isBuying;
+    }
+
+    public isSelling(): boolean {
+        return this.strategies.find(strategy => strategy.name === this.selectedStrategyName).isSelling;
+    }
 }

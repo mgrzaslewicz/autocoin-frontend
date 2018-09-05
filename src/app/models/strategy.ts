@@ -51,4 +51,6 @@ export interface StrategyExecutionResponseDto {
 
 export class Strategy {
     public name: string;
+    public isSelling: boolean;
+    public isBuying: boolean;
 }

@@ -39,13 +39,14 @@
             <div class="form-group">
                 <label>Strategy</label>
 
-                <select class="form-control" name="selectedStrategy" [(ngModel)]="selectedStrategy">
+                <select class="form-control" name="selectedStrategy" [(ngModel)]="selectedStrategyName">
                     <option *ngFor="let strategy of strategies" [value]="strategy.name">{{ strategy.name }}</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="currency-pair-typeahead">Currency pair base/counter (eg XRP/BTC if you want to buy or sell XRP)</label>
+                <label for="currency-pair-typeahead">Currency pair base/counter (eg XRP/BTC if you want to buy or sell
+                    XRP)</label>
                 <input name="exchangePair" id="currency-pair-typeahead" type="text"
                        class="form-control exchange-pair-input"
                        [class.is-invalid]="makeOrderForm.controls.exchangePair && makeOrderForm.controls.exchangePair.invalid && makeOrderForm.controls.exchangePair.touched"
@@ -56,9 +57,9 @@
             </div>
 
             <div class="row">
-                <div class="col-md-6">
+                <div *ngIf="isBuying()" class="col-12">
                     <div class="form-group">
-                        <label for="counterCurrencyPercentForBuying">Counter currency for buying</label>
+                        <label for="counterCurrencyPercentForBuying">Counter currency percent for buying</label>
                         <div class="input-group">
                             <input name="counterCurrencyPercentForBuying" type="number" class="form-control"
                                    min="0.1"
@@ -70,9 +71,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div *ngIf="isSelling()" class="col-12">
                     <div class="form-group">
-                        <label for="baseCurrencyPercentForSelling">Base currency for selling</label>
+                        <label for="baseCurrencyPercentForSelling">Base currency percent for selling</label>
                         <div class="input-group">
                             <input name="baseCurrencyPercentForSelling" type="number" class="form-control" min="0.1"
                                    max="100" [value]="baseCurrencyFractionForSelling * 100"
@@ -85,9 +86,9 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-6">
+                <div *ngIf="isBuying()" class="col-12">
                     <div class="form-group">
-                        <label for="maxCounterCurrencyPercentForBuying">Max counter currency for buying</label>
+                        <label for="maxCounterCurrencyPercentForBuying">Max counter currency percent for buying</label>
                         <div class="input-group">
                             <input name="maxCounterCurrencyPercentForBuying" type="number" class="form-control"
                                    min="0.1"
@@ -99,9 +100,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div *ngIf="isSelling()" class="col-12">
                     <div class="form-group">
-                        <label for="maxBaseCurrencyPercentForSelling">Max base currency for selling</label>
+                        <label for="maxBaseCurrencyPercentForSelling">Max base currency percent for selling</label>
                         <div class="input-group">
                             <input name="maxCounterCurrencyPercentForBuying" type="number" class="form-control"
                                    min="0.1"
@@ -114,52 +115,56 @@
                     </div>
                 </div>
             </div>
+            <app-buy-lower-and-lower-specific-parameters
+                *ngIf="selectedStrategyName == 'BuyLowerAndLower'"
+                (specificParametersChanged)="onSpecificParameters($event)">
+            </app-buy-lower-and-lower-specific-parameters>
+            <app-sell-higher-and-higher-specific-parameters
+                *ngIf="selectedStrategyName == 'SellHigherAndHigher'"
+                (specificParametersChanged)="onSpecificParameters($event)">
+            </app-sell-higher-and-higher-specific-parameters>
+            <app-sell-when-second-currency-grows-specific-parameters
+                *ngIf="selectedStrategyName == 'SellWhenSecondCurrencyGrows'"
+                (specificParametersChanged)="onSpecificParameters($event)">
+            </app-sell-when-second-currency-grows-specific-parameters>
+            <app-sell-now-parameters
+                *ngIf="selectedStrategyName == 'SellNow'"
+                (specificParametersChanged)="onSpecificParameters($event)">
+            </app-sell-now-parameters>
+            <app-buy-now-parameters
+                *ngIf="selectedStrategyName == 'BuyNow'"
+                (specificParametersChanged)="onSpecificParameters($event)">
+            </app-buy-now-parameters>
         </div>
-        <app-buy-lower-and-lower-specific-parameters
-            *ngIf="selectedStrategy == 'BuyLowerAndLower'"
-            (specificParametersChanged)="onSpecificParameters($event)">
-        </app-buy-lower-and-lower-specific-parameters>
-        <app-sell-higher-and-higher-specific-parameters
-            *ngIf="selectedStrategy == 'SellHigherAndHigher'"
-            (specificParametersChanged)="onSpecificParameters($event)">
-        </app-sell-higher-and-higher-specific-parameters>
-        <app-sell-when-second-currency-grows-specific-parameters
-            *ngIf="selectedStrategy == 'SellWhenSecondCurrencyGrows'"
-            (specificParametersChanged)="onSpecificParameters($event)">
-        </app-sell-when-second-currency-grows-specific-parameters>
-        <app-sell-now-parameters
-            *ngIf="selectedStrategy == 'SellNow'"
-            (specificParametersChanged)="onSpecificParameters($event)">
-        </app-sell-now-parameters>
-        <app-buy-now-parameters
-            *ngIf="selectedStrategy == 'BuyNow'"
-            (specificParametersChanged)="onSpecificParameters($event)">
-        </app-buy-now-parameters>
 
     </div>
-    <div *ngIf="clients.length > 1" class="col-md-6">
+    <div class="row">
+        <div *ngIf="clients.length > 1" class="col-md-6">
 
-        <div class="form-group">
-            <label>Users</label>
+            <div class="form-group">
+                <label>Users</label>
 
-            <div class="checkbox" *ngFor="let client of clients">
-                <label>
-                    <input type="checkbox" name="selectedClients" [value]="true"
-                           [(ngModel)]="client.checked"> {{ client.client.name }}
-                </label>
+                <div class="checkbox" *ngFor="let client of clients">
+                    <label>
+                        <input type="checkbox" name="selectedClients" [value]="true"
+                               [(ngModel)]="client.checked"> {{ client.client.name }}
+                    </label>
+                </div>
             </div>
+
         </div>
-
     </div>
-
-    <button type="submit" class="btn btn-primary" (click)="showConfirmModal()"
-            [disabled]="!canMakeStrategyExecution()">
-        Add strategy
-    </button>
-    <a [routerLink]="'/automation'" class="btn btn-secondary">
-        Cancel
-    </a>
-
+    <div class="row">
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary" (click)="showConfirmModal()"
+                    [disabled]="!canMakeStrategyExecution()">
+                Add strategy
+            </button>
+            <a [routerLink]="'/automation'" class="btn btn-secondary">
+                Cancel
+            </a>
+        </div>
+    </div>
 </form>
 
 <ng-template #confirmContent let-c="close" let-d="dismiss">
