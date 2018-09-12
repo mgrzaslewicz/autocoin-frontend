@@ -24,14 +24,12 @@ export class LocalStorageFeatureToggle implements FeatureToggle {
     }
 
     private isActiveByDefault(toggleName: string) {
-        switch (toggleName) {
-            case FEATURE_CREATE_STRATEGY: {
-                return true;
-            }
-            default: {
-                return false;
-            }
-        }
+        return [
+            FEATURE_CREATE_STRATEGY,
+            FEATURE_STRATEGY_SELL_WHEN_SECOND_CURRENCY_GROWS,
+            FEATURE_STRATEGY_SELL_NOW,
+            FEATURE_STRATEGY_BUY_NOW
+        ].includes(toggleName);
     }
 
 }
