@@ -1,19 +1,30 @@
 <div class="login-page" [@routerTransition]>
     <div class="row justify-content-md-center">
         <div class="col-md-4">
-            <img src="assets/images/logo.png" width="150px" class="user-avatar" />
+            <img src="assets/images/logo.png" width="150px" class="user-avatar"/>
             <h1>Autocoin</h1>
-            <form ngForm role="form" (ngSubmit)="onLogIn(loginForm)" #loginForm="ngForm">
+            <form ngForm role="form" (ngSubmit)="onSubmit(loginForm)" #loginForm="ngForm">
                 <div class="form-content">
-                    <div class="form-group">
-                        <input ngModel type="text" name="email" class="form-control input-underline input-lg" id="email" placeholder="Email" required email>
-                    </div>
+                    <div *ngIf="isAtLoginAndPasswordStep()">
+                        <div class="form-group">
+                            <input ngModel type="text" name="email" class="form-control input-underline input-lg"
+                                   id="email"
+                                   placeholder="Email" required email>
+                        </div>
 
-                    <div class="form-group">
-                        <input ngModel type="password" name="password" class="form-control input-underline input-lg" id="password" placeholder="Password" required>
+                        <div class="form-group">
+                            <input ngModel type="password" name="password" class="form-control input-underline input-lg"
+                                   id="password" placeholder="Password" required>
+                        </div>
+                        <div *ngIf="isAtTwoFactorAuthenticationCodeStep()">
+                            <div>Please input 2-Step authentication code</div>
+                            <input ngModel type="number" name="twoFactorAuthenticationCode" class="form-control"
+                                   id="twoFactorAuthenticationCode" placeholder="Two factor authentication code"
+                                   required>
+                        </div>
                     </div>
                 </div>
-                <button type="submit" class="btn rounded-btn" [disabled]="loginForm.invalid"> Log in </button>
+                <button type="submit" class="btn rounded-btn" [disabled]="loginForm.invalid"> Log in</button>
                 <!-- <a class="btn rounded-btn" [routerLink]="['/dashboard']"> Log in </a> -->
                 &nbsp;
                 <!-- <a class="btn rounded-btn" [routerLink]="['/signup']">Register</a> -->

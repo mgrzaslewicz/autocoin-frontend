@@ -15,6 +15,9 @@ export class LoginComponent implements OnInit {
 
     @ViewChild('loginForm')
     public loginForm: NgForm;
+    private loginAndPasswordStep = 'loginAndPassword';
+    private twoFactorAuthenticationCodeStep = 'twoFactorAuthenticationCode';
+    private currentStep = 'loginAndPassword';
 
     constructor(public router: Router,
                 private authService: AuthService,
@@ -24,7 +27,16 @@ export class LoginComponent implements OnInit {
     ngOnInit() {
     }
 
-    onLogIn(loginForm) {
+    onSubmit(loginForm) {
+        if (this.isAtLoginAndPasswordStep()) {
+            this.onLoginAndPasswordSubmit(loginForm);
+        }
+        if (this.isAtTwoFactorAuthenticationCodeStep()) {
+            this.onTwoFactorAuthenticationCodeSubmit(loginForm);
+        }
+    }
+
+    onLoginAndPasswordSubmit(loginForm) {
         this.authService.login(loginForm.value.email, loginForm.value.password)
             .subscribe(response => {
                 this.router.navigate(['/dashboard']);
@@ -36,4 +48,18 @@ export class LoginComponent implements OnInit {
                 }
             });
     }
+
+    onTwoFactorAuthenticationCodeSubmit(loginForm) {
+        console.log('TODO onTwoFactorAuthenticationCodeSubmit');
+        throw new Error('onTwoFactorAuthenticationCodeSubmit not implemented yet');
+    }
+
+    public isAtLoginAndPasswordStep(): boolean {
+        return this.currentStep === this.loginAndPasswordStep;
+    }
+
+    public isAtTwoFactorAuthenticationCodeStep(): boolean {
+        return this.currentStep === this.twoFactorAuthenticationCodeStep;
+    }
+
 }

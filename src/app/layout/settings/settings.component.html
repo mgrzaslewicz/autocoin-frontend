@@ -1,3 +1,3 @@
 <app-page-header [heading]="'Settings'" [icon]="'fa-cog'"></app-page-header>
-  
+<app-two-factor-authentication *ngIf="isShowingTwoFactorAuthentication()"></app-two-factor-authentication>
 <app-watched-currency-pairs></app-watched-currency-pairs>
