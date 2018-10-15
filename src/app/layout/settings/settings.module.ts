@@ -6,7 +6,7 @@ import {SettingsComponent} from './settings.component';
 import {PageHeaderModule} from '../../shared/index';
 import {WatchedCurrencyPairsComponent} from './watched-currency-pairs/watched-currency-pairs.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {TwoFactorAuthenticationComponent} from './two-factor-authentication/two-factor-authentication.component';
+import {TwoFactorAuthenticationSettingsComponent} from './two-factor-authentication-settings/two-factor-authentication-settings.component';
 
 @NgModule({
     imports: [
@@ -16,7 +16,7 @@ import {TwoFactorAuthenticationComponent} from './two-factor-authentication/two-
         FormsModule,
         ReactiveFormsModule
     ],
-    declarations: [SettingsComponent, WatchedCurrencyPairsComponent, TwoFactorAuthenticationComponent]
+    declarations: [SettingsComponent, WatchedCurrencyPairsComponent, TwoFactorAuthenticationSettingsComponent]
 })
 export class SettingsModule {
 }
