@@ -3,16 +3,16 @@
         <h2 class="page-header">
             {{heading}}
         </h2>
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <i class="fa fa-dashboard"></i> <a [routerLink]="['/dashboard']">Dashboard</a>
-            </li>
+        <!--<ol class="breadcrumb">-->
+            <!--<li class="breadcrumb-item">-->
+                <!--<i class="fa fa-dashboard"></i> <a [routerLink]="['/dashboard']">Dashboard</a>-->
+            <!--</li>-->
 
-            <li class="breadcrumb-item" *ngFor="let parent of parents">
-                <i class="fa fa-{{ parent.icon }}"></i> <a [routerLink]="[parent.link]">{{ parent.heading }}</a>
-            </li>
-            
-            <li class="breadcrumb-item active"><i class="fa {{icon}}"></i> {{heading}}</li>
-        </ol>
+            <!--<li class="breadcrumb-item" *ngFor="let parent of parents">-->
+                <!--<i class="fa fa-{{ parent.icon }}"></i> <a [routerLink]="[parent.link]">{{ parent.heading }}</a>-->
+            <!--</li>-->
+
+            <!--<li class="breadcrumb-item active"><i class="fa {{icon}}"></i> {{heading}}</li>-->
+        <!--</ol>-->
     </div>
 </div>
