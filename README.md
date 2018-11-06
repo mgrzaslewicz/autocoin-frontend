@@ -12,7 +12,14 @@ $ ./production-deploy.sh
 The script pulls from master branch and builds fresh docker container. 
 Type password if necessery to allow sudo commands.
 
-## SB Admin rewritten in Angular5 and Bootstrap 4
+### Run locally
+npm run start
+
+
+
+# TODO Fix. All informatin below may not be accurate
+
+##SB Admin rewritten in Angular5 and Bootstrap 4
 
 Simple Dashboard Admin App built using Angular 5 and Bootstrap 4
 
