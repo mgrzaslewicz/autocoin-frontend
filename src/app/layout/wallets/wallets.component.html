@@ -1,13 +1,13 @@
 <div [@routerTransition]>
     <app-page-header [heading]="'Wallets'" [icon]="'fa-money'"></app-page-header>
-    <div class="card mb-3">
+    <div class="card mb-3 bg-dark">
         <button class="btn btn-info" (click)="fetchPrices()" [disabled]="pendingPriceRefresh">
             <i class="fa fa-refresh" [class.is-pending]="pendingPriceRefresh"></i> Refresh prices
         </button>
         <p>Last prices refresh: {{ getLastPriceRefreshTime() | date: 'y-MM-dd HH:mm:ss' || '-' }}</p>
     </div>
     <ng-container *ngIf="!pendingPriceRefresh">
-        <div *ngFor="let client of clients" class="card mb-3">
+        <div *ngFor="let client of clients" class="card mb-3 bg-dark">
             <h3>{{ client.name }}</h3>
             <button class="btn btn-info" (click)="fetchExchangeBalancesForClient(client)" [disabled]="pending">
                 <i class="fa fa-refresh" [class.is-pending]="pending"></i> Refresh amounts

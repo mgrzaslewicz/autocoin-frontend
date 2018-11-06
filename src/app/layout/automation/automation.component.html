@@ -2,7 +2,7 @@
 <div class="alert alert-primary">
     Currently supported exchanges for automation: {{ supportedExchanges.join() }}
 </div>
-<div class="card mb-3" *ngFor="let exchange of exchanges">
+<div class="card mb-3 bg-dark" *ngFor="let exchange of exchanges">
     <div class="card-header">
         <div class="row justify-content-between align-items-center px-2">
             <span>{{ exchange.name }}</span>
