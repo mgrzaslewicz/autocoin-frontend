@@ -232,27 +232,25 @@ export class WalletsComponent implements OnInit {
         localStorage.setItem('wallet-distinct-currency-codes', JSON.stringify(distinctCurrencyCodes));
 
         this.pendingPriceRefresh = true;
-
-        const numberOfCurrencyCodes = distinctCurrencyCodes.length;
-        let numberOfFetchedCurrencyCodes = 0;
-
-        distinctCurrencyCodes.forEach(currencyCode => {
-            this.priceService.getPrice(currencyCode).subscribe(currencyPrice => {
+        Observable.from(distinctCurrencyCodes)
+            .flatMap(currencyCode => {
+                return Observable.of(currencyCode)
+                    .flatMap(ccy => {
+                        return this.priceService.getPrice(ccy);
+                    })
+                    .catch(() => Observable.empty<CurrencyPrice>());
+            })
+            .subscribe({
+                next: (currencyPrice) => {
                     this.savePrice(currencyPrice);
-                    numberOfFetchedCurrencyCodes++;
-                    if (numberOfCurrencyCodes === numberOfFetchedCurrencyCodes) {
-                        this.pendingPriceRefresh = false;
-                        this.savePriceRefreshTime();
-                    }
+                    console.log(`Next price for ${ currencyPrice.currencyCode } is ${ 1 / currencyPrice.priceInBtc } ($ ${ currencyPrice.btcUsdPrice })`);
                 },
-                error => {
-                    numberOfFetchedCurrencyCodes++;
-                    if (numberOfCurrencyCodes === numberOfFetchedCurrencyCodes) {
+                complete: () => {
+                    console.log('Complete'),
                         this.pendingPriceRefresh = false;
-                        this.savePriceRefreshTime();
-                    }
-                });
-        });
+                    this.savePriceRefreshTime();
+                }
+            });
         return distinctCurrencyCodes;
     }
 
