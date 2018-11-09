@@ -1,12 +1,17 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {FEATURE_USE_SPRING_AUTH_SERVICE, FeatureToggle, FeatureToggleToken} from './feature.toogle.service';
 
 @Injectable()
 export class AuthService {
 
-    usersApiToken = 'https://users-api.autocoin-trader.com/ids/connect/token';
+    usersApiTokenDeprecated = 'https://users-api.autocoin-trader.com/ids/connect/token';
+    usersApiToken = 'https://users-apiv2.autocoin-trader.com/oauth/token';
 
-    constructor(private http: HttpClient) {
+    constructor(
+        private http: HttpClient,
+        @Inject(FeatureToggleToken) private featureToggle: FeatureToggle
+    ) {
     }
 
     login(username, password) {
@@ -18,15 +23,23 @@ export class AuthService {
             .set('grant_type', 'username_password')
             .set('scopes', 'API.read');
 
-        let headers = new HttpHeaders()
+        if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
+            body = body.set('username', username)
+                .set('grant_type', 'password')
+                .set('scopes', 'API.read');
+        }
+
+        const headers = new HttpHeaders()
             .append('Cache-Control', 'no-cache')
             .append('Content-Type', 'application/x-www-form-urlencoded');
 
-        let options = {
+        const options = {
             headers
         };
 
-        return this.http.post(this.usersApiToken, body, options)
+        const tokenEndpointUrl = this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE) ? this.usersApiToken : this.usersApiTokenDeprecated;
+
+        return this.http.post(tokenEndpointUrl, body, options)
             .do(response => {
                 this.storeAccessToken(response['access_token']);
                 this.storeUserName(username);

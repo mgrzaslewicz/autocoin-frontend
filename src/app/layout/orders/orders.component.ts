@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription, Observable} from 'rxjs';
 import {OrdersService} from '../../services/orders.service';
-import {ClientsService} from '../../services/api';
+import {ExchangeUsersService} from '../../services/api';
 import {ToastService} from '../../services/toast.service';
 import {Order, Client} from '../../models';
 import {OpenOrdersResponseDto} from '../../models/order';
@@ -24,7 +24,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
     constructor(
         private orderService: OrdersService,
-        private clientsService: ClientsService,
+        private clientsService: ExchangeUsersService,
         private toastService: ToastService
     ) {
     }

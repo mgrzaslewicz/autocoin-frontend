@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../services/toast.service';
-import { ClientsService } from '../../../services/api';
+import { ExchangeUsersService } from '../../../services/api';
 
 @Component({
   selector: 'app-client-create',
@@ -15,7 +15,7 @@ export class ClientCreateComponent implements OnInit {
   constructor(
     private router: Router,
     private toastService: ToastService,
-    private clientsService: ClientsService
+    private clientsService: ExchangeUsersService
   ) { }
 
   ngOnInit() { }

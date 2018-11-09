@@ -3,7 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {Observable} from 'rxjs';
 import {CurrencyPair, Client} from '../../../models';
 import {WatchCurrencyPairsService} from '../../../services/watch-currency-pairs.service';
-import {ClientsService} from '../../../services/api';
+import {ExchangeUsersService} from '../../../services/api';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToastService} from '../../../services/toast.service';
 import {StrategiesService} from '../../../services/automation/strategies.service';
@@ -63,7 +63,7 @@ export class MakeStrategyExecutionComponent implements OnInit {
 
     constructor(
         private route: ActivatedRoute,
-        private clientsService: ClientsService,
+        private clientsService: ExchangeUsersService,
         private watchedCurrencyPairs: WatchCurrencyPairsService,
         private modalService: NgbModal,
         private toastService: ToastService,
@@ -97,7 +97,7 @@ export class MakeStrategyExecutionComponent implements OnInit {
                 return this.allExchangePairs.filter(pair => pair.symbol().indexOf(exchangePairSymbol) > -1).slice(0, 10);
             })
             .map(pairs => pairs.map(pair => pair.symbol()));
-    }
+    };
 
     private loadClients() {
         this.clientsService.getClients().subscribe(clients => {

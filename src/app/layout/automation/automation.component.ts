@@ -5,7 +5,7 @@ import {ToastService} from '../../services/toast.service';
 import {Client, Exchange} from '../../models';
 import {ExchangesService} from '../../services/automation/exchanges.service';
 import {StrategyExecutionResponseDto} from '../../models/strategy';
-import {ClientsService} from '../../services/api';
+import {ExchangeUsersService} from '../../services/api';
 
 @Component({
     selector: 'app-automation',
@@ -23,7 +23,7 @@ export class AutomationComponent implements OnInit {
         private toastService: ToastService,
         private exchangesService: ExchangesService,
         private strategiesExecutionsService: StrategiesExecutionsService,
-        private clientsService: ClientsService
+        private clientsService: ExchangeUsersService
     ) {
     }
 

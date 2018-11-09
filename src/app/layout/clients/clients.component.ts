@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
-import {ClientsService} from '../../services/api';
+import {ExchangeUsersService} from '../../services/api';
 import {Client, Exchange, ExchangeKey} from '../../models';
 import {ToastService} from '../../services/toast.service';
 
@@ -17,7 +17,7 @@ export class ClientsComponent implements OnInit {
     public isLoading = true;
 
     constructor(
-        private clientsService: ClientsService,
+        private clientsService: ExchangeUsersService,
         private toastService: ToastService
     ) {
     }

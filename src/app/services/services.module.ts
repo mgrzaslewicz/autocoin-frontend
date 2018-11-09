@@ -7,10 +7,10 @@ import {ToastService} from './toast.service';
 import {WatchCurrencyPairsService} from './watch-currency-pairs.service';
 import {OrdersService} from './orders.service';
 import {AuthService} from './auth.service';
-import {ClientsService} from './api/clients/clients.service';
 import {ExchangeAccountService} from './exchange-account.service';
 import {PriceService} from './price.service';
 import {FeatureToggleToken, LocalStorageFeatureToggle} from './feature.toogle.service';
+import {ExchangeUsersService} from './api';
 
 @NgModule({
     imports: [
@@ -23,7 +23,7 @@ import {FeatureToggleToken, LocalStorageFeatureToggle} from './feature.toogle.se
         {provide: FeatureToggleToken, useClass: LocalStorageFeatureToggle},
         AuthService,
         ApiService,
-        ClientsService,
+        ExchangeUsersService,
         ExchangeAccountService,
         PriceService,
 

@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/cor
 import { Client } from '../../../models';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastService } from '../../../services/toast.service';
-import { ClientsService } from '../../../services/api/index';
+import { ExchangeUsersService } from '../../../services/api/index';
 
 @Component({
   selector: 'app-client-delete',
@@ -22,7 +22,7 @@ export class ClientDeleteComponent implements OnInit {
   constructor(
     private modalService: NgbModal,
     private toastService: ToastService,
-    private clientsService: ClientsService
+    private clientsService: ExchangeUsersService
   ) { }
 
   ngOnInit() {

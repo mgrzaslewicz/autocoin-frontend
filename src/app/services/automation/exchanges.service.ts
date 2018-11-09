@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Exchange} from '../../models';
-import {ClientsService} from '../api';
+import {ExchangeUsersService} from '../api';
 import {Observable} from 'rxjs';
 import * as _ from 'underscore';
 
@@ -8,7 +8,7 @@ import * as _ from 'underscore';
 export class ExchangesService {
 
     constructor(
-        private clientsService: ClientsService
+        private clientsService: ExchangeUsersService
     ) {
     }
 

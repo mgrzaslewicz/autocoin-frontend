@@ -1,1 +1,1 @@
-export * from './clients/clients.service';
+export * from './exchangeusers/exchange-users.service';
