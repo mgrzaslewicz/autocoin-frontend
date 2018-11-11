@@ -3,7 +3,7 @@ import {Subscription, Observable} from 'rxjs';
 import {OrdersService} from '../../services/orders.service';
 import {ExchangeUsersService} from '../../services/api';
 import {ToastService} from '../../services/toast.service';
-import {Order, Client} from '../../models';
+import {Order, ExchangeUser} from '../../models';
 import {OpenOrdersResponseDto} from '../../models/order';
 
 @Component({
@@ -16,7 +16,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
     private openOrdersSubscription: Subscription;
 
     openOrders: OpenOrdersResponseDto[] = [];
-    clients: Client[] = [];
+    clients: ExchangeUser[] = [];
     orderViewState: Map<string, string> = new Map();
     pending: boolean;
 
@@ -40,7 +40,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
         this.openOrdersSubscription = Observable.forkJoin(
             this.orderService.getOpenOrders(),
-            this.clientsService.getClients()
+            this.clientsService.getExchangeUsers()
         ).subscribe(([ordersResponseDto, clients]) => {
             this.openOrders = ordersResponseDto;
             this.openOrders.forEach(openOrdersAtExchange => {
@@ -59,7 +59,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
         });
     }
 
-    getFailedExchangesForClient(client: Client): string[] {
+    getFailedExchangesForClient(client: ExchangeUser): string[] {
         return Array.from(
             this.openOrders.filter(ordersAtExchange => ordersAtExchange.clientId === client.id && ordersAtExchange.errorMessage != null)
                 .map(ordersAtExchange => ordersAtExchange.exchangeName + ': ' + ordersAtExchange.errorMessage)
@@ -70,7 +70,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
         this.openOrdersSubscription.unsubscribe();
     }
 
-    ordersForClient(client: Client): Order[] {
+    ordersForClient(client: ExchangeUser): Order[] {
         if (!client) {
             console.log(`No client`);
             return [];

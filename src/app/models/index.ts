@@ -1,4 +1,4 @@
-export * from './client';
+export * from './exchange-user';
 export * from './exchange';
 export * from './exchange-key';
 export * from './order';

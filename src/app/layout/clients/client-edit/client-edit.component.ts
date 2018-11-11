@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ExchangeUsersService} from '../../../services/api';
-import {Client, Exchange, ExchangeKey} from '../../../models';
+import {ExchangeUser, Exchange, ExchangeKey} from '../../../models';
 import {Observable} from 'rxjs/Observable';
 import {ToastService} from '../../../services/toast.service';
 import * as _ from 'underscore';
@@ -17,7 +17,7 @@ export class ClientEditComponent implements OnInit {
     public loading = false;
 
     // TODO change to exchangeUser
-    public client: Client;
+    public client: ExchangeUser;
 
     public exchanges: Exchange[];
 
@@ -34,8 +34,8 @@ export class ClientEditComponent implements OnInit {
     ngOnInit() {
         Observable.forkJoin(
             this.exchangeUsersService.getExchanges(),
-            this.exchangeUsersService.findClient(this.route.snapshot.params.clientId),
-            this.exchangeUsersService.getExchangesForClient(this.route.snapshot.params.clientId)
+            this.exchangeUsersService.findExchangeUser(this.route.snapshot.params.clientId),
+            this.exchangeUsersService.getExchangeKeysForExchangeUser(this.route.snapshot.params.clientId)
         ).subscribe(([exchanges, client, exchangesKeys]) => {
             this.exchanges = this.sortAZ(exchanges);
             this.client = client;
@@ -63,13 +63,13 @@ export class ClientEditComponent implements OnInit {
             const formKeys = exchangesKeys[exchangeId];
             const requestData = this.getRequestData(exchangeId, formKeys);
             if (requestData != null) {
-                const subscription = this.exchangeUsersService.updateClientExchangesKeys(this.client.id, exchangeId, requestData);
+                const subscription = this.exchangeUsersService.updateExchangesKeys(this.client.id, exchangeId, requestData);
                 subscriptions.push(subscription);
             }
         }
 
         Observable.forkJoin(subscriptions).subscribe(() => {
-            this.toastService.success('Client has been updated.');
+            this.toastService.success('ExchangeUser has been updated.');
             this.router.navigate(['/clients']);
         }, error => {
             this.toastService.danger(error.message);
@@ -101,7 +101,7 @@ export class ClientEditComponent implements OnInit {
     }
 
     private updateClientName() {
-        return this.exchangeUsersService.updateClient(this.client.id, {name: this.client.name});
+        return this.exchangeUsersService.updateExchangeUser(this.client.id, {name: this.client.name});
     }
 
 }

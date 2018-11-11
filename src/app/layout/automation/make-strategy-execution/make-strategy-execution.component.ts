@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Observable} from 'rxjs';
-import {CurrencyPair, Client} from '../../../models';
+import {CurrencyPair} from '../../../models';
 import {WatchCurrencyPairsService} from '../../../services/watch-currency-pairs.service';
 import {ExchangeUsersService} from '../../../services/api';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
@@ -100,7 +100,7 @@ export class MakeStrategyExecutionComponent implements OnInit {
     };
 
     private loadClients() {
-        this.clientsService.getClients().subscribe(clients => {
+        this.clientsService.getExchangeUsers().subscribe(clients => {
             for (const client of clients) {
                 this.clients.push({client: client, checked: false});
             }

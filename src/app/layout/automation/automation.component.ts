@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {StrategiesExecutionsService} from '../../services/automation/strategies-executions.service';
 import {Observable} from 'rxjs';
 import {ToastService} from '../../services/toast.service';
-import {Client, Exchange} from '../../models';
+import {ExchangeUser, Exchange} from '../../models';
 import {ExchangesService} from '../../services/automation/exchanges.service';
 import {StrategyExecutionResponseDto} from '../../models/strategy';
 import {ExchangeUsersService} from '../../services/api';
@@ -15,7 +15,7 @@ import {ExchangeUsersService} from '../../services/api';
 export class AutomationComponent implements OnInit {
 
     exchanges: Exchange[] = [];
-    clients: Client[] = [];
+    clients: ExchangeUser[] = [];
     private strategiesExecutions: StrategyExecutionResponseDto[];
     public supportedExchanges = ['binance', 'bittrex', 'kucoin'];
 
@@ -39,7 +39,7 @@ export class AutomationComponent implements OnInit {
         Observable.forkJoin(
             this.exchangesService.getExchanges(),
             this.strategiesExecutionsService.getStrategiesExecutions(),
-            this.clientsService.getClients()
+            this.clientsService.getExchangeUsers()
         ).subscribe(([exchanges, strategiesExecutions, clients]) => {
             this.exchanges = exchanges;
             this.strategiesExecutions = strategiesExecutions;

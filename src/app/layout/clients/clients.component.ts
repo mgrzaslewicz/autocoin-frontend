@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ExchangeUsersService} from '../../services/api';
-import {Client, Exchange, ExchangeKey} from '../../models';
+import {ExchangeUser, Exchange, ExchangeKey} from '../../models';
 import {ToastService} from '../../services/toast.service';
 
 @Component({
@@ -10,7 +10,7 @@ import {ToastService} from '../../services/toast.service';
     styleUrls: ['./clients.component.scss']
 })
 export class ClientsComponent implements OnInit {
-    public clients: Client[] = [];
+    public clients: ExchangeUser[] = [];
     public exchanges: Exchange[];
     public exchangesKeys: ExchangeKey[];
     public selectedClientsExchanges = [];
@@ -30,7 +30,7 @@ export class ClientsComponent implements OnInit {
         this.selectedClientsExchanges = [];
 
         Observable.forkJoin(
-            this.clientsService.getClients(),
+            this.clientsService.getExchangeUsers(),
             this.clientsService.getExchanges(),
             this.clientsService.getExchangesKeys()
         ).subscribe(([clients, exchanges, exchangesKeys]) => {

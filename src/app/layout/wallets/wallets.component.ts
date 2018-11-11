@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {routerTransition} from '../../router.animations';
-import {Client} from '../../models';
+import {ExchangeUser} from '../../models';
 import {Observable, Subscription} from '../../../../node_modules/rxjs';
 import {ToastService} from '../../services/toast.service';
 import {ExchangeAccountService} from '../../services/exchange-account.service';
@@ -43,7 +43,7 @@ interface CurrencyBalanceTableRow {
     animations: [routerTransition()]
 })
 export class WalletsComponent implements OnInit {
-    clients: Client[] = [];
+    clients: ExchangeUser[] = [];
     pending: boolean = false;
     pendingPriceRefresh: boolean = false;
     private clientsSubscription: Subscription;
@@ -52,7 +52,7 @@ export class WalletsComponent implements OnInit {
     private btcUsdPriceKey = 'price-BTC-USD';
 
     constructor(
-        private clientsService: ExchangeUsersService,
+        private exchangeUsersService: ExchangeUsersService,
         private exchangeAccountService: ExchangeAccountService,
         private toastService: ToastService,
         private priceService: PriceService
@@ -61,7 +61,7 @@ export class WalletsComponent implements OnInit {
 
     ngOnInit() {
         this.clientsSubscription = Observable.forkJoin(
-            this.clientsService.getClients()
+            this.exchangeUsersService.getExchangeUsers()
         ).subscribe(([clients]) => {
             this.clients = clients;
             this.restorePricesFromLocalStorage();
@@ -71,7 +71,7 @@ export class WalletsComponent implements OnInit {
         });
     }
 
-    getLastClientWalletRefreshTime(client: Client): Date {
+    getLastClientWalletRefreshTime(client: ExchangeUser): Date {
         return this.getLocalStorageKeyAsDate('client-portfolio-refresh-time-' + client.id);
     }
 
@@ -91,11 +91,11 @@ export class WalletsComponent implements OnInit {
         return this.getLocalStorageKeyAsDate('prices-refresh-time');
     }
 
-    exchangeBalancesForClient(client: Client): ExchangeBalanceDto[] {
-        return JSON.parse(localStorage.getItem('client-portfolio-balances-' + client.id));
+    exchangeBalancesForClient(exchangeUser: ExchangeUser): ExchangeBalanceDto[] {
+        return JSON.parse(localStorage.getItem('client-portfolio-balances-' + exchangeUser.id));
     }
 
-    fetchExchangeBalancesForClient(client: Client) {
+    fetchExchangeBalancesForClient(client: ExchangeUser) {
         this.pending = true;
         this.exchangeAccountService.getAccountBalances(client.id).subscribe(
             accountBalances => {
@@ -168,7 +168,7 @@ export class WalletsComponent implements OnInit {
         }
     }
 
-    getTotalClientBtcValue(client: Client): number {
+    getTotalClientBtcValue(client: ExchangeUser): number {
         let totalBtc = 0.0;
         _.filter(this.exchangeBalancesForClient(client), exchange => exchange != null)
             .forEach(exchange => {
@@ -177,7 +177,7 @@ export class WalletsComponent implements OnInit {
         return totalBtc;
     }
 
-    getTotalClientUsdValue(client: Client): number {
+    getTotalClientUsdValue(client: ExchangeUser): number {
         const totalBtcValue = this.getTotalClientBtcValue(client);
         if (this.currencyPairPrices.has(this.btcUsd) && totalBtcValue !== null) {
             const usdBtcPrice = this.currencyPairPrices.get(this.btcUsd);

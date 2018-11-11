@@ -1,7 +1,7 @@
 import {Inject, Injectable} from '@angular/core';
 import {ApiService} from '../api.service';
 import {Observable} from 'rxjs/Observable';
-import {Client, Exchange, ExchangeKey} from '../../../models';
+import {ExchangeUser, Exchange, ExchangeKey} from '../../../models';
 import * as _ from 'underscore';
 import {FEATURE_USE_SPRING_AUTH_SERVICE, FeatureToggle, FeatureToggleToken} from '../../feature.toogle.service';
 
@@ -20,49 +20,45 @@ export class ExchangeUsersService {
     getExchanges(): Observable<Exchange[]> {
         if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
             return this.api.get(`${this.exchangeUsersApiUrl}/exchanges`)
-                .map(response => Object.values(response).map(data => this.makeExchange(data)));
+                .map(response => Object.values(response).map(data => this.toExchange(data)));
         } else {
             return this.api.get(`${this.clientsApiUrlDeprecated}/exchanges`)
-                .map(response => Object.values(response).map(data => this.makeExchange(data)));
+                .map(response => Object.values(response).map(data => this.toExchange(data)));
         }
     }
 
-    getClients(): Observable<Client[]> {
+    getExchangeUsers(): Observable<ExchangeUser[]> {
         if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
-            return this.api.get(`${this.exchangeUsersApiUrl}/user-accounts`)
-                .map(response => Object.values(response).map(data => this.makeClient(data)));
+            return this.api.get(`${this.exchangeUsersApiUrl}/exchange-users`)
+                .map(response => Object.values(response).map(data => this.toExchangeUser(data)));
         } else {
             return this.api.get(`${this.clientsApiUrlDeprecated}/clients`)
-                .map(response => Object.values(response).map(data => this.makeClient(data)));
+                .map(response => Object.values(response).map(data => this.toExchangeUser(data)));
         }
     }
 
     getExchangesKeys() {
         if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
             return this.api.get(`${this.exchangeUsersApiUrl}/exchange-keys`)
-                .map(response => Object.values(response).map(data => this.makeExchangeKey(data)));
+                .map(response => Object.values(response).map(data => this.toExchangeKey(data)));
         } else {
             return this.api.get(`${this.clientsApiUrlDeprecated}/exchange-keys`)
-                .map(response => Object.values(response).map(data => this.makeExchangeKey(data)));
+                .map(response => Object.values(response).map(data => this.toExchangeKey(data)));
         }
 
     }
 
-    getClientExchanges(client) {
-        return this.api.get(`${this.clientsApiUrlDeprecated}/clients/${client.id}/exchange-keys`);
+    private toExchangeUser(data): ExchangeUser {
+        const exchangeUser = new ExchangeUser;
+
+        exchangeUser.id = data.id;
+        exchangeUser.name = data.name;
+
+        return exchangeUser;
     }
 
-    private makeClient(data): Client {
-        let client = new Client;
-
-        client.id = data.id;
-        client.name = data.name;
-
-        return client;
-    }
-
-    private makeExchange(data): Exchange {
-        let exchange = new Exchange;
+    private toExchange(data): Exchange {
+        const exchange = new Exchange;
 
         exchange.id = data.id;
         exchange.name = data.name;
@@ -70,8 +66,8 @@ export class ExchangeUsersService {
         return exchange;
     }
 
-    private makeExchangeKey(data): ExchangeKey {
-        let exchangeKey = new ExchangeKey;
+    private toExchangeKey(data): ExchangeKey {
+        const exchangeKey = new ExchangeKey;
 
         exchangeKey.exchangeId = data.exchangeId ? data.exchangeId : data.exchnageId;
         exchangeKey.clientId = data.clientId;
@@ -82,8 +78,7 @@ export class ExchangeUsersService {
         return exchangeKey;
     }
 
-    // TODO change to createExchangeUser
-    createClient(data) {
+    createExchangeUser(data) {
         if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
             return this.api.put(`${this.exchangeUsersApiUrl}/exchange-users`, data);
         } else {
@@ -92,8 +87,7 @@ export class ExchangeUsersService {
 
     }
 
-    // TODO change to deleteExchangeUser
-    deleteClient(exchangeUserId) {
+    deleteExchangeUser(exchangeUserId) {
         if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
             return this.api.delete(`${this.exchangeUsersApiUrl}/exchange-users/${exchangeUserId}`);
         } else {
@@ -102,37 +96,35 @@ export class ExchangeUsersService {
 
     }
 
-    // TODO change to findExchangeUser
-    findClient(clientId): Observable<Client> {
+    findExchangeUser(exchangeUserId): Observable<ExchangeUser> {
         if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
             return this.api.get(`${this.exchangeUsersApiUrl}/exchange-users`)
                 .map(response => {
-                    let data = _(response).find({id: clientId});
+                    let data = _(response).find({id: exchangeUserId});
 
-                    return this.makeClient(data);
+                    return this.toExchangeUser(data);
                 });
         } else {
             return this.api.get(`${this.clientsApiUrlDeprecated}/clients`)
                 .map(response => {
-                    let data = _(response).find({id: clientId});
+                    let data = _(response).find({id: exchangeUserId});
 
-                    return this.makeClient(data);
+                    return this.toExchangeUser(data);
                 });
         }
     }
 
-    getExchangesForClient(exchangeUserId): Observable<ExchangeKey[]> {
+    getExchangeKeysForExchangeUser(exchangeUserId): Observable<ExchangeKey[]> {
         if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
             return this.api.get(`${this.exchangeUsersApiUrl}}/exchange-keys/${exchangeUserId}`)
-                .map(response => Object.values(response).map(data => this.makeExchangeKey(data)));
+                .map(response => Object.values(response).map(data => this.toExchangeKey(data)));
         } else {
             return this.api.get(`${this.clientsApiUrlDeprecated}/clients/${exchangeUserId}/exchange-keys`)
-                .map(response => Object.values(response).map(data => this.makeExchangeKey(data)));
+                .map(response => Object.values(response).map(data => this.toExchangeKey(data)));
         }
     }
 
-    // TODO change to updateExchangeUser
-    updateClient(exchangeUserId, data) {
+    updateExchangeUser(exchangeUserId, data) {
         if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
             return this.api.post(`${this.exchangeUsersApiUrl}/exchange-users/${exchangeUserId}`, data);
         } else {
@@ -140,8 +132,7 @@ export class ExchangeUsersService {
         }
     }
 
-    // TODO change to updateExchangesKeys
-    updateClientExchangesKeys(exchangeUserId, exchangeId, data) {
+    updateExchangesKeys(exchangeUserId, exchangeId, data) {
         if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
             return this.api.post(`${this.exchangeUsersApiUrl}/exchange-keys/${exchangeUserId}/${exchangeId}`, data);
         } else {

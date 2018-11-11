@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
-import { Client } from '../../../models';
+import { ExchangeUser } from '../../../models';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastService } from '../../../services/toast.service';
 import { ExchangeUsersService } from '../../../services/api/index';
@@ -11,7 +11,7 @@ import { ExchangeUsersService } from '../../../services/api/index';
 })
 export class ClientDeleteComponent implements OnInit {
 
-  private client: Client;
+  private client: ExchangeUser;
 
   @ViewChild('content')
   content;
@@ -22,24 +22,24 @@ export class ClientDeleteComponent implements OnInit {
   constructor(
     private modalService: NgbModal,
     private toastService: ToastService,
-    private clientsService: ExchangeUsersService
+    private exchangeUsersService: ExchangeUsersService
   ) { }
 
   ngOnInit() {
   }
 
-  destroy(client: Client) {
+  destroy(client: ExchangeUser) {
     this.client = client;
     
     this.modalService.open(this.content).result.then(result => {
       if (result === 'delete') {
-        this.deleteClient(client);
+        this.deleteExchangeUser(client);
       }
     }, reason => { });
   }
 
-  private deleteClient(client: Client) {
-    this.clientsService.deleteClient(client.id)
+  private deleteExchangeUser(exchangeUser: ExchangeUser) {
+    this.exchangeUsersService.deleteExchangeUser(exchangeUser.id)
       .subscribe(() => {
         this.toastService.success('User has been deleted.');
         this.refreshEmmiter.emit(null);

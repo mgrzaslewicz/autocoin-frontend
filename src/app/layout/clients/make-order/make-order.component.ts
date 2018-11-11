@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation, EventEmitter, Output } from '@angular/core';
 import { NgbModal, ModalDismissReasons, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { Client, CurrencyPair } from '../../../models';
+import { ExchangeUser, CurrencyPair } from '../../../models';
 import { Observable } from 'rxjs';
 import { WatchCurrencyPairsService } from '../../../services/watch-currency-pairs.service';
 import { ToastService } from '../../../services/toast.service';
