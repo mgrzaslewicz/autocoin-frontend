@@ -18,14 +18,16 @@ export class AuthService {
         let body = new HttpParams()
             .set('client_id', 'SPA')
             .set('client_secret', 'superSecretPassword')
-            .set('userName', username)
-            .set('password', password)
-            .set('grant_type', 'username_password')
-            .set('scopes', 'API.read');
+            .set('password', password);
 
         if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
-            body = body.set('username', username)
+            body = body
+                .set('username', username)
                 .set('grant_type', 'password')
+                .set('scopes', 'read');
+        } else {
+            body = body.set('userName', username)
+                .set('grant_type', 'username_password')
                 .set('scopes', 'API.read');
         }
 
@@ -51,7 +53,11 @@ export class AuthService {
     }
 
     token() {
-        return localStorage.getItem('token');
+        if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
+            return localStorage.getItem('tokenV2');
+        } else {
+            return localStorage.getItem('token');
+        }
     }
 
     userName(): String {
@@ -63,7 +69,11 @@ export class AuthService {
     }
 
     private storeAccessToken(accessToken) {
-        localStorage.setItem('token', accessToken);
+        if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
+            localStorage.setItem('tokenV2', accessToken);
+        } else {
+            localStorage.setItem('token', accessToken);
+        }
     }
 
     private storeUserName(userName) {
