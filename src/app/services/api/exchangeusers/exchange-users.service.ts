@@ -37,7 +37,7 @@ export class ExchangeUsersService {
         }
     }
 
-    getExchangesKeys(): Observable<ExchangeKey[]> {
+    getExchangesKeysExistence(): Observable<ExchangeKey[]> {
         if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
             return this.http.get<ExchangeKey[]>(`${this.exchangeUsersApiUrl}/exchange-keys`)
                 .map(response => Object.values(response).map(data => this.toExchangeKey(data)));
@@ -116,7 +116,7 @@ export class ExchangeUsersService {
 
     getExchangeKeysForExchangeUser(exchangeUserId): Observable<ExchangeKey[]> {
         if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
-            return this.http.get(`${this.exchangeUsersApiUrl}}/exchange-keys/${exchangeUserId}`)
+            return this.http.get(`${this.exchangeUsersApiUrl}/exchange-keys/${exchangeUserId}`)
                 .map(response => Object.values(response).map(data => this.toExchangeKey(data)));
         } else {
             return this.http.get(`${this.clientsApiUrlDeprecated}/clients/${exchangeUserId}/exchange-keys`)

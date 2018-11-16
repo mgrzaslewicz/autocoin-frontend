@@ -4,11 +4,11 @@ import {ToastService} from '../../../services/toast.service';
 import {ExchangeUsersService} from '../../../services/api';
 
 @Component({
-    selector: 'app-client-create',
-    templateUrl: './client-create.component.html',
-    styleUrls: ['./client-create.component.scss']
+    selector: 'app-exchange-user-create',
+    templateUrl: './exchange-user-create.component.html',
+    styleUrls: ['./exchange-user-create.component.scss']
 })
-export class ClientCreateComponent implements OnInit {
+export class ExchangeUserCreateComponent implements OnInit {
 
     public loading = false;
 
@@ -27,8 +27,8 @@ export class ClientCreateComponent implements OnInit {
 
         this.exchangeUsersService.createExchangeUser({name: createForm.value.name})
             .subscribe(() => {
-                this.toastService.success('ExchangeUser has been created.');
-                this.router.navigate(['/clients']);
+                this.toastService.success('Exchange user has been created.');
+                this.router.navigate(['/exchange-users']);
             }, error => {
                 this.toastService.danger(error.message);
                 this.loading = false;

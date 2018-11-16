@@ -15,7 +15,7 @@ export class ExchangesService {
     public getExchanges(): Observable<Exchange[]> {
         return Observable.forkJoin([
             this.clientsService.getExchanges(),
-            this.clientsService.getExchangesKeys()
+            this.clientsService.getExchangesKeysExistence()
         ]).map(([exchanges, exchangesKeys]) => {
 
             exchangesKeys = _.pluck(exchangesKeys, 'exchangeId');

@@ -1,13 +1,13 @@
 <div>
-    <app-page-header [heading]="'Edit user'" [icon]="'fa-user'"
-                     [parents]="[ { heading: 'Users', link: '/clients', icon: 'users' } ]"></app-page-header>
+    <app-page-header [heading]="'Edit exchange user'" [icon]="'fa-user'"
+                     [parents]="[ { heading: 'Exchange users', link: '/exchange-users', icon: 'users' } ]"></app-page-header>
 
-    <form (ngSubmit)="onSubmit(createForm)" *ngIf="client" #createForm="ngForm">
+    <form (ngSubmit)="onSubmit(createForm)" *ngIf="exchangeUser" #createForm="ngForm">
         <div class="row">
             <div class="col-md-6">
                 <fieldset class="form-group">
                     <label>Name</label>
-                    <input class="form-control" [(ngModel)]="client.name" name="name" required>
+                    <input class="form-control" [(ngModel)]="exchangeUser.name" name="name" required>
                 </fieldset>
 
                 <button type="submit" class="btn btn-primary" [disabled]="createForm.invalid || loading">Save</button>

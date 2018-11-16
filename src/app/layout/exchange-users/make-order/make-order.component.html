@@ -12,12 +12,12 @@
       <div class="form-group">
         <label>Users</label>
         <ul class="list-group">
-          <li class="list-group-item" *ngFor="let clientExchange of selectedClientsExchanges">
+          <li class="list-group-item" *ngFor="let exchangeWithExchangeUser of selectedExchangeWithExchangeUsers">
             <span class="badge badge-info">
-              {{ clientExchange.exchangeName }}
+              {{ exchangeWithExchangeUser.exchangeName }}
             </span>
             of
-            {{ clientExchange.client.name }}
+            {{ exchangeWithExchangeUser.exchangeUser.name }}
           </li>
         </ul>
       </div>

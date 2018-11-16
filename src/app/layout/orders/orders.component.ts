@@ -72,7 +72,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
     ordersForClient(client: ExchangeUser): Order[] {
         if (!client) {
-            console.log(`No client`);
+            console.log(`No exchange user`);
             return [];
         }
         const openOrdersOfClient: Order[][] = Array.from(

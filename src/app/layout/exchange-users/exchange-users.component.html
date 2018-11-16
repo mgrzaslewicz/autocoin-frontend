@@ -1,0 +1,46 @@
+<app-page-header [heading]="'Exchange users'" [icon]="'fa-users'"></app-page-header>
+
+<div class="card mb-3 bg-dark">
+    <div class="card-header">Exchange users and keys</div>
+    <div *ngIf="!isLoading && exchangeUsers.length == 0" class="alert alert-primary">
+        Start with adding your first exchange user, that might be your name and then assign exchange keys
+    </div>
+    <table class="card-body table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Exchange keys</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let exchangeUser of exchangeUsers">
+            <td>
+                {{ exchangeUser.name }}
+            </td>
+            <td>
+                  <span class="badge" *ngFor="let exchangeName of getExchangesNamesOfExchangeUser(exchangeUser)"
+                        [class.badge-light]="!isExchangeUserExchangeSelected(exchangeUser, exchangeName)"
+                        [class.badge-warning]="isExchangeUserExchangeSelected(exchangeUser, exchangeName)"
+                        (click)="onSelectExchangeUserExchangeName(exchangeUser, exchangeName)">
+                    {{ exchangeName }}
+                  </span>
+            </td>
+            <td>
+                <button [routerLink]="['/exchange-users/edit', exchangeUser.id]" class="btn btn-success btn-sm">Edit</button>
+                <button (click)="exchangeUserDelete.destroy(exchangeUser)" class="btn btn-danger btn-sm">Delete</button>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+
+<button class="btn btn-success" [disabled]="selectedExchangeNamesWithExchangeUsers.length == 0"
+        (click)="makeOrder.generateFor(selectedExchangeNamesWithExchangeUsers)">Make order
+</button>
+<a routerLink="/exchange-users/create" class="btn btn-info">Add user</a>
+
+<app-exchange-user-delete #exchangeUserDelete (refresh)="loadData()"></app-exchange-user-delete>
+
+<app-make-order #makeOrder (success)="selectedExchangeNamesWithExchangeUsers = []"></app-make-order>

@@ -7,16 +7,15 @@ import {ToastService} from '../../../services/toast.service';
 import * as _ from 'underscore';
 
 @Component({
-    selector: 'app-client-edit',
-    templateUrl: './client-edit.component.html',
-    styleUrls: ['./client-edit.component.scss']
+    selector: 'app-exchange-user-edit',
+    templateUrl: './exchange-user-edit.component.html',
+    styleUrls: ['./exchange-user-edit.component.scss']
 })
-// TODO change to ExchangeUserEditComponent
-export class ClientEditComponent implements OnInit {
+export class ExchangeUserEditComponent implements OnInit {
 
     public loading = false;
 
-    public client: ExchangeUser;
+    public exchangeUser: ExchangeUser;
 
     public exchanges: Exchange[];
 
@@ -33,11 +32,11 @@ export class ClientEditComponent implements OnInit {
     ngOnInit() {
         Observable.forkJoin(
             this.exchangeUsersService.getExchanges(),
-            this.exchangeUsersService.findExchangeUser(this.route.snapshot.params.clientId),
-            this.exchangeUsersService.getExchangeKeysForExchangeUser(this.route.snapshot.params.clientId)
-        ).subscribe(([exchanges, client, exchangesKeys]) => {
+            this.exchangeUsersService.findExchangeUser(this.route.snapshot.params.exchangeUserId),
+            this.exchangeUsersService.getExchangeKeysForExchangeUser(this.route.snapshot.params.exchangeUserId)
+        ).subscribe(([exchanges, exchangeUser, exchangesKeys]) => {
             this.exchanges = this.sortAZ(exchanges);
-            this.client = client;
+            this.exchangeUser = exchangeUser;
             this.exchangesKeys = exchangesKeys;
         });
     }
@@ -57,19 +56,19 @@ export class ClientEditComponent implements OnInit {
 
         const subscriptions = [this.updateClientName()];
 
-        const exchangesKeys = createForm.value.exchangesKeys;
+        const exchangesKeys = createForm.value.exchangeKeysExistence;
         for (const exchangeId in exchangesKeys) {
             const formKeys = exchangesKeys[exchangeId];
             const requestData = this.getRequestData(exchangeId, formKeys);
             if (requestData != null) {
-                const subscription = this.exchangeUsersService.updateExchangesKeys(this.client.id, exchangeId, requestData);
+                const subscription = this.exchangeUsersService.updateExchangesKeys(this.exchangeUser.id, exchangeId, requestData);
                 subscriptions.push(subscription);
             }
         }
 
         Observable.forkJoin(subscriptions).subscribe(() => {
             this.toastService.success('ExchangeUser has been updated.');
-            this.router.navigate(['/clients']);
+            this.router.navigate(['/exchangeUsers']);
         }, error => {
             this.toastService.danger(error.message);
             this.loading = false;
@@ -100,7 +99,7 @@ export class ClientEditComponent implements OnInit {
     }
 
     private updateClientName() {
-        return this.exchangeUsersService.updateExchangeUser(this.client.id, {name: this.client.name});
+        return this.exchangeUsersService.updateExchangeUser(this.exchangeUser.id, {name: this.exchangeUser.name});
     }
 
 }

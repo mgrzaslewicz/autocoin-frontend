@@ -6,3 +6,8 @@ export class ExchangeKey {
     public secretKey: String;
     public keyIsFilled: Boolean;
 }
+
+export class ExchangeKeyExistence {
+    public exchangeId: String;
+    public exchangeUserId: String;
+}

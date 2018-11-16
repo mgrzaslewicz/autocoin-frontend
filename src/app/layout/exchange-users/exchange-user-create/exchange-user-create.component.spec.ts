@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {ExchangeUserCreateComponent} from './exchange-user-create.component';
 
-import { ClientDeleteComponent } from './client-delete.component';
 
-describe('ClientDeleteComponent', () => {
-  let component: ClientDeleteComponent;
-  let fixture: ComponentFixture<ClientDeleteComponent>;
+describe('ExchangeUserCreateComponent', () => {
+  let component: ExchangeUserCreateComponent;
+  let fixture: ComponentFixture<ExchangeUserCreateComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ClientDeleteComponent ]
+      declarations: [ ExchangeUserCreateComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ClientDeleteComponent);
+    fixture = TestBed.createComponent(ExchangeUserCreateComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
