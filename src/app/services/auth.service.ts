@@ -65,7 +65,11 @@ export class AuthService {
     }
 
     logout() {
-        localStorage.removeItem('token');
+        if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
+            localStorage.removeItem('tokenV2');
+        } else {
+            localStorage.removeItem('token');
+        }
     }
 
     private storeAccessToken(accessToken) {

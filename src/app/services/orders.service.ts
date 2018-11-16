@@ -10,9 +10,9 @@ import {
 } from '../models/order';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
-import {ApiService} from './api/api.service';
 import {WatchCurrencyPairsService} from './watch-currency-pairs.service';
 import {CurrencyPair} from '../models';
+import {HttpClient} from '@angular/common/http';
 
 @Injectable()
 export class OrdersService {
@@ -22,20 +22,19 @@ export class OrdersService {
     private cancelOrderUrl = `${this.ordersApiUrl}/cancel-order`;
     private cancelOrdersUrl = `${this.ordersApiUrl}/cancel-orders`;
 
-    constructor(private api: ApiService, private currencyPairsService: WatchCurrencyPairsService) {
+    constructor(private http: HttpClient, private currencyPairsService: WatchCurrencyPairsService) {
     }
 
     getOpenOrders(): Observable<OpenOrdersResponseDto[]> {
         const openOrdersRequestDto: OpenOrdersRequestDto = {
             currencyPairs: this.currencyPairsService.all()
         };
-        return this.api.post<OpenOrdersResponseDto[]>(this.openOrdersUrl, openOrdersRequestDto);
+        return this.http.post<OpenOrdersResponseDto[]>(this.openOrdersUrl, openOrdersRequestDto);
     }
 
     cancelOpenOrder(openOrder: Order): Observable<CancelOrderResponseDto> {
         const cancelOrderRequestDto = this.prepareCancelOrderRequestDto(openOrder);
-
-        return this.api.post(this.cancelOrderUrl, cancelOrderRequestDto) as Observable<CancelOrderResponseDto>;
+        return this.http.post(this.cancelOrderUrl, cancelOrderRequestDto) as Observable<CancelOrderResponseDto>;
     }
 
     cancelOpenOrders(openOrders: Order[]): Observable<CancelOrdersResponseDto> {
@@ -44,8 +43,7 @@ export class OrdersService {
         });
 
         const cancelOrdersRequestDto: CancelOrdersRequestDto = {orders};
-
-        return this.api.post(this.cancelOrdersUrl, cancelOrdersRequestDto) as Observable<CancelOrdersResponseDto>;
+        return this.http.post<CancelOrdersResponseDto>(this.cancelOrdersUrl, cancelOrdersRequestDto);
     }
 
     private prepareCancelOrderRequestDto(openOrder: Order): CancelOrderRequestDto {

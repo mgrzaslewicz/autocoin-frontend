@@ -1,7 +1,6 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MarketsService} from './markets.service';
-import {ApiService} from './api/api.service';
 import {HttpClientModule} from '@angular/common/http';
 import {ToastService} from './toast.service';
 import {WatchCurrencyPairsService} from './watch-currency-pairs.service';
@@ -22,7 +21,6 @@ import {ExchangeUsersService} from './api';
         LocalStorageFeatureToggle,
         {provide: FeatureToggleToken, useClass: LocalStorageFeatureToggle},
         AuthService,
-        ApiService,
         ExchangeUsersService,
         ExchangeAccountService,
         PriceService,

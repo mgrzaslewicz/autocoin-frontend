@@ -1,6 +1,5 @@
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {Observable} from 'rxjs';
 import {CurrencyPair} from '../../../models';
 import {WatchCurrencyPairsService} from '../../../services/watch-currency-pairs.service';
 import {ExchangeUsersService} from '../../../services/api';
@@ -13,9 +12,10 @@ import {StrategiesExecutionsService} from '../../../services/automation/strategi
 import {FEATURE_CREATE_STRATEGY, FeatureToggle, FeatureToggleToken} from '../../../services/feature.toogle.service';
 import {SellHigherAndHigherSpecificParametersComponent} from './sell-higher-and-higher-specific-parameters/sell-higher-and-higher-specific-parameters.component';
 import {SellWhenSecondCurrencyGrowsParametersComponent} from './sell-when-second-currency-grows-parameters/sell-when-second-currency-grows-parameters.component';
-import {WithMessageDto} from '../../../services/api/api.service';
 import {SellNowParametersComponent} from './sell-now-parameters/sell-now-parameters.component';
 import {BuyNowParametersComponent} from './buy-now-parameters/buy-now-parameters.component';
+import {Observable} from 'rxjs';
+import {WithMessageDto} from '../../../services/api/withMessageDto';
 
 @Component({
     selector: 'app-make-strategy-execution',

@@ -1,7 +1,8 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {StrategyExecutionResponseDto, StrategyParametersRequestDto} from '../../models/strategy';
-import {WithMessageDto, ApiService} from '../api/api.service';
+import {HttpClient} from '@angular/common/http';
+import {WithMessageDto} from '../api/withMessageDto';
 
 @Injectable()
 export class StrategiesExecutionsService {
@@ -10,19 +11,19 @@ export class StrategiesExecutionsService {
     private getStrategiesUrl = `${this.strategiesApiUrl}/strategies`;
     private strategyUrl = `${this.strategiesApiUrl}/strategy`;
 
-    constructor(private api: ApiService) {
+    constructor(private http: HttpClient) {
     }
 
     public getStrategiesExecutions(): Observable<StrategyExecutionResponseDto[]> {
-        return this.api.get(this.getStrategiesUrl);
+        return this.http.get<StrategyExecutionResponseDto[]>(this.getStrategiesUrl);
     }
 
     public createStrategyExecution(parameters: StrategyParametersRequestDto): Observable<WithMessageDto<StrategyExecutionResponseDto>> {
-        return this.api.post(this.strategyUrl, parameters);
+        return this.http.post(this.strategyUrl, parameters);
     }
 
     public deleteStrategyExecution(strategyExecutionId: string) {
-        return this.api.delete(`${this.strategyUrl}/${strategyExecutionId}`);
+        return this.http.delete(`${this.strategyUrl}/${strategyExecutionId}`);
     }
 
 }

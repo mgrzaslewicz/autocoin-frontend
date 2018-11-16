@@ -1,16 +1,18 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { ServicesModule } from './services/services.module';
-import { AppRoutingModule } from './app-routing.module';
+import {NgModule} from '@angular/core';
+import {HTTP_INTERCEPTORS} from '@angular/common/http';
+import {CommonModule} from '@angular/common';
+import {BrowserModule} from '@angular/platform-browser';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {HttpClientModule, HttpClient} from '@angular/common/http';
+import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import {ServicesModule} from './services/services.module';
+import {AppRoutingModule} from './app-routing.module';
 
-import { AppComponent } from './app.component';
-import { AuthGuard, GuestGuard } from './shared';
+import {AppComponent} from './app.component';
+import {AuthGuard, GuestGuard} from './shared';
 import 'rxjs/Rx';
+import {Oauth2TokenInterceptor} from './services/api/interceptors';
 
 // AoT requires an exported function for factories
 export function createTranslateLoader(http: HttpClient) {
@@ -29,14 +31,21 @@ export function createTranslateLoader(http: HttpClient) {
             loader: {
                 provide: TranslateLoader,
                 useFactory: createTranslateLoader,
-                deps: [ HttpClient ]
+                deps: [HttpClient]
             }
         }),
         AppRoutingModule,
         ServicesModule
     ],
-    declarations: [ AppComponent ],
-    providers: [ AuthGuard, GuestGuard ],
-    bootstrap: [ AppComponent ]
+    declarations: [AppComponent],
+    providers: [
+        AuthGuard,
+        GuestGuard, {
+            provide: HTTP_INTERCEPTORS,
+            useClass: Oauth2TokenInterceptor,
+            multi: true
+        }],
+    bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+}

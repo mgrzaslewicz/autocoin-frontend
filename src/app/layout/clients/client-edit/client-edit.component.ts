@@ -16,7 +16,6 @@ export class ClientEditComponent implements OnInit {
 
     public loading = false;
 
-    // TODO change to exchangeUser
     public client: ExchangeUser;
 
     public exchanges: Exchange[];
