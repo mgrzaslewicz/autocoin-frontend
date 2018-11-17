@@ -8,7 +8,7 @@ import {
     OpenOrdersResponseDto,
     Order
 } from '../models/order';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 import 'rxjs/add/operator/map';
 import {WatchCurrencyPairsService} from './watch-currency-pairs.service';
 import {CurrencyPair} from '../models';

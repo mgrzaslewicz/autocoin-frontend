@@ -40,11 +40,13 @@ export function createTranslateLoader(http: HttpClient) {
     declarations: [AppComponent],
     providers: [
         AuthGuard,
-        GuestGuard, {
+        GuestGuard,
+        {
             provide: HTTP_INTERCEPTORS,
             useClass: Oauth2TokenInterceptor,
             multi: true
-        }],
+        }
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule {

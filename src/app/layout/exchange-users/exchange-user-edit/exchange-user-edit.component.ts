@@ -1,10 +1,22 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ExchangeUsersService} from '../../../services/api';
-import {ExchangeUser, Exchange, ExchangeKey} from '../../../models';
-import {Observable} from 'rxjs/Observable';
+import {ExchangeUser, Exchange, ExchangeKey, UpdateExchangeKeyRequestDto} from '../../../models';
 import {ToastService} from '../../../services/toast.service';
 import * as _ from 'underscore';
+import {FEATURE_USE_SPRING_AUTH_SERVICE, FeatureToggle, FeatureToggleToken} from '../../../services/feature.toogle.service';
+import {forkJoin} from 'rxjs';
+
+interface ExchangeFields {
+    apiKey?: string;
+    secretKey?: string;
+    userName?: string;
+}
+
+interface ExchangeUserNameWithExchangeKeys {
+    name: string;
+    exchangesKeys: Map<string, ExchangeFields>;
+}
 
 @Component({
     selector: 'app-exchange-user-edit',
@@ -25,12 +37,13 @@ export class ExchangeUserEditComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private toastService: ToastService,
-        private exchangeUsersService: ExchangeUsersService
+        private exchangeUsersService: ExchangeUsersService,
+        @Inject(FeatureToggleToken) private featureToggle: FeatureToggle
     ) {
     }
 
     ngOnInit() {
-        Observable.forkJoin(
+        forkJoin(
             this.exchangeUsersService.getExchanges(),
             this.exchangeUsersService.findExchangeUser(this.route.snapshot.params.exchangeUserId),
             this.exchangeUsersService.getExchangeKeysForExchangeUser(this.route.snapshot.params.exchangeUserId)
@@ -47,35 +60,43 @@ export class ExchangeUserEditComponent implements OnInit {
         });
     }
 
+    isShowingDeleteKeyButton(): boolean {
+        return this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE);
+    }
+
     isExchangeKeyFilled(exchange: Exchange) {
         return _(this.exchangesKeys).find({exchangeId: exchange.id});
     }
 
     onSubmit(createForm) {
         this.loading = true;
+        console.log('Updating exchange keys where filled');
+        const subscriptions = [this.updateExchangeUser()];
 
-        const subscriptions = [this.updateClientName()];
-
-        const exchangesKeys = createForm.value.exchangeKeysExistence;
-        for (const exchangeId in exchangesKeys) {
-            const formKeys = exchangesKeys[exchangeId];
-            const requestData = this.getRequestData(exchangeId, formKeys);
+        console.log(createForm.value);
+        const exchangeUserNameWithExchangeKeys: ExchangeUserNameWithExchangeKeys = createForm.value;
+        const exchangeFieldsMap: Map<string, ExchangeFields> = exchangeUserNameWithExchangeKeys.exchangesKeys;
+        console.log(exchangeFieldsMap);
+        for (const exchangeId in exchangeFieldsMap) {
+            console.log(exchangeId);
+            const exchangeFields: ExchangeFields = exchangeFieldsMap[exchangeId];
+            const requestData = this.getRequestData(exchangeId, exchangeFields);
             if (requestData != null) {
-                const subscription = this.exchangeUsersService.updateExchangesKeys(this.exchangeUser.id, exchangeId, requestData);
+                const subscription = this.exchangeUsersService.updateExchangesKey(this.exchangeUser.id, exchangeId, requestData);
                 subscriptions.push(subscription);
             }
         }
 
-        Observable.forkJoin(subscriptions).subscribe(() => {
-            this.toastService.success('ExchangeUser has been updated.');
-            this.router.navigate(['/exchangeUsers']);
+        forkJoin(subscriptions).subscribe(() => {
+            this.toastService.success('Exchange user has been updated.');
+            this.router.navigate(['/exchange-users']);
         }, error => {
             this.toastService.danger(error.message);
             this.loading = false;
         });
     }
 
-    private getRequestData(exchangeId: string, formKeys): any {
+    private getRequestDataDeprecated(exchangeId: string, formKeys): any {
         const areKeysFilled = formKeys.apiKey && formKeys.secretKey;
         let formData = null;
         if (areKeysFilled) {
@@ -94,12 +115,44 @@ export class ExchangeUserEditComponent implements OnInit {
         return formData;
     }
 
-    private exchangeIdToExchangeName(exchangeId: string): string {
-        return this.exchanges.find(exchange => exchange.id ===  exchangeId).name;
+    private getRequestData(exchangeId: string, exchangeFields: ExchangeFields): any {
+        if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
+            const exchangeName = this.exchangeIdToExchangeName(exchangeId);
+            const isBitstamp = exchangeName === 'bitstamp';
+            let areKeysFilled = exchangeFields.apiKey && exchangeFields.secretKey;
+            if (isBitstamp) {
+                areKeysFilled = areKeysFilled && exchangeFields.userName;
+            }
+            let formData: UpdateExchangeKeyRequestDto = null;
+            if (areKeysFilled) {
+                formData = {
+                    userName: exchangeFields.userName,
+                    apiKey: exchangeFields.apiKey,
+                    secretKey: exchangeFields.secretKey
+                };
+            }
+            console.log(`Going to update exchange keys for exchange ${exchangeName}: ${areKeysFilled}`);
+            return formData;
+        } else {
+            return this.getRequestDataDeprecated(exchangeId, exchangeFields);
+        }
     }
 
-    private updateClientName() {
+    private exchangeIdToExchangeName(exchangeId: string): string {
+        return this.exchanges.find(exchange => exchange.id === exchangeId).name;
+    }
+
+    private updateExchangeUser() {
         return this.exchangeUsersService.updateExchangeUser(this.exchangeUser.id, {name: this.exchangeUser.name});
+    }
+
+    deleteExchangeKey(exchangeId: string) {
+        console.log(`Deleting exchange key for exchange ${exchangeId} and user ${this.exchangeUser.id}`);
+        this.exchangeUsersService.deleteExchangeKeys(this.exchangeUser.id, exchangeId)
+            .subscribe(() => {
+                this.exchangeUsersService.getExchangeKeysForExchangeUser(this.route.snapshot.params.exchangeUserId)
+                    .subscribe(it => this.exchangesKeys = it);
+            });
     }
 
 }

@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import {AccountInfoResponseDto} from '../layout/wallets/wallets.component';
 import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
 
 @Injectable()
 export class ExchangeAccountService {

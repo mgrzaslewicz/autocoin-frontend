@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {AuthService} from '../auth.service';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 import {Router} from '@angular/router';
 
 @Injectable()
@@ -29,14 +29,19 @@ export class Oauth2TokenInterceptor implements HttpInterceptor {
             });
     }
 
-    private handleExpiredToken(err: any) {
-        if (err instanceof HttpErrorResponse) {
-            console.log(err);
+    private handleExpiredToken(response: any) {
+        if (response instanceof HttpErrorResponse) {
+            console.log(response);
             // eg {error: "invalid_token", error_description: "Access token expired: 280a56ce-cc30-4627-81fa-ced664d7863f"}
-            if (err.status === 401 && err.error && err.error.error === 'invalid_token') {
-                console.log('Token has expired, redirecting to login');
-                this.authService.logout();
-                this.redirectToLogin();
+            // {"error":"unauthorized","error_description":"Full authentication is required to access this resource"}
+            if (response.status === 401) {
+                console.log('Handling unauthorized 401 response');
+                if (response.error && (response.error.error === 'invalid_token' || response.error.error === 'unauthorized')
+                ) {
+                    console.log('Token has expired, redirecting to login');
+                    this.authService.logout();
+                    this.redirectToLogin();
+                }
             }
         }
     }

@@ -1,9 +1,9 @@
 import {Inject, Injectable} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
-import {ExchangeUser, Exchange, ExchangeKey} from '../../../models';
+import {ExchangeUser, Exchange, ExchangeKey, ExchangeKeyExistenceResponseDto} from '../../../models';
 import * as _ from 'underscore';
 import {FEATURE_USE_SPRING_AUTH_SERVICE, FeatureToggle, FeatureToggleToken} from '../../feature.toogle.service';
 import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
 
 @Injectable()
 export class ExchangeUsersService {
@@ -80,7 +80,7 @@ export class ExchangeUsersService {
 
     createExchangeUser(data) {
         if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
-            return this.http.put(`${this.exchangeUsersApiUrl}/exchange-users`, data);
+            return this.http.put(`${this.exchangeUsersApiUrl}/exchange-users`, data, {responseType: 'text'});
         } else {
             return this.http.post(`${this.clientsApiUrlDeprecated}/clients`, data);
         }
@@ -94,6 +94,10 @@ export class ExchangeUsersService {
             return this.http.delete(`${this.clientsApiUrlDeprecated}/clients/${exchangeUserId}`);
         }
 
+    }
+
+    deleteExchangeKeys(exchangeUserId: string, exchangeId): Observable<string> {
+        return this.http.delete(`${this.exchangeUsersApiUrl}/exchange-keys/${exchangeId}/${exchangeUserId}`, {responseType: 'text'});
     }
 
     findExchangeUser(exchangeUserId): Observable<ExchangeUser> {
@@ -126,17 +130,17 @@ export class ExchangeUsersService {
 
     updateExchangeUser(exchangeUserId, data) {
         if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
-            return this.http.post(`${this.exchangeUsersApiUrl}/exchange-users/${exchangeUserId}`, data);
+            return this.http.post(`${this.exchangeUsersApiUrl}/exchange-users/${exchangeUserId}`, data, {responseType: 'text'});
         } else {
             return this.http.put(`${this.clientsApiUrlDeprecated}/clients/${exchangeUserId}`, data);
         }
     }
 
-    updateExchangesKeys(exchangeUserId, exchangeId, data): Observable<ExchangeKey[]> {
+    updateExchangesKey(exchangeUserId, exchangeId, data) {
         if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
-            return this.http.post<ExchangeKey[]>(`${this.exchangeUsersApiUrl}/exchange-keys/${exchangeUserId}/${exchangeId}`, data);
+            return this.http.put(`${this.exchangeUsersApiUrl}/exchange-keys/${exchangeId}/${exchangeUserId}`, data, {responseType: 'text'});
         } else {
-            return this.http.post<ExchangeKey[]>(`${this.clientsApiUrlDeprecated}/clients/${exchangeUserId}/exchange-keys/${exchangeId}`, data);
+            return this.http.post(`${this.clientsApiUrlDeprecated}/clients/${exchangeUserId}/exchange-keys/${exchangeId}`, data);
         }
     }
 

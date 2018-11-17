@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
 import {ExchangeUsersService} from '../../services/api';
 import {Exchange, ExchangeKey, ExchangeUser} from '../../models';
 import {ToastService} from '../../services/toast.service';
+import {forkJoin} from 'rxjs';
 
 export interface ExchangeNameWithExchangeUser {
     exchangeName: string;
@@ -17,7 +17,7 @@ export interface ExchangeNameWithExchangeUser {
 export class ExchangeUsersComponent implements OnInit {
     public exchangeUsers: ExchangeUser[] = [];
     public exchanges: Exchange[];
-    public exchangeKeysExistence: ExchangeKey[];
+    public exchangeKeys: ExchangeKey[];
     public selectedExchangeNamesWithExchangeUsers: ExchangeNameWithExchangeUser[] = [];
     public isLoading = true;
 
@@ -34,14 +34,14 @@ export class ExchangeUsersComponent implements OnInit {
     loadData() {
         this.selectedExchangeNamesWithExchangeUsers = [];
 
-        Observable.forkJoin(
+        forkJoin(
             this.exchangeUsersService.getExchangeUsers(),
             this.exchangeUsersService.getExchanges(),
             this.exchangeUsersService.getExchangesKeysExistence()
         ).subscribe(([exchangeUsers, exchanges, exchangesKeysExistence]) => {
             this.exchangeUsers = exchangeUsers;
             this.exchanges = exchanges;
-            this.exchangeKeysExistence = exchangesKeysExistence;
+            this.exchangeKeys = exchangesKeysExistence;
             this.isLoading = false;
         }, error => {
             this.exchangeUsers = [];
@@ -52,7 +52,7 @@ export class ExchangeUsersComponent implements OnInit {
 
     getExchangesNamesOfExchangeUser(exchangeUser: ExchangeUser) {
         const names = [];
-        const exchangesKeys = this.exchangeKeysExistence.filter(exchangesKey => exchangesKey.clientId === exchangeUser.id);
+        const exchangesKeys = this.exchangeKeys.filter(exchangesKey => exchangesKey.clientId === exchangeUser.id);
         exchangesKeys.forEach(exchangesKey => {
             const exchange = this.exchanges.find(it => it.id === exchangesKey.exchangeId);
             names.push(exchange.name);

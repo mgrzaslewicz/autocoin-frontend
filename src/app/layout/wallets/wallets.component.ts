@@ -1,12 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {routerTransition} from '../../router.animations';
 import {ExchangeUser} from '../../models';
-import {Observable, Subscription} from '../../../../node_modules/rxjs';
 import {ToastService} from '../../services/toast.service';
 import {ExchangeAccountService} from '../../services/exchange-account.service';
 import * as _ from 'underscore';
 import {CurrencyPrice, PriceService} from '../../services/price.service';
 import {ExchangeUsersService} from '../../services/api';
+import {EMPTY, forkJoin, from, of, Subscription} from 'rxjs';
 
 export interface CurrencyBalanceDto {
     currencyCode: string;
@@ -42,7 +42,7 @@ interface CurrencyBalanceTableRow {
     styleUrls: ['./wallets.component.scss'],
     animations: [routerTransition()]
 })
-export class WalletsComponent implements OnInit {
+export class WalletsComponent implements OnInit, OnDestroy {
     clients: ExchangeUser[] = [];
     pending: boolean = false;
     pendingPriceRefresh: boolean = false;
@@ -60,7 +60,7 @@ export class WalletsComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.clientsSubscription = Observable.forkJoin(
+        this.clientsSubscription = forkJoin(
             this.exchangeUsersService.getExchangeUsers()
         ).subscribe(([clients]) => {
             this.clients = clients;
@@ -232,16 +232,16 @@ export class WalletsComponent implements OnInit {
         localStorage.setItem('wallet-distinct-currency-codes', JSON.stringify(distinctCurrencyCodes));
 
         this.pendingPriceRefresh = true;
-        Observable.from(distinctCurrencyCodes)
+        from(distinctCurrencyCodes)
             .flatMap(currencyCode => {
-                return Observable.of(currencyCode)
+                return of(currencyCode)
                     .flatMap(ccy => {
                         return this.priceService.getPrice(ccy);
                     })
-                    .catch(() => Observable.empty<CurrencyPrice>());
+                    .catch(() => EMPTY);
             })
             .subscribe({
-                next: (currencyPrice) => {
+                next: (currencyPrice: CurrencyPrice) => {
                     this.savePrice(currencyPrice);
                     console.log(`Next price for ${ currencyPrice.currencyCode } is ${ 1 / currencyPrice.priceInBtc } ($ ${ currencyPrice.btcUsdPrice })`);
                 },

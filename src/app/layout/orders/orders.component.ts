@@ -1,9 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Subscription, Observable} from 'rxjs';
+import {forkJoin, Subscription} from 'rxjs';
 import {OrdersService} from '../../services/orders.service';
 import {ExchangeUsersService} from '../../services/api';
 import {ToastService} from '../../services/toast.service';
-import {Order, ExchangeUser} from '../../models';
+import {ExchangeUser, Order} from '../../models';
 import {OpenOrdersResponseDto} from '../../models/order';
 
 @Component({
@@ -38,7 +38,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
         this.selectedOrders = [];
         this.orderViewState.clear();
 
-        this.openOrdersSubscription = Observable.forkJoin(
+        this.openOrdersSubscription = forkJoin(
             this.orderService.getOpenOrders(),
             this.clientsService.getExchangeUsers()
         ).subscribe(([ordersResponseDto, clients]) => {

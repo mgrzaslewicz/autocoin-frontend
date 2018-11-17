@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {StrategiesExecutionsService} from '../../services/automation/strategies-executions.service';
-import {Observable} from 'rxjs';
+import {forkJoin, Observable} from 'rxjs';
 import {ToastService} from '../../services/toast.service';
 import {ExchangeUser, Exchange} from '../../models';
 import {ExchangesService} from '../../services/automation/exchanges.service';
@@ -23,7 +23,7 @@ export class AutomationComponent implements OnInit {
         private toastService: ToastService,
         private exchangesService: ExchangesService,
         private strategiesExecutionsService: StrategiesExecutionsService,
-        private clientsService: ExchangeUsersService
+        private exchangeUsersService: ExchangeUsersService
     ) {
     }
 
@@ -36,10 +36,10 @@ export class AutomationComponent implements OnInit {
     }
 
     loadData() {
-        Observable.forkJoin(
+        forkJoin(
             this.exchangesService.getExchanges(),
             this.strategiesExecutionsService.getStrategiesExecutions(),
-            this.clientsService.getExchangeUsers()
+            this.exchangeUsersService.getExchangeUsers()
         ).subscribe(([exchanges, strategiesExecutions, clients]) => {
             this.exchanges = exchanges;
             this.strategiesExecutions = strategiesExecutions;

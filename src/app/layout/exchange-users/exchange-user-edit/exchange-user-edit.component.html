@@ -34,8 +34,12 @@
                         </ng-template>
                         <ng-template ngbPanelContent>
 
-                            <div ngModelGroup="exchangesKeys">
-
+                            <div ngModelGroup="exchangesKeys" class="exchange-field">
+                                <div *ngIf="isShowingDeleteKeyButton() && isExchangeKeyFilled(exchange)">
+                                    <button (click)="deleteExchangeKey(exchange.id)" class="btn btn-danger btn-sm">
+                                        Delete
+                                    </button>
+                                </div>
                                 <fieldset *ngIf="exchange.name === 'bitstamp'" class="form-group" [ngModelGroup]="exchange.id">
                                     <label>User name</label>
                                     <input class="form-control" name="userName" ngModel>
