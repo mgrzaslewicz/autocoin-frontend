@@ -46,7 +46,7 @@ export class ExchangeUserEditComponent implements OnInit {
         forkJoin(
             this.exchangeUsersService.getExchanges(),
             this.exchangeUsersService.findExchangeUser(this.route.snapshot.params.exchangeUserId),
-            this.exchangeUsersService.getExchangeKeysForExchangeUser(this.route.snapshot.params.exchangeUserId)
+            this.exchangeUsersService.getExchangeKeysExistenceForExchangeUser(this.route.snapshot.params.exchangeUserId)
         ).subscribe(([exchanges, exchangeUser, exchangesKeys]) => {
             this.exchanges = this.sortAZ(exchanges);
             this.exchangeUser = exchangeUser;
@@ -82,7 +82,7 @@ export class ExchangeUserEditComponent implements OnInit {
             const exchangeFields: ExchangeFields = exchangeFieldsMap[exchangeId];
             const requestData = this.getRequestData(exchangeId, exchangeFields);
             if (requestData != null) {
-                const subscription = this.exchangeUsersService.updateExchangesKey(this.exchangeUser.id, exchangeId, requestData);
+                const subscription = this.exchangeUsersService.updateExchangeKeys(this.exchangeUser.id, exchangeId, requestData);
                 subscriptions.push(subscription);
             }
         }
@@ -150,7 +150,7 @@ export class ExchangeUserEditComponent implements OnInit {
         console.log(`Deleting exchange key for exchange ${exchangeId} and user ${this.exchangeUser.id}`);
         this.exchangeUsersService.deleteExchangeKeys(this.exchangeUser.id, exchangeId)
             .subscribe(() => {
-                this.exchangeUsersService.getExchangeKeysForExchangeUser(this.route.snapshot.params.exchangeUserId)
+                this.exchangeUsersService.getExchangeKeysExistenceForExchangeUser(this.route.snapshot.params.exchangeUserId)
                     .subscribe(it => this.exchangesKeys = it);
             });
     }

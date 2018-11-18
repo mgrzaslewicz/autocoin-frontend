@@ -1,5 +1,5 @@
 import {Inject, Injectable} from '@angular/core';
-import {ExchangeUser, Exchange, ExchangeKey, ExchangeKeyExistenceResponseDto} from '../../../models';
+import {Exchange, ExchangeKey, ExchangeUser} from '../../../models';
 import * as _ from 'underscore';
 import {FEATURE_USE_SPRING_AUTH_SERVICE, FeatureToggle, FeatureToggleToken} from '../../feature.toogle.service';
 import {HttpClient} from '@angular/common/http';
@@ -39,7 +39,7 @@ export class ExchangeUsersService {
 
     getExchangesKeysExistence(): Observable<ExchangeKey[]> {
         if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
-            return this.http.get<ExchangeKey[]>(`${this.exchangeUsersApiUrl}/exchange-keys`)
+            return this.http.get<ExchangeKey[]>(`${this.exchangeUsersApiUrl}/exchange-keys/existence`)
                 .map(response => Object.values(response).map(data => this.toExchangeKey(data)));
         } else {
             return this.http.get<ExchangeKey[]>(`${this.clientsApiUrlDeprecated}/exchange-keys`)
@@ -118,9 +118,9 @@ export class ExchangeUsersService {
         }
     }
 
-    getExchangeKeysForExchangeUser(exchangeUserId): Observable<ExchangeKey[]> {
+    getExchangeKeysExistenceForExchangeUser(exchangeUserId): Observable<ExchangeKey[]> {
         if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
-            return this.http.get(`${this.exchangeUsersApiUrl}/exchange-keys/${exchangeUserId}`)
+            return this.http.get(`${this.exchangeUsersApiUrl}/exchange-keys/existence/${exchangeUserId}`)
                 .map(response => Object.values(response).map(data => this.toExchangeKey(data)));
         } else {
             return this.http.get(`${this.clientsApiUrlDeprecated}/clients/${exchangeUserId}/exchange-keys`)
@@ -136,7 +136,7 @@ export class ExchangeUsersService {
         }
     }
 
-    updateExchangesKey(exchangeUserId, exchangeId, data) {
+    updateExchangeKeys(exchangeUserId, exchangeId, data) {
         if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
             return this.http.put(`${this.exchangeUsersApiUrl}/exchange-keys/${exchangeId}/${exchangeUserId}`, data, {responseType: 'text'});
         } else {
