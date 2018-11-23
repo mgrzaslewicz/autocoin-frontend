@@ -12,7 +12,7 @@ import { OrderDeleteComponent } from './order-delete/order-delete.component';
     CommonModule,
     OrdersRoutingModule,
     PageHeaderModule,
-    NgbModule.forRoot(),
+    NgbModule,
   ],
   declarations: [
     OrdersComponent,

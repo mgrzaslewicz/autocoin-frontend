@@ -25,22 +25,22 @@
             </thead>
             <tbody>
 
-            <ng-container *ngFor="let client of clients">
+            <ng-container *ngFor="let exchangeUser of exchangeUsers">
                 <tr>
                     <th colspan="10">
-                        {{ client.name }}
-                        <span *ngIf="getFailedExchangesForClient(client).length > 0" class="badge badge-warning">
+                        {{ exchangeUser.name }}
+                        <span *ngIf="getFailedExchangesForExchangeUser(exchangeUser).length > 0" class="badge badge-warning">
                             There might be more open orders. Failed getting orders for exchanges:
                         </span>
-                        <ul *ngIf="getFailedExchangesForClient(client).length > 0">
-                            <li *ngFor="let failedExchange of getFailedExchangesForClient(client)">
+                        <ul *ngIf="getFailedExchangesForExchangeUser(exchangeUser).length > 0">
+                            <li *ngFor="let failedExchange of getFailedExchangesForExchangeUser(exchangeUser)">
                                 {{ failedExchange }}
                             </li>
                         </ul>
                     </th>
                 </tr>
 
-                <tr *ngFor="let order of ordersForClient(client)" [class]="'view-state-'+orderViewState[order.orderId]">
+                <tr *ngFor="let order of ordersForExchangeUser(exchangeUser)" [class]="'view-state-'+orderViewState[order.orderId]">
 
                     <th><input type="checkbox" (change)="onSelectOrder($event.target.checked, order)"></th>
                     <td>{{ order.exchangeName }}</td>
@@ -58,7 +58,7 @@
                         </button>
                     </td>
                 </tr>
-                <tr *ngIf="ordersForClient(client).length == 0">
+                <tr *ngIf="ordersForExchangeUser(exchangeUser).length == 0">
                 <tr *ngIf="openOrders.length == 0">
                     <td colspan="10">No open orders</td>
                 </tr>

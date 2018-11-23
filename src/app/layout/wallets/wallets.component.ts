@@ -22,7 +22,7 @@ export interface ExchangeBalanceDto {
 }
 
 export interface AccountInfoResponseDto {
-    clientId: string;
+    exchangeUserId: string;
     exchangeBalances: ExchangeBalanceDto[];
 }
 
@@ -43,10 +43,10 @@ interface CurrencyBalanceTableRow {
     animations: [routerTransition()]
 })
 export class WalletsComponent implements OnInit, OnDestroy {
-    clients: ExchangeUser[] = [];
+    exchangeUsers: ExchangeUser[] = [];
     pending: boolean = false;
     pendingPriceRefresh: boolean = false;
-    private clientsSubscription: Subscription;
+    private exchangeUsersSubscription: Subscription;
     private currencyPairPrices: Map<string, number> = new Map();
     private btcUsd = 'BTC-USD';
     private btcUsdPriceKey = 'price-BTC-USD';
@@ -60,19 +60,19 @@ export class WalletsComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.clientsSubscription = forkJoin(
+        this.exchangeUsersSubscription = forkJoin(
             this.exchangeUsersService.getExchangeUsers()
-        ).subscribe(([clients]) => {
-            this.clients = clients;
+        ).subscribe(([exchangeUsers]) => {
+            this.exchangeUsers = exchangeUsers;
             this.restorePricesFromLocalStorage();
         }, error => {
-            this.clients = [];
-            this.toastService.danger('Sorry, something went wrong. Could not get client list');
+            this.exchangeUsers = [];
+            this.toastService.danger('Sorry, something went wrong. Could not get exchange user list');
         });
     }
 
-    getLastClientWalletRefreshTime(client: ExchangeUser): Date {
-        return this.getLocalStorageKeyAsDate('client-portfolio-refresh-time-' + client.id);
+    getLastWalletRefreshTime(exchangeUser: ExchangeUser): Date {
+        return this.getLocalStorageKeyAsDate('exchange-user-portfolio-refresh-time-' + exchangeUser.id);
     }
 
     private getLocalStorageKeyAsDate(key: string): Date {
@@ -91,28 +91,29 @@ export class WalletsComponent implements OnInit, OnDestroy {
         return this.getLocalStorageKeyAsDate('prices-refresh-time');
     }
 
-    exchangeBalancesForClient(exchangeUser: ExchangeUser): ExchangeBalanceDto[] {
-        return JSON.parse(localStorage.getItem('client-portfolio-balances-' + exchangeUser.id));
+    exchangeBalancesForExchangeUser(exchangeUser: ExchangeUser): ExchangeBalanceDto[] {
+        return JSON.parse(localStorage.getItem('exchange-user-portfolio-balances-' + exchangeUser.id));
     }
 
-    fetchExchangeBalancesForClient(client: ExchangeUser) {
+    fetchExchangeBalancesForExchangeUser(client: ExchangeUser) {
+
         this.pending = true;
         this.exchangeAccountService.getAccountBalances(client.id).subscribe(
             accountBalances => {
                 const accountBalancesSortedByExchangeAZ = accountBalances.exchangeBalances
                     .sort((a, b) => a.exchangeName.localeCompare(b.exchangeName));
-                localStorage.setItem('client-portfolio-refresh-time-' + client.id, new Date().getTime().toString());
-                localStorage.setItem('client-portfolio-balances-' + client.id, JSON.stringify(accountBalancesSortedByExchangeAZ));
+                localStorage.setItem('exchange-user-portfolio-refresh-time-' + client.id, new Date().getTime().toString());
+                localStorage.setItem('exchange-user-portfolio-balances-' + client.id, JSON.stringify(accountBalancesSortedByExchangeAZ));
                 this.pending = false;
             }, error => {
                 this.pending = false;
-                this.toastService.danger('Sorry, something went wrong. Could not get client account balance list');
+                this.toastService.danger('Sorry, something went wrong. Could not get exchange user account balance list');
             }
         );
     }
 
     ngOnDestroy() {
-        this.clientsSubscription.unsubscribe();
+        this.exchangeUsersSubscription.unsubscribe();
     }
 
     getBtcPrice(currencyBalance: CurrencyBalanceDto): number {
@@ -168,17 +169,18 @@ export class WalletsComponent implements OnInit, OnDestroy {
         }
     }
 
-    getTotalClientBtcValue(client: ExchangeUser): number {
+    getTotalExchangeUserBtcValue(exchangeUser: ExchangeUser): number {
         let totalBtc = 0.0;
-        _.filter(this.exchangeBalancesForClient(client), exchange => exchange != null)
+        _.filter(this.exchangeBalancesForExchangeUser(exchangeUser), exchange => exchange != null)
             .forEach(exchange => {
                 totalBtc += this.getTotalExchangeBtcValue(exchange);
             });
         return totalBtc;
     }
 
-    getTotalClientUsdValue(client: ExchangeUser): number {
-        const totalBtcValue = this.getTotalClientBtcValue(client);
+    getTotalExchangeUserUsdValue(exchangeUser
+                               : ExchangeUser): number {
+        const totalBtcValue = this.getTotalExchangeUserBtcValue(exchangeUser);
         if (this.currencyPairPrices.has(this.btcUsd) && totalBtcValue !== null) {
             const usdBtcPrice = this.currencyPairPrices.get(this.btcUsd);
             return totalBtcValue * usdBtcPrice;
@@ -189,8 +191,8 @@ export class WalletsComponent implements OnInit, OnDestroy {
 
     private getDistinctCurrencyCodesInWallets(): string[] {
         return _.uniq(
-            _.flatten(_.filter(this.clients, client => client != null).map(client =>
-                    _.filter(this.exchangeBalancesForClient(client), balance => balance != null)
+            _.flatten(_.filter(this.exchangeUsers, exchangeUser => exchangeUser != null).map(exchangeUser =>
+                    _.filter(this.exchangeBalancesForExchangeUser(exchangeUser), balance => balance != null)
                         .map(exchangeBalanceDto =>
                             exchangeBalanceDto.currencyBalances
                                 .map(exchangeCurrencyBalance => exchangeCurrencyBalance.currencyCode)

@@ -1,7 +1,7 @@
 import {CurrencyPair} from './currency-pair';
 
 export interface CancelOrderRequestDto {
-    clientId: String;
+    exchangeUserId: String;
     exchangeId: String;
     orderType: String;
     orderId: String;
@@ -27,13 +27,13 @@ export interface OpenOrdersRequestDto {
 
 export interface OpenOrdersResponseDto {
     exchangeName: string;
-    clientId: string;
+    exchangeUserId: string;
     errorMessage?: string;
     openOrders: Order[];
 }
 
 export interface Order {
-    clientId: String;
+    exchangeUserId: String;
     exchangeId: String;
     exchangeName: String;
     orderId: string;

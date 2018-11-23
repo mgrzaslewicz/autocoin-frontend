@@ -70,7 +70,7 @@ export class ExchangeUsersService {
         const exchangeKey = new ExchangeKeyExistenceResponseDto;
 
         exchangeKey.exchangeId = data.exchangeId ? data.exchangeId : data.exchnageId;
-        exchangeKey.exchangeUserId = data.exchangeUserId ? data.exchangeUserId : data.clientId;
+        exchangeKey.exchangeUserId = data.exchangeUserId ? data.exchangeUserId : data.exchangeUserId;
 
         return exchangeKey;
     }

@@ -1,13 +1,13 @@
 <div [@routerTransition]>
     <app-page-header [heading]="'Wallets'" [icon]="'fa-money'"></app-page-header>
     <ng-container>
-        <div *ngFor="let client of clients" class="card mb-3 bg-dark">
+        <div *ngFor="let exchangeUser of exchangeUsers" class="card mb-3 bg-dark">
             <div class="card-header d-flex flex-column">
                 <div class="d-flex flex-row mb-2">
-                    <h3>{{ client.name }}</h3>
-                    <div class="text-muted ml-auto mr-3">Last amounts refresh: {{ getLastClientWalletRefreshTime(client) |
+                    <h3>{{ exchangeUser.name }}</h3>
+                    <div class="text-muted ml-auto mr-3">Last amounts refresh: {{ getLastWalletRefreshTime(exchangeUser) |
                         date: 'y-MM-dd HH:mm:ss' || '-' }}</div>
-                    <button class="btn btn-info" style="min-width: 170px;" (click)="fetchExchangeBalancesForClient(client)" [disabled]="pending">
+                    <button class="btn btn-info" style="min-width: 170px;" (click)="fetchExchangeBalancesForExchangeUser(exchangeUser)" [disabled]="pending">
                         <i class="fa fa-refresh" [class.is-pending]="pending"></i> Refresh amounts
                     </button>
                 </div>
@@ -20,12 +20,12 @@
                 </div>
             </div>
             <p><i class="fa fa-btc"></i> Total BTC:
-                <span class="sensitive-data">{{ getTotalClientBtcValue(client) | number : '1.8' || '-' }}</span>
+                <span class="sensitive-data">{{ getTotalExchangeUserBtcValue(exchangeUser) | number : '1.8' || '-' }}</span>
             </p>
             <p><i class="fa fa-usd"></i> Total USD:
-                <span class="sensitive-data">{{ getTotalClientUsdValue(client) | number : '1.2' || '-' }}</span>
+                <span class="sensitive-data">{{ getTotalExchangeUserUsdValue(exchangeUser) | number : '1.2' || '-' }}</span>
             </p>
-            <ng-container *ngFor="let exchangeBalance of exchangeBalancesForClient(client)">
+            <ng-container *ngFor="let exchangeBalance of exchangeBalancesForExchangeUser(exchangeUser)">
                 <h4>{{ exchangeBalance.exchangeName }}</h4>
                 <span *ngIf="exchangeBalance.errorMessage != null" class="badge badge-warning">
                     {{ exchangeBalance.errorMessage }}

@@ -16,7 +16,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
     private openOrdersSubscription: Subscription;
 
     openOrders: OpenOrdersResponseDto[] = [];
-    clients: ExchangeUser[] = [];
+    exchangeUsers: ExchangeUser[] = [];
     orderViewState: Map<string, string> = new Map();
     pending: boolean;
 
@@ -24,7 +24,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
     constructor(
         private orderService: OrdersService,
-        private clientsService: ExchangeUsersService,
+        private exchangeUsersService: ExchangeUsersService,
         private toastService: ToastService
     ) {
     }
@@ -40,29 +40,33 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
         this.openOrdersSubscription = forkJoin(
             this.orderService.getOpenOrders(),
-            this.clientsService.getExchangeUsers()
-        ).subscribe(([ordersResponseDto, clients]) => {
+            this.exchangeUsersService.getExchangeUsers()
+        ).subscribe(([ordersResponseDto, exchangeUsers]) => {
             this.openOrders = ordersResponseDto;
             this.openOrders.forEach(openOrdersAtExchange => {
                 openOrdersAtExchange.openOrders.forEach(openOrder => {
                     this.orderViewState[openOrder.orderId] = 'enabled';
                 });
             });
-            this.clients = clients;
+            this.exchangeUsers = exchangeUsers;
             this.pending = false;
         }, error => {
             this.pending = false;
             this.openOrders = [];
-            this.clients = [];
+            this.exchangeUsers = [];
 
             this.toastService.danger('Sorry, something went wrong. Could not get open orders');
         });
     }
 
-    getFailedExchangesForClient(client: ExchangeUser): string[] {
+    getFailedExchangesForExchangeUser(exchangeUser: ExchangeUser): string[] {
         return Array.from(
-            this.openOrders.filter(ordersAtExchange => ordersAtExchange.clientId === client.id && ordersAtExchange.errorMessage != null)
-                .map(ordersAtExchange => ordersAtExchange.exchangeName + ': ' + ordersAtExchange.errorMessage)
+            this.openOrders.filter(ordersAtExchange =>
+                ordersAtExchange.exchangeUserId === exchangeUser.id
+                && ordersAtExchange.errorMessage != null
+            ).map(ordersAtExchange =>
+                ordersAtExchange.exchangeName + ': ' + ordersAtExchange.errorMessage
+            )
         );
     }
 
@@ -70,17 +74,19 @@ export class OrdersComponent implements OnInit, OnDestroy {
         this.openOrdersSubscription.unsubscribe();
     }
 
-    ordersForClient(client: ExchangeUser): Order[] {
-        if (!client) {
+    ordersForExchangeUser(exchangeUser: ExchangeUser): Order[] {
+        if (!exchangeUser) {
             console.log(`No exchange user`);
             return [];
         }
-        const openOrdersOfClient: Order[][] = Array.from(
-            this.openOrders.filter(ordersAtExchange => ordersAtExchange.clientId === client.id && ordersAtExchange.openOrders.length > 0)
-                .map(ordersAtExchange => ordersAtExchange.openOrders)
+        const openOrdersOfExchangeUser: Order[][] = Array.from(
+            this.openOrders.filter(ordersAtExchange =>
+                ordersAtExchange.exchangeUserId === exchangeUser.id &&
+                ordersAtExchange.openOrders.length > 0
+            ).map(ordersAtExchange => ordersAtExchange.openOrders)
                 .values()
         );
-        return [].concat.apply([], openOrdersOfClient);
+        return [].concat.apply([], openOrdersOfExchangeUser);
     }
 
     cancelOpenOrder(openOrder: Order) {

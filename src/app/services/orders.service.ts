@@ -48,7 +48,7 @@ export class OrdersService {
 
     private prepareCancelOrderRequestDto(openOrder: Order): CancelOrderRequestDto {
         return {
-            clientId: openOrder.clientId,
+            exchangeUserId: openOrder.exchangeUserId,
             orderType: openOrder.orderType,
             exchangeId: openOrder.exchangeId,
             orderId: openOrder.orderId,
