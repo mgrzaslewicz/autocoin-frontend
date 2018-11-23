@@ -1,5 +1,5 @@
 import {Inject, Injectable} from '@angular/core';
-import {Exchange, ExchangeKey, ExchangeUser} from '../../../models';
+import {Exchange, ExchangeKeyExistenceResponseDto, ExchangeUser} from '../../../models';
 import * as _ from 'underscore';
 import {FEATURE_USE_SPRING_AUTH_SERVICE, FeatureToggle, FeatureToggleToken} from '../../feature.toogle.service';
 import {HttpClient} from '@angular/common/http';
@@ -37,12 +37,12 @@ export class ExchangeUsersService {
         }
     }
 
-    getExchangesKeysExistence(): Observable<ExchangeKey[]> {
+    getExchangesKeysExistence(): Observable<ExchangeKeyExistenceResponseDto[]> {
         if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
-            return this.http.get<ExchangeKey[]>(`${this.exchangeUsersApiUrl}/exchange-keys/existence`)
+            return this.http.get<ExchangeKeyExistenceResponseDto[]>(`${this.exchangeUsersApiUrl}/exchange-keys/existence`)
                 .map(response => Object.values(response).map(data => this.toExchangeKey(data)));
         } else {
-            return this.http.get<ExchangeKey[]>(`${this.clientsApiUrlDeprecated}/exchange-keys`)
+            return this.http.get<ExchangeKeyExistenceResponseDto[]>(`${this.clientsApiUrlDeprecated}/exchange-keys`)
                 .map(response => Object.values(response).map(data => this.toExchangeKey(data)));
         }
 
@@ -66,14 +66,11 @@ export class ExchangeUsersService {
         return exchange;
     }
 
-    private toExchangeKey(data): ExchangeKey {
-        const exchangeKey = new ExchangeKey;
+    private toExchangeKey(data): ExchangeKeyExistenceResponseDto {
+        const exchangeKey = new ExchangeKeyExistenceResponseDto;
 
         exchangeKey.exchangeId = data.exchangeId ? data.exchangeId : data.exchnageId;
-        exchangeKey.clientId = data.clientId;
-        exchangeKey.apiKey = data.apiKey;
-        exchangeKey.secretKey = data.secretKey;
-        exchangeKey.keyIsFilled = data.keyIsFilled;
+        exchangeKey.exchangeUserId = data.exchangeUserId ? data.exchangeUserId : data.clientId;
 
         return exchangeKey;
     }
@@ -118,7 +115,7 @@ export class ExchangeUsersService {
         }
     }
 
-    getExchangeKeysExistenceForExchangeUser(exchangeUserId): Observable<ExchangeKey[]> {
+    getExchangeKeysExistenceForExchangeUser(exchangeUserId): Observable<ExchangeKeyExistenceResponseDto[]> {
         if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
             return this.http.get(`${this.exchangeUsersApiUrl}/exchange-keys/existence/${exchangeUserId}`)
                 .map(response => Object.values(response).map(data => this.toExchangeKey(data)));

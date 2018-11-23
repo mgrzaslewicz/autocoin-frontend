@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ExchangeUsersService} from '../../../services/api';
-import {ExchangeUser, Exchange, ExchangeKey, UpdateExchangeKeyRequestDto} from '../../../models';
+import {ExchangeUser, Exchange, UpdateExchangeKeyRequestDto, ExchangeKeyExistenceResponseDto} from '../../../models';
 import {ToastService} from '../../../services/toast.service';
 import * as _ from 'underscore';
 import {FEATURE_USE_SPRING_AUTH_SERVICE, FeatureToggle, FeatureToggleToken} from '../../../services/feature.toogle.service';
@@ -31,7 +31,7 @@ export class ExchangeUserEditComponent implements OnInit {
 
     public exchanges: Exchange[];
 
-    public exchangesKeys: ExchangeKey[];
+    public exchangesKeyExistenceList: ExchangeKeyExistenceResponseDto[];
 
     constructor(
         private route: ActivatedRoute,
@@ -50,7 +50,7 @@ export class ExchangeUserEditComponent implements OnInit {
         ).subscribe(([exchanges, exchangeUser, exchangesKeys]) => {
             this.exchanges = this.sortAZ(exchanges);
             this.exchangeUser = exchangeUser;
-            this.exchangesKeys = exchangesKeys;
+            this.exchangesKeyExistenceList = exchangesKeys;
         });
     }
 
@@ -65,7 +65,7 @@ export class ExchangeUserEditComponent implements OnInit {
     }
 
     isExchangeKeyFilled(exchange: Exchange) {
-        return _(this.exchangesKeys).find({exchangeId: exchange.id});
+        return _(this.exchangesKeyExistenceList).find({exchangeId: exchange.id});
     }
 
     onSubmit(createForm) {
@@ -151,7 +151,7 @@ export class ExchangeUserEditComponent implements OnInit {
         this.exchangeUsersService.deleteExchangeKeys(this.exchangeUser.id, exchangeId)
             .subscribe(() => {
                 this.exchangeUsersService.getExchangeKeysExistenceForExchangeUser(this.route.snapshot.params.exchangeUserId)
-                    .subscribe(it => this.exchangesKeys = it);
+                    .subscribe(it => this.exchangesKeyExistenceList = it);
             });
     }
 
