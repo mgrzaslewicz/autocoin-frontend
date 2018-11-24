@@ -1,5 +1,5 @@
 export interface StrategyParametersRequestDto {
-    clientId: string;
+    exchangeUserId: string;
     exchangeName: string;
     strategyName: string;
     baseCurrencyCode: string;
@@ -10,7 +10,7 @@ export interface StrategyParametersRequestDto {
 }
 
 export class StrategyParametersRequest implements StrategyParametersRequestDto {
-    clientId: string;
+    exchangeUserId: string;
     exchangeName: string;
     strategyName: string;
     baseCurrencyCode: string;
@@ -40,7 +40,7 @@ export interface StrategyParametersResponseDto {
 }
 export interface StrategyExecutionResponseDto {
     id: number;
-    clientId: string;
+    exchangeUserId: string;
     exchangeName: string;
     strategyName: string;
     baseCurrencyCode: string;

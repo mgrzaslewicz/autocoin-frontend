@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {CurrencyPair} from '../../../models';
+import {CurrencyPair, ExchangeUser} from '../../../models';
 import {WatchCurrencyPairsService} from '../../../services/watch-currency-pairs.service';
 import {ExchangeUsersService} from '../../../services/api';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
@@ -17,6 +17,11 @@ import {BuyNowParametersComponent} from './buy-now-parameters/buy-now-parameters
 import {Observable} from 'rxjs';
 import {WithMessageDto} from '../../../services/api/withMessageDto';
 
+export interface ExchangeUserSelection {
+    exchangeUser: ExchangeUser;
+    checked: boolean;
+}
+
 @Component({
     selector: 'app-make-strategy-execution',
     templateUrl: './make-strategy-execution.component.html',
@@ -27,7 +32,7 @@ export class MakeStrategyExecutionComponent implements OnInit {
     public exchangeName;
     public allExchangePairs: CurrencyPair[];
     public exchangePair: string;
-    public clients = [];
+    public exchangeUserSelectionList: ExchangeUserSelection[] = [];
     public strategies: Strategy[];
     public selectedStrategyName = 'BuyLowerAndLower';
     public counterCurrencyFractionForBuying = 0.2;
@@ -63,7 +68,7 @@ export class MakeStrategyExecutionComponent implements OnInit {
 
     constructor(
         private route: ActivatedRoute,
-        private clientsService: ExchangeUsersService,
+        private exchangeUsersService: ExchangeUsersService,
         private watchedCurrencyPairs: WatchCurrencyPairsService,
         private modalService: NgbModal,
         private toastService: ToastService,
@@ -84,7 +89,7 @@ export class MakeStrategyExecutionComponent implements OnInit {
 
         this.allExchangePairs = this.watchedCurrencyPairs.all();
 
-        this.loadClients();
+        this.loadExchangeUsers();
         this.loadStrategies();
     }
 
@@ -99,19 +104,19 @@ export class MakeStrategyExecutionComponent implements OnInit {
             .map(pairs => pairs.map(pair => pair.symbol()));
     };
 
-    private loadClients() {
-        this.clientsService.getExchangeUsers().subscribe(clients => {
-            for (const client of clients) {
-                this.clients.push({client: client, checked: false});
+    private loadExchangeUsers() {
+        this.exchangeUsersService.getExchangeUsers().subscribe(exchangeUsers => {
+            for (const exchangeUser of exchangeUsers) {
+                this.exchangeUserSelectionList.push({exchangeUser: exchangeUser, checked: false});
             }
-            if (clients.length === 1) {
-                this.clients[0].checked = true;
+            if (exchangeUsers.length === 1) {
+                this.exchangeUserSelectionList[0].checked = true;
             }
         });
     }
 
-    getSelectedClients() {
-        return this.clients.filter(client => client.checked);
+    getSelectedExchangeUsers() {
+        return this.exchangeUserSelectionList.filter(it => it.checked);
     }
 
     showConfirmModal() {
@@ -122,7 +127,7 @@ export class MakeStrategyExecutionComponent implements OnInit {
     }
 
     canMakeStrategyExecution() {
-        return this.getSelectedClients().length > 0
+        return this.getSelectedExchangeUsers().length > 0
             && this.makeOrderForm.valid
             && this.featureToggle.isActive(FEATURE_CREATE_STRATEGY);
     }
@@ -167,13 +172,13 @@ export class MakeStrategyExecutionComponent implements OnInit {
 
     createStrategy() {
         this.creatingStrategiesInProgress = true;
-        const selectedClients = this.getSelectedClients();
-        let howManyStrategiesToCreateLeft = selectedClients.length;
-        for (const selectedClient of selectedClients) {
-            const client = selectedClient.client;
+        const selectedExchangeUsers = this.getSelectedExchangeUsers();
+        let howManyStrategiesToCreateLeft = selectedExchangeUsers.length;
+        for (const selectedExchangeUser of selectedExchangeUsers) {
+            const exchangeUser = selectedExchangeUser.exchangeUser;
 
             const parameters = new StrategyParametersRequest();
-            parameters.clientId = client.id;
+            parameters.exchangeUserId = exchangeUser.id;
             parameters.exchangeName = this.exchangeName;
             parameters.strategyName = this.selectedStrategyName;
             parameters.baseCurrencyCode = this.baseCurrency;
@@ -187,13 +192,13 @@ export class MakeStrategyExecutionComponent implements OnInit {
             this.strategiesExecutionsService.createStrategyExecution(parameters)
                 .subscribe((response: WithMessageDto<StrategyExecutionResponseDto>) => {
                     howManyStrategiesToCreateLeft--;
-                    this.strategiesCreatedFor.push(client.name);
+                    this.strategiesCreatedFor.push(exchangeUser.name);
                     this.creatingStrategiesInProgress = howManyStrategiesToCreateLeft > 0;
                     this.finishedCreatingStrategies = howManyStrategiesToCreateLeft === 0;
                 }, error => {
                     console.log(error);
                     howManyStrategiesToCreateLeft--;
-                    this.strategiesNotCreatedFor.push(client.name);
+                    this.strategiesNotCreatedFor.push(exchangeUser.name);
                     this.creatingStrategiesInProgress = howManyStrategiesToCreateLeft > 0;
                     this.finishedCreatingStrategies = howManyStrategiesToCreateLeft === 0;
                 });

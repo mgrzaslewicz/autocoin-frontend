@@ -15,7 +15,7 @@ import {ExchangeUsersService} from '../../services/api';
 export class AutomationComponent implements OnInit {
 
     exchanges: Exchange[] = [];
-    clients: ExchangeUser[] = [];
+    exchangeUsers: ExchangeUser[] = [];
     private strategiesExecutions: StrategyExecutionResponseDto[];
     public supportedExchanges = ['binance', 'bittrex', 'kucoin'];
 
@@ -40,13 +40,13 @@ export class AutomationComponent implements OnInit {
             this.exchangesService.getExchanges(),
             this.strategiesExecutionsService.getStrategiesExecutions(),
             this.exchangeUsersService.getExchangeUsers()
-        ).subscribe(([exchanges, strategiesExecutions, clients]) => {
+        ).subscribe(([exchanges, strategiesExecutions, exchangeUsers]) => {
             this.exchanges = exchanges;
             this.strategiesExecutions = strategiesExecutions;
-            this.clients = clients;
+            this.exchangeUsers = exchangeUsers;
             console.log(this.strategiesExecutions);
         }, error => {
-            this.clients = [];
+            this.exchangeUsers = [];
             this.exchanges = [];
             this.strategiesExecutions = [];
             this.toastService.danger('Sorry, something went wrong.');
@@ -59,8 +59,8 @@ export class AutomationComponent implements OnInit {
         });
     }
 
-    getClientNameById(clientId: string): string {
-        return this.clients.find(client => client.id === clientId).name;
+    getExchangeUserNameById(exchangeUserId: string): string {
+        return this.exchangeUsers.find(exchangeUser => exchangeUser.id === exchangeUserId).name;
     }
 
     deleteStrategyExecution(strategyExecution) {
