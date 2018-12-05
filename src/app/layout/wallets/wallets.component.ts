@@ -6,7 +6,7 @@ import {ExchangeAccountService} from '../../services/exchange-account.service';
 import * as _ from 'underscore';
 import {CurrencyPrice, PriceService} from '../../services/price.service';
 import {ExchangeUsersService} from '../../services/api';
-import {EMPTY, forkJoin, from, of, Subscription} from 'rxjs';
+import {forkJoin, from, Subscription} from 'rxjs';
 
 export interface CurrencyBalanceDto {
     currencyCode: string;
@@ -44,8 +44,8 @@ interface CurrencyBalanceTableRow {
 })
 export class WalletsComponent implements OnInit, OnDestroy {
     exchangeUsers: ExchangeUser[] = [];
-    pending: boolean = false;
-    pendingPriceRefresh: boolean = false;
+    pending = false;
+    pendingPriceRefresh = false;
     private exchangeUsersSubscription: Subscription;
     private currencyPairPrices: Map<string, number> = new Map();
     private btcUsd = 'BTC-USD';
@@ -65,7 +65,7 @@ export class WalletsComponent implements OnInit, OnDestroy {
         ).subscribe(([exchangeUsers]) => {
             this.exchangeUsers = exchangeUsers;
             this.restorePricesFromLocalStorage();
-        }, error => {
+        }, () => {
             this.exchangeUsers = [];
             this.toastService.danger('Sorry, something went wrong. Could not get exchange user list');
         });
@@ -105,7 +105,7 @@ export class WalletsComponent implements OnInit, OnDestroy {
                 localStorage.setItem('exchange-user-portfolio-refresh-time-' + client.id, new Date().getTime().toString());
                 localStorage.setItem('exchange-user-portfolio-balances-' + client.id, JSON.stringify(accountBalancesSortedByExchangeAZ));
                 this.pending = false;
-            }, error => {
+            }, () => {
                 this.pending = false;
                 this.toastService.danger('Sorry, something went wrong. Could not get exchange user account balance list');
             }
@@ -179,7 +179,7 @@ export class WalletsComponent implements OnInit, OnDestroy {
     }
 
     getTotalExchangeUserUsdValue(exchangeUser
-                               : ExchangeUser): number {
+                                     : ExchangeUser): number {
         const totalBtcValue = this.getTotalExchangeUserBtcValue(exchangeUser);
         if (this.currencyPairPrices.has(this.btcUsd) && totalBtcValue !== null) {
             const usdBtcPrice = this.currencyPairPrices.get(this.btcUsd);
@@ -234,34 +234,37 @@ export class WalletsComponent implements OnInit, OnDestroy {
         localStorage.setItem('wallet-distinct-currency-codes', JSON.stringify(distinctCurrencyCodes));
 
         this.pendingPriceRefresh = true;
-        from(distinctCurrencyCodes)
-            .flatMap(currencyCode => {
-                return of(currencyCode)
-                    .flatMap(ccy => {
-                        return this.priceService.getPrice(ccy);
-                    })
-                    .catch(() => EMPTY);
-            })
+        from(this.priceService.getPrices(distinctCurrencyCodes))
             .subscribe({
                 next: (currencyPrice: CurrencyPrice) => {
                     this.savePrice(currencyPrice);
-                    console.log(`Next price for ${ currencyPrice.currencyCode } is ${ 1 / currencyPrice.priceInBtc } ($ ${ currencyPrice.btcUsdPrice })`);
+                    console.log(`Next price for ${currencyPrice.currencyCode} is ${1 / currencyPrice.price}${currencyPrice.unit})`);
                 },
                 complete: () => {
-                    console.log('Complete'),
-                        this.pendingPriceRefresh = false;
+                    console.log('Complete');
+                    this.pendingPriceRefresh = false;
                     this.savePriceRefreshTime();
+                },
+                error: (err) => {
+                    console.log(`Failed to refresh prices.`, err);
+                    this.pendingPriceRefresh = false;
                 }
             });
         return distinctCurrencyCodes;
     }
 
     private savePrice(currencyPrice: CurrencyPrice) {
-        const currencyKey = `price-${currencyPrice.currencyCode}-BTC`;
-        localStorage.setItem(currencyKey, currencyPrice.priceInBtc.toString());
-        localStorage.setItem(this.btcUsdPriceKey, currencyPrice.btcUsdPrice.toString());
-        this.currencyPairPrices.set(`${currencyPrice.currencyCode}-BTC`, currencyPrice.priceInBtc);
-        this.currencyPairPrices.set(this.btcUsd, currencyPrice.btcUsdPrice);
+        if (currencyPrice.currencyCode !== 'BTC') {
+            const currencyKey = `price-${currencyPrice.currencyCode}-${currencyPrice.unit}`;
+            const price = 1 / currencyPrice.price;
+            localStorage.setItem(currencyKey, price.toString());
+            this.currencyPairPrices.set(`${currencyPrice.currencyCode}-${currencyPrice.unit}`, price);
+        } else if (currencyPrice.currencyCode === 'BTC' && currencyPrice.unit === 'USD') {
+            localStorage.setItem(this.btcUsdPriceKey, currencyPrice.price.toString());
+            this.currencyPairPrices.set(this.btcUsd, currencyPrice.price);
+        } else {
+            throw new Error(`Unhandled currency price: ${currencyPrice}`);
+        }
     }
 
     getSortedBalances(currencyBalances: CurrencyBalanceDto[]): CurrencyBalanceTableRow[] {

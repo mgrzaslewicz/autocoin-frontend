@@ -5,29 +5,37 @@ import {HttpClient} from '@angular/common/http';
 
 export interface CurrencyPrice {
     currencyCode: string;
-    priceInBtc: number;
-    btcUsdPrice: number;
+    price: number;
+    unit: string;
 }
 
 @Injectable()
 export class PriceService {
 
-    private coinMarketCapApiUrl = 'https://api.coinmarketcap.com/v2/ticker/';
+    private priceApiUrl = 'https://orders-api.autocoin-trader.com';
 
     constructor(private http: HttpClient) {
     }
 
-    getPrice(currencyCode: string): Observable<CurrencyPrice> {
-        return this.http.get<CurrencyPrice>(`${this.coinMarketCapApiUrl}?convert=${currencyCode}&limit=1`)
-            .map(item => this.toCurrencyPrice(item, currencyCode));
+    getPrices(currencyCode: string[]): Observable<CurrencyPrice> {
+        return this.http.get<CurrencyPriceDto[]>(this.priceApiUrl, {
+            params: {
+                symbols: currencyCode.join(',')
+            }
+        })
+            .flatMap(ccyPriceDto => ccyPriceDto)
+            .map(ccyPriceDto => {
+                return {
+                    currencyCode: ccyPriceDto.currency,
+                    price: ccyPriceDto.price,
+                    unit: ccyPriceDto.unitCurrency
+                };
+            });
     }
+}
 
-    private toCurrencyPrice(item: any, currencyCode: string): CurrencyPrice {
-        return {
-            currencyCode: currencyCode,
-            priceInBtc: item.data['1'].quotes[currencyCode].price,
-            btcUsdPrice: item.data['1'].quotes['USD'].price
-        };
-    }
-
+class CurrencyPriceDto {
+    currency: string;
+    price: number;
+    unitCurrency: string;
 }
