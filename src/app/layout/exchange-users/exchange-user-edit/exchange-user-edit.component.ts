@@ -4,7 +4,7 @@ import {ExchangeUsersService} from '../../../services/api';
 import {ExchangeUser, Exchange, UpdateExchangeKeyRequestDto, ExchangeKeyExistenceResponseDto} from '../../../models';
 import {ToastService} from '../../../services/toast.service';
 import * as _ from 'underscore';
-import {FEATURE_USE_SPRING_AUTH_SERVICE, FeatureToggle, FeatureToggleToken} from '../../../services/feature.toogle.service';
+import {FeatureToggle, FeatureToggleToken} from '../../../services/feature.toogle.service';
 import {forkJoin} from 'rxjs';
 
 interface ExchangeFields {
@@ -60,10 +60,6 @@ export class ExchangeUserEditComponent implements OnInit {
         });
     }
 
-    isShowingDeleteKeyButton(): boolean {
-        return this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE);
-    }
-
     isExchangeKeyFilled(exchange: Exchange) {
         return _(this.exchangesKeyExistenceList).find({exchangeId: exchange.id});
     }
@@ -96,46 +92,23 @@ export class ExchangeUserEditComponent implements OnInit {
         });
     }
 
-    private getRequestDataDeprecated(exchangeId: string, formKeys): any {
-        const areKeysFilled = formKeys.apiKey && formKeys.secretKey;
-        let formData = null;
-        if (areKeysFilled) {
-            if (this.exchangeIdToExchangeName(exchangeId) === 'bitstamp' && formKeys.userName) {
-                formData = {
-                    apiKey: formKeys.userName + '$$$' + formKeys.apiKey,
-                    secretKey: formKeys.secretKey
-                };
-            } else {
-                formData = {
-                    apiKey: formKeys.apiKey,
-                    secretKey: formKeys.secretKey
-                };
-            }
-        }
-        return formData;
-    }
-
     private getRequestData(exchangeId: string, exchangeFields: ExchangeFields): any {
-        if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
-            const exchangeName = this.exchangeIdToExchangeName(exchangeId);
-            const isBitstamp = exchangeName === 'bitstamp';
-            let areKeysFilled = exchangeFields.apiKey && exchangeFields.secretKey;
-            if (isBitstamp) {
-                areKeysFilled = areKeysFilled && exchangeFields.userName;
-            }
-            let formData: UpdateExchangeKeyRequestDto = null;
-            if (areKeysFilled) {
-                formData = {
-                    userName: exchangeFields.userName,
-                    apiKey: exchangeFields.apiKey,
-                    secretKey: exchangeFields.secretKey
-                };
-            }
-            console.log(`Going to update exchange keys for exchange ${exchangeName}: ${areKeysFilled}`);
-            return formData;
-        } else {
-            return this.getRequestDataDeprecated(exchangeId, exchangeFields);
+        const exchangeName = this.exchangeIdToExchangeName(exchangeId);
+        const isBitstamp = exchangeName === 'bitstamp';
+        let areKeysFilled = exchangeFields.apiKey && exchangeFields.secretKey;
+        if (isBitstamp) {
+            areKeysFilled = areKeysFilled && exchangeFields.userName;
         }
+        let formData: UpdateExchangeKeyRequestDto = null;
+        if (areKeysFilled) {
+            formData = {
+                userName: exchangeFields.userName,
+                apiKey: exchangeFields.apiKey,
+                secretKey: exchangeFields.secretKey
+            };
+        }
+        console.log(`Going to update exchange keys for exchange ${exchangeName}: ${areKeysFilled}`);
+        return formData;
     }
 
     private exchangeIdToExchangeName(exchangeId: string): string {

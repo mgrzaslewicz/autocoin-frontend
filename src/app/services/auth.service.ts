@@ -1,12 +1,11 @@
 import {Inject, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {FEATURE_USE_SPRING_AUTH_SERVICE, FeatureToggle, FeatureToggleToken} from './feature.toogle.service';
+import {FeatureToggle, FeatureToggleToken} from './feature.toogle.service';
 
 @Injectable()
 export class AuthService {
 
-    usersApiTokenDeprecated = 'https://users-api.autocoin-trader.com/ids/connect/token';
-    usersApiToken = 'https://users-apiv2.autocoin-trader.com/oauth/token';
+    oauthTokenEndpointUrl = 'https://users-apiv2.autocoin-trader.com/oauth/token';
 
     constructor(
         private http: HttpClient,
@@ -18,18 +17,10 @@ export class AuthService {
         let body = new HttpParams()
             .set('client_id', 'SPA')
             .set('client_secret', 'superSecretPassword')
-            .set('password', password);
-
-        if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
-            body = body
-                .set('username', username)
-                .set('grant_type', 'password')
-                .set('scopes', 'read');
-        } else {
-            body = body.set('userName', username)
-                .set('grant_type', 'username_password')
-                .set('scopes', 'API.read');
-        }
+            .set('password', password)
+            .set('username', username)
+            .set('grant_type', 'password')
+            .set('scopes', 'read');
 
         const headers = new HttpHeaders()
             .append('Cache-Control', 'no-cache')
@@ -39,9 +30,7 @@ export class AuthService {
             headers
         };
 
-        const tokenEndpointUrl = this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE) ? this.usersApiToken : this.usersApiTokenDeprecated;
-
-        return this.http.post(tokenEndpointUrl, body, options)
+        return this.http.post(this.oauthTokenEndpointUrl, body, options)
             .do(response => {
                 this.storeAccessToken(response['access_token']);
                 this.storeUserName(username);
@@ -53,11 +42,7 @@ export class AuthService {
     }
 
     token() {
-        if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
-            return localStorage.getItem('tokenV2');
-        } else {
-            return localStorage.getItem('token');
-        }
+        return localStorage.getItem('tokenV2');
     }
 
     userName(): String {
@@ -65,19 +50,11 @@ export class AuthService {
     }
 
     logout() {
-        if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
-            localStorage.removeItem('tokenV2');
-        } else {
-            localStorage.removeItem('token');
-        }
+        localStorage.removeItem('tokenV2');
     }
 
     private storeAccessToken(accessToken) {
-        if (this.featureToggle.isActive(FEATURE_USE_SPRING_AUTH_SERVICE)) {
-            localStorage.setItem('tokenV2', accessToken);
-        } else {
-            localStorage.setItem('token', accessToken);
-        }
+        localStorage.setItem('tokenV2', accessToken);
     }
 
     private storeUserName(userName) {

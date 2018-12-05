@@ -9,7 +9,6 @@ export const FEATURE_STRATEGY_SELL_WHEN_SECOND_CURRENCY_GROWS = 'strategySellWhe
 export const FEATURE_STRATEGY_SELL_NOW = 'strategySellNow';
 export const FEATURE_STRATEGY_BUY_NOW = 'strategyBuyNow';
 export const FEATURE_2FA = '2FA';
-export const FEATURE_USE_SPRING_AUTH_SERVICE = 'useSpringAuthService';
 
 export const FeatureToggleToken = new InjectionToken('FeatureToggle');
 
@@ -30,8 +29,7 @@ export class LocalStorageFeatureToggle implements FeatureToggle {
             FEATURE_CREATE_STRATEGY,
             FEATURE_STRATEGY_SELL_WHEN_SECOND_CURRENCY_GROWS,
             FEATURE_STRATEGY_SELL_NOW,
-            FEATURE_STRATEGY_BUY_NOW,
-            FEATURE_USE_SPRING_AUTH_SERVICE
+            FEATURE_STRATEGY_BUY_NOW
         ].includes(toggleName);
     }
 
