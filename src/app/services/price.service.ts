@@ -12,7 +12,7 @@ export interface CurrencyPrice {
 @Injectable()
 export class PriceService {
 
-    private priceApiUrl = 'https://orders-api.autocoin-trader.com';
+    private priceApiUrl = 'https://orders-api.autocoin-trader.com/prices';
 
     constructor(private http: HttpClient) {
     }
