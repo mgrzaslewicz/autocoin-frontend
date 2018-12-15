@@ -258,16 +258,15 @@ export class WalletsComponent implements OnInit, OnDestroy {
     }
 
     private savePrice(currencyPrice: CurrencyPrice) {
-        if (currencyPrice.currencyCode !== 'BTC') {
+        // This assumes all prices are in relation to BTC and USD. If other fiat or other crypto is to be used this needs to change
+        if (currencyPrice.currencyCode === 'BTC' && currencyPrice.unit === 'USD') {
+            localStorage.setItem(this.btcUsdPriceKey, currencyPrice.price.toString());
+            this.currencyPairPrices.set(this.btcUsd, currencyPrice.price);
+        } else {
             const currencyKey = `price-${currencyPrice.currencyCode}-${currencyPrice.unit}`;
             const price = 1 / currencyPrice.price;
             localStorage.setItem(currencyKey, price.toString());
             this.currencyPairPrices.set(`${currencyPrice.currencyCode}-${currencyPrice.unit}`, price);
-        } else if (currencyPrice.currencyCode === 'BTC' && currencyPrice.unit === 'USD') {
-            localStorage.setItem(this.btcUsdPriceKey, currencyPrice.price.toString());
-            this.currencyPairPrices.set(this.btcUsd, currencyPrice.price);
-        } else {
-            throw new Error(`Unhandled currency price: ${currencyPrice}`);
         }
     }
 
