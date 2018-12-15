@@ -151,6 +151,10 @@ export class WalletsComponent implements OnInit, OnDestroy {
         }
     }
 
+    get1BtcValue() {
+        return this.currencyPairPrices.get(this.btcUsd)
+    }
+
     getTotalExchangeBtcValue(exchangeBalance: ExchangeBalanceDto): number {
         let totalBtc = 0.0;
         exchangeBalance.currencyBalances.forEach(item => {
