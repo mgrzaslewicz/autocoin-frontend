@@ -1,3 +1,35 @@
-<p>
-  TODO two-factor-authentication
-</p>
+<div class="card mb-3 bg-dark">
+    <div class="card-header">2-Step Verification</div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col is-2 pr-0" *ngIf="twoFactorAuthenticationState === 'enabled'">
+                <h5>2-Step Verification is enabled. Input the 6-digits code from authenticator to disable</h5>
+                <input [(ngModel)]="current2FACode" type="text" class="form-control">
+                <button [disabled]="operationInProgress || ('' + current2FACode) == 'null'" type="submit"
+                        class="btn btn-danger"
+                        (click)="disableTwoFactorAuthentication()">
+                    Disable
+                </button>
+            </div>
+            <div class="col is-2 pr-0" *ngIf="twoFactorAuthenticationState === 'disabled'">
+                2-Step Verification is currently disabled
+                <button (click)="showGenerateSecretCodeStep()"
+                        [disabled]="operationInProgress" type="submit"
+                        class="btn btn-success">Enable
+                </button>
+            </div>
+            <div class="col is-2 pr-0" *ngIf="twoFactorAuthenticationState === 'generateSecretCode'">
+                <h5>Your secret code</h5>
+                <img [src]="secret2FACodeQrCodeImageUrl"/>
+                <input [value]="secret2FACode" #secretCodeInput readonly type="text" class="form-control">
+                <button (click)="copyInputToClipboard(secretCodeInput)" class="btn btn-info">Copy</button>
+
+                <h5>Input the 6-digits code from authenticator</h5>
+                <input [(ngModel)]="current2FACode" type="text" class="form-control">
+                <button (click)="enableTwoFactorAuthentication()" [disabled]="operationInProgress"
+                        class="btn btn-success">Enable two-factor authentication
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

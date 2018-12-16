@@ -10,6 +10,7 @@ import {ExchangeAccountService} from './exchange-account.service';
 import {PriceService} from './price.service';
 import {FeatureToggleToken, LocalStorageFeatureToggle} from './feature.toogle.service';
 import {ExchangeUsersService} from './api';
+import {UserAccountService} from './user-account.service';
 
 @NgModule({
     imports: [
@@ -21,6 +22,7 @@ import {ExchangeUsersService} from './api';
         LocalStorageFeatureToggle,
         {provide: FeatureToggleToken, useClass: LocalStorageFeatureToggle},
         AuthService,
+        UserAccountService,
         ExchangeUsersService,
         ExchangeAccountService,
         PriceService,
