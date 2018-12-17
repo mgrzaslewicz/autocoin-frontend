@@ -22,14 +22,14 @@
             <div class="d-flex flex-row m-3">
                 <div>
                     <div class="p-1">
-                        Total BTC: <span class="sensitive-data">{{ getTotalExchangeUserBtcValue(exchangeUser) | number : '1.8' || '-' }}</span><i class="fa fa-btc"></i>
+                        Total BTC: <span class="sensitive-data">{{ getTotalExchangeUserBtcValue(exchangeUser) | number : '1.8' || '-' }}</span> <i class="fa fa-btc"></i>
                     </div>
                     <div class="p-1">
-                        Total USD: <span class="sensitive-data">{{ getTotalExchangeUserUsdValue(exchangeUser) | number : '1.2' || '-' }}</span><i class="fa fa-usd"></i>
+                        Total USD: <span class="sensitive-data">{{ getTotalExchangeUserUsdValue(exchangeUser) | number : '1.2' || '-' }}</span> <i class="fa fa-usd"></i>
                     </div>
                 </div>
                 <div class="p-1 mr-2 ml-auto">
-                    BTC: <span class="sensitive-data">{{ get1BtcValue() | number : '1.2' || '-' }}</span><i class="fa fa-usd"></i>
+                    1 <i class="fa fa-btc"></i> = <i class="fa fa-usd"></i> <span class="sensitive-data">{{ get1BtcValue() | number : '1.2' || '-' }}</span>
                 </div>
             </div>
             <ng-container *ngFor="let exchangeBalance of exchangeBalancesForExchangeUser(exchangeUser)">
