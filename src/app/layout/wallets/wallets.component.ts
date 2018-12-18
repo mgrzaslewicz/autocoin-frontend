@@ -71,7 +71,8 @@ export class WalletsComponent implements OnInit, OnDestroy {
         this.exchangeUsersSubscription = forkJoin(
             this.exchangeUsersService.getExchangeUsers()
         ).subscribe(([exchangeUsers]) => {
-            this.exchangeUsers = exchangeUsers.map(eu => new ExchangeUserWithBalance(eu.id, eu.name, this.balancesForExchangeUser(eu)));
+            this.exchangeUsers = exchangeUsers.map(eu => new ExchangeUserWithBalance(eu.id, eu.name));
+            this.refreshAllExchangeUsersBalances();
             this.restorePricesFromLocalStorage();
         }, () => {
             this.exchangeUsers = [];
@@ -101,20 +102,19 @@ export class WalletsComponent implements OnInit, OnDestroy {
 
     flipShowingUnderOneDollar() {
         this.showUnder1Dollar = !this.showUnder1Dollar;
-        this.exchangeUsers.forEach(exchangeUser => exchangeUser.exchangeBalances = this.balancesForExchangeUser(exchangeUser));
+        this.refreshAllExchangeUsersBalances();
     }
 
     flipBalancesViewType() {
         this.showBalancesPerExchange = !this.showBalancesPerExchange;
-        this.exchangeUsers.forEach(exchangeUser => exchangeUser.exchangeBalances = this.balancesForExchangeUser(exchangeUser));
+        this.refreshAllExchangeUsersBalances();
     }
 
-    private balancesForExchangeUser(exchangeUser: ExchangeUser): ExchangeBalanceDto[] {
-        if (this.showBalancesPerExchange) {
-            return this.exchangeBalancesForExchangeUser(exchangeUser);
-        } else {
-            return this.totalBalancesForExchangeUser(exchangeUser);
-        }
+    private refreshAllExchangeUsersBalances() {
+        this.exchangeUsers.forEach(exchangeUser =>
+            exchangeUser.exchangeBalances = this.showBalancesPerExchange ?
+                this.exchangeBalancesForExchangeUser(exchangeUser) :
+                this.totalBalancesForExchangeUser(exchangeUser));
     }
 
     private exchangeBalancesForExchangeUser(exchangeUser: ExchangeUser): ExchangeBalanceDto[] {
@@ -150,6 +150,7 @@ export class WalletsComponent implements OnInit, OnDestroy {
                     .sort((a, b) => a.exchangeName.localeCompare(b.exchangeName));
                 localStorage.setItem('exchange-user-portfolio-refresh-time-' + client.id, new Date().getTime().toString());
                 localStorage.setItem('exchange-user-portfolio-balances-' + client.id, JSON.stringify(accountBalancesSortedByExchangeAZ));
+                this.refreshAllExchangeUsersBalances();
                 this.pending = false;
             }, () => {
                 this.pending = false;
@@ -228,8 +229,7 @@ export class WalletsComponent implements OnInit, OnDestroy {
         return totalBtc;
     }
 
-    getTotalExchangeUserUsdValue(exchangeUser
-                                     : ExchangeUser): number {
+    getTotalExchangeUserUsdValue(exchangeUser: ExchangeUser): number {
         const totalBtcValue = this.getTotalExchangeUserBtcValue(exchangeUser);
         if (this.currencyPairPrices.has(this.btcUsd) && totalBtcValue !== null) {
             const usdBtcPrice = this.currencyPairPrices.get(this.btcUsd);
@@ -312,7 +312,9 @@ export class WalletsComponent implements OnInit, OnDestroy {
     getSortedBalances(currencyBalances: CurrencyBalanceDto[]): CurrencyBalanceTableRow[] {
         return currencyBalances
             .map(currencyBalance => this.toCurrencyBalanceTableRow(currencyBalance))
-            .filter(row => this.showUnder1Dollar || row.usdValue > 1)
+            // row.usdValue == null to avoid odd situation where you have nothing shown after you log first time and refresh amounts
+            // but have not refreshed prices yet and the list is empty
+            .filter(row => this.showUnder1Dollar || row.usdValue == null || row.usdValue > 1)
             .sort((a, b) => b.btcValue - a.btcValue);
     }
 
