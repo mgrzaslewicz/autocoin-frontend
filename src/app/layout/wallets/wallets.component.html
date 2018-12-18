@@ -3,8 +3,9 @@
         <li class="nav-item">
             <h2 class="page-header text-light">Wallets</h2>
         </li>
-        <div class="nav-item btn-group ml-auto" role="group" aria-label="Basic example">
+        <div class="nav-item btn-group ml-auto" role="group">
             <button type="button" class="btn btn-outline-light" style="min-width: 130px" (click)="flipBalancesViewType()">{{ showBalancesPerExchange ? 'Per Exchange' : 'Total'}}</button>
+            <button type="button" class="btn btn-outline-light" style="min-width: 130px" (click)="flipShowingUnderOneDollar()">{{ showUnder1Dollar ? '>' : '<'}}1<i class="fa fa-usd"></i></button>
         </div>
     </ul>
     <ng-container>

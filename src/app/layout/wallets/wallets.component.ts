@@ -7,7 +7,6 @@ import * as _ from 'underscore';
 import {CurrencyPrice, PriceService} from '../../services/price.service';
 import {ExchangeUsersService} from '../../services/api';
 import {forkJoin, from, Subscription} from 'rxjs';
-import {forEach} from "@angular/router/src/utils/collection";
 
 export interface CurrencyBalanceDto {
     currencyCode: string;
@@ -54,6 +53,7 @@ export class WalletsComponent implements OnInit, OnDestroy {
     pending = false;
     pendingPriceRefresh = false;
     showBalancesPerExchange = true;
+    showUnder1Dollar = false;
     private exchangeUsersSubscription: Subscription;
     private currencyPairPrices: Map<string, number> = new Map();
     private btcUsd = 'BTC-USD';
@@ -99,6 +99,11 @@ export class WalletsComponent implements OnInit, OnDestroy {
         return this.getLocalStorageKeyAsDate('prices-refresh-time');
     }
 
+    flipShowingUnderOneDollar() {
+        this.showUnder1Dollar = !this.showUnder1Dollar;
+        this.exchangeUsers.forEach(exchangeUser => exchangeUser.exchangeBalances = this.balancesForExchangeUser(exchangeUser));
+    }
+
     flipBalancesViewType() {
         this.showBalancesPerExchange = !this.showBalancesPerExchange;
         this.exchangeUsers.forEach(exchangeUser => exchangeUser.exchangeBalances = this.balancesForExchangeUser(exchangeUser));
@@ -113,7 +118,7 @@ export class WalletsComponent implements OnInit, OnDestroy {
     }
 
     private exchangeBalancesForExchangeUser(exchangeUser: ExchangeUser): ExchangeBalanceDto[] {
-        return JSON.parse(localStorage.getItem('exchange-user-portfolio-balances-' + exchangeUser.id));
+        return JSON.parse(localStorage.getItem('exchange-user-portfolio-balances-' + exchangeUser.id)) || [];
     }
 
     private totalBalancesForExchangeUser(exchangeUser: ExchangeUser): ExchangeBalanceDto[] {
@@ -235,18 +240,11 @@ export class WalletsComponent implements OnInit, OnDestroy {
     }
 
     private getDistinctCurrencyCodesInWallets(): string[] {
-        return _.uniq(
-            _.flatten(_.filter(this.exchangeUsers, exchangeUser => exchangeUser != null).map(exchangeUser =>
-                    _.filter(this.exchangeBalancesForExchangeUser(exchangeUser), balance => balance != null)
-                        .map(exchangeBalanceDto =>
-                            exchangeBalanceDto.currencyBalances
-                                .map(exchangeCurrencyBalance => exchangeCurrencyBalance.currencyCode)
-                        )
-                )
-            )
-        ).sort(function (a, b) {
-            return a.localeCompare(b);
-        });
+        return Array.from(new Set(this.exchangeUsers
+            .reduce((acc, next) => acc.concat(next.exchangeBalances), [] as ExchangeBalanceDto[])
+            .reduce((acc, next) => acc.concat(next.currencyBalances), [] as CurrencyBalanceDto[])
+            .map(balance => balance.currencyCode)))
+            .sort((a, b) => a.localeCompare(b));
     }
 
     private restorePricesFromLocalStorage() {
@@ -314,6 +312,7 @@ export class WalletsComponent implements OnInit, OnDestroy {
     getSortedBalances(currencyBalances: CurrencyBalanceDto[]): CurrencyBalanceTableRow[] {
         return currencyBalances
             .map(currencyBalance => this.toCurrencyBalanceTableRow(currencyBalance))
+            .filter(row => this.showUnder1Dollar || row.usdValue > 1)
             .sort((a, b) => b.btcValue - a.btcValue);
     }
 
