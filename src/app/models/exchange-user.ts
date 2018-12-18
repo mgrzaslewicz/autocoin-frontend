@@ -1,4 +1,7 @@
 export class ExchangeUser {
-    public id: string;
-    public name: string;
+    constructor(
+        public id: string,
+        public name: string
+    ) {
+    }
 }

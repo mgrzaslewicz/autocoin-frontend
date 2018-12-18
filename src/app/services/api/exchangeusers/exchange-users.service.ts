@@ -32,28 +32,15 @@ export class ExchangeUsersService {
     }
 
     private toExchangeUser(data): ExchangeUser {
-        const exchangeUser = new ExchangeUser;
-
-        exchangeUser.id = data.id;
-        exchangeUser.name = data.name;
-
-        return exchangeUser;
+        return new ExchangeUser(data.id, data.name);
     }
 
     private toExchange(data): Exchange {
-        const exchange = new Exchange;
-
-        exchange.id = data.id;
-        exchange.name = data.name;
-
-        return exchange;
+        return new Exchange(data.id, data.name);
     }
 
     private toExchangeKey(data): ExchangeKeyExistenceResponseDto {
-        const exchangeKey = new ExchangeKeyExistenceResponseDto;
-        exchangeKey.exchangeId = data.exchangeId;
-        exchangeKey.exchangeUserId = data.exchangeUserId;
-        return exchangeKey;
+        return new ExchangeKeyExistenceResponseDto(data.exchangeId, data.exchangeUserId);
     }
 
     createExchangeUser(data) {

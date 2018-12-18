@@ -5,6 +5,8 @@ export class UpdateExchangeKeyRequestDto {
 }
 
 export class ExchangeKeyExistenceResponseDto {
-    public exchangeId: String;
-    public exchangeUserId: String;
+    constructor(
+        public exchangeId: string,
+        public exchangeUserId: string) {
+    }
 }

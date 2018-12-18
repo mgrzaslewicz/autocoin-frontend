@@ -7,6 +7,7 @@ import * as _ from 'underscore';
 import {CurrencyPrice, PriceService} from '../../services/price.service';
 import {ExchangeUsersService} from '../../services/api';
 import {forkJoin, from, Subscription} from 'rxjs';
+import {forEach} from "@angular/router/src/utils/collection";
 
 export interface CurrencyBalanceDto {
     currencyCode: string;
@@ -19,6 +20,12 @@ export interface ExchangeBalanceDto {
     exchangeName: string;
     currencyBalances: CurrencyBalanceDto[];
     errorMessage?: string;
+}
+
+export class ExchangeUserWithBalance extends ExchangeUser {
+    constructor(id: string, name: string, public exchangeBalances: ExchangeBalanceDto[] = []) {
+        super(id, name);
+    }
 }
 
 export interface AccountInfoResponseDto {
@@ -43,9 +50,10 @@ interface CurrencyBalanceTableRow {
     animations: [routerTransition()]
 })
 export class WalletsComponent implements OnInit, OnDestroy {
-    exchangeUsers: ExchangeUser[] = [];
+    exchangeUsers: ExchangeUserWithBalance[] = [];
     pending = false;
     pendingPriceRefresh = false;
+    showBalancesPerExchange = true;
     private exchangeUsersSubscription: Subscription;
     private currencyPairPrices: Map<string, number> = new Map();
     private btcUsd = 'BTC-USD';
@@ -63,7 +71,7 @@ export class WalletsComponent implements OnInit, OnDestroy {
         this.exchangeUsersSubscription = forkJoin(
             this.exchangeUsersService.getExchangeUsers()
         ).subscribe(([exchangeUsers]) => {
-            this.exchangeUsers = exchangeUsers;
+            this.exchangeUsers = exchangeUsers.map(eu => new ExchangeUserWithBalance(eu.id, eu.name, this.balancesForExchangeUser(eu)));
             this.restorePricesFromLocalStorage();
         }, () => {
             this.exchangeUsers = [];
@@ -91,12 +99,45 @@ export class WalletsComponent implements OnInit, OnDestroy {
         return this.getLocalStorageKeyAsDate('prices-refresh-time');
     }
 
-    exchangeBalancesForExchangeUser(exchangeUser: ExchangeUser): ExchangeBalanceDto[] {
+    flipBalancesViewType() {
+        this.showBalancesPerExchange = !this.showBalancesPerExchange;
+        this.exchangeUsers.forEach(exchangeUser => exchangeUser.exchangeBalances = this.balancesForExchangeUser(exchangeUser));
+    }
+
+    private balancesForExchangeUser(exchangeUser: ExchangeUser): ExchangeBalanceDto[] {
+        if (this.showBalancesPerExchange) {
+            return this.exchangeBalancesForExchangeUser(exchangeUser);
+        } else {
+            return this.totalBalancesForExchangeUser(exchangeUser);
+        }
+    }
+
+    private exchangeBalancesForExchangeUser(exchangeUser: ExchangeUser): ExchangeBalanceDto[] {
         return JSON.parse(localStorage.getItem('exchange-user-portfolio-balances-' + exchangeUser.id));
     }
 
-    fetchExchangeBalancesForExchangeUser(client: ExchangeUser) {
+    private totalBalancesForExchangeUser(exchangeUser: ExchangeUser): ExchangeBalanceDto[] {
+        const currencyBalancesMap = this.exchangeBalancesForExchangeUser(exchangeUser)
+            .map(dto => new Map(dto.currencyBalances.map<[string, CurrencyBalanceDto]>(balance => [balance.currencyCode, balance])))
+            .reduce((acc, next) => {
+                next.forEach(balance => {
+                    if (acc.has(balance.currencyCode)) {
+                        acc.get(balance.currencyCode).available += balance.available;
+                        acc.get(balance.currencyCode).frozen += balance.frozen;
+                        acc.get(balance.currencyCode).total += balance.total;
+                    } else {
+                        acc.set(balance.currencyCode, balance);
+                    }
+                });
+                return acc;
+            }, new Map());
+        return [{
+            exchangeName: 'Total',
+            currencyBalances: Array.from(currencyBalancesMap.values())
+        }];
+    }
 
+    fetchExchangeBalancesForExchangeUser(client: ExchangeUser) {
         this.pending = true;
         this.exchangeAccountService.getAccountBalances(client.id).subscribe(
             accountBalances => {
@@ -152,7 +193,7 @@ export class WalletsComponent implements OnInit, OnDestroy {
     }
 
     get1BtcValue() {
-        return this.currencyPairPrices.get(this.btcUsd)
+        return this.currencyPairPrices.get(this.btcUsd);
     }
 
     getTotalExchangeBtcValue(exchangeBalance: ExchangeBalanceDto): number {
@@ -242,7 +283,7 @@ export class WalletsComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (currencyPrice: CurrencyPrice) => {
                     this.savePrice(currencyPrice);
-                    console.log(`Next price for ${currencyPrice.currencyCode} is ${1 / currencyPrice.price}${currencyPrice.unit})`);
+                    console.log(`Next price for ${currencyPrice.currencyCode} is ${1 / currencyPrice.price}${currencyPrice.unit}`);
                 },
                 complete: () => {
                     console.log('Complete');
@@ -287,4 +328,5 @@ export class WalletsComponent implements OnInit, OnDestroy {
             usdValue: this.getUsdValue(currencyBalance)
         };
     }
+
 }
