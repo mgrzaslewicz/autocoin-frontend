@@ -13,14 +13,15 @@ export class AuthService {
     ) {
     }
 
-    login(username, password) {
+    login(username, password, twoFactorAuthenticationCode) {
         let body = new HttpParams()
             .set('client_id', 'SPA')
             .set('client_secret', 'superSecretPassword')
             .set('password', password)
             .set('username', username)
             .set('grant_type', 'password')
-            .set('scopes', 'read');
+            .set('scopes', 'read')
+            .set('2faCode', twoFactorAuthenticationCode);
 
         const headers = new HttpHeaders()
             .append('Cache-Control', 'no-cache')

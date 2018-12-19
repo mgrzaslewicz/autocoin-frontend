@@ -15,9 +15,7 @@ export class LoginComponent implements OnInit {
 
     @ViewChild('loginForm')
     public loginForm: NgForm;
-    private loginAndPasswordStep = 'loginAndPassword';
-    private twoFactorAuthenticationCodeStep = 'twoFactorAuthenticationCode';
-    private currentStep = 'loginAndPassword';
+    isShowingTwoFactorAuthenticationCodeInput = false;
 
     constructor(public router: Router,
                 private authService: AuthService,
@@ -28,38 +26,29 @@ export class LoginComponent implements OnInit {
     }
 
     onSubmit(loginForm) {
-        if (this.isAtLoginAndPasswordStep()) {
-            this.onLoginAndPasswordSubmit(loginForm);
-        }
-        if (this.isAtTwoFactorAuthenticationCodeStep()) {
-            this.onTwoFactorAuthenticationCodeSubmit(loginForm);
-        }
-    }
-
-    onLoginAndPasswordSubmit(loginForm) {
-        this.authService.login(loginForm.value.email, loginForm.value.password)
-            .subscribe(response => {
+        this.authService.login(loginForm.value.email, loginForm.value.password, loginForm.value.twoFactorAuthenticationCode)
+            .subscribe(() => {
                 this.router.navigate(['/dashboard']);
             }, response => {
                 if (response.error.error === 'invalid_grant') {
-                    this.toastService.danger('Wrong username or password.');
+                    if (this.isTwoFactorAuthenticationCodeInvalid(response.error)) {
+                        if (this.isShowingTwoFactorAuthenticationCodeInput) {
+                            this.toastService.danger('Invalid 2-step authentication code');
+                        } else {
+                            this.toastService.warning('Please input 2-step authentication code');
+                        }
+                        this.isShowingTwoFactorAuthenticationCodeInput = true;
+                    } else {
+                        this.toastService.danger('Wrong username or password.');
+                    }
                 } else {
                     this.toastService.danger('Service is unavailable. Try again later.');
                 }
             });
     }
 
-    onTwoFactorAuthenticationCodeSubmit(loginForm) {
-        console.log('TODO onTwoFactorAuthenticationCodeSubmit');
-        throw new Error('onTwoFactorAuthenticationCodeSubmit not implemented yet');
-    }
-
-    public isAtLoginAndPasswordStep(): boolean {
-        return this.currentStep === this.loginAndPasswordStep;
-    }
-
-    public isAtTwoFactorAuthenticationCodeStep(): boolean {
-        return this.currentStep === this.twoFactorAuthenticationCodeStep;
+    private isTwoFactorAuthenticationCodeInvalid(error: any) {
+        return error.error_description.indexOf('Invalid verification code') !== -1;
     }
 
 }

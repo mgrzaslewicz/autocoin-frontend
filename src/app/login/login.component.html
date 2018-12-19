@@ -5,7 +5,7 @@
             <h1>Autocoin</h1>
             <form ngForm role="form" (ngSubmit)="onSubmit(loginForm)" #loginForm="ngForm">
                 <div class="form-content">
-                    <div *ngIf="isAtLoginAndPasswordStep()">
+                    <div>
                         <div class="form-group">
                             <input ngModel type="text" name="email" class="form-control input-underline input-lg"
                                    id="email"
@@ -16,9 +16,10 @@
                             <input ngModel type="password" name="password" class="form-control input-underline input-lg"
                                    id="password" placeholder="Password" required>
                         </div>
-                        <div *ngIf="isAtTwoFactorAuthenticationCodeStep()">
-                            <div>Please input 2-Step authentication code</div>
-                            <input ngModel type="number" name="twoFactorAuthenticationCode" class="form-control"
+                        <div *ngIf="isShowingTwoFactorAuthenticationCodeInput" class="form-group">
+                            <div>Please input 2-factor authentication code</div>
+                            <input ngModel type="text" name="twoFactorAuthenticationCode"
+                                   class="form-control"
                                    id="twoFactorAuthenticationCode" placeholder="Two factor authentication code"
                                    required>
                         </div>
@@ -26,7 +27,7 @@
                 </div>
                 <button type="submit" class="btn rounded-btn" [disabled]="loginForm.invalid"> Log in</button>
                 <!-- <a class="btn rounded-btn" [routerLink]="['/dashboard']"> Log in </a> -->
-                &nbsp;
+                <!--&nbsp;-->
                 <!-- <a class="btn rounded-btn" [routerLink]="['/signup']">Register</a> -->
             </form>
         </div>

@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {FEATURE_2FA, FeatureToggle, FeatureToggleToken} from '../../services/feature.toogle.service';
+import {FeatureToggle, FeatureToggleToken} from '../../services/feature.toogle.service';
 
 @Component({
     selector: 'app-settings',
@@ -12,10 +12,6 @@ export class SettingsComponent implements OnInit {
     }
 
     ngOnInit() {
-    }
-
-    public isShowingTwoFactorAuthentication(): boolean {
-        return this.featureToggle.isActive(FEATURE_2FA);
     }
 
 }
