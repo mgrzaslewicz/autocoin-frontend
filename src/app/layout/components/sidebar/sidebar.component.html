@@ -20,10 +20,13 @@
             <i class="fa fa-fw fa-calendar"></i>&nbsp;{{ 'Open orders' | translate }}
         </a>
 
+        <a routerLink="/health" [routerLinkActive]="['router-link-active']" class="list-group-item" *ngIf="isHealthTabAvailable">
+            <i class="fa fa-fw fa-heartbeat"></i>&nbsp;{{ 'Health' | translate }}
+        </a>
+
         <a routerLink="/settings" [routerLinkActive]="['router-link-active']" class="list-group-item">
             <i class="fa fa-fw fa-cog"></i>&nbsp;{{ 'Settings' | translate }}
         </a>
-
 
     </div>
 </nav>

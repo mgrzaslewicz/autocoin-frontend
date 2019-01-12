@@ -13,6 +13,7 @@ const routes: Routes = [
             { path: 'wallets', loadChildren: './wallets/wallets.module#WalletsModule' },
             { path: 'automation', loadChildren: './automation/automation.module#AutomationModule' },
             { path: 'orders', loadChildren: './orders/orders.module#OrdersModule' },
+            { path: 'health', loadChildren: './health/health.module#HealthModule' },
             { path: 'settings', loadChildren: './settings/settings.module#SettingsModule' },
         ]
     }
