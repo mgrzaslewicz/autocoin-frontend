@@ -1,4 +1,5 @@
-<p>
-    <health-panel [healthy]="false" [icon]="'far fa-heartbeat'" [count]="124" [label]="'New Orders!'" ></health-panel>
-    <health-panel [healthy]="true" [icon]="'fas fa-heartbeat'" [count]="26" [label]="'New Comments!'" ></health-panel>
-</p>
+<div *ngFor="let exchangeHealthEntry of healthService.exchangesHealth | keyvalue">
+    <app-health-panel [healthy]=exchangeHealthEntry.value.health
+                      [exchange]=exchangeHealthEntry.key
+                      [details]=exchangeHealthEntry.value.detailed></app-health-panel>
+</div>

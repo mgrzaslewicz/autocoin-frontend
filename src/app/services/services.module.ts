@@ -5,6 +5,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {ToastService} from './toast.service';
 import {WatchCurrencyPairsService} from './watch-currency-pairs.service';
 import {OrdersService} from './orders.service';
+import {HealthService} from './health.service';
 import {AuthService} from './auth.service';
 import {ExchangeAccountService} from './exchange-account.service';
 import {PriceService} from './price.service';
@@ -30,7 +31,8 @@ import {UserAccountService} from './user-account.service';
         MarketsService,
         ToastService,
         WatchCurrencyPairsService,
-        OrdersService
+        OrdersService,
+        HealthService
     ]
 })
 export class ServicesModule {
