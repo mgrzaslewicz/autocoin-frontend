@@ -21,10 +21,6 @@ export interface CancelOrdersResponseDto {
     orders: CancelOrderResponseDto[];
 }
 
-export interface OpenOrdersRequestDto {
-    currencyPairs: CurrencyPair[];
-}
-
 export interface OpenOrdersResponseDto {
     exchangeName: string;
     exchangeUserId: string;

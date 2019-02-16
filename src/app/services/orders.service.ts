@@ -4,7 +4,6 @@ import {
     CancelOrderResponseDto,
     CancelOrdersRequestDto,
     CancelOrdersResponseDto,
-    OpenOrdersRequestDto,
     OpenOrdersResponseDto,
     Order
 } from '../models/order';
@@ -18,7 +17,7 @@ import {HttpClient} from '@angular/common/http';
 export class OrdersService {
 
     private ordersApiUrl = 'https://orders-api.autocoin-trader.com';
-    private openOrdersUrl = `${this.ordersApiUrl}/get-open-orders`;
+    private openOrdersUrl = `${this.ordersApiUrl}/open-orders`;
     private cancelOrderUrl = `${this.ordersApiUrl}/cancel-order`;
     private cancelOrdersUrl = `${this.ordersApiUrl}/cancel-orders`;
 
@@ -26,10 +25,12 @@ export class OrdersService {
     }
 
     getOpenOrders(): Observable<OpenOrdersResponseDto[]> {
-        const openOrdersRequestDto: OpenOrdersRequestDto = {
-            currencyPairs: this.currencyPairsService.all()
-        };
-        return this.http.post<OpenOrdersResponseDto[]>(this.openOrdersUrl, openOrdersRequestDto);
+        const currencyPairs = this.currencyPairsService.all()
+            .map(currencyPair => {
+                return encodeURIComponent(currencyPair.symbol());
+            })
+            .join(',');
+        return this.http.get<OpenOrdersResponseDto[]>(`${this.openOrdersUrl}/?currencyPairs=${currencyPairs}`);
     }
 
     cancelOpenOrder(openOrder: Order): Observable<CancelOrderResponseDto> {
