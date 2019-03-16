@@ -1,14 +1,13 @@
 <ng-template #content let-c="close" let-d="dismiss">
     <div class="modal-header">
-        <h4 class="modal-title">Delete client confirmation</h4>
+        <h4 class="modal-title">Delete user confirmation</h4>
         <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
     <div class="modal-body">
         <p>
-            Are you sure you want to delete exchange user <br>
-            <strong>{{ exchangeUser.name }}</strong>?
+            Are you sure you want to delete user <strong>{{ exchangeUser.name }}</strong> with all API keys?
         </p>
     </div>
     <div class="modal-footer">

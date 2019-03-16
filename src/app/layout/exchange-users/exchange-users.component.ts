@@ -4,11 +4,6 @@ import {Exchange, ExchangeKeyExistenceResponseDto, ExchangeUser} from '../../mod
 import {ToastService} from '../../services/toast.service';
 import {forkJoin} from 'rxjs';
 
-export interface ExchangeNameWithExchangeUser {
-    exchangeName: string;
-    exchangeUser: ExchangeUser;
-}
-
 @Component({
     selector: 'app-exchange-users',
     templateUrl: './exchange-users.component.html',
@@ -18,7 +13,6 @@ export class ExchangeUsersComponent implements OnInit {
     public exchangeUsers: ExchangeUser[] = [];
     public exchanges: Exchange[];
     public exchangesKeyExistenceList: ExchangeKeyExistenceResponseDto[];
-    public selectedExchangeNamesWithExchangeUsers: ExchangeNameWithExchangeUser[] = [];
     public isLoading = true;
 
     constructor(
@@ -32,8 +26,6 @@ export class ExchangeUsersComponent implements OnInit {
     }
 
     loadData() {
-        this.selectedExchangeNamesWithExchangeUsers = [];
-
         forkJoin(
             this.exchangeUsersService.getExchangeUsers(),
             this.exchangeUsersService.getExchanges(),
@@ -60,24 +52,8 @@ export class ExchangeUsersComponent implements OnInit {
         return names.sort((a, b) => a.localeCompare(b));
     }
 
-    onSelectExchangeUserExchangeName(exchangeUser: ExchangeUser, exchangeName: string) {
-        const index = this.findExchangeUserExchangeIndex(exchangeUser, exchangeName);
-
-        if (index !== -1) {
-            this.selectedExchangeNamesWithExchangeUsers.splice(index, 1);
-        } else {
-            this.selectedExchangeNamesWithExchangeUsers.push({exchangeUser: exchangeUser, exchangeName: exchangeName});
-        }
-    }
-
-    isExchangeUserExchangeSelected(exchangeUser: ExchangeUser, exchangeName) {
-        return this.findExchangeUserExchangeIndex(exchangeUser, exchangeName) !== -1;
-    }
-
-    findExchangeUserExchangeIndex(exchangeUser: ExchangeUser, exchangeName) {
-        return this.selectedExchangeNamesWithExchangeUsers.findIndex(object => {
-            return object.exchangeUser === exchangeUser && object.exchangeName === exchangeName;
-        });
+    isApiKeyNotWorking(exchangeUser: ExchangeUser, exchangeName) {
+        return false;
     }
 
 }

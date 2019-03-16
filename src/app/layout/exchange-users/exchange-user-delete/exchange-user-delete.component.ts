@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, Output, EventEmitter} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import {ExchangeUser} from '../../../models';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToastService} from '../../../services/toast.service';
@@ -29,18 +29,18 @@ export class ExchangeUserDeleteComponent implements OnInit {
     ngOnInit() {
     }
 
-    destroy(exchangeUser: ExchangeUser) {
+    deleteExchangeUserWithConfirmation(exchangeUser: ExchangeUser) {
         this.exchangeUser = exchangeUser;
 
         this.modalService.open(this.content).result.then(result => {
             if (result === 'delete') {
-                this.deleteExchangeUser(exchangeUser);
+                this.doDeleteExchangeUser(exchangeUser);
             }
         }, reason => {
         });
     }
 
-    private deleteExchangeUser(exchangeUser: ExchangeUser) {
+    private doDeleteExchangeUser(exchangeUser: ExchangeUser) {
         this.exchangeUsersService.deleteExchangeUser(exchangeUser.id)
             .subscribe(() => {
                 this.toastService.success('User has been deleted.');

@@ -5,7 +5,6 @@ import {FormsModule} from '@angular/forms';
 import {PageHeaderModule} from '../../shared';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
-import {MakeOrderComponent} from './make-order/make-order.component';
 import {ValidatorsModule} from '../../validators/validators.module';
 import {ExchangeUsersComponent} from './exchange-users.component';
 import {ExchangeUsersRoutingModule} from './exchange-users-routing.module';
@@ -26,8 +25,7 @@ import {ExchangeUserDeleteComponent} from './exchange-user-delete/exchange-user-
         ExchangeUsersComponent,
         ExchangeUserCreateComponent,
         ExchangeUserDeleteComponent,
-        ExchangeUserEditComponent,
-        MakeOrderComponent
+        ExchangeUserEditComponent
     ]
 })
 export class ExchangeUsersModule {
