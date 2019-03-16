@@ -10,3 +10,11 @@ export class ExchangeKeyExistenceResponseDto {
         public exchangeUserId: string) {
     }
 }
+
+export class ExchangeKeyCapabilityResponseDto {
+    constructor(
+        public exchangeId: string,
+        public exchangeUserId: string,
+        public canReadWallet: boolean) {
+    }
+}

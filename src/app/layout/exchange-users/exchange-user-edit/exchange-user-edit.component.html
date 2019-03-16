@@ -10,7 +10,7 @@
                     <input class="form-control" [(ngModel)]="exchangeUser.name" name="name" required>
                 </fieldset>
 
-                <button type="submit" class="btn btn-primary" [disabled]="createForm.invalid || loading">Save</button>
+                <button type="submit" class="btn btn-primary save" [disabled]="createForm.invalid || loading">Save</button>
                 <div class="alert alert-primary" role="alert">
                     Some exchanges require enabling API key and confirming by email. Make sure keys you provide are
                     enabled

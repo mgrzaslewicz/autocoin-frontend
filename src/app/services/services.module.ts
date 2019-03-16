@@ -12,6 +12,7 @@ import {PriceService} from './price.service';
 import {FeatureToggleToken, LocalStorageFeatureToggle} from './feature.toogle.service';
 import {ExchangeUsersService} from './api';
 import {UserAccountService} from './user-account.service';
+import {ExchangeKeyCapabilityService} from './exchange-key-capability.service';
 
 @NgModule({
     imports: [
@@ -26,6 +27,7 @@ import {UserAccountService} from './user-account.service';
         UserAccountService,
         ExchangeUsersService,
         ExchangeAccountService,
+        ExchangeKeyCapabilityService,
         PriceService,
 
         MarketsService,

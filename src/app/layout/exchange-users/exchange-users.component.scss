@@ -3,3 +3,15 @@
     user-select: none;
     margin: 4px;
 }
+
+.actions button {
+    margin: 0px 4px 4px 0px;
+}
+
+.btn.is-pending {
+    pointer-events: none;
+}
+
+.is-pending .fa {
+    animation: rotating 1s linear infinite;
+}
