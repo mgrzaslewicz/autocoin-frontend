@@ -11,7 +11,7 @@ const routes: Routes = [
             { path: 'dashboard', loadChildren: './dashboard/dashboard.module#DashboardModule' },
             { path: 'exchange-users', loadChildren: './exchange-users/exchange-users.module#ExchangeUsersModule' },
             { path: 'wallets', loadChildren: './wallets/wallets.module#WalletsModule' },
-            { path: 'automation', loadChildren: './automation/automation.module#AutomationModule' },
+            { path: 'trading-automation', loadChildren: './trading-automation/trading-strategy.module#TradingStrategyModule' },
             { path: 'orders', loadChildren: './orders/orders.module#OrdersModule' },
             { path: 'health', loadChildren: './health/health.module#HealthModule' },
             { path: 'settings', loadChildren: './settings/settings.module#SettingsModule' },

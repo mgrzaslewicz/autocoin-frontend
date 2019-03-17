@@ -4,16 +4,16 @@ import {ExchangeUser} from '../../../models';
 import {ExchangeUsersService} from '../../../services/api';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToastService} from '../../../services/toast.service';
-import {StrategiesService} from '../../../services/automation/strategies.service';
 import {Strategy, StrategyExecutionResponseDto, StrategyParametersRequest} from '../../../models/strategy';
 import {BuyLowerAndLowerSpecificParametersComponent} from './buy-lower-and-lower-specific-parameters/buy-lower-and-lower-specific-parameters.component';
-import {StrategiesExecutionsService} from '../../../services/automation/strategies-executions.service';
 import {FEATURE_CREATE_STRATEGY, FeatureToggle, FeatureToggleToken} from '../../../services/feature.toogle.service';
 import {SellHigherAndHigherSpecificParametersComponent} from './sell-higher-and-higher-specific-parameters/sell-higher-and-higher-specific-parameters.component';
 import {SellWhenSecondCurrencyGrowsParametersComponent} from './sell-when-second-currency-grows-parameters/sell-when-second-currency-grows-parameters.component';
 import {SellNowParametersComponent} from './sell-now-parameters/sell-now-parameters.component';
 import {BuyNowParametersComponent} from './buy-now-parameters/buy-now-parameters.component';
 import {WithMessageDto} from '../../../services/api/withMessageDto';
+import {StrategiesService} from '../../../services/trading-automation/strategies.service';
+import {StrategiesExecutionsService} from '../../../services/trading-automation/strategies-executions.service';
 
 export interface ExchangeUserSelection {
     exchangeUser: ExchangeUser;
@@ -21,11 +21,11 @@ export interface ExchangeUserSelection {
 }
 
 @Component({
-    selector: 'app-make-strategy-execution',
-    templateUrl: './make-strategy-execution.component.html',
-    styleUrls: ['./make-strategy-execution.component.scss']
+    selector: 'app-add-strategy-execution',
+    templateUrl: './add-strategy-execution.component.html',
+    styleUrls: ['./add-strategy-execution.component.scss']
 })
-export class MakeStrategyExecutionComponent implements OnInit {
+export class AddStrategyExecutionComponent implements OnInit {
 
     public exchangeName;
     public currencyPair: string;

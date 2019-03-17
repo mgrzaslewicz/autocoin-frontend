@@ -1,18 +1,18 @@
 import {Component, OnInit} from '@angular/core';
-import {StrategiesExecutionsService} from '../../services/automation/strategies-executions.service';
-import {forkJoin, Observable} from 'rxjs';
+import {StrategiesExecutionsService} from '../../services/trading-automation/strategies-executions.service';
+import {forkJoin} from 'rxjs';
 import {ToastService} from '../../services/toast.service';
-import {ExchangeUser, Exchange} from '../../models';
-import {ExchangesService} from '../../services/automation/exchanges.service';
+import {Exchange, ExchangeUser} from '../../models';
 import {StrategyExecutionResponseDto} from '../../models/strategy';
 import {ExchangeUsersService} from '../../services/api';
+import {ExchangesService} from '../../services/trading-automation/exchanges.service';
 
 @Component({
-    selector: 'app-automation',
-    templateUrl: './automation.component.html',
-    styleUrls: ['./automation.component.scss']
+    selector: 'app-trading-strategies',
+    templateUrl: './trading-strategies.component.html',
+    styleUrls: ['./trading-strategies.component.scss']
 })
-export class AutomationComponent implements OnInit {
+export class TradingStrategiesComponent implements OnInit {
 
     exchanges: Exchange[] = [];
     exchangeUsers: ExchangeUser[] = [];
