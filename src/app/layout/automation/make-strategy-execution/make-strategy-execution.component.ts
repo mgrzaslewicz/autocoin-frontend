@@ -1,7 +1,6 @@
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {CurrencyPair, ExchangeUser} from '../../../models';
-import {WatchCurrencyPairsService} from '../../../services/watch-currency-pairs.service';
+import {ExchangeUser} from '../../../models';
 import {ExchangeUsersService} from '../../../services/api';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToastService} from '../../../services/toast.service';
@@ -14,7 +13,6 @@ import {SellHigherAndHigherSpecificParametersComponent} from './sell-higher-and-
 import {SellWhenSecondCurrencyGrowsParametersComponent} from './sell-when-second-currency-grows-parameters/sell-when-second-currency-grows-parameters.component';
 import {SellNowParametersComponent} from './sell-now-parameters/sell-now-parameters.component';
 import {BuyNowParametersComponent} from './buy-now-parameters/buy-now-parameters.component';
-import {Observable} from 'rxjs';
 import {WithMessageDto} from '../../../services/api/withMessageDto';
 
 export interface ExchangeUserSelection {
@@ -30,8 +28,7 @@ export interface ExchangeUserSelection {
 export class MakeStrategyExecutionComponent implements OnInit {
 
     public exchangeName;
-    public allExchangePairs: CurrencyPair[];
-    public exchangePair: string;
+    public currencyPair: string;
     public exchangeUserSelectionList: ExchangeUserSelection[] = [];
     public strategies: Strategy[];
     public selectedStrategyName = 'BuyLowerAndLower';
@@ -48,8 +45,8 @@ export class MakeStrategyExecutionComponent implements OnInit {
     @ViewChild('confirmContent')
     confirmContentModal;
 
-    @ViewChild('makeOrderForm')
-    makeOrderForm;
+    @ViewChild('addStrategyExecutionForm')
+    addStrategyExecutionForm;
 
     @ViewChild('buyLowerAndLowerSpecificParameters')
     buyLowerAndLowerSpecificParametersComponent: BuyLowerAndLowerSpecificParametersComponent;
@@ -69,7 +66,6 @@ export class MakeStrategyExecutionComponent implements OnInit {
     constructor(
         private route: ActivatedRoute,
         private exchangeUsersService: ExchangeUsersService,
-        private watchedCurrencyPairs: WatchCurrencyPairsService,
         private modalService: NgbModal,
         private toastService: ToastService,
         private strategiesService: StrategiesService,
@@ -87,22 +83,9 @@ export class MakeStrategyExecutionComponent implements OnInit {
             this.exchangeName = params.exchangeName;
         });
 
-        this.allExchangePairs = this.watchedCurrencyPairs.all();
-
         this.loadExchangeUsers();
         this.loadStrategies();
     }
-
-    searchExchangePair = (text$: Observable<string>) => {
-        return text$
-            .debounceTime(200)
-            .distinctUntilChanged()
-            .map(exchangePairSymbol => exchangePairSymbol.toUpperCase())
-            .map(exchangePairSymbol => {
-                return this.allExchangePairs.filter(pair => pair.symbol().indexOf(exchangePairSymbol) > -1).slice(0, 10);
-            })
-            .map(pairs => pairs.map(pair => pair.symbol()));
-    };
 
     private loadExchangeUsers() {
         this.exchangeUsersService.getExchangeUsers().subscribe(exchangeUsers => {
@@ -128,7 +111,7 @@ export class MakeStrategyExecutionComponent implements OnInit {
 
     canMakeStrategyExecution() {
         return this.getSelectedExchangeUsers().length > 0
-            && this.makeOrderForm.valid
+            && this.addStrategyExecutionForm.valid
             && this.featureToggle.isActive(FEATURE_CREATE_STRATEGY);
     }
 
@@ -206,11 +189,11 @@ export class MakeStrategyExecutionComponent implements OnInit {
     }
 
     get baseCurrency() {
-        return this.exchangePair.split('/')[0];
+        return this.currencyPair.split('/')[0].toUpperCase();
     }
 
     get counterCurrency() {
-        return this.exchangePair.split('/')[1];
+        return this.currencyPair.split('/')[1].toUpperCase();
     }
 
     public isBuying(): boolean {

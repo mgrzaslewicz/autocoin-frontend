@@ -1,12 +1,13 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { CurrenyPairSymbolValidatorDirective } from './curreny-pair-symbol-validator.directive';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {CurrencyPairSymbolValidatorDirective} from './currency-pair-symbol-validator.directive';
 
 @NgModule({
-  imports: [
-    CommonModule
-  ],
-  declarations: [ CurrenyPairSymbolValidatorDirective ],
-  exports: [ CurrenyPairSymbolValidatorDirective ]
+    imports: [
+        CommonModule
+    ],
+    declarations: [CurrencyPairSymbolValidatorDirective],
+    exports: [CurrencyPairSymbolValidatorDirective]
 })
-export class ValidatorsModule { }
+export class ValidatorsModule {
+}

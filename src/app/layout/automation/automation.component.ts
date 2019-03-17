@@ -44,6 +44,7 @@ export class AutomationComponent implements OnInit {
             this.exchanges = exchanges;
             this.strategiesExecutions = strategiesExecutions;
             this.exchangeUsers = exchangeUsers;
+            console.log('Strategy executions:');
             console.log(this.strategiesExecutions);
         }, error => {
             this.exchangeUsers = [];

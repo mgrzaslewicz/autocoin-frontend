@@ -22,7 +22,7 @@
     </div>
 
 </div>
-<form #makeOrderForm="ngForm" *ngIf="!creatingStrategiesInProgress && !finishedCreatingStrategies">
+<form #addStrategyExecutionForm="ngForm" *ngIf="!creatingStrategiesInProgress && !finishedCreatingStrategies">
 
     <div class="row">
         <div class="col-md-6">
@@ -47,13 +47,14 @@
             <div class="form-group">
                 <label for="currency-pair-typeahead">Currency pair base/counter (eg XRP/BTC if you want to buy or sell
                     XRP)</label>
-                <input name="exchangePair" id="currency-pair-typeahead" type="text"
-                       class="form-control exchange-pair-input"
-                       [class.is-invalid]="makeOrderForm.controls.exchangePair && makeOrderForm.controls.exchangePair.invalid && makeOrderForm.controls.exchangePair.touched"
+                <input name="currencyPair"
+                       id="currency-pair-typeahead" type="text"
+                       class="form-control"
+                       [class.is-invalid]="addStrategyExecutionForm.controls.currencyPair && addStrategyExecutionForm.controls.currencyPair.invalid && addStrategyExecutionForm.controls.currencyPair.touched"
                        required validateCurrencyPairSymbol
-                       [(ngModel)]="exchangePair" [ngbTypeahead]="searchExchangePair"
+                       [(ngModel)]="currencyPair"
                        (input)="$event.target.value = $event.target.value.toUpperCase()">
-                <div class="invalid-feedback">Provide valid exchange pair</div>
+                <div class="invalid-feedback">Provide valid currency pair</div>
             </div>
 
             <div class="row">
@@ -156,7 +157,8 @@
     </div>
     <div class="row">
         <div class="col-12">
-            <button type="submit" class="btn btn-primary" (click)="showConfirmModal()"
+            <button type="submit" class="btn btn-primary add-strategy-execution"
+                    (click)="showConfirmModal()"
                     [disabled]="!canMakeStrategyExecution()">
                 Add strategy
             </button>
@@ -169,18 +171,18 @@
 
 <ng-template #confirmContent let-c="close" let-d="dismiss">
     <div class="modal-header">
-        <h4 class="modal-title">Strategy execution confirmation</h4>
+        <h4 class="modal-title">Confirm adding new trading strategy</h4>
         <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
     <div class="modal-body">
         <p>
-            Do you want to make new strategy execution?
+            Are you sure you want to add new trading strategy?
         </p>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-danger" (click)="c('delete')">Yes. I am sure</button>
+        <button type="button" class="btn btn-danger" (click)="c('delete')">Yes</button>
         <button type="button" class="btn btn-secondary" (click)="d('Dismiss')">Dismiss</button>
     </div>
 </ng-template>

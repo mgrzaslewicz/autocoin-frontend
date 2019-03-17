@@ -3,7 +3,7 @@ import {forkJoin, Subscription} from 'rxjs';
 import {OrdersService} from '../../services/orders.service';
 import {ExchangeUsersService} from '../../services/api';
 import {ToastService} from '../../services/toast.service';
-import {ExchangeUser, Order} from '../../models';
+import {CancelOrderResponseDto, ExchangeUser, Order} from '../../models';
 import {OpenOrdersResponseDto} from '../../models/order';
 
 @Component({
@@ -89,11 +89,25 @@ export class OrdersComponent implements OnInit, OnDestroy {
         return [].concat.apply([], openOrdersOfExchangeUser);
     }
 
+    private onCancelOrderResponse(cancelOrderResponse: CancelOrderResponseDto) {
+        if (cancelOrderResponse.success) {
+            this.removeOrderFromOpenOrders(cancelOrderResponse.orderId);
+            this.orderViewState.delete(cancelOrderResponse.orderId);
+        } else {
+            this.toastService.warning(`Could not cancel order ${cancelOrderResponse.orderId}`);
+            this.orderViewState[cancelOrderResponse.orderId] = 'enabled';
+        }
+    }
+
     cancelOpenOrder(openOrder: Order) {
-        this.orderViewState[openOrder.orderId] = 'enabled';
-        this.orderService.cancelOpenOrder(openOrder).subscribe(canceledOrder => {
-            this.orderViewState[canceledOrder.orderId] = 'disabled';
-        });
+        this.orderViewState[openOrder.orderId] = 'pending';
+        this.orderService.cancelOpenOrder(openOrder).subscribe(cancelOrderResponse => {
+                this.onCancelOrderResponse(cancelOrderResponse);
+            },
+            error => {
+                this.orderViewState[openOrder.orderId] = 'enabled';
+                this.toastService.warning('Something went wrong. Could not cancel order');
+            });
     }
 
     onSelectOrder(checked, order) {
@@ -113,9 +127,18 @@ export class OrdersComponent implements OnInit, OnDestroy {
         this.selectedOrders.forEach(order => this.orderViewState[order.orderId] = 'pending');
 
         this.orderService.cancelOpenOrders(this.selectedOrders).subscribe(cancelledOrders => {
-            cancelledOrders.orders.forEach(canceledOrder => {
-                this.orderViewState[canceledOrder.orderId] = 'disabled';
+            cancelledOrders.orders.forEach(cancelOrderResponse => {
+                this.onCancelOrderResponse(cancelOrderResponse);
             });
+        });
+    }
+
+    private removeOrderFromOpenOrders(orderId: string) {
+        this.openOrders.forEach(openOrdersAtExchange => {
+            const indexToRemove = openOrdersAtExchange.openOrders.findIndex(it => it.orderId === orderId);
+            if (indexToRemove !== -1) {
+                openOrdersAtExchange.openOrders.splice(indexToRemove, 1);
+            }
         });
     }
 

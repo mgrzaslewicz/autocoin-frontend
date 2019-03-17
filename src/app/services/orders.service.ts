@@ -9,7 +9,6 @@ import {
 } from '../models/order';
 import {Observable} from 'rxjs';
 import 'rxjs/add/operator/map';
-import {WatchCurrencyPairsService} from './watch-currency-pairs.service';
 import {CurrencyPair} from '../models';
 import {HttpClient} from '@angular/common/http';
 
@@ -21,16 +20,11 @@ export class OrdersService {
     private cancelOrderUrl = `${this.ordersApiUrl}/cancel-order`;
     private cancelOrdersUrl = `${this.ordersApiUrl}/cancel-orders`;
 
-    constructor(private http: HttpClient, private currencyPairsService: WatchCurrencyPairsService) {
+    constructor(private http: HttpClient) {
     }
 
     getOpenOrders(): Observable<OpenOrdersResponseDto[]> {
-        const currencyPairs = this.currencyPairsService.all()
-            .map(currencyPair => {
-                return encodeURIComponent(currencyPair.symbol());
-            })
-            .join(',');
-        return this.http.get<OpenOrdersResponseDto[]>(`${this.openOrdersUrl}/?currencyPairs=${currencyPairs}`);
+        return this.http.get<OpenOrdersResponseDto[]>(this.openOrdersUrl);
     }
 
     cancelOpenOrder(openOrder: Order): Observable<CancelOrderResponseDto> {

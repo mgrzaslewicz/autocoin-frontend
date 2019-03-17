@@ -3,7 +3,6 @@ import {CommonModule} from '@angular/common';
 import {MarketsService} from './markets.service';
 import {HttpClientModule} from '@angular/common/http';
 import {ToastService} from './toast.service';
-import {WatchCurrencyPairsService} from './watch-currency-pairs.service';
 import {OrdersService} from './orders.service';
 import {HealthService} from './health.service';
 import {AuthService} from './auth.service';
@@ -29,10 +28,8 @@ import {ExchangeKeyCapabilityService} from './exchange-key-capability.service';
         ExchangeAccountService,
         ExchangeKeyCapabilityService,
         PriceService,
-
         MarketsService,
         ToastService,
-        WatchCurrencyPairsService,
         OrdersService,
         HealthService
     ]
