@@ -1,5 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import {ExchangeHealth} from '../health.component';
 
 @Component({
     selector: 'app-health-panel',
@@ -17,22 +18,23 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
             })),
             transition('in => out', animate('400ms ease-in-out')),
             transition('out => in', animate('400ms ease-in-out'))
-        ]),
+        ])
     ]
 })
 export class HealthPanelComponent implements OnInit {
-    @Input() healthy: boolean;
-    @Input() exchange: string;
-    @Input() details: Map<String, Boolean>;
+    @Input() exchangeHealth: ExchangeHealth;
 
     showDetails = false;
     slide = 'out';
 
-    constructor() {}
+    constructor() {
+    }
 
-    ngOnInit() {}
+    ngOnInit() {
+    }
 
-    toggle() {
+    toggleDetailsVisibility() {
+        this.showDetails = !this.showDetails;
         this.slide = this.slide === 'in' ? 'out' : 'in';
     }
 }

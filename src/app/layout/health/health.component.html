@@ -1,5 +1,3 @@
-<div *ngFor="let exchangeHealthEntry of healthService.exchangesHealth | keyvalue">
-    <app-health-panel [healthy]=exchangeHealthEntry.value.health
-                      [exchange]=exchangeHealthEntry.key
-                      [details]=exchangeHealthEntry.value.detailed></app-health-panel>
+<div *ngFor="let exchangeHealthEntry of exchangesHealth | keyvalue">
+    <app-health-panel [exchangeHealth]="exchangeHealthEntry.value"></app-health-panel>
 </div>
