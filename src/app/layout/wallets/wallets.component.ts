@@ -2,11 +2,11 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {routerTransition} from '../../router.animations';
 import {ExchangeUser} from '../../models';
 import {ToastService} from '../../services/toast.service';
-import {ExchangeAccountService} from '../../services/exchange-account.service';
 import * as _ from 'underscore';
 import {CurrencyPrice, PriceService} from '../../services/price.service';
 import {ExchangeUsersService} from '../../services/api';
 import {forkJoin, from, Subscription} from 'rxjs';
+import {ExchangeWalletService} from '../../services/exchange-wallet.service';
 
 export interface CurrencyBalanceDto {
     currencyCode: string;
@@ -27,7 +27,7 @@ export class ExchangeUserWithBalance extends ExchangeUser {
     }
 }
 
-export interface AccountInfoResponseDto {
+export interface ExchangeCurrencyBalancesResponseDto {
     exchangeUserId: string;
     exchangeBalances: ExchangeBalanceDto[];
 }
@@ -61,7 +61,7 @@ export class WalletsComponent implements OnInit, OnDestroy {
 
     constructor(
         private exchangeUsersService: ExchangeUsersService,
-        private exchangeAccountService: ExchangeAccountService,
+        private exchangeWalletService: ExchangeWalletService,
         private toastService: ToastService,
         private priceService: PriceService
     ) {
@@ -144,7 +144,7 @@ export class WalletsComponent implements OnInit, OnDestroy {
 
     fetchExchangeBalancesForExchangeUser(client: ExchangeUser) {
         this.pending = true;
-        this.exchangeAccountService.getAccountBalances(client.id).subscribe(
+        this.exchangeWalletService.getAccountBalances(client.id).subscribe(
             accountBalances => {
                 const accountBalancesSortedByExchangeAZ = accountBalances.exchangeBalances
                     .sort((a, b) => a.exchangeName.localeCompare(b.exchangeName));
@@ -154,7 +154,7 @@ export class WalletsComponent implements OnInit, OnDestroy {
                 this.pending = false;
             }, () => {
                 this.pending = false;
-                this.toastService.danger('Sorry, something went wrong. Could not get exchange user account balance list');
+                this.toastService.danger(`Sorry, something went wrong. Could not get wallet balance for user ${client.name}`);
             }
         );
     }

@@ -6,12 +6,12 @@ import {ToastService} from './toast.service';
 import {OrdersService} from './orders.service';
 import {HealthService} from './health.service';
 import {AuthService} from './auth.service';
-import {ExchangeAccountService} from './exchange-account.service';
 import {PriceService} from './price.service';
 import {FeatureToggleToken, LocalStorageFeatureToggle} from './feature.toogle.service';
 import {ExchangeUsersService} from './api';
 import {UserAccountService} from './user-account.service';
 import {ExchangeKeyCapabilityService} from './exchange-key-capability.service';
+import {ExchangeWalletService} from './exchange-wallet.service';
 
 @NgModule({
     imports: [
@@ -25,7 +25,7 @@ import {ExchangeKeyCapabilityService} from './exchange-key-capability.service';
         AuthService,
         UserAccountService,
         ExchangeUsersService,
-        ExchangeAccountService,
+        ExchangeWalletService,
         ExchangeKeyCapabilityService,
         PriceService,
         MarketsService,
