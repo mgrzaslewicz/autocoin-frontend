@@ -1,11 +1,24 @@
 import {Inject, Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {FeatureToggle, FeatureToggleToken} from './feature.toogle.service';
 import {Observable} from 'rxjs';
+
+export interface ChangePasswordResponseDto {
+    isSuccess: boolean;
+    errorMessages: string[];
+}
+
+export interface ChangePasswordRequestDto {
+    oldPassword: string;
+    newPassword: string;
+    confirmPassword: string;
+    twoFactorAuthenticationCode: number;
+}
 
 @Injectable()
 export class UserAccountService {
     twoFactorAuthenticationEndpointUrl = 'https://users-apiv2.autocoin-trader.com/user-accounts/2fa';
+    changePasswordEndpointUrl = 'https://users-apiv2.autocoin-trader.com/user-accounts/password';
 
     constructor(
         private http: HttpClient,
@@ -30,4 +43,12 @@ export class UserAccountService {
         );
     }
 
+    public changePassword(oldPassword: string, newPassword: string, confirmPassword: string, twoFactorAuthenticationCode: number): Observable<ChangePasswordResponseDto> {
+        return this.http.post<ChangePasswordResponseDto>(`${this.changePasswordEndpointUrl}`, {
+            oldPassword: oldPassword,
+            newPassword: newPassword,
+            confirmPassword: confirmPassword,
+            twoFactorAuthenticationCode: twoFactorAuthenticationCode
+        } as ChangePasswordRequestDto);
+    }
 }

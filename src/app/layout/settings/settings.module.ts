@@ -6,6 +6,7 @@ import {SettingsComponent} from './settings.component';
 import {PageHeaderModule} from '../../shared/index';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TwoFactorAuthenticationComponent} from './two-factor-authentication/two-factor-authentication.component';
+import {UserAccountPasswordComponent} from './user-account-password/user-account-password.component';
 
 @NgModule({
     imports: [
@@ -15,7 +16,11 @@ import {TwoFactorAuthenticationComponent} from './two-factor-authentication/two-
         FormsModule,
         ReactiveFormsModule
     ],
-    declarations: [SettingsComponent, TwoFactorAuthenticationComponent]
+    declarations: [
+        SettingsComponent,
+        TwoFactorAuthenticationComponent,
+        UserAccountPasswordComponent
+    ]
 })
 export class SettingsModule {
 }

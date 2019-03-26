@@ -1,5 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {FeatureToggle, FeatureToggleToken} from '../../services/feature.toogle.service';
+import {AuthService} from '../../services/auth.service';
 
 @Component({
     selector: 'app-settings',
@@ -8,10 +9,14 @@ import {FeatureToggle, FeatureToggleToken} from '../../services/feature.toogle.s
 })
 export class SettingsComponent implements OnInit {
 
-    constructor(@Inject(FeatureToggleToken) private featureToggle: FeatureToggle) {
+    shouldChangePassword = false;
+
+    constructor(@Inject(FeatureToggleToken) private featureToggle: FeatureToggle,
+                private authService: AuthService) {
     }
 
     ngOnInit() {
+        this.shouldChangePassword = this.authService.shouldChangePassword();
     }
 
 }

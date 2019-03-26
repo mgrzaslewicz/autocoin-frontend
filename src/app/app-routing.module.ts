@@ -1,10 +1,18 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {AuthGuard, GuestGuard} from './shared';
+import {AllowOnlyLoggedInGuard, AllowOnlyNotLoggedInGuard} from './shared';
 
 const routes: Routes = [
-    {path: '', loadChildren: './layout/layout.module#LayoutModule', canActivate: [AuthGuard]},
-    {path: 'login', loadChildren: './login/login.module#LoginModule', canActivate: [GuestGuard]},
+    {
+        path: '',
+        loadChildren: './layout/layout.module#LayoutModule',
+        canActivate: [AllowOnlyLoggedInGuard]
+    },
+    {
+        path: 'login',
+        loadChildren: './login/login.module#LoginModule',
+        canActivate: [AllowOnlyNotLoggedInGuard]
+    },
     // { path: 'signup', loadChildren: './signup/signup.module#SignupModule' },
     {path: 'not-found', loadChildren: './not-found/not-found.module#NotFoundModule'},
     {path: '**', redirectTo: 'not-found'}

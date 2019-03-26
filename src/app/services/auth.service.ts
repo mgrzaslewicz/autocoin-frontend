@@ -2,10 +2,20 @@ import {Inject, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {FeatureToggle, FeatureToggleToken} from './feature.toogle.service';
 
+interface UserAccountDto {
+    shouldChangePassword: boolean;
+}
+
+interface TokenResponseDto {
+    access_token: String;
+    userAccount: UserAccountDto;
+}
+
 @Injectable()
 export class AuthService {
 
-    oauthTokenEndpointUrl = 'https://users-apiv2.autocoin-trader.com/oauth/token';
+    private oauthTokenEndpointUrl = 'https://users-apiv2.autocoin-trader.com/oauth/token';
+    private userAccount: UserAccountDto = null;
 
     constructor(
         private http: HttpClient,
@@ -14,7 +24,7 @@ export class AuthService {
     }
 
     login(username, password, twoFactorAuthenticationCode) {
-        let body = new HttpParams()
+        const body = new HttpParams()
             .set('client_id', 'SPA')
             .set('client_secret', 'superSecretPassword')
             .set('password', password)
@@ -31,10 +41,11 @@ export class AuthService {
             headers
         };
 
-        return this.http.post(this.oauthTokenEndpointUrl, body, options)
+        return this.http.post<TokenResponseDto>(this.oauthTokenEndpointUrl, body, options)
             .do(response => {
-                this.storeAccessToken(response['access_token']);
+                this.storeAccessToken(response.access_token);
                 this.storeUserName(username);
+                this.setUserAccount(response.userAccount);
             });
     }
 
@@ -62,4 +73,11 @@ export class AuthService {
         localStorage.setItem('userName', userName);
     }
 
+    private setUserAccount(userAccount: UserAccountDto) {
+        this.userAccount = userAccount;
+    }
+
+    shouldChangePassword() {
+        return this.userAccount != null && this.userAccount.shouldChangePassword;
+    }
 }

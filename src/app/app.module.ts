@@ -10,9 +10,10 @@ import {ServicesModule} from './services/services.module';
 import {AppRoutingModule} from './app-routing.module';
 
 import {AppComponent} from './app.component';
-import {AuthGuard, GuestGuard} from './shared';
+import {AllowOnlyLoggedInGuard, AllowOnlyNotLoggedInGuard} from './shared';
 import 'rxjs/Rx';
 import {Oauth2TokenInterceptor} from './services/api/interceptors';
+import {AllowOnlyShouldNotChangePasswordGuard} from './shared/guard/allow-only-should-not-change-password.service';
 
 // AoT requires an exported function for factories
 export function createTranslateLoader(http: HttpClient) {
@@ -39,8 +40,9 @@ export function createTranslateLoader(http: HttpClient) {
     ],
     declarations: [AppComponent],
     providers: [
-        AuthGuard,
-        GuestGuard,
+        AllowOnlyLoggedInGuard,
+        AllowOnlyNotLoggedInGuard,
+        AllowOnlyShouldNotChangePasswordGuard,
         {
             provide: HTTP_INTERCEPTORS,
             useClass: Oauth2TokenInterceptor,
