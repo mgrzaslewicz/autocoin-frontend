@@ -2,9 +2,10 @@ import {Inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {FeatureToggle, FeatureToggleToken} from './feature.toogle.service';
 import {Observable} from 'rxjs';
+import {AuthService} from './auth.service';
 
 export interface ChangePasswordResponseDto {
-    isSuccess: boolean;
+    success: boolean;
     errorMessages: string[];
 }
 
@@ -22,7 +23,8 @@ export class UserAccountService {
 
     constructor(
         private http: HttpClient,
-        @Inject(FeatureToggleToken) private featureToggle: FeatureToggle
+        @Inject(FeatureToggleToken) private featureToggle: FeatureToggle,
+        private authService: AuthService
     ) {
     }
 
@@ -49,6 +51,11 @@ export class UserAccountService {
             newPassword: newPassword,
             confirmPassword: confirmPassword,
             twoFactorAuthenticationCode: twoFactorAuthenticationCode
-        } as ChangePasswordRequestDto);
+        } as ChangePasswordRequestDto)
+            .do(response => {
+                if (response.success) {
+                    this.authService.onPasswordChanged();
+                }
+            });
     }
 }

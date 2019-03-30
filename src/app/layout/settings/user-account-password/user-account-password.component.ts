@@ -43,6 +43,9 @@ export class UserAccountPasswordComponent implements OnInit {
                 .subscribe(() => {
                         this.operationInProgress = false;
                         this.toastService.success('Your password was changed');
+                        if (this.shouldChangePassword) {
+                            this.toastService.success('Menu has been unlocked');
+                        }
                         this.shouldChangePassword = false;
                         this.resetForm();
                     },

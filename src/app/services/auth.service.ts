@@ -80,4 +80,11 @@ export class AuthService {
     shouldChangePassword() {
         return this.userAccount != null && this.userAccount.shouldChangePassword;
     }
+
+    onPasswordChanged() {
+        console.log('AuthService.onPasswordChanged');
+        if (this.userAccount != null) {
+            this.userAccount.shouldChangePassword = false;
+        }
+    }
 }
