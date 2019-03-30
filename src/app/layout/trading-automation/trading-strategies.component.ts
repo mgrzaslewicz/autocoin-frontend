@@ -17,7 +17,7 @@ export class TradingStrategiesComponent implements OnInit {
     exchanges: Exchange[] = [];
     exchangeUsers: ExchangeUser[] = [];
     private strategiesExecutions: StrategyExecutionResponseDto[];
-    public supportedExchanges = ['binance', 'bittrex', 'kucoin'];
+    public exchangeNamesSupportedForTrading = ['binance'];
 
     constructor(
         private toastService: ToastService,
@@ -31,8 +31,12 @@ export class TradingStrategiesComponent implements OnInit {
         this.loadData();
     }
 
-    public isSupported(exchangeName: string): boolean {
-        return this.supportedExchanges.find(it => it === exchangeName) != null;
+    public isSupportedForTrading(exchangeName: string): boolean {
+        return this.exchangeNamesSupportedForTrading.find(it => it === exchangeName) != null;
+    }
+
+    getExchangesSupportedForTrading(): Exchange[] {
+        return this.exchanges.filter(it => this.isSupportedForTrading(it.name));
     }
 
     loadData() {
