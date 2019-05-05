@@ -164,8 +164,8 @@ export class AddStrategyExecutionComponent implements OnInit {
             parameters.exchangeUserId = exchangeUser.id;
             parameters.exchangeName = this.exchangeName;
             parameters.strategyName = this.selectedStrategyName;
-            parameters.baseCurrencyCode = this.baseCurrency;
-            parameters.counterCurrencyCode = this.counterCurrency;
+            parameters.baseCurrencyCode = this.baseCurrency();
+            parameters.counterCurrencyCode = this.counterCurrency();
             parameters.baseCurrencyFractionForSelling = this.baseCurrencyFractionForSelling;
             parameters.counterCurrencyFractionForBuying = this.counterCurrencyFractionForBuying;
             parameters.maxBaseCurrencyPercentForSelling = this.maxBaseCurrencyPercentForSelling;
@@ -188,12 +188,20 @@ export class AddStrategyExecutionComponent implements OnInit {
         }
     }
 
-    get baseCurrency() {
-        return this.currencyPair.split('/')[0].toUpperCase();
+    public baseCurrency() {
+        if (this.currencyPair !== undefined && this.currencyPair.indexOf('/') !== -1) {
+            return this.currencyPair.split('/')[0].toUpperCase();
+        } else {
+            return '';
+        }
     }
 
-    get counterCurrency() {
-        return this.currencyPair.split('/')[1].toUpperCase();
+    public counterCurrency() {
+        if (this.currencyPair !== undefined && this.currencyPair.indexOf('/') !== -1) {
+            return this.currencyPair.split('/')[1].toUpperCase();
+        } else {
+            return '';
+        }
     }
 
     public isBuying(): boolean {

@@ -45,8 +45,10 @@
             </div>
 
             <div class="form-group">
-                <label for="currency-pair-typeahead">Currency pair base/counter (eg XRP/BTC if you want to buy or sell
-                    XRP)</label>
+                <label *ngIf="isBuying()" for="currency-pair-typeahead">Currency pair (eg XRP/BTC if you want to buy XRP
+                    and have less BTC)</label>
+                <label *ngIf="isSelling()" for="currency-pair-typeahead">Currency pair (eg XRP/BTC if you want to sell
+                    XRP and have more BTC)</label>
                 <input name="currencyPair"
                        id="currency-pair-typeahead" type="text"
                        class="form-control"
@@ -58,9 +60,10 @@
             </div>
 
             <div class="row">
-                <div *ngIf="isBuying()" class="col-12">
+                <div *ngIf="isBuying()" class="col-6">
                     <div class="form-group">
-                        <label for="counterCurrencyPercentForBuying">Counter currency percent for buying</label>
+                        <label for="counterCurrencyPercentForBuying">Buy limit (max {{counterCurrency()}} % to
+                            sell)</label>
                         <div class="input-group">
                             <input name="counterCurrencyPercentForBuying" type="number" class="form-control"
                                    min="0.1"
@@ -72,9 +75,9 @@
                         </div>
                     </div>
                 </div>
-                <div *ngIf="isSelling()" class="col-12">
+                <div *ngIf="isSelling()" class="col-6">
                     <div class="form-group">
-                        <label for="baseCurrencyPercentForSelling">Base currency percent for selling</label>
+                        <label for="baseCurrencyPercentForSelling">Max {{baseCurrency()}} % to sell</label>
                         <div class="input-group">
                             <input name="baseCurrencyPercentForSelling" type="number" class="form-control" min="0.1"
                                    max="100" [value]="baseCurrencyFractionForSelling * 100"
@@ -85,11 +88,9 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div *ngIf="isBuying()" class="col-12">
+                <div *ngIf="isBuying()" class="col-6">
                     <div class="form-group">
-                        <label for="maxCounterCurrencyPercentForBuying">Max counter currency percent for buying</label>
+                        <label for="maxCounterCurrencyPercentForBuying">Buy per order %</label>
                         <div class="input-group">
                             <input name="maxCounterCurrencyPercentForBuying" type="number" class="form-control"
                                    min="0.1"
@@ -101,9 +102,9 @@
                         </div>
                     </div>
                 </div>
-                <div *ngIf="isSelling()" class="col-12">
+                <div *ngIf="isSelling()" class="col-6">
                     <div class="form-group">
-                        <label for="maxBaseCurrencyPercentForSelling">Max base currency percent for selling</label>
+                        <label for="maxBaseCurrencyPercentForSelling">Sell per order %</label>
                         <div class="input-group">
                             <input name="maxCounterCurrencyPercentForBuying" type="number" class="form-control"
                                    min="0.1"
