@@ -1,3 +1,9 @@
-<div>
-
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="minSellPrice">Min sell price</label>
+            <input name="minSellPrice" type="number" class="form-control" value="0.0" (input)="onMinSellPrice($event.target)"
+                   required>
+        </div>
+    </div>
 </div>
