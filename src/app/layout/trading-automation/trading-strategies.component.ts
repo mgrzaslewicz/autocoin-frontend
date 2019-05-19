@@ -17,7 +17,7 @@ export class TradingStrategiesComponent implements OnInit {
     exchanges: Exchange[] = [];
     exchangeUsers: ExchangeUser[] = [];
     private strategiesExecutions: StrategyExecutionResponseDto[];
-    public exchangeNamesSupportedForTrading = ['binance'];
+    public exchangeNamesSupportedForTrading = ['binance', 'bittrex'];
 
     constructor(
         private toastService: ToastService,
