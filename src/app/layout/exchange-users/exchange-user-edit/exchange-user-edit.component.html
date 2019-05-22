@@ -38,6 +38,13 @@
                                 <button (click)="deleteExchangeKey(exchange.id)" class="btn btn-danger btn-sm">
                                     Delete
                                 </button>
+
+                                <fieldset *ngFor="let exchangeSpecificKeyParameterConfiguration of exchangeSpecificKeyParametersConfiguration.get(exchange.name)" class="form-group"
+                                          [ngModelGroup]="exchange.id">
+                                    <label>{{ exchangeSpecificKeyParameterConfiguration.displayLabel }}</label>
+                                    <input class="form-control" name="{{ 'exchangeSpecific' + exchangeSpecificKeyParameterConfiguration.name }}" ngModel>
+                                </fieldset>
+
                                 <fieldset *ngIf="exchange.name === 'bitstamp'" class="form-group"
                                           [ngModelGroup]="exchange.id">
                                     <label>User name</label>

@@ -7,15 +7,21 @@ import * as _ from 'underscore';
 import {FeatureToggle, FeatureToggleToken} from '../../../services/feature.toogle.service';
 import {forkJoin} from 'rxjs';
 
-interface ExchangeFields {
+interface ExchangeKeyFields {
     apiKey?: string;
     secretKey?: string;
     userName?: string;
+    exchangeSpecificKeyParameters?: any;
 }
 
 interface ExchangeUserNameWithExchangeKeys {
     name: string;
-    exchangesKeys: Map<string, ExchangeFields>;
+    exchangesKeys: Map<string, ExchangeKeyFields>;
+}
+
+interface ExchangeSpecificKeyParameterConfiguration {
+    name: string;
+    displayLabel: string;
 }
 
 @Component({
@@ -32,6 +38,10 @@ export class ExchangeUserEditComponent implements OnInit {
     public exchanges: Exchange[];
 
     public exchangesKeyExistenceList: ExchangeKeyExistenceResponseDto[];
+
+    public exchangeSpecificKeyParametersConfiguration: Map<string, Array<ExchangeSpecificKeyParameterConfiguration>> = new Map([
+        ['kucoin', [{name: 'passphrase', displayLabel: 'Passphrase'}]]
+    ]);
 
     constructor(
         private route: ActivatedRoute,
@@ -71,13 +81,14 @@ export class ExchangeUserEditComponent implements OnInit {
 
         console.log(createForm.value);
         const exchangeUserNameWithExchangeKeys: ExchangeUserNameWithExchangeKeys = createForm.value;
-        const exchangeFieldsMap: Map<string, ExchangeFields> = exchangeUserNameWithExchangeKeys.exchangesKeys;
+        const exchangeFieldsMap: Map<string, ExchangeKeyFields> = exchangeUserNameWithExchangeKeys.exchangesKeys;
         console.log(exchangeFieldsMap);
         for (const exchangeId in exchangeFieldsMap) {
             console.log(exchangeId);
-            const exchangeFields: ExchangeFields = exchangeFieldsMap[exchangeId];
+            const exchangeFields: ExchangeKeyFields = exchangeFieldsMap[exchangeId];
             const requestData = this.getRequestData(exchangeId, exchangeFields);
             if (requestData != null) {
+                console.log(requestData);
                 const subscription = this.exchangeUsersService.updateExchangeKeys(this.exchangeUser.id, exchangeId, requestData);
                 subscriptions.push(subscription);
             }
@@ -92,19 +103,34 @@ export class ExchangeUserEditComponent implements OnInit {
         });
     }
 
-    private getRequestData(exchangeId: string, exchangeFields: ExchangeFields): any {
+    private getExchangeSpecificKeyParameters(exchangeName: string, exchangeKeyFields: any): any {
+        const exchangeSpecificKeyParameters: Array<ExchangeSpecificKeyParameterConfiguration> = this.exchangeSpecificKeyParametersConfiguration.get(exchangeName);
+        if (exchangeSpecificKeyParameters !== undefined && exchangeSpecificKeyParameters != null) {
+            const result = {};
+            for (const parameter of exchangeSpecificKeyParameters) {
+                result[parameter.name] = exchangeKeyFields['exchangeSpecific' + parameter.name];
+            }
+            return result;
+        } else {
+            return null;
+        }
+    }
+
+    private getRequestData(exchangeId: string, exchangeKeyFields: ExchangeKeyFields): any {
         const exchangeName = this.exchangeIdToExchangeName(exchangeId);
         const isBitstamp = exchangeName === 'bitstamp';
-        let areKeysFilled = exchangeFields.apiKey && exchangeFields.secretKey;
+        let areKeysFilled = exchangeKeyFields.apiKey && exchangeKeyFields.secretKey;
         if (isBitstamp) {
-            areKeysFilled = areKeysFilled && exchangeFields.userName;
+            areKeysFilled = areKeysFilled && exchangeKeyFields.userName;
         }
         let formData: UpdateExchangeKeyRequestDto = null;
+
         if (areKeysFilled) {
             formData = {
-                userName: exchangeFields.userName,
-                apiKey: exchangeFields.apiKey,
-                secretKey: exchangeFields.secretKey
+                userName: exchangeKeyFields.userName,
+                apiKey: exchangeKeyFields.apiKey,
+                secretKey: exchangeKeyFields.secretKey,
+                exchangeSpecificKeyParameters: this.getExchangeSpecificKeyParameters(exchangeName, exchangeKeyFields)
             };
         }
         console.log(`Going to update exchange keys for exchange ${exchangeName}: ${areKeysFilled}`);
