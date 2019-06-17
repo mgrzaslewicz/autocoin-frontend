@@ -17,7 +17,8 @@
                 <th>Currency pair</th>
                 <th>Type</th>
                 <th>Status</th>
-                <th>Amount</th>
+                <th>Ordered amount</th>
+                <th>Filled amount</th>
                 <th>Price</th>
                 <th>Date</th>
                 <th>Actions</th>
@@ -49,6 +50,7 @@
                     <td>{{ order.orderType }}</td>
                     <td>{{ order.orderStatus }}</td>
                     <td>{{ order.orderedAmount }}</td>
+                    <td>{{ order.filledAmount }}</td>
                     <td>{{ order.price }}</td>
                     <td>{{ order.timestamp | date: 'y-MM-dd HH:mm:ss' }}</td>
                     <td>
