@@ -3,10 +3,6 @@
 dockerprocs="$(docker ps -a -q  --filter ancestor=autocoin-trader-frontend)"
 
 buildFrontend() {
-    echo "Pulling repository"
-    cd /var/www/autocoin-trader-frontend
-    git pull origin master
-
     echo "Building docker container"
     docker build . -t autocoin-trader-frontend
 }
