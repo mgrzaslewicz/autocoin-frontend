@@ -1,6 +1,6 @@
 #!/bin/bash
 
-dockerprocs="$(docker ps -a -q  --filter ancestor=autocoin-trader-frontend)"
+ALREADY_RUNNING_CONTAINER="$(docker ps -a -q  --filter ancestor=autocoin-trader-frontend)"
 
 buildFrontend() {
     echo "Building docker container"
@@ -8,9 +8,14 @@ buildFrontend() {
 }
 
 removeOldContainer() {
-    echo "Removing old containers"
-    docker stop $dockerprocs
-    docker rm $dockerprocs
+    if [ -z "$ALREADY_RUNNING_CONTAINER" ]
+    then
+        echo "No previous containers running found"
+    else
+        echo "Removing old containers"
+        docker stop ${ALREADY_RUNNING_CONTAINER}
+        docker rm ${ALREADY_RUNNING_CONTAINER}
+    fi
 }
 
 startContainer() {
