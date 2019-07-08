@@ -12,6 +12,13 @@ import {ExchangeUsersService} from './api';
 import {UserAccountService} from './user-account.service';
 import {ExchangeKeyCapabilityService} from './exchange-key-capability.service';
 import {ExchangeWalletService} from './exchange-wallet.service';
+import {
+    ChangePasswordEndpointUrlToken,
+    ExchangeUsersEndpointUrlToken,
+    ExchangeWalletEndpointUrlToken,
+    OauthEndpointUrlToken, OrdersEndpointUrlToken, PricesEndpointUrlToken, StrategiesEndpointUrlToken
+} from '../../environments/endpoint-tokens';
+import {environment} from '../../environments/environment';
 
 @NgModule({
     imports: [
@@ -22,6 +29,13 @@ import {ExchangeWalletService} from './exchange-wallet.service';
     providers: [
         LocalStorageFeatureToggle,
         {provide: FeatureToggleToken, useClass: LocalStorageFeatureToggle},
+        {provide: OauthEndpointUrlToken, useValue: environment.oauthEndpointUrl},
+        {provide: ExchangeUsersEndpointUrlToken, useValue: environment.exchangeUsersApiUrl},
+        {provide: ChangePasswordEndpointUrlToken, useValue: environment.changePasswordEndpointUrl},
+        {provide: ExchangeWalletEndpointUrlToken, useValue: environment.exchangeWalletEndpointUrl},
+        {provide: OrdersEndpointUrlToken, useValue: environment.ordersEndpointUrl},
+        {provide: PricesEndpointUrlToken, useValue: environment.pricesEndpointUrl},
+        {provide: StrategiesEndpointUrlToken, useValue: environment.strategiesEndpointUrl},
         AuthService,
         UserAccountService,
         ExchangeUsersService,

@@ -1,6 +1,7 @@
 import {Inject, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {FeatureToggle, FeatureToggleToken} from './feature.toogle.service';
+import {OauthEndpointUrlToken} from '../../environments/endpoint-tokens';
 
 interface UserAccountDto {
     shouldChangePassword: boolean;
@@ -14,10 +15,10 @@ interface TokenResponseDto {
 @Injectable()
 export class AuthService {
 
-    private oauthTokenEndpointUrl = 'https://users-apiv2.autocoin-trader.com/oauth/token';
     private userAccount: UserAccountDto = null;
 
     constructor(
+        @Inject(OauthEndpointUrlToken) private oauthTokenEndpointUrl,
         private http: HttpClient,
         @Inject(FeatureToggleToken) private featureToggle: FeatureToggle
     ) {

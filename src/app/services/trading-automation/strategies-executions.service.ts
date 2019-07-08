@@ -1,17 +1,20 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {StrategyExecutionResponseDto, StrategyParametersRequestDto} from '../../models/strategy';
 import {HttpClient} from '@angular/common/http';
 import {WithMessageDto} from '../api/withMessageDto';
+import {StrategiesEndpointUrlToken} from '../../../environments/endpoint-tokens';
 
 @Injectable()
 export class StrategiesExecutionsService {
 
-    private strategiesApiUrl = 'https://strategies-api.autocoin-trader.com';
-    private getStrategiesUrl = `${this.strategiesApiUrl}/strategies`;
-    private strategyUrl = `${this.strategiesApiUrl}/strategy`;
+    private getStrategiesUrl = `${this.strategiesEndpointUrl}/strategies`;
+    private strategyUrl = `${this.strategiesEndpointUrl}/strategy`;
 
-    constructor(private http: HttpClient) {
+    constructor(
+        @Inject(StrategiesEndpointUrlToken) private strategiesEndpointUrl: string,
+        private http: HttpClient
+    ) {
     }
 
     public getStrategiesExecutions(): Observable<StrategyExecutionResponseDto[]> {

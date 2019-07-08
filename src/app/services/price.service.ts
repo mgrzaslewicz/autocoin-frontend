@@ -1,7 +1,8 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import 'rxjs/add/operator/map';
 import {HttpClient} from '@angular/common/http';
+import {PricesEndpointUrlToken} from '../../environments/endpoint-tokens';
 
 export interface CurrencyPrice {
     currencyCode: string;
@@ -12,13 +13,14 @@ export interface CurrencyPrice {
 @Injectable()
 export class PriceService {
 
-    private priceApiUrl = 'https://orders-api.autocoin-trader.com/prices';
-
-    constructor(private http: HttpClient) {
+    constructor(
+        @Inject(PricesEndpointUrlToken) private pricesEndpointUrl,
+        private http: HttpClient
+    ) {
     }
 
     getPrices(currencyCode: string[]): Observable<CurrencyPrice> {
-        return this.http.get<CurrencyPriceDto[]>(this.priceApiUrl, {
+        return this.http.get<CurrencyPriceDto[]>(this.pricesEndpointUrl, {
             params: {
                 symbols: currencyCode.join(',')
             }

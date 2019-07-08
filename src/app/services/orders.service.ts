@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {
     CancelOrderRequestDto,
     CancelOrderResponseDto,
@@ -11,16 +11,19 @@ import {Observable} from 'rxjs';
 import 'rxjs/add/operator/map';
 import {CurrencyPair} from '../models';
 import {HttpClient} from '@angular/common/http';
+import {OrdersEndpointUrlToken} from '../../environments/endpoint-tokens';
 
 @Injectable()
 export class OrdersService {
 
-    private ordersApiUrl = 'https://orders-api.autocoin-trader.com';
-    private openOrdersUrl = `${this.ordersApiUrl}/open-orders`;
-    private cancelOrderUrl = `${this.ordersApiUrl}/cancel-order`;
-    private cancelOrdersUrl = `${this.ordersApiUrl}/cancel-orders`;
+    private openOrdersUrl = `${this.ordersEndpointUrl}/open-orders`;
+    private cancelOrderUrl = `${this.ordersEndpointUrl}/cancel-order`;
+    private cancelOrdersUrl = `${this.ordersEndpointUrl}/cancel-orders`;
 
-    constructor(private http: HttpClient) {
+    constructor(
+        @Inject(OrdersEndpointUrlToken) private ordersEndpointUrl,
+        private http: HttpClient
+    ) {
     }
 
     getOpenOrders(): Observable<OpenOrdersResponseDto[]> {

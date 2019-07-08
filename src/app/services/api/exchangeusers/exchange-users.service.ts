@@ -4,14 +4,14 @@ import * as _ from 'underscore';
 import {FeatureToggle, FeatureToggleToken} from '../../feature.toogle.service';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
+import {ExchangeUsersEndpointUrlToken} from '../../../../environments/endpoint-tokens';
 
 @Injectable()
 export class ExchangeUsersService {
 
-    private exchangeUsersApiUrl = 'https://users-apiv2.autocoin-trader.com';
-
     constructor(
         private http: HttpClient,
+        @Inject(ExchangeUsersEndpointUrlToken) private exchangeUsersApiUrl: string,
         @Inject(FeatureToggleToken) private featureToggle: FeatureToggle
     ) {
     }

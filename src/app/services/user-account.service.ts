@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {FeatureToggle, FeatureToggleToken} from './feature.toogle.service';
 import {Observable} from 'rxjs';
 import {AuthService} from './auth.service';
+import {ChangePasswordEndpointUrlToken, TwoFactorAuthenticationEndpointUrlToken} from '../../environments/endpoint-tokens';
 
 export interface ChangePasswordResponseDto {
     success: boolean;
@@ -18,11 +19,11 @@ export interface ChangePasswordRequestDto {
 
 @Injectable()
 export class UserAccountService {
-    twoFactorAuthenticationEndpointUrl = 'https://users-apiv2.autocoin-trader.com/user-accounts/2fa';
-    changePasswordEndpointUrl = 'https://users-apiv2.autocoin-trader.com/user-accounts/password';
 
     constructor(
         private http: HttpClient,
+        @Inject(TwoFactorAuthenticationEndpointUrlToken) private twoFactorAuthenticationEndpointUrl: string,
+        @Inject(ChangePasswordEndpointUrlToken) private changePasswordEndpointUrl: string,
         @Inject(FeatureToggleToken) private featureToggle: FeatureToggle,
         private authService: AuthService
     ) {
