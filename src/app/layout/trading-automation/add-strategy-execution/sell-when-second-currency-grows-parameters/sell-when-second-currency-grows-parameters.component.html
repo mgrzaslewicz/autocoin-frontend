@@ -3,7 +3,7 @@
         <div class="form-group">
             <label for="pricesTriggeringSale">Prices of second currency pair triggering sales, eg 4500, 5000.5</label>
             <input name="pricesTriggeringSale" class="form-control"
-                   pattern ="/^[0-9 _ ,]*$/"
+                   pattern="/^[0-9 _ ,]*$/"
                    (input)="onPricesTriggeringSale($event.target)"
                    required>
         </div>
@@ -12,8 +12,13 @@
 <div class="row">
     <div class="col-md-6">
         <div class="form-group">
-            <label for="maxBuyPrice">Min sell price</label>
-            <input name="maxBuyPrice" type="number" class="form-control" value="0.0" (input)="onMinSellPrice($event.target)"
+            <label for="minSellPrice">Min sell price</label>
+            <input name="maxBuyPrice" class="form-control"
+                   type="number"
+                   min="0.00000001"
+                   max="9999999999"
+                   value="0.0"
+                   (input)="onMinSellPrice($event.target)"
                    required>
         </div>
     </div>

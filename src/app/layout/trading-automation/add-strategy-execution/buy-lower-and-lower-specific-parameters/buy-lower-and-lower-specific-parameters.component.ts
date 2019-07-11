@@ -36,7 +36,7 @@ export class BuyLowerAndLowerSpecificParametersComponent implements OnInit {
     }
 
     onMaxBuyPrice(control) {
-        if (control.value) {
+        if (control.value && typeof control.value === 'number') {
             const value = Math.min(Math.max(control.value, 0.00000001), 9999999999);
             const precision = this.precision(value);
             control.value = Number(value).toFixed(precision);
