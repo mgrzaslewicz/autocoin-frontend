@@ -16,7 +16,11 @@ import {
     ChangePasswordEndpointUrlToken,
     ExchangeUsersEndpointUrlToken,
     ExchangeWalletEndpointUrlToken,
-    OauthEndpointUrlToken, OrdersEndpointUrlToken, PricesEndpointUrlToken, StrategiesEndpointUrlToken
+    OauthEndpointUrlToken,
+    OrdersEndpointUrlToken,
+    PricesEndpointUrlToken,
+    StrategiesEndpointUrlToken,
+    TwoFactorAuthenticationEndpointUrlToken
 } from '../../environments/endpoint-tokens';
 import {environment} from '../../environments/environment';
 
@@ -36,6 +40,7 @@ import {environment} from '../../environments/environment';
         {provide: OrdersEndpointUrlToken, useValue: environment.ordersEndpointUrl},
         {provide: PricesEndpointUrlToken, useValue: environment.pricesEndpointUrl},
         {provide: StrategiesEndpointUrlToken, useValue: environment.strategiesEndpointUrl},
+        {provide: TwoFactorAuthenticationEndpointUrlToken, useValue: environment.twoFactorAuthenticationEndpointUrl},
         AuthService,
         UserAccountService,
         ExchangeUsersService,
