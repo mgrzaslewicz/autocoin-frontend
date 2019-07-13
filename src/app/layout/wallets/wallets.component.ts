@@ -51,7 +51,6 @@ interface CurrencyBalanceTableRow {
 export class WalletsComponent implements OnInit, OnDestroy {
     exchangeUsers: ExchangeUserWithBalance[] = [];
     pending = false;
-    pendingPriceRefresh = false;
     showBalancesPerExchange = true;
     showUnder1Dollar = false;
     private exchangeUsersSubscription: Subscription;
@@ -96,10 +95,6 @@ export class WalletsComponent implements OnInit, OnDestroy {
         }
     }
 
-    getLastPriceRefreshTime(): Date {
-        return this.getLocalStorageKeyAsDate('prices-refresh-time');
-    }
-
     flipShowingUnderOneDollar() {
         this.showUnder1Dollar = !this.showUnder1Dollar;
         this.refreshAllExchangeUsersBalances();
@@ -142,19 +137,23 @@ export class WalletsComponent implements OnInit, OnDestroy {
         }];
     }
 
-    fetchExchangeBalancesForExchangeUser(client: ExchangeUser) {
+    refreshWallet(exchangeUser: ExchangeUser) {
         this.pending = true;
-        this.exchangeWalletService.getAccountBalances(client.id).subscribe(
+        this.fetchExchangeBalancesForExchangeUser(exchangeUser);
+        this.fetchPrices();
+    }
+
+    private fetchExchangeBalancesForExchangeUser(exchangeUser: ExchangeUser) {
+        this.exchangeWalletService.getAccountBalances(exchangeUser.id).subscribe(
             accountBalances => {
                 const accountBalancesSortedByExchangeAZ = accountBalances.exchangeBalances
                     .sort((a, b) => a.exchangeName.localeCompare(b.exchangeName));
-                localStorage.setItem('exchange-user-portfolio-refresh-time-' + client.id, new Date().getTime().toString());
-                localStorage.setItem('exchange-user-portfolio-balances-' + client.id, JSON.stringify(accountBalancesSortedByExchangeAZ));
+                localStorage.setItem('exchange-user-portfolio-refresh-time-' + exchangeUser.id, new Date().getTime().toString());
+                localStorage.setItem('exchange-user-portfolio-balances-' + exchangeUser.id, JSON.stringify(accountBalancesSortedByExchangeAZ));
                 this.refreshAllExchangeUsersBalances();
-                this.pending = false;
             }, () => {
                 this.pending = false;
-                this.toastService.danger(`Sorry, something went wrong. Could not get wallet balance for user ${client.name}`);
+                this.toastService.danger(`Sorry, something went wrong. Could not get wallet balance for user ${exchangeUser.name}`);
             }
         );
     }
@@ -265,10 +264,6 @@ export class WalletsComponent implements OnInit, OnDestroy {
         console.log(this.currencyPairPrices);
     }
 
-    private savePriceRefreshTime() {
-        localStorage.setItem('prices-refresh-time', new Date().getTime().toString());
-    }
-
     fetchPrices() {
         console.log('Fetching prices');
         const distinctCurrencyCodes: string[] = this.getDistinctCurrencyCodesInWallets();
@@ -276,7 +271,7 @@ export class WalletsComponent implements OnInit, OnDestroy {
 
         localStorage.setItem('wallet-distinct-currency-codes', JSON.stringify(distinctCurrencyCodes));
 
-        this.pendingPriceRefresh = true;
+        this.pending = true;
         from(this.priceService.getPrices(distinctCurrencyCodes))
             .subscribe({
                 next: (currencyPrice: CurrencyPrice) => {
@@ -284,13 +279,12 @@ export class WalletsComponent implements OnInit, OnDestroy {
                     console.log(`Next price for ${currencyPrice.currencyCode} is ${1 / currencyPrice.price}${currencyPrice.unit}`);
                 },
                 complete: () => {
-                    console.log('Complete');
-                    this.pendingPriceRefresh = false;
-                    this.savePriceRefreshTime();
+                    console.log('Refresh prices complete');
+                    this.pending = false;
                 },
                 error: (err) => {
                     console.log(`Failed to refresh prices.`, err);
-                    this.pendingPriceRefresh = false;
+                    this.pending = false;
                 }
             });
         return distinctCurrencyCodes;
