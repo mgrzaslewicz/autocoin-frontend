@@ -2,6 +2,7 @@ import {Inject, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {FeatureToggle, FeatureToggleToken} from './feature.toogle.service';
 import {OauthEndpointUrlToken} from '../../environments/endpoint-tokens';
+import {Observable} from 'rxjs';
 
 interface UserAccountDto {
     shouldChangePassword: boolean;
@@ -9,12 +10,15 @@ interface UserAccountDto {
 
 interface TokenResponseDto {
     access_token: String;
+    refresh_token: String;
     userAccount: UserAccountDto;
 }
 
 @Injectable()
 export class AuthService {
-
+    private refreshTokenKey = 'refreshToken';
+    private accessTokenKey = 'accessToken';
+    private userNameKey = 'userName';
     private userAccount: UserAccountDto = null;
 
     constructor(
@@ -24,7 +28,7 @@ export class AuthService {
     ) {
     }
 
-    login(username, password, twoFactorAuthenticationCode) {
+    login(username, password, twoFactorAuthenticationCode): Observable<TokenResponseDto> {
         const body = new HttpParams()
             .set('client_id', 'SPA')
             .set('client_secret', 'superSecretPassword')
@@ -42,11 +46,44 @@ export class AuthService {
             headers
         };
 
+        console.log('Requesting token');
         return this.http.post<TokenResponseDto>(this.oauthTokenEndpointUrl, body, options)
             .do(response => {
+                console.log('Successful token request');
                 this.storeAccessToken(response.access_token);
+                this.storeRefreshToken(response.refresh_token);
                 this.storeUserName(username);
                 this.setUserAccount(response.userAccount);
+            });
+    }
+
+    refreshTokenAndDoNothing() {
+        this.refreshToken().subscribe(() => {
+        });
+    }
+
+    refreshToken(): Observable<TokenResponseDto> {
+        const body = new HttpParams()
+            .set('client_id', 'SPA')
+            .set('client_secret', 'superSecretPassword')
+            .set('grant_type', 'refresh_token')
+            .set('refresh_token', this.getRefreshToken())
+            .set('scopes', 'read');
+
+        const headers = new HttpHeaders()
+            .append('Cache-Control', 'no-cache')
+            .append('Content-Type', 'application/x-www-form-urlencoded');
+
+        const options = {
+            headers
+        };
+
+        console.log('Refreshing token');
+        return this.http.post<TokenResponseDto>(this.oauthTokenEndpointUrl, body, options)
+            .do(response => {
+                console.log('Successful token refresh request');
+                this.storeAccessToken(response.access_token);
+                this.storeRefreshToken(response.refresh_token);
             });
     }
 
@@ -55,23 +92,35 @@ export class AuthService {
     }
 
     token() {
-        return localStorage.getItem('tokenV2');
+        return localStorage.getItem(this.accessTokenKey);
     }
 
+    getRefreshToken() {
+        return localStorage.getItem(this.refreshTokenKey);
+    }
+
+
     userName(): String {
-        return localStorage.getItem('userName');
+        return localStorage.getItem(this.userNameKey);
     }
 
     logout() {
-        localStorage.removeItem('tokenV2');
+        localStorage.removeItem(this.accessTokenKey);
+        localStorage.removeItem(this.refreshTokenKey);
+        localStorage.removeItem(this.userNameKey);
     }
 
     private storeAccessToken(accessToken) {
-        localStorage.setItem('tokenV2', accessToken);
+        localStorage.setItem(this.accessTokenKey, accessToken);
     }
 
+    private storeRefreshToken(refreshToken) {
+        localStorage.setItem(this.refreshTokenKey, refreshToken);
+    }
+
+
     private storeUserName(userName) {
-        localStorage.setItem('userName', userName);
+        localStorage.setItem(this.userNameKey, userName);
     }
 
     private setUserAccount(userAccount: UserAccountDto) {

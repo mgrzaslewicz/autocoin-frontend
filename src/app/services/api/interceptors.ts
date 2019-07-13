@@ -12,11 +12,15 @@ export class Oauth2TokenInterceptor implements HttpInterceptor {
     }
 
     private addOauth2BearerToken(request: HttpRequest<any>): HttpRequest<any> {
-        return request.clone({
-            setHeaders: {
-                Authorization: `Bearer ${this.authService.token()}`
-            }
-        });
+        if (request.headers.has('refresh_token')) {
+            return request;
+        } else {
+            return request.clone({
+                setHeaders: {
+                    Authorization: `Bearer ${this.authService.token()}`
+                }
+            });
+        }
     }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -39,6 +43,13 @@ export class Oauth2TokenInterceptor implements HttpInterceptor {
                 if (response.error && (response.error.error === 'invalid_token' || response.error.error === 'unauthorized')
                 ) {
                     console.log('Token has expired, redirecting to login');
+                    this.authService.logout();
+                    this.redirectToLogin();
+                }
+            } else if (response.status === 400) {
+                console.log('Handling unauthorized 400 response');
+                if (response.error && (response.error.error === 'invalid_grant')) {
+                    console.log('Refresh token failed, redirecting to login');
                     this.authService.logout();
                     this.redirectToLogin();
                 }
