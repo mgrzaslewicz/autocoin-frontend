@@ -4,6 +4,7 @@ import {Exchange, ExchangeKeyCapabilityResponseDto, ExchangeKeyExistenceResponse
 import {ToastService} from '../../services/toast.service';
 import {forkJoin} from 'rxjs';
 import {ExchangeKeyCapabilityService} from '../../services/exchange-key-capability.service';
+import {AuthService} from '../../services/auth.service';
 
 @Component({
     selector: 'app-exchange-users',
@@ -21,12 +22,15 @@ export class ExchangeUsersComponent implements OnInit {
     constructor(
         private exchangeUsersService: ExchangeUsersService,
         private exchangeKeyCapabilityService: ExchangeKeyCapabilityService,
-        private toastService: ToastService
+        private toastService: ToastService,
+        private authService: AuthService
     ) {
     }
 
     ngOnInit() {
-        this.loadData();
+        this.authService.refreshTokenIfExpiringSoon().subscribe(() => {
+            this.loadData();
+        });
     }
 
     loadData() {

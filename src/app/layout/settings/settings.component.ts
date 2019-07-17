@@ -16,7 +16,9 @@ export class SettingsComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.shouldChangePassword = this.authService.shouldChangePassword();
+        this.authService.refreshTokenIfExpiringSoon().subscribe(() => {
+            this.shouldChangePassword = this.authService.shouldChangePassword();
+        });
     }
 
 }

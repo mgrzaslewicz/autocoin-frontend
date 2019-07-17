@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {HealthService} from '../../services/health.service';
 import {ToastService} from '../../services/toast.service';
+import {AuthService} from '../../services/auth.service';
 
 export class ExchangeHealth {
     constructor(
@@ -21,11 +22,14 @@ export class HealthComponent implements OnInit {
     exchangesHealth: Map<String, ExchangeHealth> = new Map();
 
     constructor(private healthService: HealthService,
-                private toastService: ToastService) {
+                private toastService: ToastService,
+                private authService: AuthService) {
     }
 
     ngOnInit() {
-        this.getExchangesHealth();
+        this.authService.refreshTokenIfExpiringSoon().subscribe(() => {
+            this.getExchangesHealth();
+        });
     }
 
     private getExchangesHealth() {

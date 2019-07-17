@@ -5,6 +5,7 @@ import {ExchangeUsersService} from '../../services/api';
 import {ToastService} from '../../services/toast.service';
 import {CancelOrderResponseDto, ExchangeUser, Order} from '../../models';
 import {OpenOrdersResponseDto} from '../../models/order';
+import {AuthService} from '../../services/auth.service';
 
 @Component({
     selector: 'app-orders',
@@ -25,12 +26,15 @@ export class OrdersComponent implements OnInit, OnDestroy {
     constructor(
         private orderService: OrdersService,
         private exchangeUsersService: ExchangeUsersService,
-        private toastService: ToastService
+        private toastService: ToastService,
+        private authService: AuthService
     ) {
     }
 
     ngOnInit() {
-        this.loadData();
+        this.authService.refreshTokenIfExpiringSoon().subscribe(() => {
+            this.loadData();
+        });
     }
 
     loadData() {

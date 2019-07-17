@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {AuthService} from '../services/auth.service';
 
 @Component({
     selector: 'app-layout',
@@ -6,7 +7,18 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./layout.component.scss']
 })
 export class LayoutComponent implements OnInit {
-    constructor() {}
+    constructor(private authService: AuthService) {
+    }
 
-    ngOnInit() {}
+    ngOnInit() {
+        setInterval(() => {
+            this.authService.refreshTokenIfExpiringSoon().subscribe((token: any) => {
+                if (token != null) {
+                    console.log('Token refreshed in background');
+                } else {
+                    console.log('Did not need to refresh token');
+                }
+            });
+        }, 60 * 1000);
+    }
 }

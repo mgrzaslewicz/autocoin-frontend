@@ -6,6 +6,7 @@ import {Exchange, ExchangeUser} from '../../models';
 import {StrategyExecutionResponseDto} from '../../models/strategy';
 import {ExchangeUsersService} from '../../services/api';
 import {ExchangesService} from '../../services/trading-automation/exchanges.service';
+import {AuthService} from '../../services/auth.service';
 
 @Component({
     selector: 'app-trading-strategies',
@@ -23,12 +24,15 @@ export class TradingStrategiesComponent implements OnInit {
         private toastService: ToastService,
         private exchangesService: ExchangesService,
         private strategiesExecutionsService: StrategiesExecutionsService,
-        private exchangeUsersService: ExchangeUsersService
+        private exchangeUsersService: ExchangeUsersService,
+        private authService: AuthService
     ) {
     }
 
     ngOnInit() {
-        this.loadData();
+        this.authService.refreshTokenIfExpiringSoon().subscribe(() => {
+            this.loadData();
+        });
     }
 
     public isSupportedForTrading(exchangeName: string): boolean {

@@ -7,6 +7,7 @@ import {CurrencyPrice, PriceService} from '../../services/price.service';
 import {ExchangeUsersService} from '../../services/api';
 import {forkJoin, from, Subscription} from 'rxjs';
 import {ExchangeWalletService} from '../../services/exchange-wallet.service';
+import {AuthService} from '../../services/auth.service';
 
 export interface CurrencyBalanceDto {
     currencyCode: string;
@@ -62,20 +63,23 @@ export class WalletsComponent implements OnInit, OnDestroy {
         private exchangeUsersService: ExchangeUsersService,
         private exchangeWalletService: ExchangeWalletService,
         private toastService: ToastService,
-        private priceService: PriceService
+        private priceService: PriceService,
+        private authService: AuthService
     ) {
     }
 
     ngOnInit() {
-        this.exchangeUsersSubscription = forkJoin(
-            this.exchangeUsersService.getExchangeUsers()
-        ).subscribe(([exchangeUsers]) => {
-            this.exchangeUsers = exchangeUsers.map(eu => new ExchangeUserWithBalance(eu.id, eu.name));
-            this.refreshAllExchangeUsersBalances();
-            this.restorePricesFromLocalStorage();
-        }, () => {
-            this.exchangeUsers = [];
-            this.toastService.danger('Sorry, something went wrong. Could not get exchange user list');
+        this.authService.refreshTokenIfExpiringSoon().subscribe(() => {
+            this.exchangeUsersSubscription = forkJoin(
+                this.exchangeUsersService.getExchangeUsers()
+            ).subscribe(([exchangeUsers]) => {
+                this.exchangeUsers = exchangeUsers.map(eu => new ExchangeUserWithBalance(eu.id, eu.name));
+                this.refreshAllExchangeUsersBalances();
+                this.restorePricesFromLocalStorage();
+            }, () => {
+                this.exchangeUsers = [];
+                this.toastService.danger('Sorry, something went wrong. Could not get exchange user list');
+            });
         });
     }
 
