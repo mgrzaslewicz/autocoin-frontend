@@ -1,12 +1,12 @@
 <div>
-    <app-page-header [heading]="'Edit exchange user'" [icon]="'fa-user'"
-                     [parents]="[ { heading: 'Exchange users', link: '/exchange-users', icon: 'users' } ]"></app-page-header>
+    <app-page-header [heading]="'Edit API keys'" [icon]="'fa-user'"
+                     [parents]="[ { heading: 'Exchange users', link: '/api-keys', icon: 'users' } ]"></app-page-header>
 
     <form (ngSubmit)="onSubmit(createForm)" *ngIf="exchangeUser" #createForm="ngForm">
         <div class="row">
             <div class="col-md-6">
                 <fieldset class="form-group">
-                    <label>Name</label>
+                    <label>Autocoin user name (eg. John Doe, me, wife, test-keys)</label>
                     <input class="form-control" [(ngModel)]="exchangeUser.name" name="name" required>
                 </fieldset>
 

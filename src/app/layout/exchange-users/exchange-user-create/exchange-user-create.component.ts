@@ -28,7 +28,7 @@ export class ExchangeUserCreateComponent implements OnInit {
         this.exchangeUsersService.createExchangeUser({name: createForm.value.name})
             .subscribe(() => {
                 this.toastService.success('Exchange user has been created.');
-                this.router.navigate(['/exchange-users']);
+                this.router.navigate(['/api-keys']);
             }, error => {
                 this.toastService.danger(error.message);
                 this.loading = false;

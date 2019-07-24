@@ -3,6 +3,8 @@ import {Routes, RouterModule} from '@angular/router';
 import {LayoutComponent} from './layout.component';
 import {AllowOnlyLoggedInGuard, AllowOnlyShouldNotChangePasswordGuard} from '../shared/guard';
 
+export const apiKeysRoute = 'api-keys';
+
 const routes: Routes = [
     {
         path: '',
@@ -15,8 +17,8 @@ const routes: Routes = [
                 canActivate: [AllowOnlyShouldNotChangePasswordGuard]
             },
             {
-                path: 'exchange-users',
-                loadChildren: './exchange-users/exchange-users.module#ExchangeUsersModule',
+                path: apiKeysRoute,
+                loadChildren: `./exchange-users/exchange-users.module#ExchangeUsersModule`,
                 canActivate: [AllowOnlyShouldNotChangePasswordGuard]
             },
             {

@@ -96,7 +96,7 @@ export class ExchangeUserEditComponent implements OnInit {
 
         forkJoin(subscriptions).subscribe(() => {
             this.toastService.success('Exchange user has been updated.');
-            this.router.navigate(['/exchange-users']);
+            this.router.navigate(['/api-keys']);
         }, error => {
             this.toastService.danger(error.message);
             this.loading = false;

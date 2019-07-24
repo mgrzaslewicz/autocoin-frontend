@@ -1,7 +1,7 @@
 <app-page-header [heading]="'Users & API keys'" [icon]="'fa-users'"></app-page-header>
 
 <div class="card mb-3 bg-dark">
-    <div class="card-header">API <i class="fa fa-key"></i> key of each user which allow you to group the keys</div>
+    <div class="card-header">API <i class="fa fa-key"></i> key of each autocoin user which allow you to group the keys</div>
     <div *ngIf="!isLoading && exchangeUsers.length == 0" class="alert alert-primary">
         Start with adding your first exchange user for grouping API keys, eg your name. Then assign API keys for each
         exchange
@@ -9,8 +9,8 @@
     <table class="card-body table">
         <thead>
         <tr>
-            <th>User name</th>
-            <th>API keys</th>
+            <th>Autocoin user name</th>
+            <th>Exchange API keys</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -27,7 +27,7 @@
                 </span>
             </td>
             <td class="actions">
-                <button [routerLink]="['/exchange-users/edit', exchangeUser.id]" class="btn btn-default btn-sm">Edit <i
+                <button [routerLink]="['/api-keys/edit', exchangeUser.id]" class="btn btn-default btn-sm">Edit <i
                     class="fa fa-user"></i> <i class="fa fa-key"></i>
                 </button>
                 <button (click)="exchangeUserDelete.deleteExchangeUserWithConfirmation(exchangeUser)"
@@ -43,6 +43,6 @@
     </table>
 </div>
 
-<a routerLink="/exchange-users/create" class="btn btn-info">Add <i class="fa fa-user-plus"></i></a>
+<a routerLink="/api-keys/create" class="btn btn-info">Add <i class="fa fa-user-plus"></i></a>
 
 <app-exchange-user-delete #exchangeUserDelete (refresh)="loadData()"></app-exchange-user-delete>
