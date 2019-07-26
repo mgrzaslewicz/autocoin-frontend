@@ -39,7 +39,7 @@ export interface StrategyParametersResponseDto {
     strategySpecificParameters: Map<string, number>;
 }
 export interface StrategyExecutionResponseDto {
-    id: number;
+    id: string;
     exchangeUserId: string;
     exchangeName: string;
     strategyName: string;
