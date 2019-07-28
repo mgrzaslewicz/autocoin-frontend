@@ -4,10 +4,12 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 import {defaultEnvironment} from './environment.default';
 
-const authServiceUrl = 'http://localhost:9002';
-const exchangeMediatorServiceUrl = 'http://localhost:9001';
+// const authServiceUrl = 'http://localhost:9002';
+// const exchangeMediatorServiceUrl = 'http://localhost:9001';
+// const strategyExecutorServiceUrl = 'https://strategies-api.autocoin-trader.com';
+const authServiceUrl = 'https://users-apiv2.autocoin-trader.com';
+const exchangeMediatorServiceUrl = 'https://orders-api.autocoin-trader.com';
 const strategyExecutorServiceUrl = 'https://strategies-api.autocoin-trader.com';
-
 export const environment = {
     ...defaultEnvironment,
     production: false,

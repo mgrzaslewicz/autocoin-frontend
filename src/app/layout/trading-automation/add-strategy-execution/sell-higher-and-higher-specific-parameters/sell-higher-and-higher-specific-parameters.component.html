@@ -2,7 +2,13 @@
     <div class="col-md-6">
         <div class="form-group">
             <label for="maxBuyPrice">Min sell price</label>
-            <input name="maxBuyPrice" type="number" class="form-control" value="0.0" (input)="onMinSellPrice($event.target)"
+            <input name="maxBuyPrice"
+                   type="number"
+                   value="0.0"
+                   min="0.00000001"
+                   max="9999999999"
+                   class="form-control"
+                   (input)="onMinSellPrice($event.target)"
                    required>
         </div>
     </div>

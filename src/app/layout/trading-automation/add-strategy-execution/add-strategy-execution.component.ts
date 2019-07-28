@@ -103,10 +103,12 @@ export class AddStrategyExecutionComponent implements OnInit {
     }
 
     showConfirmModal() {
-        this.modalService.open(this.confirmContentModal, {windowClass: 'confirm-order-modal'}).result.then(result => {
-            this.createStrategy();
-        }, () => {
-        });
+        if (this.validateStrategySpecificParameters()) {
+            this.modalService.open(this.confirmContentModal, {windowClass: 'confirm-order-modal'}).result.then(result => {
+                this.createStrategy();
+            }, () => {
+            });
+        }
     }
 
     canMakeStrategyExecution() {
@@ -210,5 +212,16 @@ export class AddStrategyExecutionComponent implements OnInit {
 
     public isSelling(): boolean {
         return this.strategies.find(strategy => strategy.name === this.selectedStrategyName).isSelling;
+    }
+
+    private validateStrategySpecificParameters() {
+        if (this.strategySpecificParameters.validate) {
+            const validationResult: String[] = this.strategySpecificParameters.validate();
+            if (validationResult.length > 0) {
+                this.toastService.warning(`Cannot create strategy.  ${validationResult[0]}`);
+                return false;
+            }
+        }
+        return true;
     }
 }

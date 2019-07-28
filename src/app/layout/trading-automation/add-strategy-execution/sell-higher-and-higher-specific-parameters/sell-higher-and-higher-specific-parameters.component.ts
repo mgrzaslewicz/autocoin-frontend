@@ -1,4 +1,4 @@
-import {Component, OnInit, Input, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 
 @Component({
     selector: 'app-sell-higher-and-higher-specific-parameters',
@@ -10,7 +10,17 @@ export class SellHigherAndHigherSpecificParametersComponent implements OnInit {
     @Input()
     strategySpecificParameters = {
         minSellPrice: 0,
-        growToSellNextRelativePercent: 0.5
+        growToSellNextRelativePercent: 0.5,
+        validate: function (): String[] {
+            const result = [];
+            if (this.minSellPrice <= 0) {
+                result.push('Min sell price should be greater than zero');
+            }
+            if (this.growToSellNextRelativePercent <= 0 || this.growToSellNextRelativePercent > 100) {
+                result.push('Grow to sell next should be in range (0..100>');
+            }
+            return result;
+        }
     };
 
     @Output('specificParametersChanged')
@@ -23,33 +33,25 @@ export class SellHigherAndHigherSpecificParametersComponent implements OnInit {
         this.emitInput();
     }
 
-    private precision(a) {
-        if (!isFinite(a)) {
-            return 0;
-        }
-        let e = 1, p = 0;
-        while (Math.round(a * e) / e !== a) {
-            e *= 10;
-            p++;
-        }
-        return p;
-    }
-
     onMinSellPrice(control) {
-        if (control.value) {
-            const value = Math.min(Math.max(control.value, 0.00000001), 9999999999);
-            const precision = this.precision(value);
-            control.value = Number(value).toFixed(precision);
-            this.strategySpecificParameters.minSellPrice = Number(control.value);
+        const value = Math.min(Math.max(control.value, 0.00000001), 9999999999);
+        if (control.value && typeof value === 'number' && value !== NaN) {
+            control.value = value;
+            this.strategySpecificParameters.minSellPrice = value;
             this.emitInput();
+        } else {
+            this.strategySpecificParameters.minSellPrice = 0;
         }
     }
 
     onGrowToSellNextRelativePercent(control) {
-        if (control.value) {
-            control.value = Math.min(Math.max(control.value, 0.1), 50);
-            this.strategySpecificParameters.growToSellNextRelativePercent = control.value;
+        const value = Math.min(Math.max(control.value, 0.1), 50);
+        if (control.value && typeof value === 'number' && value !== NaN) {
+            control.value = value;
+            this.strategySpecificParameters.growToSellNextRelativePercent = value;
             this.emitInput();
+        } else {
+            this.strategySpecificParameters.growToSellNextRelativePercent = 0;
         }
     }
 

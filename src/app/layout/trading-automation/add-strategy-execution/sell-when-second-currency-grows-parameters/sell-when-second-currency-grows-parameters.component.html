@@ -2,8 +2,8 @@
     <div class="col-md-12">
         <div class="form-group">
             <label for="pricesTriggeringSale">Prices of second currency pair triggering sales, eg 4500, 5000.5</label>
-            <input name="pricesTriggeringSale" class="form-control"
-                   pattern="/^[0-9 _ ,]*$/"
+            <input name="pricesTriggeringSale"
+                   class="form-control"
                    (input)="onPricesTriggeringSale($event.target)"
                    required>
         </div>
@@ -26,8 +26,11 @@
         <div class="form-group">
             <label for="secondCurrencyPairToWatch">Second currency pair to watch, eg BTC/USDT</label>
             <div class="input-group">
-                <input name="secondCurrencyPairToWatch" class="form-control" type="text" pattern="[A-Z]+/[A-Z]+"
-                       (input)="onSecondCurrencyPairToWatch($event.target)">
+                <input name="secondCurrencyPairToWatch"
+                       class="form-control"
+                       type="text" pattern="[A-Z]+/[A-Z]+"
+                       (input)="onSecondCurrencyPairToWatch($event.target)"
+                       required>
                 <div class="input-group-append">
                     <span class="input-group-text">$</span>
                 </div>

@@ -9,7 +9,14 @@ export class SellNowParametersComponent implements OnInit {
 
     @Input()
     strategySpecificParameters = {
-        minSellPrice: 0
+        minSellPrice: 0,
+        validate: function (): String[] {
+            const result = [];
+            if (this.minSellPrice <= 0) {
+                result.push('Min sell price should be greater than zero');
+            }
+            return result;
+        }
     };
 
     @Output('specificParametersChanged')
@@ -26,25 +33,14 @@ export class SellNowParametersComponent implements OnInit {
         this.specificParametersChangedEmitter.emit(this.strategySpecificParameters);
     }
 
-    private precision(a) {
-        if (!isFinite(a)) {
-            return 0;
-        }
-        let e = 1, p = 0;
-        while (Math.round(a * e) / e !== a) {
-            e *= 10;
-            p++;
-        }
-        return p;
-    }
-
     onMinSellPrice(control) {
-        if (control.value) {
-            const value = Math.min(Math.max(control.value, 0.00000001), 9999999999);
-            const precision = this.precision(value);
-            control.value = Number(value).toFixed(precision);
-            this.strategySpecificParameters.minSellPrice = Number(control.value);
+        const value = Math.min(Math.max(control.value, 0.00000001), 9999999999);
+        if (control.value && typeof value === 'number' && value !== NaN) {
+            control.value = value;
+            this.strategySpecificParameters.minSellPrice = value;
             this.emitInput();
+        } else {
+            this.strategySpecificParameters.minSellPrice = 0;
         }
     }
 

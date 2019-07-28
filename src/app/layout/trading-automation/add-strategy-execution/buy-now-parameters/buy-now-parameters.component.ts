@@ -9,7 +9,14 @@ export class BuyNowParametersComponent implements OnInit {
 
     @Input()
     strategySpecificParameters = {
-        maxBuyPrice: 0.0
+        maxBuyPrice: 0.0,
+        validate: function (): String[] {
+            const result = [];
+            if (this.maxBuyPrice === 0) {
+                result.push('Max buy price should be greater than zero');
+            }
+            return result;
+        }
     };
 
     @Output('specificParametersChanged')
@@ -26,25 +33,14 @@ export class BuyNowParametersComponent implements OnInit {
         this.specificParametersChangedEmitter.emit(this.strategySpecificParameters);
     }
 
-    private precision(a) {
-        if (!isFinite(a)) {
-            return 0;
-        }
-        let e = 1, p = 0;
-        while (Math.round(a * e) / e !== a) {
-            e *= 10;
-            p++;
-        }
-        return p;
-    }
-
     onMaxBuyPrice(control) {
-        if (control.value) {
-            const value = Math.min(Math.max(control.value, 0.00000001), 9999999999);
-            const precision = this.precision(value);
-            control.value = Number(value).toFixed(precision);
-            this.strategySpecificParameters.maxBuyPrice = Number(control.value); // no idea why control.value has string type at this point so create number
+        const value = Math.min(Math.max(control.value, 0.00000001), 9999999999);
+        if (control.value && typeof value === 'number' && value !== NaN) {
+            control.value = value;
+            this.strategySpecificParameters.maxBuyPrice = control.value;
             this.emitInput();
+        } else {
+            this.strategySpecificParameters.maxBuyPrice = 0;
         }
     }
 
