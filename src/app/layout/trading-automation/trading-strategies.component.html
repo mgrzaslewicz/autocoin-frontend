@@ -47,7 +47,9 @@
                 </ul>
             </td>
             <td>
-                <button (click)="deleteStrategyExecution(strategyExecution)" class="btn btn-danger">
+                <button *ngIf="strategyExecution.status === 'ACTIVE'"
+                        (click)="deleteStrategyExecution(strategyExecution)"
+                        class="btn btn-danger">
                     Delete strategy
                 </button>
             </td>
