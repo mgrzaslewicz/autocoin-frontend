@@ -38,6 +38,14 @@ export interface StrategyParametersResponseDto {
     counterCurrencyFractionForBuying: number;
     strategySpecificParameters: Map<string, number>;
 }
+
+export enum StrategyExecutionStatus {
+    Active = 'ACTIVE',
+    Deleted = 'DELETED',
+    Aborted = 'ABORTED',
+    Finished = 'FINISHED'
+}
+
 export interface StrategyExecutionResponseDto {
     id: string;
     exchangeUserId: string;
@@ -47,7 +55,9 @@ export interface StrategyExecutionResponseDto {
     counterCurrencyCode: string;
     strategyParameters: StrategyParametersResponseDto;
     orders: LocalOrderDto[];
+    status: StrategyExecutionStatus;
 }
+
 
 export class Strategy {
     public name: string;

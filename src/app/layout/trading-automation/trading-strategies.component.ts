@@ -3,7 +3,7 @@ import {StrategiesExecutionsService} from '../../services/trading-automation/str
 import {forkJoin} from 'rxjs';
 import {ToastService} from '../../services/toast.service';
 import {Exchange, ExchangeUser} from '../../models';
-import {StrategyExecutionResponseDto} from '../../models/strategy';
+import {StrategyExecutionResponseDto, StrategyExecutionStatus, StrategyParametersResponseDto} from '../../models/strategy';
 import {ExchangeUsersService} from '../../services/api';
 import {ExchangesService} from '../../services/trading-automation/exchanges.service';
 import {AuthService} from '../../services/auth.service';
@@ -63,9 +63,24 @@ export class TradingStrategiesComponent implements OnInit {
     }
 
     getStrategiesExecutionsByExchangeName(exchangeName): StrategyExecutionResponseDto[] {
-        return this.strategiesExecutions.filter(strategyExecution => {
+        const result = this.strategiesExecutions.filter(strategyExecution => {
             return strategyExecution.exchangeName === exchangeName;
         });
+        result.forEach(it => {
+            if (!it.status) {
+                it.status = StrategyExecutionStatus.Active;
+            }
+        });
+        return result;
+    }
+
+    flattenParameters(strategyParameters: StrategyParametersResponseDto) {
+        const result = {
+            ...strategyParameters,
+            ...strategyParameters.strategySpecificParameters
+        };
+        delete result.strategySpecificParameters;
+        return result;
     }
 
     getExchangeUserNameById(exchangeUserId: string): string {

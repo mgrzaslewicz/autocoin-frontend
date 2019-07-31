@@ -16,9 +16,10 @@
            class="card-body table table-hover">
         <thead>
         <tr>
-            <th>User</th>
+            <th>Autocoin user</th>
             <th>Strategy name</th>
             <th>Currency pair</th>
+            <th>Status</th>
             <th>Parameters</th>
             <th>Created orders</th>
         </tr>
@@ -28,7 +29,14 @@
             <td>{{ getExchangeUserNameById(strategyExecution.exchangeUserId) }}</td>
             <td>{{ strategyExecution.strategyName }}</td>
             <td>{{ strategyExecution.baseCurrencyCode }}/{{ strategyExecution.counterCurrencyCode }}</td>
-            <td>{{ strategyExecution.strategyParameters | json }}</td>
+            <td>{{ strategyExecution.status }}</td>
+            <td>
+                <ul>
+                    <li *ngFor="let item of  flattenParameters(strategyExecution.strategyParameters) | keyvalue">
+                        {{ item.key }}: {{ item.value }}
+                    </li>
+                </ul>
+            </td>
             <td *ngIf="strategyExecution.orders.length > 0">{{ strategyExecution.orders | json }}</td>
             <td *ngIf="strategyExecution.orders.length == 0">-</td>
             <td>
