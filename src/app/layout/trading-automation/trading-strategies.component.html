@@ -22,6 +22,7 @@
             <th>Status</th>
             <th>Parameters</th>
             <th>Created orders</th>
+            <th>Action</th>
         </tr>
         </thead>
         <tbody>
@@ -37,8 +38,14 @@
                     </li>
                 </ul>
             </td>
-            <td *ngIf="strategyExecution.orders.length > 0">{{ strategyExecution.orders | json }}</td>
-            <td *ngIf="strategyExecution.orders.length == 0">-</td>
+            <td>
+                <div *ngIf="strategyExecution.orders.length == 0">-</div>
+                <ul *ngFor="let order of strategyExecution.orders | keyvalue">
+                    <li>
+                        {{ order.key }}: {{ order.value }}
+                    </li>
+                </ul>
+            </td>
             <td>
                 <button (click)="deleteStrategyExecution(strategyExecution)" class="btn btn-danger">
                     Delete strategy
