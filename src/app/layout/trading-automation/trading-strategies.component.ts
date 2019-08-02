@@ -17,6 +17,7 @@ export class TradingStrategiesComponent implements OnInit {
 
     exchanges: Exchange[] = [];
     exchangeUsers: ExchangeUser[] = [];
+    isShowingOnlyActiveStrategies = true;
     private strategiesExecutions: StrategyExecutionResponseDto[];
     public exchangeNamesSupportedForTrading = ['binance', 'bittrex', 'kucoin'];
 
@@ -63,15 +64,24 @@ export class TradingStrategiesComponent implements OnInit {
     }
 
     getStrategiesExecutionsByExchangeName(exchangeName): StrategyExecutionResponseDto[] {
-        const result = this.strategiesExecutions.filter(strategyExecution => {
-            return strategyExecution.exchangeName === exchangeName;
-        });
+        const result = this.strategiesExecutions
+            .filter(strategyExecution => {
+                return strategyExecution.exchangeName === exchangeName;
+            });
         result.forEach(it => {
             if (!it.status) {
                 it.status = StrategyExecutionStatus.Active;
             }
         });
-        return result;
+        return result
+            .filter(strategyExecution => {
+                if (this.isShowingOnlyActiveStrategies) {
+                    return strategyExecution.status === StrategyExecutionStatus.Active;
+                } else {
+                    return true;
+                }
+            });
+        ;
     }
 
     flattenParameters(strategyParameters: StrategyParametersResponseDto) {
@@ -92,4 +102,13 @@ export class TradingStrategiesComponent implements OnInit {
             this.loadData();
         });
     }
+
+    showAllStrategies() {
+        this.isShowingOnlyActiveStrategies = false;
+    }
+
+    showOnlyActiveStrategies() {
+        this.isShowingOnlyActiveStrategies = true;
+    }
+
 }
