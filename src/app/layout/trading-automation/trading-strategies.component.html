@@ -1,17 +1,24 @@
 <app-page-header [heading]="'Manage automated trading strategies'" [icon]="'fa-magic'"></app-page-header>
 <div class="row">
     <div class="col-xl-12">
-        <div class="nav-item btn-group ml-auto" role="group">
-            <button *ngIf="isShowingOnlyActiveStrategies"
-                    (click)="showAllStrategies()"
-                    class="btn btn-sm" type="button">
-                Show only active <i class="fa fa-toggle-on"></i>
-            </button>
-            <button *ngIf="!isShowingOnlyActiveStrategies"
-                    (click)="showOnlyActiveStrategies()"
-                    class="btn btn-sm" type="button">
-                Show only active <i class="fa fa-toggle-off"></i>
-            </button>
+        <button class="btn btn-sm btn-info mr-1" (click)="refreshStrategies()"
+                [disabled]="isPendingRefresh">
+            <i class="fa fa-refresh" [class.is-pending]="isPendingRefresh"></i> Refresh strategies
+        </button>
+        <button *ngIf="isShowingOnlyActiveStrategies"
+                (click)="showAllStrategies()"
+                class="btn btn-sm" type="button">
+            Show only active <i class="fa fa-toggle-on"></i>
+        </button>
+        <button *ngIf="!isShowingOnlyActiveStrategies"
+                (click)="showOnlyActiveStrategies()"
+                class="btn btn-sm" type="button">
+            Show only active <i class="fa fa-toggle-off"></i>
+        </button>
+        <div class="text-muted ml-auto">
+            <small>
+                Last refresh: {{ (getLastStrategiesRefreshTime() | date: 'y-MM-dd HH:mm:ss') || '-' }}
+            </small>
         </div>
     </div>
 </div>

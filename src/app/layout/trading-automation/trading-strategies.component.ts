@@ -18,7 +18,9 @@ export class TradingStrategiesComponent implements OnInit {
     exchanges: Exchange[] = [];
     exchangeUsers: ExchangeUser[] = [];
     isShowingOnlyActiveStrategies = true;
+    isPendingRefresh = true;
     private strategiesExecutions: StrategyExecutionResponseDto[];
+    private lastStrategiesRefreshTimeKey = 'lastStrategiesRefreshTime';
     public exchangeNamesSupportedForTrading = ['binance', 'bittrex', 'kucoin'];
 
     constructor(
@@ -45,14 +47,16 @@ export class TradingStrategiesComponent implements OnInit {
     }
 
     loadData() {
+        this.isPendingRefresh = true;
         forkJoin(
             this.exchangesService.getExchanges(),
             this.strategiesExecutionsService.getStrategiesExecutions(),
             this.exchangeUsersService.getExchangeUsers()
         ).subscribe(([exchanges, strategiesExecutions, exchangeUsers]) => {
             this.exchanges = exchanges;
-            this.strategiesExecutions = strategiesExecutions;
+            this.setStrategiesExecutions(strategiesExecutions);
             this.exchangeUsers = exchangeUsers;
+            this.isPendingRefresh = false;
             console.log('Strategy executions:');
             console.log(this.strategiesExecutions);
         }, error => {
@@ -61,6 +65,37 @@ export class TradingStrategiesComponent implements OnInit {
             this.strategiesExecutions = [];
             this.toastService.danger('Sorry, something went wrong.');
         });
+    }
+
+
+    getLastStrategiesRefreshTime(): Date {
+        return this.getLocalStorageKeyAsDate(this.lastStrategiesRefreshTimeKey);
+    }
+
+    private getLocalStorageKeyAsDate(key: string): Date {
+        const timeString = localStorage.getItem(key);
+        if (timeString != null) {
+            const timeMs = Number(timeString);
+            const date: Date = new Date();
+            date.setTime(timeMs);
+            return date;
+        } else {
+            return null;
+        }
+    }
+
+    refreshStrategies() {
+        this.isPendingRefresh = true;
+        this.strategiesExecutionsService.getStrategiesExecutions().subscribe(
+            (strategiesExecutions: StrategyExecutionResponseDto[]) => {
+                this.setStrategiesExecutions(strategiesExecutions);
+                this.isPendingRefresh = false;
+            },
+            () => {
+                this.toastService.danger('Sorry, something went wrong.');
+                this.isPendingRefresh = false;
+            }
+        );
     }
 
     getStrategiesExecutionsByExchangeName(exchangeName): StrategyExecutionResponseDto[] {
@@ -111,4 +146,8 @@ export class TradingStrategiesComponent implements OnInit {
         this.isShowingOnlyActiveStrategies = true;
     }
 
+    private setStrategiesExecutions(strategiesExecutions: StrategyExecutionResponseDto[]) {
+        localStorage.setItem(this.lastStrategiesRefreshTimeKey, new Date().getTime().toString());
+        this.strategiesExecutions = strategiesExecutions;
+    }
 }
