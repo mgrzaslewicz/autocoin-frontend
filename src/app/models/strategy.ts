@@ -56,6 +56,7 @@ export interface StrategyExecutionResponseDto {
     strategyParameters: StrategyParametersResponseDto;
     orders: LocalOrderDto[];
     status: StrategyExecutionStatus;
+    startTime: number;
 }
 
 
