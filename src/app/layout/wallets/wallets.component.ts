@@ -58,6 +58,7 @@ export class WalletsComponent implements OnInit, OnDestroy {
     private currencyPairPrices: Map<string, number> = new Map();
     private btcUsd = 'BTC-USD';
     private btcUsdPriceKey = 'price-BTC-USD';
+    private lastWalletsRefreshTimeKey = 'lastWalletsRefreshTime';
 
     constructor(
         private exchangeUsersService: ExchangeUsersService,
@@ -74,7 +75,7 @@ export class WalletsComponent implements OnInit, OnDestroy {
                 this.exchangeUsersService.getExchangeUsers()
             ).subscribe(([exchangeUsers]) => {
                 this.exchangeUsers = exchangeUsers.map(eu => new ExchangeUserWithBalance(eu.id, eu.name));
-                this.refreshAllExchangeUsersBalances();
+                this.calculateAllExchangeUsersBalances();
                 this.restorePricesFromLocalStorage();
             }, () => {
                 this.exchangeUsers = [];
@@ -83,8 +84,8 @@ export class WalletsComponent implements OnInit, OnDestroy {
         });
     }
 
-    getLastWalletRefreshTime(exchangeUser: ExchangeUser): Date {
-        return this.getLocalStorageKeyAsDate('exchange-user-portfolio-refresh-time-' + exchangeUser.id);
+    getLastWalletsRefreshTime(): Date {
+        return this.getLocalStorageKeyAsDate(this.lastWalletsRefreshTimeKey);
     }
 
     private getLocalStorageKeyAsDate(key: string): Date {
@@ -101,15 +102,15 @@ export class WalletsComponent implements OnInit, OnDestroy {
 
     flipShowingUnderOneDollar() {
         this.showUnder1Dollar = !this.showUnder1Dollar;
-        this.refreshAllExchangeUsersBalances();
+        this.calculateAllExchangeUsersBalances();
     }
 
     flipBalancesViewType() {
         this.showBalancesPerExchange = !this.showBalancesPerExchange;
-        this.refreshAllExchangeUsersBalances();
+        this.calculateAllExchangeUsersBalances();
     }
 
-    private refreshAllExchangeUsersBalances() {
+    private calculateAllExchangeUsersBalances() {
         this.exchangeUsers.forEach(exchangeUser =>
             exchangeUser.exchangeBalances = this.showBalancesPerExchange ?
                 this.exchangeBalancesForExchangeUser(exchangeUser) :
@@ -141,10 +142,12 @@ export class WalletsComponent implements OnInit, OnDestroy {
         }];
     }
 
-    refreshWallet(exchangeUser: ExchangeUser) {
+    refreshAllWallets() {
         this.pending = true;
-        this.fetchExchangeBalancesForExchangeUser(exchangeUser);
-        this.fetchPrices();
+        this.exchangeUsers.forEach((exchangeUser, index) => {
+            this.fetchExchangeBalancesForExchangeUser(exchangeUser);
+        });
+        localStorage.setItem(this.lastWalletsRefreshTimeKey, new Date().getTime().toString());
     }
 
     private fetchExchangeBalancesForExchangeUser(exchangeUser: ExchangeUser) {
@@ -152,11 +155,9 @@ export class WalletsComponent implements OnInit, OnDestroy {
             accountBalances => {
                 const accountBalancesSortedByExchangeAZ = accountBalances.exchangeBalances
                     .sort((a, b) => a.exchangeName.localeCompare(b.exchangeName));
-                localStorage.setItem('exchange-user-portfolio-refresh-time-' + exchangeUser.id, new Date().getTime().toString());
                 localStorage.setItem('exchange-user-portfolio-balances-' + exchangeUser.id, JSON.stringify(accountBalancesSortedByExchangeAZ));
-                this.refreshAllExchangeUsersBalances();
+                this.fetchPrices();
             }, () => {
-                this.pending = false;
                 this.toastService.danger(`Sorry, something went wrong. Could not get wallet balance for user ${exchangeUser.name}`);
             }
         );
@@ -284,6 +285,7 @@ export class WalletsComponent implements OnInit, OnDestroy {
                 },
                 complete: () => {
                     console.log('Refresh prices complete');
+                    this.calculateAllExchangeUsersBalances();
                     this.pending = false;
                 },
                 error: (err) => {

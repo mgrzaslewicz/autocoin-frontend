@@ -1,15 +1,24 @@
 <app-page-header [heading]="'Wallets'"></app-page-header>
 <div class="row">
     <div class="col-xl-12">
-        <button type="button" class="btn btn-sm"
+        <button class="btn btn-sm btn-info mr-1" (click)="refreshAllWallets()"
+                [disabled]="pending">
+            <i class="fa fa-refresh" [class.is-pending]="pending"></i> Refresh wallets
+        </button>
+        <button type="button" class="btn btn-sm mr-1"
                 (click)="flipBalancesViewType()">
             Show summary per user <i class="fa" [class.fa-toggle-on]="!showBalancesPerExchange"
                                      [class.fa-toggle-off]="showBalancesPerExchange"></i>
         </button>
-        <button (click)="flipShowingUnderOneDollar()" type="button" class="btn btn-sm ml-1">
+        <button (click)="flipShowingUnderOneDollar()" type="button" class="btn btn-sm">
             Show small amounts <i class="fa" [class.fa-toggle-on]="showUnder1Dollar"
                                   [class.fa-toggle-off]="!showUnder1Dollar"></i>
         </button>
+        <div class="text-muted ml-auto">
+            <small>
+                Last refresh: {{ (getLastWalletsRefreshTime() | date: 'y-MM-dd HH:mm:ss') || '-' }}
+            </small>
+        </div>
     </div>
 </div>
 <div>
@@ -17,13 +26,6 @@
         <div class="card-header d-flex flex-column">
             <div class="d-flex flex-row mb-2">
                 <h3>{{ exchangeUser.name }}</h3>
-                <div class="text-muted ml-auto mr-3"><small>Last
-                    refresh: {{ getLastWalletRefreshTime(exchangeUser) |
-                    date: 'y-MM-dd HH:mm:ss' || '-' }}</small></div>
-                <button class="btn btn-info" style="min-width: 170px;" (click)="refreshWallet(exchangeUser)"
-                        [disabled]="pending">
-                    <i class="fa fa-refresh" [class.is-pending]="pending"></i> Refresh wallets
-                </button>
             </div>
         </div>
         <div class="d-flex flex-row m-3">
