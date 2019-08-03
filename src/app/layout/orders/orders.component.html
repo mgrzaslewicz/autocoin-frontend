@@ -1,12 +1,20 @@
 <div>
     <app-page-header [heading]="'Open orders'" [icon]="'fa-calendar'"></app-page-header>
-
+    <div class="row">
+        <div class="col-12">
+            <button class="btn btn-info btn-sm mr-1" (click)="loadData()" [disabled]="pending">
+                <i class="fa fa-refresh" [class.is-pending]="pending"></i> Refresh orders
+            </button>
+            <div class="text-muted ml-auto">
+                <small>
+                    Last refresh: {{ (getLastOrdersRefreshTime() | date: 'y-MM-dd HH:mm:ss') || '-' }}
+                </small>
+            </div>
+        </div>
+    </div>
     <div class="card mb-3 bg-dark">
         <div class="card-header">
             Orders
-            <button class="btn btn-info" (click)="loadData()" [disabled]="pending">
-                <i class="fa fa-refresh" [class.is-pending]="pending"></i> Refresh orders
-            </button>
         </div>
         <table class="card-body table table-hover">
             <thead>
@@ -30,7 +38,8 @@
                 <tr>
                     <th colspan="10">
                         {{ exchangeUser.name }}
-                        <span *ngIf="getFailedExchangesForExchangeUser(exchangeUser).length > 0" class="badge badge-warning">
+                        <span *ngIf="getFailedExchangesForExchangeUser(exchangeUser).length > 0"
+                              class="badge badge-warning">
                             There might be more open orders. Failed getting orders for exchanges:
                         </span>
                         <ul *ngIf="getFailedExchangesForExchangeUser(exchangeUser).length > 0">
@@ -41,7 +50,8 @@
                     </th>
                 </tr>
 
-                <tr *ngFor="let order of ordersForExchangeUser(exchangeUser)" [class]="'view-state-'+orderViewState[order.orderId]">
+                <tr *ngFor="let order of ordersForExchangeUser(exchangeUser)"
+                    [class]="'view-state-'+orderViewState[order.orderId]">
 
                     <th><input type="checkbox" (change)="onSelectOrder($event.target.checked, order)"></th>
                     <td>{{ order.exchangeName }}</td>

@@ -22,6 +22,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
     pending: boolean;
 
     selectedOrders: Order[] = [];
+    private lastOrdersRefreshTimeKey = 'lastOrdersRefreshTime';
 
     constructor(
         private orderService: OrdersService,
@@ -35,6 +36,22 @@ export class OrdersComponent implements OnInit, OnDestroy {
         this.authService.refreshTokenIfExpiringSoon().subscribe(() => {
             this.loadData();
         });
+    }
+
+    getLastOrdersRefreshTime(): Date {
+        return this.getLocalStorageKeyAsDate(this.lastOrdersRefreshTimeKey);
+    }
+
+    private getLocalStorageKeyAsDate(key: string): Date {
+        const timeString = localStorage.getItem(key);
+        if (timeString != null) {
+            const timeMs = Number(timeString);
+            const date: Date = new Date();
+            date.setTime(timeMs);
+            return date;
+        } else {
+            return null;
+        }
     }
 
     loadData() {
@@ -54,6 +71,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
             });
             this.exchangeUsers = exchangeUsers;
             this.pending = false;
+            localStorage.setItem(this.lastOrdersRefreshTimeKey, new Date().getTime().toString());
         }, error => {
             this.pending = false;
             this.openOrders = [];
