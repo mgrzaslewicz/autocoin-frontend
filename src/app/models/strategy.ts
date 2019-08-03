@@ -57,6 +57,13 @@ export interface StrategyExecutionResponseDto {
     orders: LocalOrderDto[];
     status: StrategyExecutionStatus;
     startTime: number;
+    baseCurrencyLimit: number;
+    baseCurrencySpent: number;
+    counterCurrencyLimit: number;
+    counterCurrencySpent: number;
+    description: string;
+    percentDone: number;
+
 }
 
 

@@ -34,7 +34,7 @@
         <tr>
             <th>Autocoin user</th>
             <th>Strategy</th>
-            <th>Currency pair</th>
+            <th>Goal</th>
             <th>Status</th>
             <th>Parameters</th>
             <th>Created orders</th>
@@ -46,12 +46,24 @@
             <td>{{ getExchangeUserNameById(strategyExecution.exchangeUserId) }}</td>
             <td>
                 <div>{{ strategyExecution.strategyName }}</div>
+                <span class="badge badge-info mr-1">
+                    {{ strategyExecution.baseCurrencyCode }}/{{ strategyExecution.counterCurrencyCode }}
+                </span>
                 <span *ngIf="strategyExecution.startTime"
                       class="badge badge-secondary">
                     Started {{strategyExecution.startTime | date: 'y-MM-dd HH:mm:ss' }}
                 </span>
             </td>
-            <td>{{ strategyExecution.baseCurrencyCode }}/{{ strategyExecution.counterCurrencyCode }}</td>
+            <td>
+                {{ strategyExecution.description }}
+                <div class="progress">
+                    <div class="progress-bar bg-secondary" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                         [ngStyle]="{'width': strategyExecution.percentDone + '%'}"
+                         [attr.aria-valuenow]="strategyExecution.percentDone">
+                        <span class="progress-value">{{ strategyExecution.percentDone }}%</span>
+                    </div>
+                </div>
+            </td>
             <td>{{ strategyExecution.status }}</td>
             <td>
                 <div *ngIf="true; let isShowingParameters = false">
@@ -61,7 +73,7 @@
                         Show <i class="fa" [class.fa-toggle-on]="isShowingParameters"
                                 [class.fa-toggle-off]="!isShowingParameters"></i>
                     </button>
-                    <div [class.d-lg-none]="!isShowingParameters">
+                    <div [class.d-none]="!isShowingParameters">
                         <ul>
                             <li *ngFor="let item of  flattenParameters(strategyExecution.strategyParameters) | keyvalue">
                                 {{ item.key }}: {{ item.value }}
@@ -79,7 +91,7 @@
                         Show <i class="fa" [class.fa-toggle-on]="isShowingOrders"
                                 [class.fa-toggle-off]="!isShowingOrders"></i>
                     </button>
-                    <div [class.d-lg-none]="!isShowingOrders">
+                    <div [class.d-none]="!isShowingOrders">
                         <ul *ngFor="let order of strategyExecution.orders | keyvalue">
                             <li>
                                 {{ order.key }}: {{ order.value }}
@@ -93,7 +105,7 @@
                 <button *ngIf="strategyExecution.status === 'ACTIVE'"
                         (click)="deleteStrategyExecution(strategyExecution)"
                         class="btn btn-danger">
-                    Delete strategy
+                    Delete
                 </button>
             </td>
         </tr>
