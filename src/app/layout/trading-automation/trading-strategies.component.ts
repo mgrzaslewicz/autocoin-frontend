@@ -22,6 +22,7 @@ export class TradingStrategiesComponent implements OnInit {
     private strategiesExecutions: StrategyExecutionResponseDto[];
     private lastStrategiesRefreshTimeKey = 'lastStrategiesRefreshTime';
     public exchangeNamesSupportedForTrading = ['binance', 'bittrex', 'kucoin'];
+    public noOrderLimit = -1;
 
     constructor(
         private toastService: ToastService,
@@ -116,7 +117,6 @@ export class TradingStrategiesComponent implements OnInit {
                     return true;
                 }
             });
-        ;
     }
 
     flattenParameters(strategyParameters: StrategyParametersResponseDto) {

@@ -18,39 +18,45 @@ export class StrategiesService {
     getStrategies(): Observable<Strategy[]> {
         const strategies = [];
 
-        const buyLowerAndLowerStrategy = new Strategy;
-        buyLowerAndLowerStrategy.name = 'BuyLowerAndLower';
-        buyLowerAndLowerStrategy.isBuying = true;
-        buyLowerAndLowerStrategy.isSelling = false;
+        const buyLowerAndLowerStrategy: Strategy = {
+            name: 'BuyLowerAndLower',
+            isBuying: true,
+            isSelling: false
+        };
+
         strategies.push(buyLowerAndLowerStrategy);
 
-        const sellHigherAndHigherStrategy = new Strategy;
-        sellHigherAndHigherStrategy.name = 'SellHigherAndHigher';
-        sellHigherAndHigherStrategy.isBuying = false;
-        sellHigherAndHigherStrategy.isSelling = true;
+        const sellHigherAndHigherStrategy: Strategy = {
+            name: 'SellHigherAndHigher',
+            isBuying: false,
+            isSelling: true
+        };
         strategies.push(sellHigherAndHigherStrategy);
 
         if (this.featureToggle.isActive(FEATURE_STRATEGY_SELL_WHEN_SECOND_CURRENCY_GROWS)) {
-            const sellWhenSecondCurrencyGrowsStrategy = new Strategy;
-            sellWhenSecondCurrencyGrowsStrategy.name = 'SellWhenSecondCurrencyGrows';
-            sellWhenSecondCurrencyGrowsStrategy.isBuying = false;
-            sellWhenSecondCurrencyGrowsStrategy.isSelling = true;
+            const sellWhenSecondCurrencyGrowsStrategy: Strategy = {
+                name: 'SellWhenSecondCurrencyGrows',
+                isBuying: false,
+                isSelling: true
+            };
             strategies.push(sellWhenSecondCurrencyGrowsStrategy);
         }
 
         if (this.featureToggle.isActive(FEATURE_STRATEGY_SELL_NOW)) {
-            const sellNowStrategy = new Strategy;
-            sellNowStrategy.name = 'SellNow';
-            sellNowStrategy.isBuying = false;
-            sellNowStrategy.isSelling = true;
+            const sellNowStrategy: Strategy = {
+                name: 'SellNow',
+                isBuying: false,
+                isSelling: true
+            };
             strategies.push(sellNowStrategy);
         }
 
         if (this.featureToggle.isActive(FEATURE_STRATEGY_BUY_NOW)) {
-            const buyNowStrategy = new Strategy;
-            buyNowStrategy.name = 'BuyNow';
-            buyNowStrategy.isBuying = true;
-            buyNowStrategy.isSelling = false;
+            const buyNowStrategy: Strategy = {
+                name: 'BuyNow',
+                isBuying: true,
+                isSelling: false
+            };
             strategies.push(buyNowStrategy);
         }
 

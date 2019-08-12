@@ -4,7 +4,13 @@ import {ExchangeUser} from '../../../models';
 import {ExchangeUsersService} from '../../../services/api';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToastService} from '../../../services/toast.service';
-import {Strategy, StrategyExecutionResponseDto, StrategyParametersRequest} from '../../../models/strategy';
+import {
+    Strategy,
+    StrategyBuyParametersDto,
+    StrategyExecutionResponseDto,
+    StrategyParametersRequestDto,
+    StrategySellParametersDto
+} from '../../../models/strategy';
 import {BuyLowerAndLowerSpecificParametersComponent} from './buy-lower-and-lower-specific-parameters/buy-lower-and-lower-specific-parameters.component';
 import {FEATURE_CREATE_STRATEGY, FeatureToggle, FeatureToggleToken} from '../../../services/feature.toogle.service';
 import {SellHigherAndHigherSpecificParametersComponent} from './sell-higher-and-higher-specific-parameters/sell-higher-and-higher-specific-parameters.component';
@@ -32,15 +38,25 @@ export class AddStrategyExecutionComponent implements OnInit {
     public exchangeUserSelectionList: ExchangeUserSelection[] = [];
     public strategies: Strategy[];
     public selectedStrategyName = 'BuyLowerAndLower';
-    public counterCurrencyFractionForBuying = 0.2;
-    public baseCurrencyFractionForSelling = 0.2;
-    public maxCounterCurrencyPercentForBuying = 50;
-    public maxBaseCurrencyPercentForSelling = 50;
+    public counterCurrencyPercentLimitForBuying = 20;
+    public counterCurrencyAmountLimitForBuying = 0;
+    public baseCurrencyPercentLimitForSelling = 20;
+    public baseCurrencyAmountLimitForSelling = 0;
+    public counterCurrencyPercentForBuyingPerOrder = 50;
+    public baseCurrencyPercentForSellingPerOrder = 50;
     public strategySpecificParameters: any;
     public creatingStrategiesInProgress = false;
     public finishedCreatingStrategies = false;
     public strategiesNotCreatedFor: string[] = [];
     public strategiesCreatedFor: string[] = [];
+
+    public isUsingNoCounterCurrencyLimit = false;
+    public isUsingCounterCurrencyLimitAsFraction = true;
+
+    public isUsingNoBaseCurrencyLimit = false;
+    public isUsingBaseCurrencyLimitAsFraction = true;
+
+    private noOrderLimit = -1;
 
     @ViewChild('confirmContent')
     confirmContentModal;
@@ -123,33 +139,68 @@ export class AddStrategyExecutionComponent implements OnInit {
         });
     }
 
-    onCounterCurrencyPercentForBuying(control) {
+    useCounterCurrencyLimitAsFraction() {
+        this.isUsingCounterCurrencyLimitAsFraction = true;
+        this.isUsingNoCounterCurrencyLimit = false;
+    }
+
+    useCounterCurrencyLimitAsAmount() {
+        this.isUsingCounterCurrencyLimitAsFraction = false;
+        this.isUsingNoCounterCurrencyLimit = false;
+    }
+
+    onBaseCurrencyPercentLimitForSelling(control) {
         if (control.value) {
             control.value = Math.min(Math.max(control.value, 0.1), 100);
-            this.counterCurrencyFractionForBuying = control.value / 100;
+            this.baseCurrencyPercentLimitForSelling = control.value;
         }
     }
 
-    onBaseCurrencyPercentForSelling(control) {
+    onBaseCurrencyAmountLimitForSelling(control) {
         if (control.value) {
-            control.value = Math.min(Math.max(control.value, 0.1), 100);
-            this.baseCurrencyFractionForSelling = control.value / 100;
+            control.value = Math.min(Math.max(control.value, 0.00000001), 9999999999);
+            this.baseCurrencyAmountLimitForSelling = control.value;
         }
     }
 
-    onMaxCounterCurrencyPercentForBuying(control) {
+    onBaseCurrencyPercentForSellingPerOrder(control) {
         if (control.value) {
             control.value = Math.min(Math.max(control.value, 0.1), 100);
-            this.maxCounterCurrencyPercentForBuying = Number(control.value);
+            this.baseCurrencyPercentForSellingPerOrder = Number(control.value);
         }
     }
 
-    onMaxBaseCurrencyPercentForSelling(control) {
+    onCounterCurrencyPercentForBuyingPerOrder(control) {
         if (control.value) {
             control.value = Math.min(Math.max(control.value, 0.1), 100);
-            this.maxBaseCurrencyPercentForSelling = Number(control.value);
+            this.counterCurrencyPercentForBuyingPerOrder = Number(control.value);
         }
     }
+
+    onCounterCurrencyPercentLimitForBuying(control) {
+        if (control.value) {
+            control.value = Math.min(Math.max(control.value, 0.1), 100);
+            this.counterCurrencyPercentLimitForBuying = control.value;
+        }
+    }
+
+    onCounterCurrencyAmountLimitForBuying(control) {
+        if (control.value) {
+            control.value = Math.min(Math.max(control.value, 0.00000001), 9999999999);
+            this.counterCurrencyAmountLimitForBuying = control.value;
+        }
+    }
+
+    useBaseCurrencyLimitAsFraction() {
+        this.isUsingBaseCurrencyLimitAsFraction = true;
+        this.isUsingNoBaseCurrencyLimit = false;
+    }
+
+    useBaseCurrencyLimitAsAmount() {
+        this.isUsingBaseCurrencyLimitAsFraction = false;
+        this.isUsingNoBaseCurrencyLimit = false;
+    }
+
 
     onSpecificParameters(parameters) {
         this.strategySpecificParameters = parameters;
@@ -161,18 +212,42 @@ export class AddStrategyExecutionComponent implements OnInit {
         let howManyStrategiesToCreateLeft = selectedExchangeUsers.length;
         for (const selectedExchangeUser of selectedExchangeUsers) {
             const exchangeUser = selectedExchangeUser.exchangeUser;
+            const buyParameters: StrategyBuyParametersDto = (this.isBuying() ?
+                <StrategyBuyParametersDto>{
+                    counterCurrencyPercentLimitForBuying:
+                        (this.isUsingNoCounterCurrencyLimit ?
+                            this.noOrderLimit :
+                            (this.isUsingCounterCurrencyLimitAsFraction ?
+                                this.counterCurrencyPercentLimitForBuying : this.noOrderLimit)),
+                    counterCurrencyAmountLimitForBuying: (this.isUsingNoCounterCurrencyLimit ?
+                        this.noOrderLimit :
+                        (this.isUsingCounterCurrencyLimitAsFraction ?
+                            this.noOrderLimit : this.counterCurrencyPercentLimitForBuying)),
+                    counterCurrencyPercentForBuyingPerOrder: this.counterCurrencyPercentForBuyingPerOrder
+                } : null);
+            const sellParameters: StrategySellParametersDto = (this.isSelling() ?
+                <StrategySellParametersDto>{
+                    baseCurrencyPercentLimitForSelling: (this.isUsingNoBaseCurrencyLimit ?
+                        this.noOrderLimit :
+                        (this.isUsingBaseCurrencyLimitAsFraction ?
+                            this.baseCurrencyPercentLimitForSelling : this.noOrderLimit)),
+                    baseCurrencyAmountLimitForSelling: (this.isUsingNoBaseCurrencyLimit ?
+                        this.noOrderLimit :
+                        (this.isUsingBaseCurrencyLimitAsFraction ?
+                            this.noOrderLimit : this.baseCurrencyAmountLimitForSelling)),
+                    baseCurrencyPercentForSellingPerOrder: this.baseCurrencyPercentForSellingPerOrder
+                } : null);
+            const parameters: StrategyParametersRequestDto = {
+                exchangeUserId: exchangeUser.id,
+                exchangeName: this.exchangeName,
+                strategyName: this.selectedStrategyName,
+                baseCurrencyCode: this.baseCurrency(),
+                counterCurrencyCode: this.counterCurrency(),
+                sellParameters: sellParameters,
+                buyParameters: buyParameters,
+                strategySpecificParameters: this.strategySpecificParameters
+            };
 
-            const parameters = new StrategyParametersRequest();
-            parameters.exchangeUserId = exchangeUser.id;
-            parameters.exchangeName = this.exchangeName;
-            parameters.strategyName = this.selectedStrategyName;
-            parameters.baseCurrencyCode = this.baseCurrency();
-            parameters.counterCurrencyCode = this.counterCurrency();
-            parameters.baseCurrencyFractionForSelling = this.baseCurrencyFractionForSelling;
-            parameters.counterCurrencyFractionForBuying = this.counterCurrencyFractionForBuying;
-            parameters.maxBaseCurrencyPercentForSelling = this.maxBaseCurrencyPercentForSelling;
-            parameters.maxCounterCurrencyPercentForBuying = this.maxCounterCurrencyPercentForBuying;
-            parameters.strategySpecificParameters = this.strategySpecificParameters;
 
             this.strategiesExecutionsService.createStrategyExecution(parameters)
                 .subscribe((response: WithMessageDto<StrategyExecutionResponseDto>) => {

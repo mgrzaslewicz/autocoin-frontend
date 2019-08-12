@@ -43,7 +43,7 @@
             <th>Strategy</th>
             <th>Goal</th>
             <th>Status</th>
-            <th>Parameters</th>
+            <th>Initial parameters</th>
             <th>Created orders</th>
             <th>Action</th>
         </tr>
@@ -83,7 +83,7 @@
                     <div [class.d-none]="!isShowingParameters">
                         <ul>
                             <li *ngFor="let item of  flattenParameters(strategyExecution.strategyParameters) | keyvalue">
-                                {{ item.key }}: {{ item.value }}
+                                {{ item.key }}: {{ (item.value == this.noOrderLimit ? '-' : item.value)}}
                             </li>
                         </ul>
                     </div>

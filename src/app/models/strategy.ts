@@ -1,25 +1,24 @@
+export interface StrategyBuyParametersDto {
+    counterCurrencyPercentLimitForBuying: number;
+    counterCurrencyAmountLimitForBuying: number;
+    counterCurrencyPercentForBuyingPerOrder: number;
+}
+
+export interface StrategySellParametersDto {
+    baseCurrencyPercentLimitForSelling: number;
+    baseCurrencyAmountLimitForSelling: number;
+    baseCurrencyPercentForSellingPerOrder: number;
+}
+
 export interface StrategyParametersRequestDto {
     exchangeUserId: string;
     exchangeName: string;
     strategyName: string;
     baseCurrencyCode: string;
     counterCurrencyCode: string;
-    counterCurrencyFractionForBuying: number;
-    maxCounterCurrencyPercentForBuying: number;
+    buyParameters?: StrategyBuyParametersDto;
+    sellParameters?: StrategySellParametersDto;
     strategySpecificParameters: Map<string, number>;
-}
-
-export class StrategyParametersRequest implements StrategyParametersRequestDto {
-    exchangeUserId: string;
-    exchangeName: string;
-    strategyName: string;
-    baseCurrencyCode: string;
-    counterCurrencyCode: string;
-    baseCurrencyFractionForSelling: number;
-    counterCurrencyFractionForBuying: number;
-    maxBaseCurrencyPercentForSelling: number;
-    maxCounterCurrencyPercentForBuying: number;
-    strategySpecificParameters: Map<string, any> = new Map<string, any>();
 }
 
 export interface LocalOrderDto {
@@ -34,8 +33,14 @@ export interface LocalOrderDto {
 }
 
 export interface StrategyParametersResponseDto {
-    maxCounterCurrencyPercentForBuying: number;
-    counterCurrencyFractionForBuying: number;
+    baseCurrencyPercentForSellingPerOrder?: number;
+    baseCurrencyPercentLimitForSelling?: number;
+    baseCurrencyAmountLimitForSelling?: number;
+
+    counterCurrencyPercentLimitForBuying?: number;
+    counterCurrencyAmountLimitForBuying?: number;
+    counterCurrencyPercentForBuyingPerOrder?: number;
+
     strategySpecificParameters: Map<string, number>;
 }
 
@@ -57,9 +62,9 @@ export interface StrategyExecutionResponseDto {
     orders: LocalOrderDto[];
     status: StrategyExecutionStatus;
     startTime: number;
-    baseCurrencyLimit: number;
+    baseCurrencyAmountLimitForSelling: number;
     baseCurrencySpent: number;
-    counterCurrencyLimit: number;
+    counterCurrencyAmountLimitForBuying: number;
     counterCurrencySpent: number;
     description: string;
     percentDone: number;
@@ -67,8 +72,8 @@ export interface StrategyExecutionResponseDto {
 }
 
 
-export class Strategy {
-    public name: string;
-    public isSelling: boolean;
-    public isBuying: boolean;
+export interface Strategy {
+    name: string;
+    isSelling: boolean;
+    isBuying: boolean;
 }

@@ -2,3 +2,7 @@
     display: table;
     color: black;
 }
+
+.fa.is-pending {
+    animation: rotating 1s linear infinite;
+}
