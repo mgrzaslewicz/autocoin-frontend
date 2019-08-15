@@ -1,6 +1,6 @@
 <app-page-header [heading]="'Wallets'"></app-page-header>
 <div class="row">
-    <div class="col-xl-12">
+    <div class="col-12">
         <button class="btn btn-sm btn-info mr-1" (click)="refreshAllWallets()"
                 [disabled]="pending">
             <i class="fa fa-refresh" [class.is-pending]="pending"></i> Refresh wallets
@@ -22,7 +22,7 @@
     </div>
 </div>
 <div>
-    <div *ngFor="let exchangeUser of exchangeUsers" class="card mb-3 bg-dark">
+    <div *ngFor="let exchangeUser of exchangeUsers" class="card mb-3 bg-dark exchange-user-wallet">
         <div class="card-header d-flex flex-column">
             <div class="d-flex flex-row mb-2">
                 <h3>{{ exchangeUser.name }}</h3>

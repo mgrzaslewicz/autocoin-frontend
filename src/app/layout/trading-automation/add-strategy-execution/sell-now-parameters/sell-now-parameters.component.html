@@ -1,9 +1,21 @@
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-12">
         <div class="form-group">
             <label for="minSellPrice">Min sell price</label>
-            <input name="minSellPrice" type="number" class="form-control" value="0.0" (input)="onMinSellPrice($event.target)"
-                   required>
+            <input name="minSellPrice"
+                   class="form-control"
+                   type="text"
+                   required
+                   pattern="^\s*(?=.*[1-9])\d*(?:\.\d{1,8})?\s*$"
+                   [class.is-invalid]="minSellPriceInput.invalid
+                                && (minSellPriceInput.dirty
+                                || minSellPriceInput.touched)"
+                   [(ngModel)]="strategySpecificParameters.minSellPrice"
+                   #minSellPriceInput="ngModel"
+                   (input)="onMinSellPrice($event.target)">
+            <div class="invalid-feedback">
+                Provide valid price, eg. 1.00045 (max 8 decimal places)
+            </div>
         </div>
     </div>
 </div>

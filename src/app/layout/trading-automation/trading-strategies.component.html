@@ -22,7 +22,7 @@
         </div>
     </div>
 </div>
-<div class="card mb-3 bg-dark" *ngFor="let exchange of getExchangesSupportedForTrading()">
+<div class="card mb-3 bg-dark running-exchange-strategies" *ngFor="let exchange of getExchangesSupportedForTrading()">
     <div class="card-header">
         <div class="row justify-content-between align-items-center px-2">
             <span>{{ exchange.name }}</span>
@@ -71,18 +71,28 @@
                     </div>
                 </div>
             </td>
-            <td>{{ strategyExecution.status }}</td>
+            <td>
+                <span class="badge"
+                      [class.badge-success]=" strategyExecution.status === 'ACTIVE'"
+                      [class.badge-secondary]="strategyExecution.status !== 'ACTIVE'">
+                    {{ strategyExecution.status }}
+                </span>
+            </td>
             <td>
                 <div *ngIf="true; let isShowingParameters = false">
-                    <button
-                        (click)="isShowingParameters = !isShowingParameters"
-                        class="btn btn-sm" type="button">
-                        Show <i class="fa" [class.fa-toggle-on]="isShowingParameters"
-                                [class.fa-toggle-off]="!isShowingParameters"></i>
-                    </button>
-                    <div [class.d-none]="!isShowingParameters">
-                        <ul>
-                            <li *ngFor="let item of  flattenParameters(strategyExecution.strategyParameters) | keyvalue">
+                    <div>
+                        <ul class="list-group">
+                            <li class="list-group-item bg-dark">
+                                <button
+                                    (click)="isShowingParameters = !isShowingParameters"
+                                    class="btn btn-sm" type="button">
+                                    Show <i class="fa" [class.fa-toggle-on]="isShowingParameters"
+                                            [class.fa-toggle-off]="!isShowingParameters"></i>
+                                </button>
+                            </li>
+                            <li class="list-group-item bg-dark text-white"
+                                [class.d-none]="!isShowingParameters"
+                                *ngFor="let item of  flattenParameters(strategyExecution.strategyParameters) | keyvalue">
                                 {{ item.key }}: {{ (item.value == this.noOrderLimit ? '-' : item.value)}}
                             </li>
                         </ul>
@@ -111,7 +121,7 @@
             <td>
                 <button *ngIf="strategyExecution.status === 'ACTIVE'"
                         (click)="deleteStrategyExecution(strategyExecution)"
-                        class="btn btn-danger">
+                        class="btn btn-sm btn-danger">
                     Delete
                 </button>
             </td>

@@ -9,19 +9,25 @@ export class SellHigherAndHigherSpecificParametersComponent implements OnInit {
 
     @Input()
     strategySpecificParameters = {
-        minSellPrice: 0,
+        minSellPrice: '',
         growToSellNextRelativePercent: 0.5,
+        isDecimal: this.isDecimal,
         validate: function (): String[] {
             const result = [];
-            if (this.minSellPrice <= 0) {
+            if (!this.isDecimal(this.minSellPrice, 8)) {
                 result.push('Min sell price should be greater than zero');
             }
-            if (this.growToSellNextRelativePercent <= 0 || this.growToSellNextRelativePercent > 100) {
+            if (!this.isDecimal(this.growToSellNextRelativePercent, 2) || Number(this.growToSellNextRelativePercent) > 100) {
                 result.push('Grow to sell next should be in range (0..100>');
             }
             return result;
         }
     };
+
+    isDecimal(value: string, decimalPlaces: number): boolean {
+        const regexpString = `^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,${decimalPlaces}})?\\s*$`;
+        return new RegExp(regexpString).test(value);
+    }
 
     @Output('specificParametersChanged')
     specificParametersChangedEmitter = new EventEmitter;
@@ -34,25 +40,13 @@ export class SellHigherAndHigherSpecificParametersComponent implements OnInit {
     }
 
     onMinSellPrice(control) {
-        const value = Math.min(Math.max(control.value, 0.00000001), 9999999999);
-        if (control.value && typeof value === 'number' && value !== NaN) {
-            control.value = value;
-            this.strategySpecificParameters.minSellPrice = value;
-            this.emitInput();
-        } else {
-            this.strategySpecificParameters.minSellPrice = 0;
-        }
+        this.strategySpecificParameters.minSellPrice = control.value;
+        this.emitInput();
     }
 
     onGrowToSellNextRelativePercent(control) {
-        const value = Math.min(Math.max(control.value, 0.1), 50);
-        if (control.value && typeof value === 'number' && value !== NaN) {
-            control.value = value;
-            this.strategySpecificParameters.growToSellNextRelativePercent = value;
-            this.emitInput();
-        } else {
-            this.strategySpecificParameters.growToSellNextRelativePercent = 0;
-        }
+        this.strategySpecificParameters.growToSellNextRelativePercent = control.value;
+        this.emitInput();
     }
 
     emitInput() {

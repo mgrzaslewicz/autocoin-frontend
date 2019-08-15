@@ -9,10 +9,11 @@ export class SellNowParametersComponent implements OnInit {
 
     @Input()
     strategySpecificParameters = {
-        minSellPrice: 0,
+        minSellPrice: '',
+        isDecimal: this.isDecimal,
         validate: function (): String[] {
             const result = [];
-            if (this.minSellPrice <= 0) {
+            if (!this.isDecimal(this.minSellPrice, 8)) {
                 result.push('Min sell price should be greater than zero');
             }
             return result;
@@ -25,6 +26,11 @@ export class SellNowParametersComponent implements OnInit {
     constructor() {
     }
 
+    isDecimal(value: string, decimalPlaces: number): boolean {
+        const regexpString = `^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,${decimalPlaces}})?\\s*$`;
+        return new RegExp(regexpString).test(value);
+    }
+
     ngOnInit() {
         this.emitInput();
     }
@@ -34,14 +40,8 @@ export class SellNowParametersComponent implements OnInit {
     }
 
     onMinSellPrice(control) {
-        const value = Math.min(Math.max(control.value, 0.00000001), 9999999999);
-        if (control.value && typeof value === 'number' && value !== NaN) {
-            control.value = value;
-            this.strategySpecificParameters.minSellPrice = value;
-            this.emitInput();
-        } else {
-            this.strategySpecificParameters.minSellPrice = 0;
-        }
+        this.strategySpecificParameters.minSellPrice = control.value;
+        this.emitInput();
     }
 
 }

@@ -9,10 +9,11 @@ export class BuyNowParametersComponent implements OnInit {
 
     @Input()
     strategySpecificParameters = {
-        maxBuyPrice: 0.0,
+        maxBuyPrice: '',
+        isDecimal: this.isDecimal,
         validate: function (): String[] {
             const result = [];
-            if (this.maxBuyPrice === 0) {
+            if (!this.isDecimal(this.maxBuyPrice, 8)) {
                 result.push('Max buy price should be greater than zero');
             }
             return result;
@@ -29,19 +30,18 @@ export class BuyNowParametersComponent implements OnInit {
         this.emitInput();
     }
 
+    isDecimal(value: string, decimalPlaces: number): boolean {
+        const regexpString = `^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,${decimalPlaces}})?\\s*$`;
+        return new RegExp(regexpString).test(value);
+    }
+
     emitInput() {
         this.specificParametersChangedEmitter.emit(this.strategySpecificParameters);
     }
 
     onMaxBuyPrice(control) {
-        const value = Math.min(Math.max(control.value, 0.00000001), 9999999999);
-        if (control.value && typeof value === 'number' && value !== NaN) {
-            control.value = value;
-            this.strategySpecificParameters.maxBuyPrice = control.value;
-            this.emitInput();
-        } else {
-            this.strategySpecificParameters.maxBuyPrice = 0;
-        }
+        this.strategySpecificParameters.maxBuyPrice = control.value;
+        this.emitInput();
     }
 
 }

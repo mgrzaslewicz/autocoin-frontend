@@ -8,20 +8,26 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 export class BuyLowerAndLowerSpecificParametersComponent implements OnInit {
 
     @Input()
-    strategySpecificParameters = {
-        maxBuyPrice: 0.0,
+    strategySpecificParameters: any = {
+        maxBuyPrice: '',
         dropToBuyNextRelativePercent: 0.5,
+        isDecimal: this.isDecimal,
         validate: function (): String[] {
             const result = [];
-            if (this.maxBuyPrice <= 0) {
+            if (!this.isDecimal(this.maxBuyPrice, 8)) {
                 result.push('Max buy price should be greater than zero');
             }
-            if (this.dropToBuyNextRelativePercent <= 0 || this.dropToBuyNextRelativePercent > 100) {
+            if (!this.isDecimal(this.dropToBuyNextRelativePercent, 2) || Number(this.dropToBuyNextRelativePercent) > 100) {
                 result.push('Drop to buy next should be in range (0..100>');
             }
             return result;
         }
     };
+
+    isDecimal(value: string, decimalPlaces: number): boolean {
+        const regexpString = `^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,${decimalPlaces}})?\\s*$`;
+        return new RegExp(regexpString).test(value);
+    }
 
     @Output('specificParametersChanged')
     specificParametersChangedEmitter = new EventEmitter;
@@ -34,25 +40,13 @@ export class BuyLowerAndLowerSpecificParametersComponent implements OnInit {
     }
 
     onMaxBuyPrice(control) {
-        const value = Math.min(Math.max(control.value, 0.00000001), 9999999999);
-        if (control.value && typeof value === 'number' && value !== NaN) {
-            control.value = value;
-            this.strategySpecificParameters.maxBuyPrice = value;
-            this.emitInput();
-        } else {
-            this.strategySpecificParameters.maxBuyPrice = 0;
-        }
+        this.strategySpecificParameters.maxBuyPrice = control.value;
+        this.emitInput();
     }
 
     onDropToBuyNextRelativePercent(control) {
-        const value = Math.min(Math.max(control.value, 0.1), 50);
-        if (control.value && typeof value === 'number' && value !== NaN) {
-            control.value = value;
-            this.strategySpecificParameters.dropToBuyNextRelativePercent = value;
-            this.emitInput();
-        } else {
-            this.strategySpecificParameters.dropToBuyNextRelativePercent = 0;
-        }
+        this.strategySpecificParameters.dropToBuyNextRelativePercent = control.value;
+        this.emitInput();
     }
 
     emitInput() {

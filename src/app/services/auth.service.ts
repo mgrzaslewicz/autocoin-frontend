@@ -30,12 +30,12 @@ export class AuthService {
     ) {
     }
 
-    login(username, password, twoFactorAuthenticationCode): Observable<TokenResponseDto> {
+    login(emailAddress, password, twoFactorAuthenticationCode): Observable<TokenResponseDto> {
         const body = new HttpParams()
             .set('client_id', 'SPA')
             .set('client_secret', 'superSecretPassword')
             .set('password', password)
-            .set('username', username)
+            .set('username', emailAddress)
             .set('grant_type', 'password')
             .set('scopes', 'read')
             .set('2faCode', twoFactorAuthenticationCode);
@@ -54,7 +54,7 @@ export class AuthService {
                 console.log('Successful token request');
                 this.storeAccessToken(response.access_token);
                 this.storeRefreshToken(response.refresh_token);
-                this.storeUserName(username);
+                this.storeUserName(emailAddress);
                 this.setUserAccount(response.userAccount);
             });
     }

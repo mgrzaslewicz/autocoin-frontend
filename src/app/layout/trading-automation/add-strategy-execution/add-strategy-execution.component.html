@@ -22,7 +22,7 @@
 </div>
 <form #addStrategyExecutionForm="ngForm" *ngIf="!creatingStrategiesInProgress && !finishedCreatingStrategies">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-xs-12 col-xl-8">
 
             <div class="form-group">
                 <label>Exchange name</label>
@@ -45,131 +45,178 @@
                 <label *ngIf="isSelling()" for="currency-pair-typeahead">Currency pair (eg XRP/BTC if you want to sell
                     XRP and have more BTC)</label>
                 <input name="currencyPair"
-                       id="currency-pair-typeahead" type="text"
+                       id="currency-pair-typeahead"
+                       type="text"
                        class="form-control"
-                       [class.is-invalid]="addStrategyExecutionForm.controls.currencyPair && addStrategyExecutionForm.controls.currencyPair.invalid && addStrategyExecutionForm.controls.currencyPair.touched"
-                       required validateCurrencyPairSymbol
+                       pattern="^[a-zA-Z]+/[a-zA-Z]+$"
+                       required
+                       [class.is-invalid]="currencyPairInput.invalid
+                       && (currencyPairInput.dirty || currencyPairInput.touched)"
                        [(ngModel)]="currencyPair"
+                       #currencyPairInput="ngModel"
                        (input)="$event.target.value = $event.target.value.toUpperCase()">
-                <div class="invalid-feedback">Provide valid currency pair</div>
+                <div class="invalid-feedback">Provide valid currency pair, eg. XXX/YYY</div>
             </div>
-
-            <div class="row">
-                <div *ngIf="isBuying()" class="col-6">
-                    <div class="form-group">
-                        <label *ngIf="isUsingCounterCurrencyLimitAsFraction">
-                            Buy limit (max {{counterCurrency()}} % to sell of current amount in wallet)
-                        </label>
-                        <label *ngIf="!isUsingCounterCurrencyLimitAsFraction">
-                            Buy limit (max {{counterCurrency()}} amount to sell)
-                        </label>
-                        <div class="input-group">
-                            <button (click)="useCounterCurrencyLimitAsFraction()" type="button"
-                                    class="btn mr-1"
-                                    [class.btn-secondary]="!isUsingCounterCurrencyLimitAsFraction"
-                                    [class.btn-success]="isUsingCounterCurrencyLimitAsFraction">
-                                %
-                            </button>
-                            <button (click)="useCounterCurrencyLimitAsAmount()" type="button"
-                                    class="btn mr-1"
-                                    [class.btn-secondary]="isUsingCounterCurrencyLimitAsFraction"
-                                    [class.btn-success]="!isUsingCounterCurrencyLimitAsFraction">
-                                123
-                            </button>
-                            <ng-container *ngIf="isUsingCounterCurrencyLimitAsFraction">
-                                <input name="counterCurrencyFractionLimitForBuying" type="number" class="form-control"
-                                       min="0.1"
-                                       max="100" [value]="counterCurrencyPercentLimitForBuying"
-                                       step="0.1"
-                                       (input)="onCounterCurrencyPercentLimitForBuying($event.target)">
-                                <div class="input-group-append">
-                                    <span class="input-group-text">%</span>
-                                </div>
-                            </ng-container>
-                            <ng-container *ngIf="!isUsingCounterCurrencyLimitAsFraction">
-                                <input name="counterCurrencyAmountLimitForBuying" type="number" class="form-control"
-                                       min="0.00000001"
-                                       max="9999999999"
-                                       [value]="counterCurrencyAmountLimitForBuying"
-                                       step="0.00000001"
-                                       (input)="onCounterCurrencyAmountLimitForBuying($event.target)">
-                            </ng-container>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-xl-8">
+            <div *ngIf="isBuying()" class="form-group">
+                <label *ngIf="isUsingCounterCurrencyLimitAsFraction">
+                    Buy limit (max {{counterCurrency()}} % to sell of current amount in wallet)
+                </label>
+                <label *ngIf="!isUsingCounterCurrencyLimitAsFraction">
+                    Buy limit (max {{counterCurrency()}} amount to sell)
+                </label>
+                <div class="input-group">
+                    <button (click)="useCounterCurrencyLimitAsFraction()" type="button"
+                            class="btn mr-1"
+                            [class.btn-secondary]="!isUsingCounterCurrencyLimitAsFraction"
+                            [class.btn-success]="isUsingCounterCurrencyLimitAsFraction">
+                        %
+                    </button>
+                    <button (click)="useCounterCurrencyLimitAsAmount()" type="button"
+                            class="btn mr-1"
+                            [class.btn-secondary]="isUsingCounterCurrencyLimitAsFraction"
+                            [class.btn-success]="!isUsingCounterCurrencyLimitAsFraction">
+                        123
+                    </button>
+                    <ng-container *ngIf="isUsingCounterCurrencyLimitAsFraction">
+                        <input name="counterCurrencyPercentLimitForBuying"
+                               type="text"
+                               required
+                               pattern="^\s*(?=.*[1-9])\d{1,2}(?:\.\d{1,2})?\s*$"
+                               class="form-control"
+                               [class.is-invalid]="counterCurrencyPercentLimitForBuyingInput.invalid
+                                && (counterCurrencyPercentLimitForBuyingInput.dirty
+                                || counterCurrencyPercentLimitForBuyingInput.touched)"
+                               [(ngModel)]="counterCurrencyPercentLimitForBuying"
+                               #counterCurrencyPercentLimitForBuyingInput="ngModel">
+                        <div class="input-group-append">
+                            <span class="input-group-text">%</span>
                         </div>
-                    </div>
-                </div>
-                <div *ngIf="isSelling()" class="col-6">
-                    <div class="form-group">
-                        <label *ngIf="isUsingBaseCurrencyLimitAsFraction">
-                            Max {{baseCurrency()}} % to sell of current amount in wallet
-                        </label>
-                        <label *ngIf="!isUsingBaseCurrencyLimitAsFraction">
-                            Max {{baseCurrency()}} amount to sell
-                        </label>
-                        <div class="input-group">
-                            <button (click)="useBaseCurrencyLimitAsFraction()"
-                                    type="button" class="btn mr-1"
-                                    [class.btn-secondary]="!isUsingBaseCurrencyLimitAsFraction"
-                                    [class.btn-success]="isUsingBaseCurrencyLimitAsFraction">
-                                %
-                            </button>
-                            <button (click)="useBaseCurrencyLimitAsAmount()"
-                                    type="button" class="btn mr-1"
-                                    [class.btn-secondary]="isUsingBaseCurrencyLimitAsFraction"
-                                    [class.btn-success]="!isUsingBaseCurrencyLimitAsFraction">
-                                123
-                            </button>
-                            <ng-container *ngIf="isUsingBaseCurrencyLimitAsFraction">
-                                <input name="baseCurrencyFractionLimitForBuying" type="number" class="form-control"
-                                       min="0.1"
-                                       max="100" [value]="baseCurrencyPercentLimitForSelling"
-                                       step="0.1"
-                                       (input)="onBaseCurrencyPercentLimitForSelling($event.target)">
-                                <div class="input-group-append">
-                                    <span class="input-group-text">%</span>
-                                </div>
-                            </ng-container>
-                            <ng-container *ngIf="!isUsingBaseCurrencyLimitAsFraction">
-                                <input name="baseCurrencyAmountLimitForSelling" type="number" class="form-control"
-                                       min="0.00000001"
-                                       max="9999999999"
-                                       [value]="baseCurrencyAmountLimitForSelling"
-                                       step="0.00000001"
-                                       (input)="onBaseCurrencyAmountLimitForSelling($event.target)">
-                            </ng-container>
+                        <div class="invalid-feedback">
+                            Provide valid percent, eg. 2.5 (max 2 decimal places)
                         </div>
-                    </div>
-                </div>
-                <div *ngIf="isBuying()" class="col-6">
-                    <div class="form-group">
-                        <label>Buy per order %</label>
-                        <div class="input-group">
-                            <input name="counterCurrencyPercentForBuyingPerOrder" type="number" class="form-control"
-                                   min="0.1"
-                                   max="100" [value]="counterCurrencyPercentForBuyingPerOrder"
-                                   step="0.1"
-                                   (input)="onCounterCurrencyPercentForBuyingPerOrder($event.target)">
-                            <div class="input-group-append">
-                                <span class="input-group-text">%</span>
-                            </div>
+                    </ng-container>
+                    <ng-container *ngIf="!isUsingCounterCurrencyLimitAsFraction">
+                        <input name="counterCurrencyAmountLimitForBuying"
+                               type="text"
+                               pattern="^\s*(?=.*[1-9])\d*(?:\.\d{1,8})?\s*$"
+                               required
+                               class="form-control"
+                               [class.is-invalid]="counterCurrencyAmountLimitForBuyingInput.invalid
+                                && (counterCurrencyAmountLimitForBuyingInput.dirty
+                                || counterCurrencyAmountLimitForBuyingInput.touched)"
+                               [(ngModel)]="counterCurrencyAmountLimitForBuying"
+                               #counterCurrencyAmountLimitForBuyingInput="ngModel">
+                        <div class="invalid-feedback">
+                            Provide valid amount, eg. 1.00045 (max 8 decimal places)
                         </div>
-                    </div>
-                </div>
-                <div *ngIf="isSelling()" class="col-6">
-                    <div class="form-group">
-                        <label>Sell per order %</label>
-                        <div class="input-group">
-                            <input name="counterCurrencyPercentForBuyingPerOrder" type="number" class="form-control"
-                                   min="0.1"
-                                   max="100" [value]="baseCurrencyPercentForSellingPerOrder"
-                                   step="0.1"
-                                   (input)="onBaseCurrencyPercentForSellingPerOrder($event.target)">
-                            <div class="input-group-append">
-                                <span class="input-group-text">%</span>
-                            </div>
-                        </div>
-                    </div>
+                    </ng-container>
                 </div>
             </div>
+            <div *ngIf="isSelling()" class="form-group">
+                <label *ngIf="isUsingBaseCurrencyLimitAsFraction">
+                    Max {{baseCurrency()}} % to sell of current amount in wallet
+                </label>
+                <label *ngIf="!isUsingBaseCurrencyLimitAsFraction">
+                    Max {{baseCurrency()}} amount to sell
+                </label>
+                <div class="input-group">
+                    <button (click)="useBaseCurrencyLimitAsFraction()"
+                            type="button" class="btn mr-1"
+                            [class.btn-secondary]="!isUsingBaseCurrencyLimitAsFraction"
+                            [class.btn-success]="isUsingBaseCurrencyLimitAsFraction">
+                        %
+                    </button>
+                    <button (click)="useBaseCurrencyLimitAsAmount()"
+                            type="button" class="btn mr-1"
+                            [class.btn-secondary]="isUsingBaseCurrencyLimitAsFraction"
+                            [class.btn-success]="!isUsingBaseCurrencyLimitAsFraction">
+                        123
+                    </button>
+                    <ng-container *ngIf="isUsingBaseCurrencyLimitAsFraction">
+                        <input name="baseCurrencyFractionLimitForBuying"
+                               type="text"
+                               class="form-control"
+                               required
+                               pattern="^\s*(?=.*[1-9])\d{1,2}(?:\.\d{1,2})?\s*$"
+                               [(ngModel)]="baseCurrencyPercentLimitForSelling"
+                               #baseCurrencyPercentLimitForSellingInput="ngModel"
+                               [class.is-invalid]="baseCurrencyPercentLimitForSellingInput.invalid
+                                && (baseCurrencyPercentLimitForSellingInput.dirty
+                                || baseCurrencyPercentLimitForSellingInput.touched)">
+                        <div class="input-group-append">
+                            <span class="input-group-text">%</span>
+                        </div>
+                        <div class="invalid-feedback">
+                            Provide valid percent, eg. 2.5 (max 2 decimal places)
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="!isUsingBaseCurrencyLimitAsFraction">
+                        <input name="baseCurrencyAmountLimitForSelling"
+                               type="text"
+                               class="form-control"
+                               required
+                               pattern="^\s*(?=.*[1-9])\d*(?:\.\d{1,8})?\s*$"
+                               [(ngModel)]="baseCurrencyAmountLimitForSelling"
+                               #baseCurrencyAmountLimitForSellingInput="ngModel"
+                               [class.is-invalid]="baseCurrencyAmountLimitForSellingInput.invalid
+                                && (baseCurrencyAmountLimitForSellingInput.dirty
+                                || baseCurrencyAmountLimitForSellingInput.touched)">
+                        <div class="invalid-feedback">
+                            Provide valid amount, eg. 1.00045 (max 8 decimal places)
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+            <div *ngIf="isBuying()" class="form-group">
+                <label>Buy per order %</label>
+                <div class="input-group">
+                    <input name="counterCurrencyPercentForBuyingPerOrder"
+                           type="text"
+                           class="form-control"
+                           required
+                           pattern="^\s*(?=.*[1-9])\d{1,2}(?:\.\d{1,2})?\s*$"
+                           [(ngModel)]="counterCurrencyPercentForBuyingPerOrder"
+                           [class.is-invalid]="counterCurrencyPercentForBuyingPerOrderInput.invalid
+                                && (counterCurrencyPercentForBuyingPerOrderInput.dirty
+                                || counterCurrencyPercentForBuyingPerOrderInput.touched)"
+                           #counterCurrencyPercentForBuyingPerOrderInput="ngModel">
+                    <div class="input-group-append">
+                        <span class="input-group-text">%</span>
+                    </div>
+                    <div class="invalid-feedback">
+                        Provide valid percent, eg. 2.5 (max 2 decimal places)
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="isSelling()" class="form-group">
+                <label>Sell per order %</label>
+                <div class="input-group">
+                    <input name="baseCurrencyPercentForSellingPerOrder"
+                           type="text"
+                           required
+                           pattern="^\s*(?=.*[1-9])\d{1,2}(?:\.\d{1,2})?\s*$"
+                           class="form-control"
+                           [(ngModel)]="baseCurrencyPercentForSellingPerOrder"
+                           [class.is-invalid]="baseCurrencyPercentForSellingPerOrderInput.invalid
+                                && (baseCurrencyPercentForSellingPerOrderInput.dirty
+                                || baseCurrencyPercentForSellingPerOrderInput.touched)"
+                           #baseCurrencyPercentForSellingPerOrderInput="ngModel">
+                    <div class="input-group-append">
+                        <span class="input-group-text">%</span>
+                    </div>
+                    <div class="invalid-feedback">
+                        Provide valid percent, eg. 2.5 (max 2 decimal places)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-xl-8">
             <app-buy-lower-and-lower-specific-parameters
                 *ngIf="selectedStrategyName == 'BuyLowerAndLower'"
                 (specificParametersChanged)="onSpecificParameters($event)">
@@ -191,10 +238,10 @@
                 (specificParametersChanged)="onSpecificParameters($event)">
             </app-buy-now-parameters>
         </div>
-
     </div>
+
     <div class="row">
-        <div *ngIf="exchangeUserSelectionList.length > 1" class="col-md-6">
+        <div *ngIf="exchangeUserSelectionList.length > 1" class="col-xs-12 col-xl-8">
 
             <div class="form-group">
                 <label>Select users</label>
@@ -210,7 +257,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-12">
+        <div class="col-xs-12 col-xl-8">
             <button type="submit" class="btn btn-primary add-strategy-execution"
                     (click)="showConfirmModal()"
                     [disabled]="!canMakeStrategyExecution()">
