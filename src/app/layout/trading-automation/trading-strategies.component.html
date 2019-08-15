@@ -63,7 +63,7 @@
             </td>
             <td>
                 {{ strategyExecution.description }}
-                <div class="progress">
+                <div *ngIf="strategyExecution.percentDone != null" class="progress">
                     <div class="progress-bar bg-secondary" role="progressbar" aria-valuemin="0" aria-valuemax="100"
                          [ngStyle]="{'width': strategyExecution.percentDone + '%'}"
                          [attr.aria-valuenow]="strategyExecution.percentDone">

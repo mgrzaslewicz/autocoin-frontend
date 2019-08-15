@@ -222,7 +222,7 @@ export class AddStrategyExecutionComponent implements OnInit {
                     counterCurrencyAmountLimitForBuying: (this.isUsingNoCounterCurrencyLimit ?
                         this.noOrderLimit :
                         (this.isUsingCounterCurrencyLimitAsFraction ?
-                            this.noOrderLimit : this.counterCurrencyPercentLimitForBuying)),
+                            this.noOrderLimit : this.counterCurrencyAmountLimitForBuying)),
                     counterCurrencyPercentForBuyingPerOrder: this.counterCurrencyPercentForBuyingPerOrder
                 } : null);
             const sellParameters: StrategySellParametersDto = (this.isSelling() ?
