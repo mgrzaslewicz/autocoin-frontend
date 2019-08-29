@@ -28,8 +28,14 @@ export interface LocalOrderDto {
     isBuy: boolean;
     price: number;
     amount: number;
+    /**
+     * Epoch seconds
+     */
     openTime: number;
-    closeTime: number; // nullable
+    /**
+     * Epoch seconds
+     */
+    closeTime?: number;
 }
 
 export interface StrategyParametersResponseDto {

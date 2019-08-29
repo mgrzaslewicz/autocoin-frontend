@@ -3,7 +3,7 @@ import {StrategiesExecutionsService} from '../../services/trading-automation/str
 import {forkJoin} from 'rxjs';
 import {ToastService} from '../../services/toast.service';
 import {Exchange, ExchangeUser} from '../../models';
-import {StrategyExecutionResponseDto, StrategyExecutionStatus, StrategyParametersResponseDto} from '../../models/strategy';
+import {LocalOrderDto, StrategyExecutionResponseDto, StrategyExecutionStatus, StrategyParametersResponseDto} from '../../models/strategy';
 import {ExchangeUsersService} from '../../services/api';
 import {ExchangesService} from '../../services/trading-automation/exchanges.service';
 import {AuthService} from '../../services/auth.service';
@@ -119,7 +119,7 @@ export class TradingStrategiesComponent implements OnInit {
             });
     }
 
-    flattenParameters(strategyParameters: StrategyParametersResponseDto) {
+    flattenStrategyParameters(strategyParameters: StrategyParametersResponseDto) {
         const result = {
             ...strategyParameters,
             ...strategyParameters.strategySpecificParameters
@@ -149,5 +149,15 @@ export class TradingStrategiesComponent implements OnInit {
     private setStrategiesExecutions(strategiesExecutions: StrategyExecutionResponseDto[]) {
         localStorage.setItem(this.lastStrategiesRefreshTimeKey, new Date().getTime().toString());
         this.strategiesExecutions = strategiesExecutions;
+    }
+
+    sortedByCloseOrOpenTime(orders: LocalOrderDto[]) {
+        return orders.sort((a, b) => {
+            if (b.closeTime !== null && a.closeTime !== null) {
+                return b.closeTime - a.closeTime;
+            } else {
+                return b.openTime - a.openTime;
+            }
+        });
     }
 }

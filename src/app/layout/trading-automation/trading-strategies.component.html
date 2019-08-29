@@ -92,7 +92,7 @@
                             </li>
                             <li class="list-group-item bg-dark text-white"
                                 [class.d-none]="!isShowingParameters"
-                                *ngFor="let item of  flattenParameters(strategyExecution.strategyParameters) | keyvalue">
+                                *ngFor="let item of flattenStrategyParameters(strategyExecution.strategyParameters) | keyvalue">
                                 {{ item.key }}: {{ (item.value == this.noOrderLimit ? '-' : item.value)}}
                             </li>
                         </ul>
@@ -102,21 +102,36 @@
             <td>
                 <div *ngIf="strategyExecution.orders.length == 0">-</div>
                 <div *ngIf="strategyExecution.orders.length > 0; let isShowingOrders = false">
-                    <button
-                        (click)="isShowingOrders = !isShowingOrders"
-                        class="btn btn-sm" type="button">
-                        Show <i class="fa" [class.fa-toggle-on]="isShowingOrders"
-                                [class.fa-toggle-off]="!isShowingOrders"></i>
-                    </button>
-                    <div [class.d-none]="!isShowingOrders">
-                        <ul *ngFor="let order of strategyExecution.orders | keyvalue">
-                            <li>
-                                {{ order.key }}: {{ order.value }}
+                    <div>
+                        <ul class="list-group">
+                            <li class="list-group-item bg-dark">
+                                <button
+                                    (click)="isShowingOrders = !isShowingOrders"
+                                    class="btn btn-sm" type="button">
+                                    Show ({{ strategyExecution.orders.length }})
+                                    <i class="fa"
+                                       [class.fa-toggle-on]="isShowingOrders"
+                                       [class.fa-toggle-off]="!isShowingOrders"></i>
+                                </button>
+                            </li>
+                            <li class="list-group-item bg-dark text-white"
+                                [class.d-none]="!isShowingOrders"
+                                *ngFor="let order of sortedByCloseOrOpenTime(strategyExecution.orders)">
+                                <div>price: {{ order.price }}</div>
+                                <div *ngIf="order.isBuy">
+                                    bought amount: {{ order.amount }} {{ strategyExecution.baseCurrencyCode }}
+                                </div>
+                                <div *ngIf="!order.isBuy">
+                                    sold amount: {{ order.amount }} {{ strategyExecution.baseCurrencyCode }}
+                                </div>
+                                <div>opened: {{ order.openTime * 1000 | date: 'y-MM-dd HH:mm:ss' }}</div>
+                                <div>closed: {{ order.closeTime * 1000 | date: 'y-MM-dd HH:mm:ss' }}</div>
+                                <div>status: {{ order.status }}</div>
+                                <div>id: {{ order.exchangeOrderId }}</div>
                             </li>
                         </ul>
                     </div>
                 </div>
-
             </td>
             <td>
                 <button *ngIf="strategyExecution.status === 'ACTIVE'"
