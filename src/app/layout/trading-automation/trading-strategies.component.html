@@ -57,8 +57,12 @@
                     {{ strategyExecution.baseCurrencyCode }}/{{ strategyExecution.counterCurrencyCode }}
                 </span>
                 <span *ngIf="strategyExecution.startTime"
-                      class="badge badge-secondary">
+                      class="badge badge-secondary mr-1">
                     Started {{strategyExecution.startTime | date: 'y-MM-dd HH:mm:ss' }}
+                </span>
+                <span *ngIf="strategyExecution.isDemo"
+                      class="badge badge-warning">
+                    Demo
                 </span>
             </td>
             <td>
@@ -125,7 +129,8 @@
                                     sold amount: {{ order.amount }} {{ strategyExecution.baseCurrencyCode }}
                                 </div>
                                 <div>opened: {{ order.openTime * 1000 | date: 'y-MM-dd HH:mm:ss' }}</div>
-                                <div>closed: {{ order.closeTime * 1000 | date: 'y-MM-dd HH:mm:ss' }}</div>
+                                <div *ngIf="order.closeTime !== null">closed: {{ order.closeTime * 1000 | date: 'y-MM-dd HH:mm:ss' }}</div>
+                                <div *ngIf="order.closeTime === null">closed: -</div>
                                 <div>status: {{ order.status }}</div>
                                 <div>id: {{ order.exchangeOrderId }}</div>
                             </li>

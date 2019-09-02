@@ -239,10 +239,8 @@
             </app-buy-now-parameters>
         </div>
     </div>
-
     <div class="row">
         <div *ngIf="exchangeUserSelectionList.length > 1" class="col-xs-12 col-xl-8">
-
             <div class="form-group">
                 <label>Select users</label>
 
@@ -253,7 +251,16 @@
                     </label>
                 </div>
             </div>
-
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" name="isDemo" [value]="false"
+                           [(ngModel)]="isDemo"> Demo mode (will not make any orders on your exchange accounts)
+                </label>
+            </div>
         </div>
     </div>
     <div class="row">

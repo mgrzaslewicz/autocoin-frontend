@@ -55,6 +55,7 @@ export class AddStrategyExecutionComponent implements OnInit {
 
     public isUsingNoBaseCurrencyLimit = false;
     public isUsingBaseCurrencyLimitAsFraction = true;
+    public isDemo = false;
 
     private noOrderLimit = -1;
 
@@ -208,7 +209,8 @@ export class AddStrategyExecutionComponent implements OnInit {
                 counterCurrencyCode: this.counterCurrency(),
                 sellParameters: this.getStrategySellParameters(),
                 buyParameters: this.getStrategyBuyParameters(),
-                strategySpecificParameters: this.strategySpecificParameters
+                strategySpecificParameters: this.strategySpecificParameters,
+                isDemo: this.isDemo
             };
 
             this.strategiesExecutionsService.createStrategyExecution(parameters)

@@ -19,6 +19,7 @@ export interface StrategyParametersRequestDto {
     buyParameters?: StrategyBuyParametersDto;
     sellParameters?: StrategySellParametersDto;
     strategySpecificParameters: Map<string, number>;
+    isDemo: boolean;
 }
 
 export interface LocalOrderDto {
@@ -74,7 +75,7 @@ export interface StrategyExecutionResponseDto {
     counterCurrencySpent: number;
     description: string;
     percentDone: number;
-
+    isDemo: boolean;
 }
 
 
