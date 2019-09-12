@@ -32,7 +32,7 @@ export class SellWhenSecondCurrencyGrowsParametersComponent implements OnInit {
     };
 
     isDecimal(value: string, decimalPlaces: number): boolean {
-        const regexpString = `^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,${decimalPlaces}})?\\s*$`;
+        const regexpString = `^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,${decimalPlaces}})?\$`;
         return new RegExp(regexpString).test(value);
     }
 

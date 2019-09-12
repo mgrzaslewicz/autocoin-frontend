@@ -38,8 +38,12 @@ export class AddStrategyExecutionComponent implements OnInit {
     public exchangeUserSelectionList: ExchangeUserSelection[] = [];
     public strategies: Strategy[];
     public selectedStrategyName = 'BuyLowerAndLower';
+
     public counterCurrencyPercentLimitForBuying = 20;
     public counterCurrencyAmountLimitForBuying = 0;
+    public counterCurrencyMinPercentLimitToHold = 0; // allowed to set 0 in input
+    public counterCurrencyMinAmountLimitToHold = 0; // allowed to set 0 in input
+
     public baseCurrencyPercentLimitForSelling = 20;
     public baseCurrencyAmountLimitForSelling = 0;
     public counterCurrencyPercentForBuyingPerOrder = 50;
@@ -50,8 +54,8 @@ export class AddStrategyExecutionComponent implements OnInit {
     public strategiesNotCreatedFor: string[] = [];
     public strategiesCreatedFor: string[] = [];
 
-    public isUsingNoCounterCurrencyLimit = false;
     public isUsingCounterCurrencyLimitAsFraction = true;
+    public isUsingCounterCurrencyMinLimitToHoldAsFraction = true;
 
     public isUsingNoBaseCurrencyLimit = false;
     public isUsingBaseCurrencyLimitAsFraction = true;
@@ -139,14 +143,20 @@ export class AddStrategyExecutionComponent implements OnInit {
         });
     }
 
+    useCounterCurrencyMinLimitToHoldAsFraction() {
+        this.isUsingCounterCurrencyMinLimitToHoldAsFraction = true;
+    }
+
+    useCounterCurrencyMinLimitToHoldAsAmount() {
+        this.isUsingCounterCurrencyMinLimitToHoldAsFraction = false;
+    }
+
     useCounterCurrencyLimitAsFraction() {
         this.isUsingCounterCurrencyLimitAsFraction = true;
-        this.isUsingNoCounterCurrencyLimit = false;
     }
 
     useCounterCurrencyLimitAsAmount() {
         this.isUsingCounterCurrencyLimitAsFraction = false;
-        this.isUsingNoCounterCurrencyLimit = false;
     }
 
     useBaseCurrencyLimitAsFraction() {
@@ -164,18 +174,29 @@ export class AddStrategyExecutionComponent implements OnInit {
         this.strategySpecificParameters = parameters;
     }
 
+    private toNoOrderLimitIfZero(value: number) {
+        if (value === 0 || (Number(value) === 0)) {
+            return this.noOrderLimit;
+        } else {
+            return value;
+        }
+    }
+
     private getStrategyBuyParameters(): StrategyBuyParametersDto | null {
         return (this.isBuying() ?
             <StrategyBuyParametersDto>{
                 counterCurrencyPercentLimitForBuying:
-                    (this.isUsingNoCounterCurrencyLimit ?
-                        this.noOrderLimit :
-                        (this.isUsingCounterCurrencyLimitAsFraction ?
-                            this.counterCurrencyPercentLimitForBuying : this.noOrderLimit)),
-                counterCurrencyAmountLimitForBuying: (this.isUsingNoCounterCurrencyLimit ?
-                    this.noOrderLimit :
                     (this.isUsingCounterCurrencyLimitAsFraction ?
-                        this.noOrderLimit : this.counterCurrencyAmountLimitForBuying)),
+                        this.counterCurrencyPercentLimitForBuying : this.noOrderLimit),
+                counterCurrencyAmountLimitForBuying:
+                    (this.isUsingCounterCurrencyLimitAsFraction ?
+                        this.noOrderLimit : this.counterCurrencyAmountLimitForBuying),
+                counterCurrencyMinPercentLimitToHold:
+                    (this.isUsingCounterCurrencyMinLimitToHoldAsFraction ?
+                        this.toNoOrderLimitIfZero(this.counterCurrencyMinPercentLimitToHold) : this.noOrderLimit),
+                counterCurrencyMinAmountLimitToHold:
+                    (this.isUsingCounterCurrencyMinLimitToHoldAsFraction ?
+                        this.noOrderLimit : this.toNoOrderLimitIfZero(this.counterCurrencyMinAmountLimitToHold)),
                 counterCurrencyPercentForBuyingPerOrder: this.counterCurrencyPercentForBuyingPerOrder
             } : null);
     }

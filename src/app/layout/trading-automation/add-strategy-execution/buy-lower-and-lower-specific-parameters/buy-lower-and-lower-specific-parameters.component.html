@@ -6,10 +6,11 @@
                    class="form-control"
                    type="text"
                    required
-                   pattern="^\s*(?=.*[1-9])\d*(?:\.\d{1,8})?\s*$"
+                   pattern="^(?=.*[1-9])\d+(?:\.\d{1,8})?$"
                    [class.is-invalid]="maxBuyPriceInput.invalid
                                 && (maxBuyPriceInput.dirty
-                                || maxBuyPriceInput.touched)"
+                                || maxBuyPriceInput.touched
+                                || maxBuyPriceInput.untouched)"
                    [(ngModel)]="strategySpecificParameters.maxBuyPrice"
                    #maxBuyPriceInput="ngModel"
                    (input)="onMaxBuyPrice($event.target)">
@@ -25,10 +26,11 @@
                 <input name="dropToBuyNextRelativePercent" class="form-control"
                        type="text"
                        required
-                       pattern="^\s*(?=.*[1-9])\d{1,2}(?:\.\d{1,2})?\s*$"
+                       pattern="^(?=.*[1-9])\d{1,2}(?:\.\d{1,2})?$"
                        [class.is-invalid]="dropToBuyNextRelativePercentInput.invalid
                                 && (dropToBuyNextRelativePercentInput.dirty
-                                || dropToBuyNextRelativePercentInput.touched)"
+                                || dropToBuyNextRelativePercentInput.touched
+                                || dropToBuyNextRelativePercentInput.untouched)"
                        [(ngModel)]="strategySpecificParameters.dropToBuyNextRelativePercent"
                        #dropToBuyNextRelativePercentInput="ngModel"
                        (input)="onDropToBuyNextRelativePercent($event.target)">

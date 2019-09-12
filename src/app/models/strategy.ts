@@ -1,6 +1,8 @@
 export interface StrategyBuyParametersDto {
     counterCurrencyPercentLimitForBuying: number;
     counterCurrencyAmountLimitForBuying: number;
+    counterCurrencyMinPercentLimitToHold: number;
+    counterCurrencyMinAmountLimitToHold: number;
     counterCurrencyPercentForBuyingPerOrder: number;
 }
 
@@ -46,6 +48,8 @@ export interface StrategyParametersResponseDto {
 
     counterCurrencyPercentLimitForBuying?: number;
     counterCurrencyAmountLimitForBuying?: number;
+    counterCurrencyMinPercentLimitToHold?: number;
+    counterCurrencyMinAmountLimitToHold?: number;
     counterCurrencyPercentForBuyingPerOrder?: number;
 
     strategySpecificParameters: Map<string, number>;

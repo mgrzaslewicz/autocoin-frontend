@@ -10,7 +10,8 @@
                        pattern="[a-zA-Z]+/[a-zA-Z]+"
                        [class.is-invalid]="secondCurrencyPairToWatchInput.invalid
                                 && (secondCurrencyPairToWatchInput.dirty
-                                || secondCurrencyPairToWatchInput.touched)"
+                                || secondCurrencyPairToWatchInput.touched
+                                || secondCurrencyPairToWatchInput.untouched)"
                        [(ngModel)]="strategySpecificParameters.secondCurrencyPairToWatch"
                        #secondCurrencyPairToWatchInput="ngModel"
                        (input)="$event.target.value = $event.target.value.toUpperCase(); onSecondCurrencyPairToWatch($event.target)">
@@ -32,7 +33,8 @@
                    class="form-control"
                    [class.is-invalid]="secondCurrencyPricesTriggeringSaleInput.invalid
                                 && (secondCurrencyPricesTriggeringSaleInput.dirty
-                                || secondCurrencyPricesTriggeringSaleInput.touched)"
+                                || secondCurrencyPricesTriggeringSaleInput.touched
+                                || secondCurrencyPricesTriggeringSaleInput.untouched)"
                    [(ngModel)]="strategySpecificParameters.secondCurrencyPricesTriggeringSale"
                    #secondCurrencyPricesTriggeringSaleInput="ngModel"
                    (input)="onSecondCurrencyPricesTriggeringSale($event.target)">
@@ -50,10 +52,11 @@
                    class="form-control"
                    type="text"
                    required
-                   pattern="^\s*(?=.*[1-9])\d*(?:\.\d{1,8})?\s*$"
+                   pattern="^(?=.*[1-9])\d+(?:\.\d{1,8})?$"
                    [class.is-invalid]="minSellPriceInput.invalid
                                 && (minSellPriceInput.dirty
-                                || minSellPriceInput.touched)"
+                                || minSellPriceInput.touched
+                                || minSellPriceInput.untouched)"
                    [(ngModel)]="strategySpecificParameters.minSellPrice"
                    #minSellPriceInput="ngModel"
                    (input)="onMinSellPrice($event.target)">

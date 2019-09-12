@@ -6,10 +6,11 @@
                    class="form-control"
                    type="text"
                    required
-                   pattern="^\s*(?=.*[1-9])\d*(?:\.\d{1,8})?\s*$"
+                   pattern="^(?=.*[1-9])\d+(?:\.\d{1,8})?$"
                    [class.is-invalid]="minSellPriceInput.invalid
                                 && (minSellPriceInput.dirty
-                                || minSellPriceInput.touched)"
+                                || minSellPriceInput.touched
+                                || minSellPriceInput.untouched)"
                    [(ngModel)]="strategySpecificParameters.minSellPrice"
                    #minSellPriceInput="ngModel"
                    (input)="onMinSellPrice($event.target)">
