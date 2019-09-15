@@ -79,13 +79,13 @@
                             class="btn mr-1"
                             [class.btn-secondary]="isUsingCounterCurrencyLimitAsFraction"
                             [class.btn-success]="!isUsingCounterCurrencyLimitAsFraction">
-                        123
+                        amount
                     </button>
                     <ng-container *ngIf="isUsingCounterCurrencyLimitAsFraction">
                         <input name="counterCurrencyPercentLimitForBuying"
                                type="text"
                                required
-                               pattern="^(?=.*[1-9])\d{1,2}(?:\.\d{1,2})?$"
+                               pattern="^(?=.*[0-9])\d{1,2}(?:\.\d{1,2})?$|^100$"
                                class="form-control"
                                [class.is-invalid]="counterCurrencyPercentLimitForBuyingInput.invalid
                                 && (counterCurrencyPercentLimitForBuyingInput.dirty
@@ -136,13 +136,13 @@
                             class="btn mr-1"
                             [class.btn-secondary]="isUsingCounterCurrencyMinLimitToHoldAsFraction"
                             [class.btn-success]="!isUsingCounterCurrencyMinLimitToHoldAsFraction">
-                        123
+                        amount
                     </button>
                     <ng-container *ngIf="isUsingCounterCurrencyMinLimitToHoldAsFraction">
                         <input name="counterCurrencyMinPercentLimitToHold"
                                type="text"
                                required
-                               pattern="^(?=.*[0-9])\d{1,2}(?:\.\d{1,2})?$"
+                               pattern="^(?=.*[0-9])\d{1,2}(?:\.\d{1,2})?$|^100$"
                                class="form-control"
                                [class.is-invalid]="counterCurrencyMinPercentLimitToHoldInput.invalid
                                 && (counterCurrencyMinPercentLimitToHoldInput.dirty
@@ -154,7 +154,7 @@
                             <span class="input-group-text">%</span>
                         </div>
                         <div class="invalid-feedback">
-                            Provide valid percent, eg. 2.5 (max 2 decimal places) or 0
+                            Provide valid percent, eg. 2.55 (max 2 decimal places) or 0
                         </div>
                     </ng-container>
                     <ng-container *ngIf="!isUsingCounterCurrencyMinLimitToHoldAsFraction">
@@ -193,14 +193,14 @@
                             type="button" class="btn mr-1"
                             [class.btn-secondary]="isUsingBaseCurrencyLimitAsFraction"
                             [class.btn-success]="!isUsingBaseCurrencyLimitAsFraction">
-                        123
+                        amount
                     </button>
                     <ng-container *ngIf="isUsingBaseCurrencyLimitAsFraction">
                         <input name="baseCurrencyFractionLimitForBuying"
                                type="text"
                                class="form-control"
                                required
-                               pattern="^(?=.*[1-9])\d{1,2}(?:\.\d{1,2})?$"
+                               pattern="^(?=.*[0-9])\d{1,2}(?:\.\d{1,2})?$|^100$"
                                [(ngModel)]="baseCurrencyPercentLimitForSelling"
                                #baseCurrencyPercentLimitForSellingInput="ngModel"
                                [class.is-invalid]="baseCurrencyPercentLimitForSellingInput.invalid
@@ -237,7 +237,7 @@
                            type="text"
                            class="form-control"
                            required
-                           pattern="^(?=.*[1-9])\d{1,2}(?:\.\d{1,2})?$"
+                           pattern="^(?=.*[0-9])\d{1,2}(?:\.\d{1,2})?$|^100$"
                            [(ngModel)]="counterCurrencyPercentForBuyingPerOrder"
                            [class.is-invalid]="counterCurrencyPercentForBuyingPerOrderInput.invalid
                                 && (counterCurrencyPercentForBuyingPerOrderInput.dirty
@@ -258,7 +258,7 @@
                     <input name="baseCurrencyPercentForSellingPerOrder"
                            type="text"
                            required
-                           pattern="^(?=.*[1-9])\d{1,2}(?:\.\d{1,2})?$"
+                           pattern="^(?=.*[0-9])\d{1,2}(?:\.\d{1,2})?$|^100$"
                            class="form-control"
                            [(ngModel)]="baseCurrencyPercentForSellingPerOrder"
                            [class.is-invalid]="baseCurrencyPercentForSellingPerOrderInput.invalid
