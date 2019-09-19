@@ -1,151 +1,154 @@
 <app-page-header [heading]="'Manage automated trading strategies'" [icon]="'fa-magic'"></app-page-header>
 <div class="row">
     <div class="col-xl-12">
-        <button class="btn btn-sm btn-info mr-1" (click)="refreshStrategies()"
+        <button class="btn btn-sm btn-info mr-1 mb-1" (click)="refreshStrategies()"
                 [disabled]="isPendingRefresh">
             <i class="fa fa-refresh" [class.is-pending]="isPendingRefresh"></i> Refresh strategies
         </button>
         <button *ngIf="isShowingOnlyActiveStrategies"
                 (click)="showAllStrategies()"
-                class="btn btn-sm" type="button">
+                class="btn btn-sm mb-1" type="button">
             Show only active <i class="fa fa-toggle-on"></i>
         </button>
         <button *ngIf="!isShowingOnlyActiveStrategies"
                 (click)="showOnlyActiveStrategies()"
-                class="btn btn-sm" type="button">
+                class="btn btn-sm mb-1" type="button">
             Show only active <i class="fa fa-toggle-off"></i>
         </button>
-        <div class="text-muted ml-auto">
+        <div class="text-muted ml-auto mb-1">
             <small>
                 Last refresh: {{ (getLastStrategiesRefreshTime() | date: 'y-MM-dd HH:mm:ss') || '-' }}
             </small>
         </div>
     </div>
 </div>
-<div class="card mb-3 bg-dark running-exchange-strategies" *ngFor="let exchange of getExchangesSupportedForTrading()">
+<div class="card mb-3 bg-dark" *ngFor="let exchange of getExchangesSupportedForTrading()">
     <div class="card-header">
         <div class="row justify-content-between align-items-center px-2">
             <span>{{ exchange.name }}</span>
             <a *ngIf="isSupportedForTrading(exchange.name)"
-               [routerLink]="['/trading-automation/add-strategy-execution', exchange.name]" class="btn btn-success">
+               [routerLink]="['/trading-automation/add-strategy-execution', exchange.name]" class="btn btn-success btn-sm">
                 Add strategy
             </a>
-            <button *ngIf="!isSupportedForTrading(exchange.name)" class="btn btn-secondary" disabled>
+            <button *ngIf="!isSupportedForTrading(exchange.name)" class="btn btn-sm btn-secondary" disabled>
                 Add strategy
             </button>
         </div>
     </div>
-    <table *ngIf="getStrategiesExecutionsByExchangeName(exchange.name).length > 0"
-           class="card-body table table-hover">
-        <thead>
-        <tr>
-            <th>Autocoin user</th>
-            <th>Strategy</th>
-            <th>Goal</th>
-            <th>Status</th>
-            <th>Initial parameters</th>
-            <th>Created orders</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let strategyExecution of getStrategiesExecutionsByExchangeName(exchange.name)">
-            <td>{{ getExchangeUserNameById(strategyExecution.exchangeUserId) }}</td>
-            <td>
-                <div>{{ strategyExecution.strategyName }}</div>
-                <span class="badge badge-info mr-1">
+    <div class="table-responsive">
+        <table *ngIf="getStrategiesExecutionsByExchangeName(exchange.name).length > 0"
+               class="card-body table table-hover">
+            <thead>
+            <tr>
+                <th>Autocoin user</th>
+                <th>Strategy</th>
+                <th>Goal</th>
+                <th>Status</th>
+                <th>Initial parameters</th>
+                <th>Created orders</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let strategyExecution of getStrategiesExecutionsByExchangeName(exchange.name)">
+                <td>{{ getExchangeUserNameById(strategyExecution.exchangeUserId) }}</td>
+                <td>
+                    <div>{{ strategyExecution.strategyName }}</div>
+                    <span class="badge badge-info mr-1">
                     {{ strategyExecution.baseCurrencyCode }}/{{ strategyExecution.counterCurrencyCode }}
                 </span>
-                <span *ngIf="strategyExecution.startTime"
-                      class="badge badge-secondary mr-1">
+                    <span *ngIf="strategyExecution.startTime"
+                          class="badge badge-secondary mr-1">
                     Started {{strategyExecution.startTime | date: 'y-MM-dd HH:mm:ss' }}
                 </span>
-                <span *ngIf="strategyExecution.isDemo"
-                      class="badge badge-warning">
+                    <span *ngIf="strategyExecution.isDemo"
+                          class="badge badge-warning">
                     Demo
                 </span>
-            </td>
-            <td>
-                {{ strategyExecution.description }}
-                <div *ngIf="strategyExecution.percentDone != null" class="progress">
-                    <div class="progress-bar bg-secondary" role="progressbar" aria-valuemin="0" aria-valuemax="100"
-                         [ngStyle]="{'width': strategyExecution.percentDone + '%'}"
-                         [attr.aria-valuenow]="strategyExecution.percentDone">
-                        <span class="progress-value">{{ strategyExecution.percentDone }}%</span>
+                </td>
+                <td>
+                    {{ strategyExecution.description }}
+                    <div *ngIf="strategyExecution.percentDone != null" class="progress">
+                        <div class="progress-bar bg-secondary" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                             [ngStyle]="{'width': strategyExecution.percentDone + '%'}"
+                             [attr.aria-valuenow]="strategyExecution.percentDone">
+                            <span class="progress-value">{{ strategyExecution.percentDone }}%</span>
+                        </div>
                     </div>
-                </div>
-            </td>
-            <td>
+                </td>
+                <td>
                 <span class="badge"
                       [class.badge-success]=" strategyExecution.status === 'ACTIVE'"
                       [class.badge-secondary]="strategyExecution.status !== 'ACTIVE'">
                     {{ strategyExecution.status }}
                 </span>
-            </td>
-            <td>
-                <div *ngIf="true; let isShowingParameters = false">
-                    <div>
-                        <ul class="list-group">
-                            <li class="list-group-item bg-dark">
-                                <button
-                                    (click)="isShowingParameters = !isShowingParameters"
-                                    class="btn btn-sm" type="button">
-                                    Show <i class="fa" [class.fa-toggle-on]="isShowingParameters"
-                                            [class.fa-toggle-off]="!isShowingParameters"></i>
-                                </button>
-                            </li>
-                            <li class="list-group-item bg-dark text-white"
-                                [class.d-none]="!isShowingParameters"
-                                *ngFor="let item of flattenStrategyParameters(strategyExecution.strategyParameters) | keyvalue">
-                                {{ item.key }}: {{ (item.value == this.noOrderLimit ? '-' : item.value)}}
-                            </li>
-                        </ul>
+                </td>
+                <td>
+                    <div *ngIf="true; let isShowingParameters = false">
+                        <div>
+                            <ul class="list-group">
+                                <li class="list-group-item bg-dark">
+                                    <button
+                                        (click)="isShowingParameters = !isShowingParameters"
+                                        class="btn btn-sm" type="button">
+                                        Show <i class="fa" [class.fa-toggle-on]="isShowingParameters"
+                                                [class.fa-toggle-off]="!isShowingParameters"></i>
+                                    </button>
+                                </li>
+                                <li class="list-group-item bg-dark text-white"
+                                    [class.d-none]="!isShowingParameters"
+                                    *ngFor="let item of flattenStrategyParameters(strategyExecution.strategyParameters) | keyvalue">
+                                    {{ item.key }}: {{ (item.value == this.noOrderLimit ? '-' : item.value)}}
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-            </td>
-            <td>
-                <div *ngIf="strategyExecution.orders.length == 0">-</div>
-                <div *ngIf="strategyExecution.orders.length > 0; let isShowingOrders = false">
-                    <div>
-                        <ul class="list-group">
-                            <li class="list-group-item bg-dark">
-                                <button
-                                    (click)="isShowingOrders = !isShowingOrders"
-                                    class="btn btn-sm" type="button">
-                                    Show ({{ strategyExecution.orders.length }})
-                                    <i class="fa"
-                                       [class.fa-toggle-on]="isShowingOrders"
-                                       [class.fa-toggle-off]="!isShowingOrders"></i>
-                                </button>
-                            </li>
-                            <li class="list-group-item bg-dark text-white"
-                                [class.d-none]="!isShowingOrders"
-                                *ngFor="let order of sortedByCloseOrOpenTime(strategyExecution.orders)">
-                                <div>price: {{ order.price }}</div>
-                                <div *ngIf="order.isBuy">
-                                    bought amount: {{ order.amount }} {{ strategyExecution.baseCurrencyCode }}
-                                </div>
-                                <div *ngIf="!order.isBuy">
-                                    sold amount: {{ order.amount }} {{ strategyExecution.baseCurrencyCode }}
-                                </div>
-                                <div>opened: {{ order.openTime * 1000 | date: 'y-MM-dd HH:mm:ss' }}</div>
-                                <div *ngIf="order.closeTime !== null">closed: {{ order.closeTime * 1000 | date: 'y-MM-dd HH:mm:ss' }}</div>
-                                <div *ngIf="order.closeTime === null">closed: -</div>
-                                <div>status: {{ order.status }}</div>
-                                <div>id: {{ order.exchangeOrderId }}</div>
-                            </li>
-                        </ul>
+                </td>
+                <td>
+                    <div *ngIf="strategyExecution.orders.length == 0">-</div>
+                    <div *ngIf="strategyExecution.orders.length > 0; let isShowingOrders = false">
+                        <div>
+                            <ul class="list-group">
+                                <li class="list-group-item bg-dark">
+                                    <button
+                                        (click)="isShowingOrders = !isShowingOrders"
+                                        class="btn btn-sm" type="button">
+                                        Show ({{ strategyExecution.orders.length }})
+                                        <i class="fa"
+                                           [class.fa-toggle-on]="isShowingOrders"
+                                           [class.fa-toggle-off]="!isShowingOrders"></i>
+                                    </button>
+                                </li>
+                                <li class="list-group-item bg-dark text-white"
+                                    [class.d-none]="!isShowingOrders"
+                                    *ngFor="let order of sortedByCloseOrOpenTime(strategyExecution.orders)">
+                                    <div>price: {{ order.price }}</div>
+                                    <div *ngIf="order.isBuy">
+                                        bought amount: {{ order.amount }} {{ strategyExecution.baseCurrencyCode }}
+                                    </div>
+                                    <div *ngIf="!order.isBuy">
+                                        sold amount: {{ order.amount }} {{ strategyExecution.baseCurrencyCode }}
+                                    </div>
+                                    <div>opened: {{ order.openTime * 1000 | date: 'y-MM-dd HH:mm:ss' }}</div>
+                                    <div *ngIf="order.closeTime !== null">
+                                        closed: {{ order.closeTime * 1000 | date: 'y-MM-dd HH:mm:ss' }}</div>
+                                    <div *ngIf="order.closeTime === null">closed: -</div>
+                                    <div>status: {{ order.status }}</div>
+                                    <div>id: {{ order.exchangeOrderId }}</div>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-            </td>
-            <td>
-                <button *ngIf="strategyExecution.status === 'ACTIVE'"
-                        (click)="deleteStrategyExecution(strategyExecution)"
-                        class="btn btn-sm btn-danger">
-                    Delete
-                </button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+                </td>
+                <td>
+                    <button *ngIf="strategyExecution.status === 'ACTIVE'"
+                            (click)="deleteStrategyExecution(strategyExecution)"
+                            class="btn btn-sm btn-danger">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>

@@ -81,6 +81,10 @@ export class ExchangeUsersComponent implements OnInit {
         });
     }
 
+    isNotCheckedIfApiKeyIsWorking(exchangeUser: ExchangeUser, exchange: Exchange): boolean {
+        return (!this.isApiKeyWorking(exchangeUser, exchange) && !this.isApiKeyNotWorking(exchangeUser, exchange));
+    }
+
     isApiKeyNotWorking(exchangeUser: ExchangeUser, exchange: Exchange): boolean {
         const exchangeUserKeyCapabilityList = this.exchangeUserToExchangesKeyCapabilityList.get(exchangeUser.id);
         if (exchangeUserKeyCapabilityList !== undefined) {

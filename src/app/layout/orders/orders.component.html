@@ -2,82 +2,86 @@
     <app-page-header [heading]="'Open orders'" [icon]="'fa-calendar'"></app-page-header>
     <div class="row">
         <div class="col-12">
-            <button class="btn btn-info btn-sm mr-1" (click)="loadData()" [disabled]="pending">
+            <button class="btn btn-info btn-sm mr-1 mt-1 mb-1" (click)="loadData()" [disabled]="pending">
                 <i class="fa fa-refresh" [class.is-pending]="pending"></i> Refresh orders
             </button>
-            <div class="text-muted ml-auto">
+            <div class="text-muted ml-auto mb-1">
                 <small>
                     Last refresh: {{ (getLastOrdersRefreshTime() | date: 'y-MM-dd HH:mm:ss') || '-' }}
                 </small>
             </div>
         </div>
     </div>
-    <div class="card mb-3 bg-dark orders">
+    <div class="card mb-3 bg-dark">
         <div class="card-header">
             Orders
         </div>
-        <table class="card-body table table-hover">
-            <thead>
-            <tr>
-                <th>#</th>
-                <th>Exchange</th>
-                <th>Order ID</th>
-                <th>Currency pair</th>
-                <th>Type</th>
-                <th>Status</th>
-                <th>Ordered amount</th>
-                <th>Filled amount</th>
-                <th>Price</th>
-                <th>Date</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-
-            <ng-container *ngFor="let exchangeUser of exchangeUsers">
+        <div class="table-responsive">
+            <table class="card-body table table-hover">
+                <thead>
                 <tr>
-                    <th colspan="10">
-                        {{ exchangeUser.name }}
-                        <span *ngIf="getFailedExchangesForExchangeUser(exchangeUser).length > 0"
-                              class="badge badge-warning">
+                    <th>#</th>
+                    <th>Exchange</th>
+                    <th>Order ID</th>
+                    <th>Currency pair</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Ordered amount</th>
+                    <th>Filled amount</th>
+                    <th>Price</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <ng-container *ngFor="let exchangeUser of exchangeUsers">
+                    <tr>
+                        <th colspan="10">
+                            <span>
+                                <i class="fa fa-user"></i> {{ exchangeUser.name }} <span
+                                *ngIf="ordersForExchangeUser(exchangeUser).length == 0" class="badge badge-info">No open orders</span>
+                            </span>
+                            <span *ngIf="getFailedExchangesForExchangeUser(exchangeUser).length > 0"
+                                  class="badge badge-warning">
                             There might be more open orders. Failed getting orders for exchanges:
                         </span>
-                        <ul *ngIf="getFailedExchangesForExchangeUser(exchangeUser).length > 0">
-                            <li *ngFor="let failedExchange of getFailedExchangesForExchangeUser(exchangeUser)">
-                                {{ failedExchange }}
-                            </li>
-                        </ul>
-                    </th>
-                </tr>
+                            <ul *ngIf="getFailedExchangesForExchangeUser(exchangeUser).length > 0">
+                                <li *ngFor="let failedExchange of getFailedExchangesForExchangeUser(exchangeUser)">
+                                    {{ failedExchange }}
+                                </li>
+                            </ul>
+                        </th>
+                    </tr>
+                    <tr *ngFor="let order of ordersForExchangeUser(exchangeUser)"
+                        [class]="'view-state-'+orderViewState[order.orderId]">
 
-                <tr *ngFor="let order of ordersForExchangeUser(exchangeUser)"
-                    [class]="'view-state-'+orderViewState[order.orderId]">
+                        <th><input type="checkbox" (change)="onSelectOrder($event.target.checked, order)"></th>
+                        <td>{{ order.exchangeName }}</td>
+                        <td>{{ order.orderId }}</td>
+                        <td>{{ getOrderCurrencyPairSymbol(order) }}</td>
+                        <td>{{ order.orderType }}</td>
+                        <td>{{ order.orderStatus }}</td>
+                        <td>{{ order.orderedAmount }}</td>
+                        <td>{{ order.filledAmount }}</td>
+                        <td>{{ order.price }}</td>
+                        <td>{{ order.timestamp | date: 'y-MM-dd HH:mm:ss' }}</td>
+                        <td>
+                            <button (click)="cancelOpenOrder(order)" class="btn btn-danger btn-sm"
+                                    [disabled]="orderViewState[order.orderId] != 'enabled'">
+                                Cancel
+                            </button>
+                        </td>
+                    </tr>
+                    <tr *ngIf="ordersForExchangeUser(exchangeUser).length == 0">
+                    <tr *ngIf="openOrders.length == 0">
+                        <td colspan="10">No open orders</td>
+                    </tr>
+                </ng-container>
 
-                    <th><input type="checkbox" (change)="onSelectOrder($event.target.checked, order)"></th>
-                    <td>{{ order.exchangeName }}</td>
-                    <td>{{ order.orderId }}</td>
-                    <td>{{ getOrderCurrencyPairSymbol(order) }}</td>
-                    <td>{{ order.orderType }}</td>
-                    <td>{{ order.orderStatus }}</td>
-                    <td>{{ order.orderedAmount }}</td>
-                    <td>{{ order.filledAmount }}</td>
-                    <td>{{ order.price }}</td>
-                    <td>{{ order.timestamp | date: 'y-MM-dd HH:mm:ss' }}</td>
-                    <td>
-                        <button (click)="cancelOpenOrder(order)" class="btn btn-danger btn-sm"
-                                [disabled]="orderViewState[order.orderId] != 'enabled'">
-                            Cancel
-                        </button>
-                    </td>
-                </tr>
-                <tr *ngIf="ordersForExchangeUser(exchangeUser).length == 0">
-                <tr *ngIf="openOrders.length == 0">
-                    <td colspan="10">No open orders</td>
-                </tr>
-            </ng-container>
-
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
     </div>
     <button class="btn btn-danger btn-sm" (click)="cancelSelectedOrders()"
             [disabled]="pending || selectedOrders.length == 0">

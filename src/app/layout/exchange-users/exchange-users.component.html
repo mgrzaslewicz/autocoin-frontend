@@ -1,32 +1,36 @@
 <app-page-header [heading]="'Users & API keys'" [icon]="'fa-users'"></app-page-header>
 
 <div class="card mb-3 bg-dark">
-    <div class="card-header">API <i class="fa fa-key"></i> key of each autocoin user which allow you to group the keys</div>
+    <div class="card-header">API <i class="fa fa-key"></i> key of each autocoin user which allow you to group the keys
+    </div>
     <div *ngIf="!isLoading && exchangeUsers.length == 0" class="alert alert-primary">
         Start with adding your first exchange user for grouping API keys, eg your name. Then assign API keys for each
         exchange
     </div>
-    <table class="card-body table">
-        <thead>
-        <tr>
-            <th>Autocoin user name</th>
-            <th>Exchange API keys</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let exchangeUser of exchangeUsers">
-            <td>
-                {{ exchangeUser.name }}
-            </td>
-            <td>
-                  <span class="badge" *ngFor="let exchange of getExchangesOfExchangeUser(exchangeUser)"
-                        [class.badge-danger]="isApiKeyNotWorking(exchangeUser, exchange)"
-                        [class.badge-success]="isApiKeyWorking(exchangeUser, exchange)">
+    <div class="card-body">
+        <a routerLink="/api-keys/create" class="btn btn-info">Add user <i class="fa fa-user-plus"></i></a>
+    </div>
+</div>
+
+<div *ngFor="let exchangeUser of exchangeUsers" class="row">
+    <div class="col-12">
+        <div class="card bg-dark mb-3">
+            <div class="card-header">
+                <div class="flex-row">
+                    <div class="d-block"><i class="fa fa-user"></i> {{ exchangeUser.name }}</div>
+                </div>
+            </div>
+            <div class="card-body pt-0 pb-0">
+                <div class="pt-3 pb-3">
+                           <span class="badge" *ngFor="let exchange of getExchangesOfExchangeUser(exchangeUser)"
+                                 [class.badge-light]="isNotCheckedIfApiKeyIsWorking(exchangeUser, exchange)"
+                                 [class.badge-danger]="isApiKeyNotWorking(exchangeUser, exchange)"
+                                 [class.badge-success]="isApiKeyWorking(exchangeUser, exchange)">
                         {{ exchange.name }}
                 </span>
-            </td>
-            <td class="actions">
+                </div>
+            </div>
+            <div class="card-footer actions">
                 <button [routerLink]="['/api-keys/edit', exchangeUser.id]" class="btn btn-default btn-sm">Edit <i
                     class="fa fa-user"></i> <i class="fa fa-key"></i>
                 </button>
@@ -36,13 +40,9 @@
                 <button (click)="fetchExchangeUserKeysCapability(exchangeUser)"
                         [disabled]="isFetchingKeysCapability(exchangeUser)"
                         class="btn btn-sm">Check <i class="fa fa-key"></i></button>
-            </td>
-        </tr>
-
-        </tbody>
-    </table>
+            </div>
+        </div>
+    </div>
 </div>
-
-<a routerLink="/api-keys/create" class="btn btn-info">Add <i class="fa fa-user-plus"></i></a>
 
 <app-exchange-user-delete #exchangeUserDelete (refresh)="loadData()"></app-exchange-user-delete>
