@@ -15,4 +15,6 @@ export const environment = {
     ordersEndpointUrl: exchangeMediatorServiceUrl,
     pricesEndpointUrl: `${exchangeMediatorServiceUrl}/prices`,
     strategiesEndpointUrl: strategyExecutorServiceUrl,
+    healthEndpointUrl: `${exchangeMediatorServiceUrl}/health`,
+    signupEndpointUrl: `${authServiceUrl}/user-accounts`,
 };

@@ -15,14 +15,15 @@ import {ExchangeWalletService} from './exchange-wallet.service';
 import {
     ChangePasswordEndpointUrlToken,
     ExchangeUsersEndpointUrlToken,
-    ExchangeWalletEndpointUrlToken,
+    ExchangeWalletEndpointUrlToken, HealthEndpointUrlToken,
     OauthEndpointUrlToken,
     OrdersEndpointUrlToken,
-    PricesEndpointUrlToken,
+    PricesEndpointUrlToken, SignupEndpointUrlToken,
     StrategiesEndpointUrlToken,
     TwoFactorAuthenticationEndpointUrlToken
 } from '../../environments/endpoint-tokens';
 import {environment} from '../../environments/environment';
+import {SignupService} from './signup.service';
 
 @NgModule({
     imports: [
@@ -40,6 +41,8 @@ import {environment} from '../../environments/environment';
         {provide: OrdersEndpointUrlToken, useValue: environment.ordersEndpointUrl},
         {provide: PricesEndpointUrlToken, useValue: environment.pricesEndpointUrl},
         {provide: StrategiesEndpointUrlToken, useValue: environment.strategiesEndpointUrl},
+        {provide: HealthEndpointUrlToken, useValue: environment.healthEndpointUrl},
+        {provide: SignupEndpointUrlToken, useValue: environment.signupEndpointUrl},
         {provide: TwoFactorAuthenticationEndpointUrlToken, useValue: environment.twoFactorAuthenticationEndpointUrl},
         AuthService,
         UserAccountService,
@@ -50,7 +53,8 @@ import {environment} from '../../environments/environment';
         MarketsService,
         ToastService,
         OrdersService,
-        HealthService
+        HealthService,
+        SignupService
     ]
 })
 export class ServicesModule {

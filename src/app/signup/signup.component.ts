@@ -1,6 +1,8 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {routerTransition} from '../router.animations';
 import {NgForm} from '@angular/forms';
+import {SignupService} from '../services/signup.service';
+import {ToastService} from '../services/toast.service';
 
 
 @Component({
@@ -21,7 +23,7 @@ export class SignupComponent implements OnInit {
     public isEmailInvalid = false;
     public isQuestionOneInvalid = false;
 
-    constructor() {
+    constructor(private signupService: SignupService, private toastService: ToastService) {
     }
 
     ngOnInit() {
@@ -29,6 +31,9 @@ export class SignupComponent implements OnInit {
 
     onGoogleIframeLoad(e) {
         console.log('onLoad executed', e);
+    }
+
+    private showThankYou() {
         this.isShowingThankYou = true;
     }
 
@@ -47,6 +52,13 @@ export class SignupComponent implements OnInit {
             this.iframe.nativeElement.addEventListener('load', this.onGoogleIframeLoad.bind(this));
             this.isSubmitInProgress = true;
             this.copyInputsToHiddenGoogleFormAndSubmit();
+            this.signupService.signup(this.email).subscribe(() => {
+                this.showThankYou();
+            }, error => {
+                this.isSubmitInProgress = false;
+                console.error(error);
+                this.toastService.warning('Could not register, please try again');
+            });
         }
     }
 

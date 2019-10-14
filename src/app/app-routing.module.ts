@@ -13,7 +13,11 @@ const routes: Routes = [
         loadChildren: './login/login.module#LoginModule',
         canActivate: [AllowOnlyNotLoggedInGuard]
     },
-    {path: 'signup', loadChildren: './signup/signup.module#SignupModule'},
+    {
+        path: 'signup',
+        loadChildren: './signup/signup.module#SignupModule',
+        canActivate: [AllowOnlyNotLoggedInGuard]
+    },
     {path: 'not-found', loadChildren: './not-found/not-found.module#NotFoundModule'},
     {path: '**', redirectTo: 'not-found'}
 ];
