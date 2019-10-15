@@ -57,7 +57,18 @@
     <!-- what would you like to automate most -->
     <input id="googleFormQ2" type="hidden" name="entry.1397752312"> <!-- questions? -->
 </form>
+<form id="autoresponderForm" class="d-none"
+      action="https://sr24app.pl/form.php?form=151"
+      style="display: none;" method="post"
+      target="autoresponderFormIframe">
+    <input id="autoresponderEmailAddress" type="hidden" name="email">
+    <input type="hidden" name="format" value="h"/>
+</form>
 <iframe #iframe width="0" height="0" border="none"
         class="d-none"
         id="googleFormIframe"
         name="googleFormIframe"></iframe>
+<iframe width="0" height="0" border="none"
+        class="d-none"
+        id="autoresponderFormIframe"
+        name="autoresponderFormIframe"></iframe>
