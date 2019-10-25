@@ -1,7 +1,7 @@
 ### STAGE 1: Build ###
 
 # We label our stage as 'builder'
-FROM node:10.13.0-alpine as builder
+FROM node:13.0.1-alpine as builder
 
 RUN apk update && apk upgrade && \
     apk add --no-cache bash git openssh
