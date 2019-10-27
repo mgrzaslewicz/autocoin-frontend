@@ -7,7 +7,7 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 import {ValidatorsModule} from '../../validators/validators.module';
 import {ExchangeUsersComponent} from './exchange-users.component';
-import {ExchangeUsersRoutingModule} from './exchange-users-routing.module';
+import {ApiKeysRoutingModule} from './api-keys-routing.module';
 import {ExchangeUserEditComponent} from './exchange-user-edit/exchange-user-edit.component';
 import {ExchangeUserCreateComponent} from './exchange-user-create/exchange-user-create.component';
 import {ExchangeUserDeleteComponent} from './exchange-user-delete/exchange-user-delete.component';
@@ -16,7 +16,7 @@ import {ExchangeUserDeleteComponent} from './exchange-user-delete/exchange-user-
     imports: [
         CommonModule,
         PageHeaderModule,
-        ExchangeUsersRoutingModule,
+        ApiKeysRoutingModule,
         ValidatorsModule,
         FormsModule,
         NgbModule.forRoot()
@@ -28,5 +28,5 @@ import {ExchangeUserDeleteComponent} from './exchange-user-delete/exchange-user-
         ExchangeUserEditComponent
     ]
 })
-export class ExchangeUsersModule {
+export class ApiKeysModule {
 }

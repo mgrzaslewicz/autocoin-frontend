@@ -1,9 +1,7 @@
 import {NgModule} from '@angular/core';
-import {Routes, RouterModule} from '@angular/router';
+import {RouterModule, Routes} from '@angular/router';
 import {LayoutComponent} from './layout.component';
-import {AllowOnlyLoggedInGuard, AllowOnlyShouldNotChangePasswordGuard} from '../shared/guard';
-
-export const apiKeysRoute = 'api-keys';
+import {AllowOnlyShouldNotChangePasswordGuard} from '../shared/guard';
 
 const routes: Routes = [
     {
@@ -13,37 +11,37 @@ const routes: Routes = [
             {path: '', redirectTo: 'dashboard'},
             {
                 path: 'dashboard',
-                loadChildren: './dashboard/dashboard.module#DashboardModule',
+                loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule),
                 canActivate: [AllowOnlyShouldNotChangePasswordGuard]
             },
             {
-                path: apiKeysRoute,
-                loadChildren: `./exchange-users/exchange-users.module#ExchangeUsersModule`,
+                path: 'api-keys',
+                loadChildren: () => import('./api-keys/api-keys.module').then(m => m.ApiKeysModule),
                 canActivate: [AllowOnlyShouldNotChangePasswordGuard]
             },
             {
                 path: 'wallets',
-                loadChildren: './wallets/wallets.module#WalletsModule',
+                loadChildren: () => import('./wallets/wallets.module').then(m => m.WalletsModule),
                 canActivate: [AllowOnlyShouldNotChangePasswordGuard]
             },
             {
                 path: 'trading-automation',
-                loadChildren: './trading-automation/trading-strategy.module#TradingStrategyModule',
+                loadChildren: () => import('./trading-automation/trading-strategy.module').then(m => m.TradingStrategyModule),
                 canActivate: [AllowOnlyShouldNotChangePasswordGuard]
             },
             {
                 path: 'orders',
-                loadChildren: './orders/orders.module#OrdersModule',
+                loadChildren: () => import('./orders/orders.module').then(m => m.OrdersModule),
                 canActivate: [AllowOnlyShouldNotChangePasswordGuard]
             },
             {
                 path: 'health',
-                loadChildren: './health/health.module#HealthModule',
+                loadChildren: () => import('./health/health.module').then(m => m.HealthModule),
                 canActivate: [AllowOnlyShouldNotChangePasswordGuard]
             },
             {
                 path: 'settings',
-                loadChildren: './settings/settings.module#SettingsModule'
+                loadChildren: () => import('./settings/settings.module').then(m => m.SettingsModule)
             }
         ]
     }

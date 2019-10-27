@@ -63,25 +63,25 @@ export class AddStrategyExecutionComponent implements OnInit {
 
     private noOrderLimit = -1;
 
-    @ViewChild('confirmContent')
+    @ViewChild('confirmContent', { static: true })
     confirmContentModal;
 
-    @ViewChild('addStrategyExecutionForm')
+    @ViewChild('addStrategyExecutionForm', { static: false })
     addStrategyExecutionForm;
 
-    @ViewChild('buyLowerAndLowerSpecificParameters')
+    @ViewChild('buyLowerAndLowerSpecificParameters', { static: false })
     buyLowerAndLowerSpecificParametersComponent: BuyLowerAndLowerSpecificParametersComponent;
 
-    @ViewChild('sellHigherAndHigherSpecificParameters')
+    @ViewChild('sellHigherAndHigherSpecificParameters', { static: false })
     sellHigherAndHigherSpecificParametersComponent: SellHigherAndHigherSpecificParametersComponent;
 
-    @ViewChild('sellWhenOtherCurrencyGrowsSpecificParameters')
+    @ViewChild('sellWhenOtherCurrencyGrowsSpecificParameters', { static: false })
     sellWhenSecondCurrencyGrowsParametersComponent: SellWhenSecondCurrencyGrowsParametersComponent;
 
-    @ViewChild('sellNowSpecificParameters')
+    @ViewChild('sellNowSpecificParameters', { static: false })
     sellNowParametersComponent: SellNowParametersComponent;
 
-    @ViewChild('buyNowSpecificParameters')
+    @ViewChild('buyNowSpecificParameters', { static: false })
     buyNowParametersComponent: BuyNowParametersComponent;
 
     constructor(

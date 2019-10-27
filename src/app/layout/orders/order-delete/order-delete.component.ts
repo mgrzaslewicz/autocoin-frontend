@@ -12,7 +12,7 @@ export class OrderDeleteComponent implements OnInit {
 
   order: Order;
 
-  @ViewChild('content')
+  @ViewChild('content', { static: true })
   content;
 
   constructor(

@@ -13,7 +13,7 @@ export class ExchangeUserDeleteComponent implements OnInit {
 
     private exchangeUser: ExchangeUser;
 
-    @ViewChild('content')
+    @ViewChild('content', { static: true })
     content;
 
     @Output('refresh')

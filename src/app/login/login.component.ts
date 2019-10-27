@@ -13,7 +13,7 @@ import {ToastService} from '../services/toast.service';
 })
 export class LoginComponent implements OnInit {
 
-    @ViewChild('loginForm')
+    @ViewChild('loginForm', { static: true })
     public loginForm: NgForm;
     isShowingTwoFactorAuthenticationCodeInput = false;
 
