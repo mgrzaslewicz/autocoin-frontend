@@ -1,4 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {environment} from '../../../../../environments/environment';
 
 @Component({
     selector: 'app-sell-when-second-currency-grows-specific-parameters',
@@ -7,11 +8,15 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 })
 export class SellWhenSecondCurrencyGrowsParametersComponent implements OnInit {
 
+    public exchangeNamesSupportedForTrading = environment.exchangeNamesSupportedForTrading;
+    public defaultSecondCurrencyExchangeName = environment.exchangeNamesSupportedForTrading[0];
+
     @Input()
     strategySpecificParameters = {
         secondCurrencyPricesTriggeringSale: '',
         secondCurrencyPairToWatch: '',
         minSellPrice: '',
+        secondCurrencyExchangeName: this.defaultSecondCurrencyExchangeName,
         isDecimal: this.isDecimal,
         validate: function (): String[] {
             const result = [];
@@ -26,6 +31,9 @@ export class SellWhenSecondCurrencyGrowsParametersComponent implements OnInit {
             }
             if (!this.isDecimal(this.minSellPrice, 8)) {
                 result.push('Min sell price should be greater than zero');
+            }
+            if (this.secondCurrencyExchangeName == null || !/^([a-zA-Z]+)$/.test(this.secondCurrencyExchangeName)) {
+                result.push('Provide exchange name for second currency');
             }
             return result;
         }
@@ -48,6 +56,12 @@ export class SellWhenSecondCurrencyGrowsParametersComponent implements OnInit {
 
     onSecondCurrencyPricesTriggeringSale(control) {
         this.strategySpecificParameters.secondCurrencyPricesTriggeringSale = control.value;
+        this.emitInput();
+    }
+
+    onSecondCurrencyExchangeName(control) {
+        console.log(control);
+        this.strategySpecificParameters.secondCurrencyExchangeName = control.value;
         this.emitInput();
     }
 

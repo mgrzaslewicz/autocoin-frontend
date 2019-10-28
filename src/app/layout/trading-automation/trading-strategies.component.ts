@@ -7,6 +7,7 @@ import {LocalOrderDto, StrategyExecutionResponseDto, StrategyExecutionStatus, St
 import {ExchangeUsersService} from '../../services/api';
 import {ExchangesService} from '../../services/trading-automation/exchanges.service';
 import {AuthService} from '../../services/auth.service';
+import {environment} from '../../../environments/environment';
 
 @Component({
     selector: 'app-trading-strategies',
@@ -21,7 +22,7 @@ export class TradingStrategiesComponent implements OnInit {
     isPendingRefresh = true;
     private strategiesExecutions: StrategyExecutionResponseDto[];
     private lastStrategiesRefreshTimeKey = 'lastStrategiesRefreshTime';
-    public exchangeNamesSupportedForTrading = ['binance', 'bittrex', 'kucoin'];
+    public exchangeNamesSupportedForTrading = environment.exchangeNamesSupportedForTrading;
     public noOrderLimit = -1;
 
     constructor(
