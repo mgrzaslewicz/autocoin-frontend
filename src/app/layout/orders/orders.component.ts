@@ -59,9 +59,10 @@ export class OrdersComponent implements OnInit, OnDestroy {
         this.selectedOrders = [];
         this.orderViewState.clear();
 
-        this.openOrdersSubscription = forkJoin(
-            this.orderService.getOpenOrders(),
-            this.exchangeUsersService.getExchangeUsers()
+        this.openOrdersSubscription = forkJoin([
+                this.orderService.getOpenOrders(),
+                this.exchangeUsersService.getExchangeUsers()
+            ]
         ).subscribe(([ordersResponseDto, exchangeUsers]) => {
             this.openOrders = ordersResponseDto;
             this.openOrders.forEach(openOrdersAtExchange => {

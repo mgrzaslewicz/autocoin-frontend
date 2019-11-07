@@ -20,6 +20,10 @@
             <i class="fa fa-fw fa-calendar"></i>&nbsp;{{ 'Open orders' | translate }}
         </a>
 
+        <a routerLink="/arbitrage-monitor" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-fw fa-binoculars"></i>&nbsp;{{ 'Arbitrage monitor' | translate }}
+        </a>
+
         <a routerLink="/health" [routerLinkActive]="['router-link-active']" class="list-group-item" *ngIf="isHealthTabAvailable">
             <i class="fa fa-fw fa-heartbeat"></i>&nbsp;{{ 'Health' | translate }}
         </a>

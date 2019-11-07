@@ -1,0 +1,44 @@
+<div>
+    <app-page-header [heading]="'Arbitrage monitor'" [icon]="'fa-calendar'"></app-page-header>
+    <div class="row">
+        <div class="col-12">
+            <button class="btn btn-info btn-sm mr-1 mt-1 mb-1" (click)="loadData()" [disabled]="pending">
+                <i class="fa fa-refresh" [class.is-pending]="pending"></i> Refresh arbitrage opportunities
+            </button>
+            <div class="text-muted ml-auto mb-1">
+                <small>
+                    Last refresh: {{ (getLastRefreshTime() | date: 'y-MM-dd HH:mm:ss') || '-' }}
+                </small>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="twoLegArbitrageProfitOpportunities.length === 0">
+        <span class="badge badge-warning">No arbitrage opportunities found, refresh to check again</span>
+    </div>
+    <div class="row">
+        <div *ngFor="let twoLegArbitrageProfitOpportunity of twoLegArbitrageProfitOpportunities"
+             class="col-xs-12 col-sm-12 col-md-6 col-xl-4">
+            <div class="card text-white bg-success m-2">
+                <div class="card-header">
+                    <div class="flex-row">
+                        <div class="d-block"><i class="fa fa-exchange"></i>
+                            {{twoLegArbitrageProfitOpportunity.baseCurrency}}
+                            /{{twoLegArbitrageProfitOpportunity.counterCurrency}}
+                            <div>{{twoLegArbitrageProfitOpportunity.relativeProfitPercent}}%</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body pt-0 pb-0">
+                    <div class="pt-3 pb-3">
+                        <ul>
+                            <li>Sell at {{twoLegArbitrageProfitOpportunity.sellAtExchange}},
+                                price {{twoLegArbitrageProfitOpportunity.sellPrice}}</li>
+                            <li>Buy at {{twoLegArbitrageProfitOpportunity.buyAtExchange}},
+                                price {{twoLegArbitrageProfitOpportunity.buyPrice}}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

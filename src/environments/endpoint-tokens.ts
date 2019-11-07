@@ -10,3 +10,4 @@ export const PricesEndpointUrlToken = new InjectionToken('PricesEndpointUrlToken
 export const StrategiesEndpointUrlToken = new InjectionToken('StrategiesEndpointUrlToken');
 export const HealthEndpointUrlToken = new InjectionToken('HealthEndpointUrlToken');
 export const SignupEndpointUrlToken = new InjectionToken('SignupEndpointUrlToken');
+export const ArbitrageMonitorEndpointUrlToken = new InjectionToken('ArbitrageMonitorEndpointUrlToken');

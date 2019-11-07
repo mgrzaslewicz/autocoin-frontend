@@ -13,6 +13,7 @@ import {UserAccountService} from './user-account.service';
 import {ExchangeKeyCapabilityService} from './exchange-key-capability.service';
 import {ExchangeWalletService} from './exchange-wallet.service';
 import {
+    ArbitrageMonitorEndpointUrlToken,
     ChangePasswordEndpointUrlToken,
     ExchangeUsersEndpointUrlToken,
     ExchangeWalletEndpointUrlToken, HealthEndpointUrlToken,
@@ -24,6 +25,7 @@ import {
 } from '../../environments/endpoint-tokens';
 import {environment} from '../../environments/environment';
 import {SignupService} from './signup.service';
+import {ArbitrageMonitorService} from './arbitrage-monitor.service';
 
 @NgModule({
     imports: [
@@ -44,6 +46,7 @@ import {SignupService} from './signup.service';
         {provide: HealthEndpointUrlToken, useValue: environment.healthEndpointUrl},
         {provide: SignupEndpointUrlToken, useValue: environment.signupEndpointUrl},
         {provide: TwoFactorAuthenticationEndpointUrlToken, useValue: environment.twoFactorAuthenticationEndpointUrl},
+        {provide: ArbitrageMonitorEndpointUrlToken, useValue: environment.arbitrageMonitorEndpointUrl},
         AuthService,
         UserAccountService,
         ExchangeUsersService,
@@ -54,7 +57,8 @@ import {SignupService} from './signup.service';
         ToastService,
         OrdersService,
         HealthService,
-        SignupService
+        SignupService,
+        ArbitrageMonitorService
     ]
 })
 export class ServicesModule {

@@ -6,10 +6,12 @@ import {defaultEnvironment} from './environment.default';
 
 // const authServiceUrl = 'http://localhost:9002';
 // const exchangeMediatorServiceUrl = 'http://localhost:9001';
-const strategyExecutorServiceUrl = 'http://localhost:9021';
+// const strategyExecutorServiceUrl = 'http://localhost:9021';
 const authServiceUrl = 'https://users-apiv2.autocoin-trader.com';
 const exchangeMediatorServiceUrl = 'https://orders-api.autocoin-trader.com';
-// const strategyExecutorServiceUrl = 'https://strategies-api.autocoin-trader.com';
+const strategyExecutorServiceUrl = 'https://strategies-api.autocoin-trader.com';
+const arbitrageMonitorHost = 'https://arbitrage-monitor.autocoin-trader.com';
+
 export const environment = {
     ...defaultEnvironment,
     production: false,
@@ -22,5 +24,6 @@ export const environment = {
     pricesEndpointUrl: `${exchangeMediatorServiceUrl}/prices`,
     strategiesEndpointUrl: strategyExecutorServiceUrl,
     healthEndpointUrl: `${exchangeMediatorServiceUrl}/health`,
-    signupEndpointUrl: `${authServiceUrl}/user-accounts`
+    signupEndpointUrl: `${authServiceUrl}/user-accounts`,
+    arbitrageMonitorEndpointUrl: `${arbitrageMonitorHost}`
 };

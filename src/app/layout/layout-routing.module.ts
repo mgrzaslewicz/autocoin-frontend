@@ -35,6 +35,11 @@ const routes: Routes = [
                 canActivate: [AllowOnlyShouldNotChangePasswordGuard]
             },
             {
+                path: 'arbitrage-monitor',
+                loadChildren: () => import('./arbitrage-monitor/arbitrage-monitor.module').then(m => m.ArbitrageMonitorModule),
+                canActivate: [AllowOnlyShouldNotChangePasswordGuard]
+            },
+            {
                 path: 'health',
                 loadChildren: () => import('./health/health.module').then(m => m.HealthModule),
                 canActivate: [AllowOnlyShouldNotChangePasswordGuard]
