@@ -18,27 +18,9 @@
     <div class="row">
         <div *ngFor="let twoLegArbitrageProfitOpportunity of twoLegArbitrageProfitOpportunities"
              class="col-xs-12 col-sm-12 col-md-6 col-xl-4">
-            <div class="card text-white bg-success m-2">
-                <div class="card-header">
-                    <div class="flex-row">
-                        <div class="d-block"><i class="fa fa-exchange"></i>
-                            {{twoLegArbitrageProfitOpportunity.baseCurrency}}
-                            /{{twoLegArbitrageProfitOpportunity.counterCurrency}}
-                            <div>{{twoLegArbitrageProfitOpportunity.relativeProfitPercent}}%</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body pt-0 pb-0">
-                    <div class="pt-3 pb-3">
-                        <ul>
-                            <li>Sell at {{twoLegArbitrageProfitOpportunity.sellAtExchange}},
-                                price {{twoLegArbitrageProfitOpportunity.sellPrice}}</li>
-                            <li>Buy at {{twoLegArbitrageProfitOpportunity.buyAtExchange}},
-                                price {{twoLegArbitrageProfitOpportunity.buyPrice}}</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+            <app-two-leg-arbitrage-profit-tile
+                [twoLegArbitrageProfitOpportunity]="twoLegArbitrageProfitOpportunity"></app-two-leg-arbitrage-profit-tile>
         </div>
+
     </div>
 </div>

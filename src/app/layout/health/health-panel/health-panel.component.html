@@ -14,8 +14,8 @@
             <div>Last check: {{exchangeHealth.timestamp | date: 'y-MM-dd HH:mm:ss' }}</div>
         </div>
     </div>
-    <div class="card-footer">
-        <span (click)="toggleDetailsVisibility()" class="toggle-details-visibility">
+    <div (click)="toggleDetailsVisibility()" class="card-footer toggle-details-visibility">
+        <span>
                 <i *ngIf="showDetails" class="fa fa-angle-double-up"></i>
                 <i *ngIf="!showDetails" class="fa fa-angle-double-down"></i>
                 Details

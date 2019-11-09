@@ -1,0 +1,39 @@
+<div class="card text-white bg-success m-2">
+    <div class="card-header">
+        <span class="badge badge-light mr-1">
+            <i class="fa fa-exchange mr-1"></i>
+            {{twoLegArbitrageProfitOpportunity.baseCurrency}}/{{twoLegArbitrageProfitOpportunity.counterCurrency}}
+        </span>
+        <span class="badge badge-light mr-1">
+            {{twoLegArbitrageProfitOpportunity.relativeProfitPercent}}%
+        </span>
+        <span class="badge badge-light mr-1">
+            {{twoLegArbitrageProfitOpportunity.sellAtExchange}}
+        </span>
+        <span class="badge badge-light">
+            {{twoLegArbitrageProfitOpportunity.buyAtExchange}}
+        </span>
+    </div>
+    <div class="card-body pt-0 pb-0" [@myAnimation]="slide">
+        <div class="pt-3 pb-3">
+            <div class="row">
+                <div class="col-6">
+                    {{twoLegArbitrageProfitOpportunity.sellPrice}}
+                    <div>Sell at {{twoLegArbitrageProfitOpportunity.sellAtExchange}}</div>
+                </div>
+                <div class="col-6">
+                    {{twoLegArbitrageProfitOpportunity.buyPrice}}
+                    <div>Buy at {{twoLegArbitrageProfitOpportunity.buyAtExchange}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div (click)="toggleDetailsVisibility()"
+         class="card-footer toggle-details-visibility">
+        <span>
+                <i *ngIf="showDetails" class="fa fa-angle-double-up"></i>
+                <i *ngIf="!showDetails" class="fa fa-angle-double-down"></i>
+                Details
+        </span>
+    </div>
+</div>
