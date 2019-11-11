@@ -13,22 +13,23 @@ export class HealthService {
     }
 
     public getExchangesHealth(): Observable<ExchangeHealthDto[]> {
-        return this.http.get<Array<ExchangeHealthDto>>(this.healthEndpointUrl)
-            .map(response => Object.values(response).map(data => this.toExchangeHealthDto(data)));
-    }
-
-    private toExchangeHealthDto(data): ExchangeHealthDto {
-        return new ExchangeHealthDto(data.exchange, data.health, data.detailed, data.timestamp);
+        return this.http.get<Array<ExchangeHealthDto>>(this.healthEndpointUrl);
     }
 
 }
 
-export class ExchangeHealthDto {
-    constructor(
-        public exchange: String,
-        public health: Boolean,
-        public detailed: Object,
-        public timestamp: number) {
-    }
+export interface ExchangeCapabilityDto {
+    name: String;
+    capable?: Boolean;
+}
+
+export interface ExchangeHealthDto {
+    exchangeName: String;
+    healthy: Boolean;
+    canReadPrices: Boolean;
+    canReadWallet: Boolean;
+    canMakeAndCancelOrders: Boolean;
+    capabilities: ExchangeCapabilityDto[];
+    timestamp: number;
 }
 

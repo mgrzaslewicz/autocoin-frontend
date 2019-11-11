@@ -1,11 +1,11 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {animate, state, style, transition, trigger} from '@angular/animations';
-import {ExchangeHealth} from '../health.component';
+import {ExchangeHealthDto} from '../../../services/health.service';
 
 @Component({
     selector: 'app-health-panel',
-    templateUrl: './health-panel.component.html',
-    styleUrls: ['./health-panel.component.scss'],
+    templateUrl: './exchange-health-tile.component.html',
+    styleUrls: ['./exchange-health-tile.component.scss'],
     animations: [
         trigger('myAnimation', [
             state('in', style({
@@ -21,8 +21,8 @@ import {ExchangeHealth} from '../health.component';
         ])
     ]
 })
-export class HealthPanelComponent implements OnInit {
-    @Input() exchangeHealth: ExchangeHealth;
+export class ExchangeHealthTileComponent implements OnInit {
+    @Input() exchangeHealth: ExchangeHealthDto;
 
     showDetails = false;
     slide = 'out';
@@ -31,6 +31,16 @@ export class HealthPanelComponent implements OnInit {
     }
 
     ngOnInit() {
+    }
+
+    getTileBackgroundColorBasedOnHealth(): string {
+        if (this.exchangeHealth.healthy) {
+            return 'success';
+        } else if (this.exchangeHealth.canReadPrices) {
+            return 'info';
+        } else {
+            return 'danger';
+        }
     }
 
     toggleDetailsVisibility() {

@@ -5,7 +5,7 @@ import {HealthRoutingModule} from './health-routing.module';
 import {PageHeaderModule} from '../../shared';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {HealthComponent} from './health.component';
-import {HealthPanelModule} from './health-panel/health-panel.module';
+import {ExchangeHealthTileModule} from './exchange-health-tile/exchange-health-tile.module';
 
 @NgModule({
     imports: [
@@ -13,7 +13,7 @@ import {HealthPanelModule} from './health-panel/health-panel.module';
         HealthRoutingModule,
         PageHeaderModule,
         NgbModule,
-        HealthPanelModule
+        ExchangeHealthTileModule
     ],
     declarations: [
         HealthComponent
