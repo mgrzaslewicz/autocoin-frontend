@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from '../../services/auth.service';
-import {ArbitrageMonitorService, TwoLegArbitrageProfit} from '../../services/arbitrage-monitor.service';
+import {ArbitrageMonitorService, TwoLegArbitrageProfit, TwoLegArbitrageProfitStatistic} from '../../services/arbitrage-monitor.service';
 import {ToastService} from '../../services/toast.service';
 
 @Component({
@@ -9,8 +9,12 @@ import {ToastService} from '../../services/toast.service';
     styleUrls: ['./arbitrage-monitor.component.scss']
 })
 export class ArbitrageMonitorComponent implements OnInit {
-    pending: boolean;
+    isLoadingLiveOpportunities: boolean;
+    isLoadingStatistics = false;
+    isOpportunitiesTabActive = true;
     twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfit[] = [];
+    twoLegArbitrageProfitStatistics: TwoLegArbitrageProfitStatistic[] = [];
+
     private lastTwoLegArbitrageOpportunitiesRefreshTimeKey = 'lastTwoLegArbitrageOpportunitiesRefreshTime';
 
     constructor(
@@ -22,7 +26,7 @@ export class ArbitrageMonitorComponent implements OnInit {
 
     ngOnInit() {
         this.authService.refreshTokenIfExpiringSoon().subscribe(() => {
-            this.loadData();
+            this.fetchLiveOpportunities();
         });
     }
 
@@ -42,22 +46,47 @@ export class ArbitrageMonitorComponent implements OnInit {
         }
     }
 
-    loadData() {
-        if (this.pending) {
+    fetchLiveOpportunities() {
+        if (this.isLoadingLiveOpportunities) {
             return;
         }
-        this.pending = true;
+        this.isLoadingLiveOpportunities = true;
         this.arbitrageMonitorService.getTwoLegArbitrageProfitOpportunities()
             .subscribe(twoLegArbitrageProfitOpportunities => {
                     this.twoLegArbitrageProfitOpportunities = twoLegArbitrageProfitOpportunities;
-                    this.pending = false;
+                    this.isLoadingLiveOpportunities = false;
                     localStorage.setItem(this.lastTwoLegArbitrageOpportunitiesRefreshTimeKey, new Date().getTime().toString());
                 },
                 error => {
-                    this.pending = false;
+                    this.isLoadingLiveOpportunities = false;
                     this.toastService.danger('Sorry, something went wrong. Could not refresh arbitrage opportunities');
                 }
             );
     }
 
+    showOpportunitiesTab() {
+        this.isOpportunitiesTabActive = true;
+    }
+
+    fetchStatistics() {
+        if (this.isLoadingStatistics) {
+            return;
+        }
+        this.isLoadingStatistics = true;
+        this.arbitrageMonitorService.getTwoLegArbitrageProfitStatistics()
+            .subscribe(twoLegArbitrageProfitStatistics => {
+                    this.twoLegArbitrageProfitStatistics = twoLegArbitrageProfitStatistics;
+                    this.isLoadingStatistics = false;
+                },
+                error => {
+                    this.isLoadingStatistics = false;
+                    this.toastService.danger('Sorry, something went wrong. Could not refresh arbitrage opportunities statistics');
+                }
+            );
+    }
+
+    showStatisticsTab() {
+        this.isOpportunitiesTabActive = false;
+        this.fetchStatistics();
+    }
 }

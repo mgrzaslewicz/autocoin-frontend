@@ -2,8 +2,10 @@
     <app-page-header [heading]="'Arbitrage monitor'" [icon]="'fa-calendar'"></app-page-header>
     <div class="row">
         <div class="col-12">
-            <button class="btn btn-info btn-sm mr-1 mt-1 mb-1" (click)="loadData()" [disabled]="pending">
-                <i class="fa fa-refresh" [class.is-pending]="pending"></i> Refresh arbitrage opportunities
+            <button class="btn btn-info btn-sm mr-1 mt-1 mb-1" (click)="fetchLiveOpportunities()"
+                    [disabled]="isLoadingLiveOpportunities">
+                <i class="fa fa-refresh" [class.is-pending]="isLoadingLiveOpportunities"></i> Refresh arbitrage
+                opportunities
             </button>
             <div class="text-muted ml-auto mb-1">
                 <small>
@@ -12,15 +14,36 @@
             </div>
         </div>
     </div>
+    <nav class="nav nav-pills nav-justified">
+        <a (click)="showOpportunitiesTab()" class="nav-link" [class.active]="isOpportunitiesTabActive">Live
+            opportunities</a>
+        <a (click)="showStatisticsTab()" class="nav-link" [class.active]="!isOpportunitiesTabActive">24h statistics</a>
+    </nav>
+
+
     <div *ngIf="twoLegArbitrageProfitOpportunities.length === 0">
         <span class="badge badge-warning">No arbitrage opportunities found, refresh to check again</span>
     </div>
-    <div class="row">
+
+    <div *ngIf="isOpportunitiesTabActive" class="row">
         <div *ngFor="let twoLegArbitrageProfitOpportunity of twoLegArbitrageProfitOpportunities"
              class="col-xs-12 col-sm-12 col-md-6 col-xl-4">
             <app-two-leg-arbitrage-profit-tile
                 [twoLegArbitrageProfitOpportunity]="twoLegArbitrageProfitOpportunity"></app-two-leg-arbitrage-profit-tile>
         </div>
-
     </div>
+
+    <div *ngIf="!isOpportunitiesTabActive && isLoadingStatistics" class="row">
+        <div class="col-12">
+            Loading statistics...
+        </div>
+    </div>
+    <div *ngIf="!isOpportunitiesTabActive && !isLoadingStatistics" class="row">
+        <div *ngFor="let twoLegArbitrageProfitStatistic of twoLegArbitrageProfitStatistics"
+             class="col-xs-12 col-sm-12 col-md-6 col-xl-4">
+            <app-two-leg-arbitrage-profit-statistic-tile
+                [twoLegArbitrageProfitStatistic]="twoLegArbitrageProfitStatistic"></app-two-leg-arbitrage-profit-statistic-tile>
+        </div>
+    </div>
+
 </div>

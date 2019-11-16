@@ -1,0 +1,39 @@
+<div class="card text-white bg-success m-2">
+    <div class="card-header">
+        <span class="badge badge-light mr-1">
+            <i class="fa fa-exchange mr-1"></i>
+            {{twoLegArbitrageProfitStatistic.baseCurrency}}/{{twoLegArbitrageProfitStatistic.counterCurrency}}
+        </span>
+        <span class="badge badge-light mr-1">
+            average {{twoLegArbitrageProfitStatistic.averageProfitPercent}}%
+        </span>
+        <span class="badge badge-light mr-1">
+            {{twoLegArbitrageProfitStatistic.firstExchange}}
+        </span>
+        <span class="badge badge-light">
+            {{twoLegArbitrageProfitStatistic.secondExchange}}
+        </span>
+    </div>
+    <div class="card-body pt-0 pb-0" [@myAnimation]="slide">
+        <div class="pt-3 pb-3">
+            <div class="row">
+                <ul>
+                    <li>
+                        Min profit: {{twoLegArbitrageProfitStatistic.minProfitPercent}}%
+                    </li>
+                    <li>
+                        Max profit: {{twoLegArbitrageProfitStatistic.maxProfitPercent}}%
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div (click)="toggleDetailsVisibility()"
+         class="card-footer toggle-details-visibility">
+        <span>
+                <i *ngIf="showDetails" class="fa fa-angle-double-up"></i>
+                <i *ngIf="!showDetails" class="fa fa-angle-double-down"></i>
+                Details
+        </span>
+    </div>
+</div>

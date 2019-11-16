@@ -2,7 +2,7 @@ import {Inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {FeatureToggle, FeatureToggleToken} from './feature.toogle.service';
-import {ArbitrageMonitorEndpointUrlToken, HealthEndpointUrlToken} from '../../environments/endpoint-tokens';
+import {ArbitrageMonitorEndpointUrlToken} from '../../environments/endpoint-tokens';
 
 @Injectable()
 export class ArbitrageMonitorService {
@@ -14,6 +14,10 @@ export class ArbitrageMonitorService {
 
     public getTwoLegArbitrageProfitOpportunities(): Observable<TwoLegArbitrageProfit[]> {
         return this.http.get<Array<TwoLegArbitrageProfit>>(`${this.arbitrageMonitorEndpointUrl}/two-leg-arbitrage-profits`);
+    }
+
+    public getTwoLegArbitrageProfitStatistics(): Observable<TwoLegArbitrageProfitStatistic[]> {
+        return this.http.get<Array<TwoLegArbitrageProfitStatistic>>(`${this.arbitrageMonitorEndpointUrl}/two-leg-arbitrage-profit-statistics`);
     }
 
 }
@@ -28,3 +32,18 @@ export interface TwoLegArbitrageProfit {
     relativeProfitPercent: number;
 }
 
+export interface ProfitOpportunityCount {
+    profitPercentThreshold: number;
+    count: number;
+}
+
+export interface TwoLegArbitrageProfitStatistic {
+    baseCurrency: string;
+    counterCurrency: string;
+    firstExchange: string;
+    secondExchange: string;
+    minProfitPercent: number;
+    maxProfitPercent: number;
+    averageProfitPercent: number;
+    profitOpportunityHistogram: ProfitOpportunityCount[];
+}
