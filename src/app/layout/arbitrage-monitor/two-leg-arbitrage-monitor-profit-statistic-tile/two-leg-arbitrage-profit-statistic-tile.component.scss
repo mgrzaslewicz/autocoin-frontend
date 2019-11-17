@@ -1,3 +1,56 @@
 .toggle-details-visibility {
     cursor: pointer;
 }
+
+.chart {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+    padding-left: 0px;
+    margin: 0px auto 20px;
+    border: 1px solid;
+
+    li {
+        position: relative;
+        display: table-cell;
+        vertical-align: bottom;
+        height: 130px;
+    }
+
+    span {
+        margin: 0 1em;
+        display: block;
+        background: rgba(#d1ecfa, .75);
+        animation: draw 1s ease-in-out;
+
+        &:before {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 100%;
+            display: block;
+            text-align: center;
+            content: attr(title);
+            font-size: 0.8rem;
+        }
+
+        .value {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0px;
+            display: block;
+            text-align: center;
+            font-size: 0.8rem;
+            background: rgba(88, 88, 88, 0.25);
+        }
+
+    }
+
+}
+
+@keyframes draw {
+    0% {
+        height: 0;
+    }
+}

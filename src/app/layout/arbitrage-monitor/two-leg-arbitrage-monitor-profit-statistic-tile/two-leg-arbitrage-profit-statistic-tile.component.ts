@@ -1,6 +1,12 @@
 import {Component, Input} from '@angular/core';
-import {TwoLegArbitrageProfitStatistic} from '../../../services/arbitrage-monitor.service';
+import {ProfitOpportunityCount, TwoLegArbitrageProfitStatistic} from '../../../services/arbitrage-monitor.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+
+interface ProfitOpportunityCountChartBar {
+    profitPercentThreshold: number;
+    count: number;
+    heightPercent: number;
+}
 
 @Component({
     selector: 'app-two-leg-arbitrage-profit-statistic-tile',
@@ -35,4 +41,19 @@ export class TwoLegArbitrageProfitStatisticTileComponent {
         this.slide = this.slide === 'in' ? 'out' : 'in';
     }
 
+
+    toChartBar(profitOpportunityCountList: ProfitOpportunityCount[]): ProfitOpportunityCountChartBar[] {
+        let sum = 0;
+        profitOpportunityCountList.forEach(item => {
+            sum += item.count;
+        });
+        sum /= 100;
+        return profitOpportunityCountList.map(item => {
+            return {
+                count: item.count,
+                profitPercentThreshold: item.profitPercentThreshold,
+                heightPercent: item.count / sum
+            };
+        });
+    }
 }

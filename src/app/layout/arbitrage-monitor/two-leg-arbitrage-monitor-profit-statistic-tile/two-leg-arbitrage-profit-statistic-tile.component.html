@@ -15,7 +15,7 @@
         </span>
     </div>
     <div class="card-body pt-0 pb-0" [@myAnimation]="slide">
-        <div class="pt-3 pb-3">
+        <div *ngIf="showDetails" class="pt-3 pb-3">
             <div class="row">
                 <ul>
                     <li>
@@ -23,6 +23,17 @@
                     </li>
                     <li>
                         Max profit: {{twoLegArbitrageProfitStatistic.maxProfitPercent}}%
+                    </li>
+                </ul>
+            </div>
+            <div class="row">
+                Opportunities count checked every 10s
+                <ul class="chart">
+                    <li *ngFor="let profitOpportunityCountChartBar of toChartBar(twoLegArbitrageProfitStatistic.profitOpportunityHistogram)">
+                        <span [style.height]="profitOpportunityCountChartBar.heightPercent + '%'"
+                              [title]="'>'+profitOpportunityCountChartBar.profitPercentThreshold+'%'">
+                            <span class="value">{{profitOpportunityCountChartBar.count}}</span>
+                        </span>
                     </li>
                 </ul>
             </div>

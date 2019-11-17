@@ -15,7 +15,7 @@
         </span>
     </div>
     <div class="card-body pt-0 pb-0" [@myAnimation]="slide">
-        <div class="pt-3 pb-3">
+        <div *ngIf="showDetails" class="pt-3 pb-3">
             <div class="row">
                 <div class="col-6">
                     {{twoLegArbitrageProfitOpportunity.sellPrice}}
