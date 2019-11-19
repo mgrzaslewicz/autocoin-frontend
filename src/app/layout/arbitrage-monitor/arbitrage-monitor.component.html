@@ -14,6 +14,18 @@
             </div>
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-12">
+            <button *ngFor="let exchangeName of exchangeNamesSupportedForReadingPrices"
+                    (click)="toggleExchangeFilter(exchangeName)"
+                    class="btn btn-sm mr-1 mb-1" type="button">{{exchangeName}}
+                <i class="fa" [class.fa-toggle-on]="isShowingExchange(exchangeName)"
+                   [class.fa-toggle-off]="!isShowingExchange(exchangeName)"></i>
+            </button>
+        </div>
+    </div>
+
     <nav class="nav nav-pills nav-justified">
         <a (click)="showOpportunitiesTab()" class="nav-link" [class.active]="isOpportunitiesTabActive">Live
             opportunities</a>
@@ -26,7 +38,7 @@
     </div>
 
     <div *ngIf="isOpportunitiesTabActive" class="row">
-        <div *ngFor="let twoLegArbitrageProfitOpportunity of twoLegArbitrageProfitOpportunities"
+        <div *ngFor="let twoLegArbitrageProfitOpportunity of filterOpportunities(twoLegArbitrageProfitOpportunities)"
              class="col-xs-12 col-sm-12 col-md-6 col-xl-4">
             <app-two-leg-arbitrage-profit-tile
                 [twoLegArbitrageProfitOpportunity]="twoLegArbitrageProfitOpportunity"></app-two-leg-arbitrage-profit-tile>
@@ -39,7 +51,7 @@
         </div>
     </div>
     <div *ngIf="!isOpportunitiesTabActive && !isLoadingStatistics" class="row">
-        <div *ngFor="let twoLegArbitrageProfitStatistic of twoLegArbitrageProfitStatistics"
+        <div *ngFor="let twoLegArbitrageProfitStatistic of filterStatistics(twoLegArbitrageProfitStatistics)"
              class="col-xs-12 col-sm-12 col-md-6 col-xl-4">
             <app-two-leg-arbitrage-profit-statistic-tile
                 [twoLegArbitrageProfitStatistic]="twoLegArbitrageProfitStatistic"></app-two-leg-arbitrage-profit-statistic-tile>

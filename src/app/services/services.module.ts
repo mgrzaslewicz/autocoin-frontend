@@ -16,16 +16,19 @@ import {
     ArbitrageMonitorEndpointUrlToken,
     ChangePasswordEndpointUrlToken,
     ExchangeUsersEndpointUrlToken,
-    ExchangeWalletEndpointUrlToken, HealthEndpointUrlToken,
+    ExchangeWalletEndpointUrlToken,
+    HealthEndpointUrlToken,
     OauthEndpointUrlToken,
     OrdersEndpointUrlToken,
-    PricesEndpointUrlToken, SignupEndpointUrlToken,
+    PricesEndpointUrlToken,
+    SignupEndpointUrlToken,
     StrategiesEndpointUrlToken,
     TwoFactorAuthenticationEndpointUrlToken
 } from '../../environments/endpoint-tokens';
 import {environment} from '../../environments/environment';
 import {SignupService} from './signup.service';
 import {ArbitrageMonitorService} from './arbitrage-monitor.service';
+import {ExchangeNamesSupportedForReadingPricesToken, ExchangeNamesSupportedForTradingToken} from '../../environments/environment.default';
 
 @NgModule({
     imports: [
@@ -46,6 +49,8 @@ import {ArbitrageMonitorService} from './arbitrage-monitor.service';
         {provide: HealthEndpointUrlToken, useValue: environment.healthEndpointUrl},
         {provide: SignupEndpointUrlToken, useValue: environment.signupEndpointUrl},
         {provide: TwoFactorAuthenticationEndpointUrlToken, useValue: environment.twoFactorAuthenticationEndpointUrl},
+        {provide: ExchangeNamesSupportedForTradingToken, useValue: environment.exchangeNamesSupportedForTrading},
+        {provide: ExchangeNamesSupportedForReadingPricesToken, useValue: environment.exchangeNamesSupportedForReadingPrices},
         {provide: ArbitrageMonitorEndpointUrlToken, useValue: environment.arbitrageMonitorEndpointUrl},
         AuthService,
         UserAccountService,

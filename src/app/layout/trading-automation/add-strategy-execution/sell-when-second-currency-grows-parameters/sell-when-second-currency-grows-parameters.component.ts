@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {environment} from '../../../../../environments/environment';
+import {Component, EventEmitter, Inject, Input, OnInit, Output} from '@angular/core';
+import {ExchangeNamesSupportedForTradingToken} from '../../../../../environments/environment.default';
 
 @Component({
     selector: 'app-sell-when-second-currency-grows-specific-parameters',
@@ -8,8 +8,13 @@ import {environment} from '../../../../../environments/environment';
 })
 export class SellWhenSecondCurrencyGrowsParametersComponent implements OnInit {
 
-    public exchangeNamesSupportedForTrading = environment.exchangeNamesSupportedForTrading;
-    public defaultSecondCurrencyExchangeName = environment.exchangeNamesSupportedForTrading[0];
+    public defaultSecondCurrencyExchangeName = this.exchangeNamesSupportedForTrading[0];
+
+    constructor(
+        @Inject(ExchangeNamesSupportedForTradingToken)
+        public exchangeNamesSupportedForTrading: string[]
+    ) {
+    }
 
     @Input()
     strategySpecificParameters = {
@@ -46,9 +51,6 @@ export class SellWhenSecondCurrencyGrowsParametersComponent implements OnInit {
 
     @Output('specificParametersChanged')
     specificParametersChangedEmitter = new EventEmitter;
-
-    constructor() {
-    }
 
     ngOnInit() {
         this.emitInput();

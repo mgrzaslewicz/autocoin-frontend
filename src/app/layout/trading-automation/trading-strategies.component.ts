@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {StrategiesExecutionsService} from '../../services/trading-automation/strategies-executions.service';
 import {forkJoin} from 'rxjs';
 import {ToastService} from '../../services/toast.service';
@@ -7,7 +7,7 @@ import {LocalOrderDto, StrategyExecutionResponseDto, StrategyExecutionStatus, St
 import {ExchangeUsersService} from '../../services/api';
 import {ExchangesService} from '../../services/trading-automation/exchanges.service';
 import {AuthService} from '../../services/auth.service';
-import {environment} from '../../../environments/environment';
+import {ExchangeNamesSupportedForTradingToken} from '../../../environments/environment.default';
 
 @Component({
     selector: 'app-trading-strategies',
@@ -22,7 +22,6 @@ export class TradingStrategiesComponent implements OnInit {
     isPendingRefresh = true;
     private strategiesExecutions: StrategyExecutionResponseDto[];
     private lastStrategiesRefreshTimeKey = 'lastStrategiesRefreshTime';
-    public exchangeNamesSupportedForTrading = environment.exchangeNamesSupportedForTrading;
     public noOrderLimit = -1;
 
     constructor(
@@ -30,7 +29,9 @@ export class TradingStrategiesComponent implements OnInit {
         private exchangesService: ExchangesService,
         private strategiesExecutionsService: StrategiesExecutionsService,
         private exchangeUsersService: ExchangeUsersService,
-        private authService: AuthService
+        private authService: AuthService,
+        @Inject(ExchangeNamesSupportedForTradingToken)
+        private exchangeNamesSupportedForTrading: string[]
     ) {
     }
 

@@ -1,7 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {AuthService} from '../../services/auth.service';
 import {ArbitrageMonitorService, TwoLegArbitrageProfit, TwoLegArbitrageProfitStatistic} from '../../services/arbitrage-monitor.service';
 import {ToastService} from '../../services/toast.service';
+import {ExchangeNamesSupportedForReadingPricesToken} from '../../../environments/environment.default';
 
 @Component({
     selector: 'app-arbitrage-monitor',
@@ -14,14 +15,21 @@ export class ArbitrageMonitorComponent implements OnInit {
     isOpportunitiesTabActive = true;
     twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfit[] = [];
     twoLegArbitrageProfitStatistics: TwoLegArbitrageProfitStatistic[] = [];
-
+    exchangeVisibilityMap: Map<string, boolean> = new Map<string, boolean>();
     private lastTwoLegArbitrageOpportunitiesRefreshTimeKey = 'lastTwoLegArbitrageOpportunitiesRefreshTime';
 
     constructor(
         private authService: AuthService,
         private arbitrageMonitorService: ArbitrageMonitorService,
-        private toastService: ToastService
+        private toastService: ToastService,
+        @Inject(ExchangeNamesSupportedForReadingPricesToken)
+        public exchangeNamesSupportedForReadingPrices: string[]
     ) {
+        exchangeNamesSupportedForReadingPrices.forEach(exchangeName => {
+            const localStorageKey = `arbitrage-monitor.show-${exchangeName}`;
+            const isShowingExchange = localStorage.getItem(localStorageKey) !== 'false';
+            this.exchangeVisibilityMap.set(exchangeName, isShowingExchange);
+        });
     }
 
     ngOnInit() {
@@ -68,7 +76,7 @@ export class ArbitrageMonitorComponent implements OnInit {
         this.isOpportunitiesTabActive = true;
     }
 
-    fetchStatistics() {
+    private fetchStatistics() {
         if (this.isLoadingStatistics) {
             return;
         }
@@ -88,5 +96,32 @@ export class ArbitrageMonitorComponent implements OnInit {
     showStatisticsTab() {
         this.isOpportunitiesTabActive = false;
         this.fetchStatistics();
+    }
+
+    isShowingExchange(exchangeName: string): boolean {
+        return this.exchangeVisibilityMap.get(exchangeName);
+    }
+
+    toggleExchangeFilter(exchangeName: string) {
+        const localStorageKey = `arbitrage-monitor.show-${exchangeName}`;
+        if (this.isShowingExchange(exchangeName)) {
+            localStorage.setItem(localStorageKey, 'false');
+            this.exchangeVisibilityMap.set(exchangeName, false);
+        } else {
+            localStorage.removeItem(localStorageKey);
+            this.exchangeVisibilityMap.set(exchangeName, true);
+        }
+    }
+
+    filterOpportunities(twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfit[]) {
+        return twoLegArbitrageProfitOpportunities.filter(item => {
+            return this.isShowingExchange(item.buyAtExchange.toLowerCase()) && this.isShowingExchange(item.sellAtExchange.toLowerCase());
+        });
+    }
+
+    filterStatistics(twoLegArbitrageProfitStatistics: TwoLegArbitrageProfitStatistic[]) {
+        return twoLegArbitrageProfitStatistics.filter(item => {
+            return this.isShowingExchange(item.firstExchange.toLowerCase()) && this.isShowingExchange(item.secondExchange.toLowerCase());
+        });
     }
 }
