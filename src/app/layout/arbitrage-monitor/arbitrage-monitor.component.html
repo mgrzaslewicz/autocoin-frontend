@@ -33,21 +33,54 @@
     </nav>
 
 
-    <div *ngIf="twoLegArbitrageProfitOpportunities.length === 0">
+    <div
+        *ngIf="isOpportunitiesTabActive && !isLoadingLiveOpportunities && twoLegArbitrageProfitOpportunities.length === 0">
         <span class="badge badge-warning">No arbitrage opportunities found, refresh to check again</span>
     </div>
 
-    <div *ngIf="isOpportunitiesTabActive" class="row">
-        <div *ngFor="let twoLegArbitrageProfitOpportunity of filterOpportunities(twoLegArbitrageProfitOpportunities)"
-             class="col-xs-12 col-sm-12 col-md-6 col-xl-4">
-            <app-two-leg-arbitrage-profit-tile
-                [twoLegArbitrageProfitOpportunity]="twoLegArbitrageProfitOpportunity"></app-two-leg-arbitrage-profit-tile>
+    <div *ngIf="isOpportunitiesTabActive">
+        <div class="row mt-1">
+            <div class="col-xs-12 col-sm-6 col-md-5 col-lg-3">
+                <div class="input-group">
+                    <button (click)="toggleLiveOpportunitiesMinFilter()" class="btn btn-sm mr-1 mb-1" type="button">Min
+                        profit %
+                        <i class="fa" [class.fa-toggle-on]="isFilteringOpportunitiesByMinRelativePercent()"
+                           [class.fa-toggle-off]="!isFilteringOpportunitiesByMinRelativePercent()"></i>
+                    </button>
+                    <input [(ngModel)]="liveOpportunitiesFilter.minRelativePercentFilterValue"
+                           (input)="saveLiveOpportunitiesFilter()"
+                           type="text"
+                           class="form-control minw-30"
+                           [disabled]="!isFilteringOpportunitiesByMinRelativePercent()">
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-5 col-lg-3">
+                <div class="input-group">
+                    <button (click)="toggleLiveOpportunitiesMaxFilter()" class="btn btn-sm mr-1 mb-1" type="button">Max
+                        profit %
+                        <i class="fa" [class.fa-toggle-on]="isFilteringOpportunitiesByMaxRelativePercent()"
+                           [class.fa-toggle-off]="!isFilteringOpportunitiesByMaxRelativePercent()"></i>
+                    </button>
+                    <input [(ngModel)]="liveOpportunitiesFilter.maxRelativePercentFilterValue"
+                           (input)="saveLiveOpportunitiesFilter()"
+                           type="text" class="form-control minw-30"
+                           [disabled]="!isFilteringOpportunitiesByMaxRelativePercent()">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div
+                *ngFor="let twoLegArbitrageProfitOpportunity of filterOpportunities(twoLegArbitrageProfitOpportunities)"
+                class="col-xs-12 col-sm-12 col-md-6 col-xl-4">
+                <app-two-leg-arbitrage-profit-tile
+                    [twoLegArbitrageProfitOpportunity]="twoLegArbitrageProfitOpportunity"></app-two-leg-arbitrage-profit-tile>
+            </div>
         </div>
     </div>
 
     <div *ngIf="!isOpportunitiesTabActive && isLoadingStatistics" class="row">
         <div class="col-12">
-            Loading statistics...
+            <span class="badge badge-info"><i class="fa fa-refresh is-pending"></i> Loading statistics</span>
         </div>
     </div>
     <div *ngIf="!isOpportunitiesTabActive && !isLoadingStatistics" class="row">

@@ -7,7 +7,7 @@ import {HttpClient} from '@angular/common/http';
 @Injectable()
 export class ExchangeKeyCapabilityService {
 
-    private keyCapabilityApiUrl = 'https://orders-api.autocoin-trader.com';
+    private keyCapabilityApiUrl = 'http://localhost:9001';
 
     constructor(private http: HttpClient) {
     }

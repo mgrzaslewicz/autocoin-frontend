@@ -4,6 +4,13 @@ import {ArbitrageMonitorService, TwoLegArbitrageProfit, TwoLegArbitrageProfitSta
 import {ToastService} from '../../services/toast.service';
 import {ExchangeNamesSupportedForReadingPricesToken} from '../../../environments/environment.default';
 
+interface LiveOpportunitiesFilter {
+    isMinRelativePercentFilterOn: boolean;
+    minRelativePercentFilterValue: number;
+    isMaxRelativePercentFilterOn: boolean;
+    maxRelativePercentFilterValue: number;
+}
+
 @Component({
     selector: 'app-arbitrage-monitor',
     templateUrl: './arbitrage-monitor.component.html',
@@ -16,6 +23,12 @@ export class ArbitrageMonitorComponent implements OnInit {
     twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfit[] = [];
     twoLegArbitrageProfitStatistics: TwoLegArbitrageProfitStatistic[] = [];
     exchangeVisibilityMap: Map<string, boolean> = new Map<string, boolean>();
+    liveOpportunitiesFilter: LiveOpportunitiesFilter = {
+        isMaxRelativePercentFilterOn: false,
+        isMinRelativePercentFilterOn: false,
+        maxRelativePercentFilterValue: null,
+        minRelativePercentFilterValue: null
+    };
     private lastTwoLegArbitrageOpportunitiesRefreshTimeKey = 'lastTwoLegArbitrageOpportunitiesRefreshTime';
 
     constructor(
@@ -30,6 +43,14 @@ export class ArbitrageMonitorComponent implements OnInit {
             const isShowingExchange = localStorage.getItem(localStorageKey) !== 'false';
             this.exchangeVisibilityMap.set(exchangeName, isShowingExchange);
         });
+        const savedLiveOpportunityFilters = localStorage.getItem('arbitrage-monitor.live-opportunities-filter');
+        if (savedLiveOpportunityFilters != null) {
+            try {
+                this.liveOpportunitiesFilter = JSON.parse(savedLiveOpportunityFilters);
+            } catch (e) {
+                localStorage.removeItem('arbitrage-monitor.live-opportunities-filter');
+            }
+        }
     }
 
     ngOnInit() {
@@ -102,6 +123,28 @@ export class ArbitrageMonitorComponent implements OnInit {
         return this.exchangeVisibilityMap.get(exchangeName);
     }
 
+    toggleLiveOpportunitiesMinFilter() {
+        this.liveOpportunitiesFilter.isMinRelativePercentFilterOn = !this.liveOpportunitiesFilter.isMinRelativePercentFilterOn;
+        this.saveLiveOpportunitiesFilter();
+    }
+
+    toggleLiveOpportunitiesMaxFilter() {
+        this.liveOpportunitiesFilter.isMaxRelativePercentFilterOn = !this.liveOpportunitiesFilter.isMaxRelativePercentFilterOn;
+        this.saveLiveOpportunitiesFilter();
+    }
+
+    saveLiveOpportunitiesFilter() {
+        localStorage.setItem('arbitrage-monitor.live-opportunities-filter', JSON.stringify(this.liveOpportunitiesFilter));
+    }
+
+    isFilteringOpportunitiesByMinRelativePercent(): boolean {
+        return this.liveOpportunitiesFilter.isMinRelativePercentFilterOn;
+    }
+
+    isFilteringOpportunitiesByMaxRelativePercent(): boolean {
+        return this.liveOpportunitiesFilter.isMaxRelativePercentFilterOn;
+    }
+
     toggleExchangeFilter(exchangeName: string) {
         const localStorageKey = `arbitrage-monitor.show-${exchangeName}`;
         if (this.isShowingExchange(exchangeName)) {
@@ -113,15 +156,49 @@ export class ArbitrageMonitorComponent implements OnInit {
         }
     }
 
+    private getMin(value: any): number {
+        if (value === '' || value === null) {
+            return 0;
+        }
+        if (isNaN(value)) {
+            return 0;
+        } else {
+            return Number(value);
+        }
+    }
+
+    private getMax(value: any): number {
+        if (value === '' || value === null) {
+            return 99999999;
+        }
+        if (isNaN(value)) {
+            return 99999999;
+        } else {
+            return Number(value);
+        }
+    }
+
     filterOpportunities(twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfit[]) {
-        return twoLegArbitrageProfitOpportunities.filter(item => {
-            return this.isShowingExchange(item.buyAtExchange.toLowerCase()) && this.isShowingExchange(item.sellAtExchange.toLowerCase());
-        });
+        return twoLegArbitrageProfitOpportunities
+            .filter(item => {
+                return this.isShowingExchange(item.buyAtExchange.toLowerCase()) &&
+                    this.isShowingExchange(item.sellAtExchange.toLowerCase()) &&
+                    item.relativeProfitPercent >= this.getMin(this.liveOpportunitiesFilter.minRelativePercentFilterValue) &&
+                    item.relativeProfitPercent <= this.getMax(this.liveOpportunitiesFilter.maxRelativePercentFilterValue);
+            })
+            .sort((a, b) => {
+                return b.relativeProfitPercent - a.relativeProfitPercent;
+            });
     }
 
     filterStatistics(twoLegArbitrageProfitStatistics: TwoLegArbitrageProfitStatistic[]) {
-        return twoLegArbitrageProfitStatistics.filter(item => {
-            return this.isShowingExchange(item.firstExchange.toLowerCase()) && this.isShowingExchange(item.secondExchange.toLowerCase());
-        });
+        return twoLegArbitrageProfitStatistics
+            .filter(item => {
+                return this.isShowingExchange(item.firstExchange.toLowerCase())
+                    && this.isShowingExchange(item.secondExchange.toLowerCase());
+            })
+            .sort((a, b) => {
+                return b.averageProfitPercent - a.averageProfitPercent;
+            });
     }
 }
