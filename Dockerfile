@@ -3,13 +3,18 @@
 # We label our stage as 'builder'
 FROM node:13.0.1-alpine as builder
 
-RUN apk update && apk upgrade && \
+RUN apk update && \
+    apk upgrade && \
     apk add --no-cache bash git openssh
 
 COPY package.json package-lock.json ./
 
-RUN npm set progress=false && npm config set depth 0 && npm cache clean --force && \
-    npm install && mkdir /autocoin-trader-front && cp -R ./node_modules /autocoin-trader-front
+RUN npm set progress=false && \
+    npm config set depth 0 && \
+    npm cache clean --force && \
+    npm install && \
+    mkdir /autocoin-trader-front && \
+    cp -R ./node_modules /autocoin-trader-front
 
 COPY . /autocoin-trader-front
 
