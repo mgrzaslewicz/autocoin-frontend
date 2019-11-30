@@ -1,19 +1,5 @@
 <div>
     <app-page-header [heading]="'Arbitrage monitor'" [icon]="'fa-calendar'"></app-page-header>
-    <div class="row">
-        <div class="col-12">
-            <button class="btn btn-info btn-sm mr-1 mt-1 mb-1" (click)="fetchLiveOpportunities()"
-                    [disabled]="isLoadingLiveOpportunities">
-                <i class="fa fa-refresh" [class.is-pending]="isLoadingLiveOpportunities"></i> Refresh arbitrage
-                opportunities
-            </button>
-            <div class="text-muted ml-auto mb-1">
-                <small>
-                    Last refresh: {{ (getLastRefreshTime() | date: 'y-MM-dd HH:mm:ss') || '-' }}
-                </small>
-            </div>
-        </div>
-    </div>
 
     <div class="row mb-1">
         <div class="col-12">
@@ -39,17 +25,18 @@
         </div>
     </div>
 
-    <nav class="nav nav-pills nav-justified">
-        <a (click)="showOpportunitiesTab()" class="nav-link" [class.active]="isOpportunitiesTabActive">Live
-            opportunities</a>
-        <a (click)="showStatisticsTab()" class="nav-link" [class.active]="!isOpportunitiesTabActive">24h statistics</a>
+    <nav class="nav nav-pills pb-1 border border-top-0 border-left-0 border-right-0">
+        <li class="nav-item">
+            <a (click)="showOpportunitiesTab()" class="nav-link" [class.active]="isOpportunitiesTabActive">
+                Live opportunities
+            </a>
+        </li>
+        <li class="nav-item">
+            <a (click)="showStatisticsTab()" class="nav-link" [class.active]="!isOpportunitiesTabActive">
+                24h statistics
+            </a>
+        </li>
     </nav>
-
-
-    <div
-        *ngIf="isOpportunitiesTabActive && !isLoadingLiveOpportunities && twoLegArbitrageProfitOpportunities.length === 0">
-        <span class="badge badge-warning">No arbitrage opportunities found, refresh to check again</span>
-    </div>
 
     <div *ngIf="isOpportunitiesTabActive">
         <div class="row mt-1">
@@ -81,6 +68,25 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-12">
+                <button class="btn btn-info btn-sm mr-1 mt-1 mb-1" (click)="fetchLiveOpportunities()"
+                        [disabled]="isLoadingLiveOpportunities">
+                    <i class="fa fa-refresh" [class.is-pending]="isLoadingLiveOpportunities"></i> Refresh arbitrage
+                    opportunities
+                </button>
+                <div class="text-muted ml-auto mb-1">
+                    <small>
+                        Last refresh: {{ (getLastRefreshTime() | date: 'y-MM-dd HH:mm:ss') || '-' }}
+                    </small>
+                </div>
+            </div>
+            <div *ngIf="!isLoadingLiveOpportunities && twoLegArbitrageProfitOpportunities.length === 0"
+                 class="col-12">
+                <span class="badge badge-warning">No arbitrage opportunities found, refresh to check again</span>
+            </div>
+        </div>
+
         <div class="row">
             <div
                 *ngFor="let twoLegArbitrageProfitOpportunity of filterOpportunities(twoLegArbitrageProfitOpportunities)"
