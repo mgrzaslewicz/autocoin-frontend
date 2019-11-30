@@ -11,6 +11,11 @@ interface LiveOpportunitiesFilter {
     maxRelativePercentFilterValue: number;
 }
 
+interface CommonFilter {
+    min24hUsdVolume: number;
+    isMin24hUsdVolumeFilterOn: boolean;
+}
+
 @Component({
     selector: 'app-arbitrage-monitor',
     templateUrl: './arbitrage-monitor.component.html',
@@ -23,6 +28,10 @@ export class ArbitrageMonitorComponent implements OnInit {
     twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfit[] = [];
     twoLegArbitrageProfitStatistics: TwoLegArbitrageProfitStatistic[] = [];
     exchangeVisibilityMap: Map<string, boolean> = new Map<string, boolean>();
+    commonFilter: CommonFilter = {
+        min24hUsdVolume: 1000,
+        isMin24hUsdVolumeFilterOn: false
+    };
     liveOpportunitiesFilter: LiveOpportunitiesFilter = {
         isMaxRelativePercentFilterOn: false,
         isMinRelativePercentFilterOn: false,
@@ -49,6 +58,14 @@ export class ArbitrageMonitorComponent implements OnInit {
                 this.liveOpportunitiesFilter = JSON.parse(savedLiveOpportunityFilters);
             } catch (e) {
                 localStorage.removeItem('arbitrage-monitor.live-opportunities-filter');
+            }
+        }
+        const savedCommonFilters = localStorage.getItem('arbitrage-monitor.common-filter');
+        if (savedCommonFilters != null) {
+            try {
+                this.commonFilter = JSON.parse(savedCommonFilters);
+            } catch (e) {
+                localStorage.removeItem('arbitrage-monitor.common-filter');
             }
         }
     }
@@ -145,6 +162,24 @@ export class ArbitrageMonitorComponent implements OnInit {
         return this.liveOpportunitiesFilter.isMaxRelativePercentFilterOn;
     }
 
+    saveCommonFilter() {
+        const localStorageKey = `arbitrage-monitor.common-filter`;
+        localStorage.setItem(localStorageKey, JSON.stringify(this.commonFilter));
+    }
+
+    isFilteringByMin24hVolume(): boolean {
+        return this.commonFilter.isMin24hUsdVolumeFilterOn;
+    }
+
+    toggleMinUsd24hVolumeFilter() {
+        if (this.isFilteringByMin24hVolume()) {
+            this.commonFilter.isMin24hUsdVolumeFilterOn = false;
+        } else {
+            this.commonFilter.isMin24hUsdVolumeFilterOn = true;
+        }
+        this.saveCommonFilter();
+    }
+
     toggleExchangeFilter(exchangeName: string) {
         const localStorageKey = `arbitrage-monitor.show-${exchangeName}`;
         if (this.isShowingExchange(exchangeName)) {
@@ -181,10 +216,34 @@ export class ArbitrageMonitorComponent implements OnInit {
     filterOpportunities(twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfit[]) {
         return twoLegArbitrageProfitOpportunities
             .filter(item => {
+                let isMeetingMinRelativePercentCriteria: boolean;
+                let isMeetingMaxRelativePercentCriteria: boolean;
+
+                if (this.isFilteringOpportunitiesByMinRelativePercent()) {
+                    isMeetingMinRelativePercentCriteria = item.relativeProfitPercent >= this.getMin(this.liveOpportunitiesFilter.minRelativePercentFilterValue);
+                } else {
+                    isMeetingMinRelativePercentCriteria = true;
+                }
+
+                if (this.isFilteringOpportunitiesByMaxRelativePercent()) {
+                    isMeetingMaxRelativePercentCriteria = item.relativeProfitPercent <= this.getMax(this.liveOpportunitiesFilter.maxRelativePercentFilterValue);
+                } else {
+                    isMeetingMaxRelativePercentCriteria = true;
+                }
+
+                let isMeetingVolumeCriteria: boolean;
+                if (this.isFilteringByMin24hVolume()) {
+                    isMeetingVolumeCriteria = item.usd24hVolumeAtBuyExchange >= this.getMin(this.commonFilter.min24hUsdVolume) &&
+                        item.usd24hVolumeAtSellExchange >= this.getMin(this.commonFilter.min24hUsdVolume);
+                } else {
+                    isMeetingVolumeCriteria = true;
+                }
+
                 return this.isShowingExchange(item.buyAtExchange.toLowerCase()) &&
                     this.isShowingExchange(item.sellAtExchange.toLowerCase()) &&
-                    item.relativeProfitPercent >= this.getMin(this.liveOpportunitiesFilter.minRelativePercentFilterValue) &&
-                    item.relativeProfitPercent <= this.getMax(this.liveOpportunitiesFilter.maxRelativePercentFilterValue);
+                    isMeetingMinRelativePercentCriteria &&
+                    isMeetingMaxRelativePercentCriteria &&
+                    isMeetingVolumeCriteria;
             })
             .sort((a, b) => {
                 return b.relativeProfitPercent - a.relativeProfitPercent;
@@ -194,8 +253,15 @@ export class ArbitrageMonitorComponent implements OnInit {
     filterStatistics(twoLegArbitrageProfitStatistics: TwoLegArbitrageProfitStatistic[]) {
         return twoLegArbitrageProfitStatistics
             .filter(item => {
+                let isMeetingVolumeCriteria: boolean;
+                if (this.isFilteringByMin24hVolume()) {
+                    isMeetingVolumeCriteria = item.minUsd24hVolume >= this.getMin(this.commonFilter.min24hUsdVolume);
+                } else {
+                    isMeetingVolumeCriteria = true;
+                }
                 return this.isShowingExchange(item.firstExchange.toLowerCase())
-                    && this.isShowingExchange(item.secondExchange.toLowerCase());
+                    && this.isShowingExchange(item.secondExchange.toLowerCase())
+                    && isMeetingVolumeCriteria;
             })
             .sort((a, b) => {
                 return b.averageProfitPercent - a.averageProfitPercent;

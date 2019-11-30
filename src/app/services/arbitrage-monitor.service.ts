@@ -26,7 +26,9 @@ export interface TwoLegArbitrageProfit {
     baseCurrency: string;
     counterCurrency: string;
     sellAtExchange: string;
+    usd24hVolumeAtSellExchange: number;
     buyAtExchange: string;
+    usd24hVolumeAtBuyExchange: number;
     sellPrice: number;
     buyPrice: number;
     relativeProfitPercent: number;
@@ -44,6 +46,7 @@ export interface TwoLegArbitrageProfitStatistic {
     secondExchange: string;
     minProfitPercent: number;
     maxProfitPercent: number;
+    minUsd24hVolume: number;
     averageProfitPercent: number;
     profitOpportunityHistogram: ProfitOpportunityCount[];
 }
