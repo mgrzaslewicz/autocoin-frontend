@@ -3,9 +3,9 @@ import {routerTransition} from '../../router.animations';
 import {ExchangeUser} from '../../models';
 import {ToastService} from '../../services/toast.service';
 import * as _ from 'underscore';
-import {CurrencyPrice, PriceService} from '../../services/price.service';
+import {CurrencyPriceDto, PriceService} from '../../services/price.service';
 import {ExchangeUsersService} from '../../services/api';
-import {forkJoin, from, Subscription} from 'rxjs';
+import {forkJoin, Subscription} from 'rxjs';
 import {ExchangeWalletService} from '../../services/exchange-wallet.service';
 import {AuthService} from '../../services/auth.service';
 
@@ -277,35 +277,36 @@ export class WalletsComponent implements OnInit, OnDestroy {
         localStorage.setItem('wallet-distinct-currency-codes', JSON.stringify(distinctCurrencyCodes));
 
         this.pending = true;
-        from(this.priceService.getPrices(distinctCurrencyCodes))
-            .subscribe({
-                next: (currencyPrice: CurrencyPrice) => {
-                    this.savePrice(currencyPrice);
-                    console.log(`Next price for ${currencyPrice.currencyCode} is ${1 / currencyPrice.price}${currencyPrice.unit}`);
-                },
-                complete: () => {
-                    console.log('Refresh prices complete');
-                    this.calculateAllExchangeUsersBalances();
-                    this.pending = false;
-                },
-                error: (err) => {
-                    console.log(`Failed to refresh prices.`, err);
-                    this.pending = false;
-                }
-            });
+        this.priceService.getPrices(distinctCurrencyCodes).subscribe(
+            (currencyPrices: CurrencyPriceDto[]) => {
+                currencyPrices.forEach(it => {
+                    this.savePrice(it);
+                    console.log(`Next price for ${it.currency} is ${1 / it.price}${it.unitCurrency}`);
+                });
+            },
+            err => {
+                console.log(`Failed to refresh prices.`, err);
+                this.pending = false;
+            },
+            () => {
+                console.log('Refresh prices complete');
+                this.calculateAllExchangeUsersBalances();
+                this.pending = false;
+            }
+        );
         return distinctCurrencyCodes;
     }
 
-    private savePrice(currencyPrice: CurrencyPrice) {
+    private savePrice(currencyPrice: CurrencyPriceDto) {
         // This assumes all prices are in relation to BTC and USD. If other fiat or other crypto is to be used this needs to change
-        if (currencyPrice.currencyCode === 'BTC' && currencyPrice.unit === 'USD') {
+        if (currencyPrice.currency === 'BTC' && currencyPrice.unitCurrency === 'USD') {
             localStorage.setItem(this.btcUsdPriceKey, currencyPrice.price.toString());
             this.currencyPairPrices.set(this.btcUsd, currencyPrice.price);
         } else {
-            const currencyKey = `price-${currencyPrice.currencyCode}-${currencyPrice.unit}`;
+            const currencyKey = `price-${currencyPrice.currency}-${currencyPrice.unitCurrency}`;
             const price = 1 / currencyPrice.price;
             localStorage.setItem(currencyKey, price.toString());
-            this.currencyPairPrices.set(`${currencyPrice.currencyCode}-${currencyPrice.unit}`, price);
+            this.currencyPairPrices.set(`${currencyPrice.currency}-${currencyPrice.unitCurrency}`, price);
         }
     }
 

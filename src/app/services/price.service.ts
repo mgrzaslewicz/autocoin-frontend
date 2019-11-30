@@ -4,12 +4,6 @@ import 'rxjs/add/operator/map';
 import {HttpClient} from '@angular/common/http';
 import {PricesEndpointUrlToken} from '../../environments/endpoint-tokens';
 
-export interface CurrencyPrice {
-    currencyCode: string;
-    price: number;
-    unit: string;
-}
-
 @Injectable()
 export class PriceService {
 
@@ -19,24 +13,16 @@ export class PriceService {
     ) {
     }
 
-    getPrices(currencyCode: string[]): Observable<CurrencyPrice> {
+    getPrices(currencyCode: string[]): Observable<CurrencyPriceDto[]> {
         return this.http.get<CurrencyPriceDto[]>(this.pricesEndpointUrl, {
             params: {
-                symbols: currencyCode.join(',')
+                currencyCodes: currencyCode.join(',')
             }
-        })
-            .flatMap(ccyPriceDto => ccyPriceDto)
-            .map(ccyPriceDto => {
-                return {
-                    currencyCode: ccyPriceDto.currency,
-                    price: ccyPriceDto.price,
-                    unit: ccyPriceDto.unitCurrency
-                };
-            });
+        });
     }
 }
 
-class CurrencyPriceDto {
+export interface CurrencyPriceDto {
     currency: string;
     price: number;
     unitCurrency: string;
