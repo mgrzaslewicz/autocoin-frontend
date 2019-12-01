@@ -1,6 +1,8 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {TwoLegArbitrageProfit} from '../../../services/arbitrage-monitor.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import {ExchangeMarketLink} from '../../../services/exchange-market-link.service';
+import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
     selector: 'app-two-leg-arbitrage-profit-tile',
@@ -21,18 +23,34 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
         ])
     ]
 })
-export class TwoLegArbitrageProfitTileComponent {
+export class TwoLegArbitrageProfitTileComponent implements OnInit {
     @Input() twoLegArbitrageProfitOpportunity: TwoLegArbitrageProfit;
 
     showDetails = false;
     slide = 'out';
+    buyAtLink: string = null;
+    sellAtLink: string = null;
 
-    constructor() {
+    constructor(private exchangeMarketLink: ExchangeMarketLink,
+                private sanitizer: DomSanitizer) {
     }
 
     toggleDetailsVisibility() {
         this.showDetails = !this.showDetails;
         this.slide = this.slide === 'in' ? 'out' : 'in';
+    }
+
+    private getBuyAtLink() {
+        return this.exchangeMarketLink.getExchangeMarketLink(this.twoLegArbitrageProfitOpportunity.buyAtExchange, this.twoLegArbitrageProfitOpportunity.baseCurrency, this.twoLegArbitrageProfitOpportunity.counterCurrency);
+    }
+
+    private getSellAtLink() {
+        return this.exchangeMarketLink.getExchangeMarketLink(this.twoLegArbitrageProfitOpportunity.sellAtExchange, this.twoLegArbitrageProfitOpportunity.baseCurrency, this.twoLegArbitrageProfitOpportunity.counterCurrency);
+    }
+
+    ngOnInit(): void {
+        this.buyAtLink = this.sanitizer.bypassSecurityTrustResourceUrl(this.getBuyAtLink()) as string;
+        this.sellAtLink = this.sanitizer.bypassSecurityTrustResourceUrl(this.getSellAtLink()) as string;
     }
 
 }

@@ -1,6 +1,8 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {ProfitOpportunityCount, TwoLegArbitrageProfitStatistic} from '../../../services/arbitrage-monitor.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import {ExchangeMarketLink} from '../../../services/exchange-market-link.service';
+import {DomSanitizer} from '@angular/platform-browser';
 
 interface ProfitOpportunityCountChartBar {
     profitPercentThreshold: number;
@@ -27,13 +29,16 @@ interface ProfitOpportunityCountChartBar {
         ])
     ]
 })
-export class TwoLegArbitrageProfitStatisticTileComponent {
+export class TwoLegArbitrageProfitStatisticTileComponent implements OnInit {
     @Input() twoLegArbitrageProfitStatistic: TwoLegArbitrageProfitStatistic;
 
     showDetails = false;
     slide = 'out';
+    firstExchangeLink: string = null;
+    secondExchangeLink: string = null;
 
-    constructor() {
+    constructor(private exchangeMarketLink: ExchangeMarketLink,
+                private sanitizer: DomSanitizer) {
     }
 
     toggleDetailsVisibility() {
@@ -56,4 +61,18 @@ export class TwoLegArbitrageProfitStatisticTileComponent {
             };
         });
     }
+
+    private getFirstExchangeLink() {
+        return this.exchangeMarketLink.getExchangeMarketLink(this.twoLegArbitrageProfitStatistic.firstExchange, this.twoLegArbitrageProfitStatistic.baseCurrency, this.twoLegArbitrageProfitStatistic.counterCurrency);
+    }
+
+    private getSecondExchangeLink() {
+        return this.exchangeMarketLink.getExchangeMarketLink(this.twoLegArbitrageProfitStatistic.secondExchange, this.twoLegArbitrageProfitStatistic.baseCurrency, this.twoLegArbitrageProfitStatistic.counterCurrency);
+    }
+
+    ngOnInit(): void {
+        this.firstExchangeLink = this.sanitizer.bypassSecurityTrustResourceUrl(this.getFirstExchangeLink()) as string;
+        this.secondExchangeLink = this.sanitizer.bypassSecurityTrustResourceUrl(this.getSecondExchangeLink()) as string;
+    }
+
 }

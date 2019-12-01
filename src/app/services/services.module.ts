@@ -29,6 +29,7 @@ import {environment} from '../../environments/environment';
 import {SignupService} from './signup.service';
 import {ArbitrageMonitorService} from './arbitrage-monitor.service';
 import {ExchangeNamesSupportedForReadingPricesToken, ExchangeNamesSupportedForTradingToken} from '../../environments/environment.default';
+import {ExchangeMarketLink} from './exchange-market-link.service';
 
 @NgModule({
     imports: [
@@ -63,7 +64,8 @@ import {ExchangeNamesSupportedForReadingPricesToken, ExchangeNamesSupportedForTr
         OrdersService,
         HealthService,
         SignupService,
-        ArbitrageMonitorService
+        ArbitrageMonitorService,
+        ExchangeMarketLink
     ]
 })
 export class ServicesModule {

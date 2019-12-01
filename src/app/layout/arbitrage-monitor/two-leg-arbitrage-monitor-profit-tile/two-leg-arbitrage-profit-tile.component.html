@@ -19,12 +19,26 @@
             <div class="row">
                 <div class="col-6">
                     {{twoLegArbitrageProfitOpportunity.sellPrice}}
-                    <div>Sell at {{twoLegArbitrageProfitOpportunity.sellAtExchange}}</div>
+                    <div *ngIf="sellAtLink != null">
+                        <a [href]="sellAtLink" target="_blank">
+                            Sell at {{twoLegArbitrageProfitOpportunity.sellAtExchange}}
+                        </a>
+                    </div>
+                    <div *ngIf="sellAtLink == null">
+                        Sell at {{twoLegArbitrageProfitOpportunity.sellAtExchange}}
+                    </div>
                     <div>24h volume ${{twoLegArbitrageProfitOpportunity.usd24hVolumeAtSellExchange}}</div>
                 </div>
                 <div class="col-6">
                     {{twoLegArbitrageProfitOpportunity.buyPrice}}
-                    <div>Buy at {{twoLegArbitrageProfitOpportunity.buyAtExchange}}</div>
+                    <div *ngIf="buyAtLink != null">
+                        <a [href]="buyAtLink" target="_blank">
+                            Buy at {{twoLegArbitrageProfitOpportunity.buyAtExchange}}
+                        </a>
+                    </div>
+                    <div *ngIf="buyAtLink == null">
+                        Buy at {{twoLegArbitrageProfitOpportunity.buyAtExchange}}
+                    </div>
                     <div>24h volume ${{twoLegArbitrageProfitOpportunity.usd24hVolumeAtBuyExchange}}</div>
                 </div>
             </div>
