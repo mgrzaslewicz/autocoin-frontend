@@ -28,13 +28,12 @@
                         Min 24h volume: ${{twoLegArbitrageProfitStatistic.minUsd24hVolume}}
                     </li>
                     <li *ngIf="firstExchangeLink != null">
-                        <a [href]="firstExchangeLink"
-                           target="_blank">
+                        <a [href]="firstExchangeLink | safeUrl" target="_blank">
                             Open {{twoLegArbitrageProfitStatistic.firstExchange}}
                         </a>
                     </li>
                     <li *ngIf="secondExchangeLink != null">
-                        <a [href]="secondExchangeLink" target="_blank">
+                        <a [href]="secondExchangeLink | safeUrl" target="_blank">
                             Open {{twoLegArbitrageProfitStatistic.secondExchange}}
                         </a>
                     </li>

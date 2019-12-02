@@ -2,7 +2,6 @@ import {Component, Input, OnInit} from '@angular/core';
 import {TwoLegArbitrageProfit} from '../../../services/arbitrage-monitor.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {ExchangeMarketLink} from '../../../services/exchange-market-link.service';
-import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
     selector: 'app-two-leg-arbitrage-profit-tile',
@@ -31,8 +30,7 @@ export class TwoLegArbitrageProfitTileComponent implements OnInit {
     buyAtLink: string = null;
     sellAtLink: string = null;
 
-    constructor(private exchangeMarketLink: ExchangeMarketLink,
-                private sanitizer: DomSanitizer) {
+    constructor(private exchangeMarketLink: ExchangeMarketLink) {
     }
 
     toggleDetailsVisibility() {
@@ -49,8 +47,8 @@ export class TwoLegArbitrageProfitTileComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.buyAtLink = this.sanitizer.bypassSecurityTrustResourceUrl(this.getBuyAtLink()) as string;
-        this.sellAtLink = this.sanitizer.bypassSecurityTrustResourceUrl(this.getSellAtLink()) as string;
+        this.buyAtLink = this.getBuyAtLink();
+        this.sellAtLink = this.getSellAtLink();
     }
 
 }

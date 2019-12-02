@@ -2,7 +2,6 @@ import {Component, Input, OnInit} from '@angular/core';
 import {ProfitOpportunityCount, TwoLegArbitrageProfitStatistic} from '../../../services/arbitrage-monitor.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {ExchangeMarketLink} from '../../../services/exchange-market-link.service';
-import {DomSanitizer} from '@angular/platform-browser';
 
 interface ProfitOpportunityCountChartBar {
     profitPercentThreshold: number;
@@ -37,8 +36,7 @@ export class TwoLegArbitrageProfitStatisticTileComponent implements OnInit {
     firstExchangeLink: string = null;
     secondExchangeLink: string = null;
 
-    constructor(private exchangeMarketLink: ExchangeMarketLink,
-                private sanitizer: DomSanitizer) {
+    constructor(private exchangeMarketLink: ExchangeMarketLink) {
     }
 
     toggleDetailsVisibility() {
@@ -71,8 +69,8 @@ export class TwoLegArbitrageProfitStatisticTileComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.firstExchangeLink = this.sanitizer.bypassSecurityTrustResourceUrl(this.getFirstExchangeLink()) as string;
-        this.secondExchangeLink = this.sanitizer.bypassSecurityTrustResourceUrl(this.getSecondExchangeLink()) as string;
+        this.firstExchangeLink = this.getFirstExchangeLink();
+        this.secondExchangeLink = this.getSecondExchangeLink();
     }
 
 }

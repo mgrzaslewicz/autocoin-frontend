@@ -20,7 +20,7 @@
                 <div class="col-6">
                     {{twoLegArbitrageProfitOpportunity.sellPrice}}
                     <div *ngIf="sellAtLink != null">
-                        <a [href]="sellAtLink" target="_blank">
+                        <a [href]="sellAtLink | safeUrl" target="_blank">
                             Sell at {{twoLegArbitrageProfitOpportunity.sellAtExchange}}
                         </a>
                     </div>
@@ -32,7 +32,7 @@
                 <div class="col-6">
                     {{twoLegArbitrageProfitOpportunity.buyPrice}}
                     <div *ngIf="buyAtLink != null">
-                        <a [href]="buyAtLink" target="_blank">
+                        <a [href]="buyAtLink | safeUrl" target="_blank">
                             Buy at {{twoLegArbitrageProfitOpportunity.buyAtExchange}}
                         </a>
                     </div>
