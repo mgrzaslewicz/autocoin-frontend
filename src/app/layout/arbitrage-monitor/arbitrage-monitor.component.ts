@@ -9,6 +9,8 @@ interface LiveOpportunitiesFilter {
     minRelativePercentFilterValue: number;
     isMaxRelativePercentFilterOn: boolean;
     maxRelativePercentFilterValue: number;
+    isAutoRefreshOn: boolean;
+    autoRefreshSeconds: number;
 }
 
 interface CommonFilter {
@@ -36,9 +38,12 @@ export class ArbitrageMonitorComponent implements OnInit {
         isMaxRelativePercentFilterOn: false,
         isMinRelativePercentFilterOn: false,
         maxRelativePercentFilterValue: null,
-        minRelativePercentFilterValue: null
+        minRelativePercentFilterValue: null,
+        isAutoRefreshOn: false,
+        autoRefreshSeconds: 10
     };
     private lastTwoLegArbitrageOpportunitiesRefreshTimeKey = 'lastTwoLegArbitrageOpportunitiesRefreshTime';
+    private scheduledLiveOpportunitiesRefresh: number = null;
 
     constructor(
         private authService: AuthService,
@@ -73,6 +78,7 @@ export class ArbitrageMonitorComponent implements OnInit {
     ngOnInit() {
         this.authService.refreshTokenIfExpiringSoon().subscribe(() => {
             this.fetchLiveOpportunities();
+            this.onAutoRefreshChange();
         });
     }
 
@@ -145,8 +151,31 @@ export class ArbitrageMonitorComponent implements OnInit {
         this.saveLiveOpportunitiesFilter();
     }
 
+    isAutoRefreshingLiveOpportunities(): boolean {
+        return this.liveOpportunitiesFilter.isAutoRefreshOn;
+    }
+
+    toggleLiveOpportunitiesAutoRefresh() {
+        this.liveOpportunitiesFilter.isAutoRefreshOn = !this.liveOpportunitiesFilter.isAutoRefreshOn;
+        this.onAutoRefreshChange();
+    }
+
     toggleLiveOpportunitiesMaxFilter() {
         this.liveOpportunitiesFilter.isMaxRelativePercentFilterOn = !this.liveOpportunitiesFilter.isMaxRelativePercentFilterOn;
+        this.saveLiveOpportunitiesFilter();
+    }
+
+    onAutoRefreshChange() {
+        if (this.scheduledLiveOpportunitiesRefresh != null) {
+            clearInterval(this.scheduledLiveOpportunitiesRefresh);
+            this.scheduledLiveOpportunitiesRefresh = null;
+        }
+        if (this.isAutoRefreshingLiveOpportunities()) {
+            const autoRefreshMillis = this.getNumber(this.liveOpportunitiesFilter.autoRefreshSeconds, 10) * 1000;
+            this.scheduledLiveOpportunitiesRefresh = setInterval(() => {
+                this.fetchLiveOpportunities();
+            }, autoRefreshMillis);
+        }
         this.saveLiveOpportunitiesFilter();
     }
 
@@ -191,26 +220,23 @@ export class ArbitrageMonitorComponent implements OnInit {
         }
     }
 
-    private getMin(value: any): number {
+    private getNumber(value: any, defaultValue: number): number {
         if (value === '' || value === null) {
-            return 0;
+            return defaultValue;
         }
         if (isNaN(value)) {
-            return 0;
+            return defaultValue;
         } else {
             return Number(value);
         }
     }
 
+    private getMin(value: any): number {
+        return this.getNumber(value, 0);
+    }
+
     private getMax(value: any): number {
-        if (value === '' || value === null) {
-            return 99999999;
-        }
-        if (isNaN(value)) {
-            return 99999999;
-        } else {
-            return Number(value);
-        }
+        return this.getNumber(value, 99999999);
     }
 
     filterOpportunities(twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfit[]) {
