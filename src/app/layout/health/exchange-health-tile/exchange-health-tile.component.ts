@@ -36,7 +36,7 @@ export class ExchangeHealthTileComponent implements OnInit {
     getTileBackgroundColorBasedOnHealth(): string {
         if (this.exchangeHealth.healthy) {
             return 'success';
-        } else if (this.exchangeHealth.canGetTicker) {
+        } else if (this.exchangeHealth.canGetTicker && this.exchangeHealth.canGetOrderBook) {
             return 'info';
         } else {
             return 'danger';
