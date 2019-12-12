@@ -1,19 +1,19 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import 'rxjs/add/operator/map';
 import {ExchangeKeyCapabilityResponseDto} from '../models';
 import {HttpClient} from '@angular/common/http';
+import {ExchangeKeysCapabilityEndpointUrlToken} from '../../environments/endpoint-tokens';
 
 @Injectable()
 export class ExchangeKeyCapabilityService {
 
-    private keyCapabilityApiUrl = 'http://localhost:9001';
-
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient,
+                @Inject(ExchangeKeysCapabilityEndpointUrlToken) private exchangeKeysCapabilityEndpointUrl: string) {
     }
 
     getExchangeKeysValidity(exchangeUserId): Observable<ExchangeKeyCapabilityResponseDto[]> {
-        return this.http.get(`${this.keyCapabilityApiUrl}/exchange-keys-capability/${exchangeUserId}`)
+        return this.http.get(`${this.exchangeKeysCapabilityEndpointUrl}/exchange-keys-capability/${exchangeUserId}`)
             .map(response => Object.values(response).map(data => this.toExchangeKeyValidity(data)));
     }
 

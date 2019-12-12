@@ -84,6 +84,23 @@
                 </div>
             </div>
         </div>
+        <div class="row mt-1">
+            <div class="col-12">
+                At each exchange I want to trade up to:
+                <div>
+                    <nav class="nav nav-pills pb-1">
+                        <li *ngFor="let orderBookUsdAmountThresholdIndex of orderBookUsdAmountThresholdsIndexes"
+                            class="nav-item btn-sm p-1">
+                            <a (click)="setOrderBookUsdAmountThreshold(orderBookUsdAmountThresholdIndex)"
+                               class="nav-link p-1"
+                               [class.active]="isOrderBookAmountThresholdSelected(orderBookUsdAmountThresholdIndex)">
+                                ${{orderBookUsdAmountThresholds[orderBookUsdAmountThresholdIndex]}}
+                            </a>
+                        </li>
+                    </nav>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="col-12">
                 <button class="btn btn-info btn-sm mr-1 mt-1 mb-1" (click)="fetchLiveOpportunities()"
@@ -108,7 +125,9 @@
                 *ngFor="let twoLegArbitrageProfitOpportunity of filterOpportunities(twoLegArbitrageProfitOpportunities)"
                 class="col-xs-12 col-sm-12 col-md-6 col-xl-4">
                 <app-two-leg-arbitrage-profit-tile
-                    [twoLegArbitrageProfitOpportunity]="twoLegArbitrageProfitOpportunity"></app-two-leg-arbitrage-profit-tile>
+                    [twoLegArbitrageProfitOpportunity]="twoLegArbitrageProfitOpportunity"
+                    [orderBookAmountThresholdIndexSelected]="liveOpportunitiesFilter.orderBookAmountThresholdIndexSelected"
+                ></app-two-leg-arbitrage-profit-tile>
             </div>
         </div>
     </div>

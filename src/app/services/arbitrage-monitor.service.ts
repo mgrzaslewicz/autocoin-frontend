@@ -22,19 +22,26 @@ export class ArbitrageMonitorService {
 
 }
 
+export interface TwoLegArbitrageProfitOpportunity {
+    sellPrice: number;
+    buyPrice: number;
+    sellAtExchange: string;
+    buyAtExchange: string;
+    relativeProfitPercent: number;
+    usdDepthUpTo: string;
+}
+
 export interface TwoLegArbitrageProfit {
     baseCurrency: string;
     counterCurrency: string;
-    sellAtExchange: string;
-    usd24hVolumeAtSellExchange: number;
-    buyAtExchange: string;
-    usd24hVolumeAtBuyExchange: number;
-    sellPrice: number;
-    buyPrice: number;
-    relativeProfitPercent: number;
+    firstExchange: string;
+    usd24hVolumeAtFirstExchange: number;
+    secondExchange: string;
+    usd24hVolumeAtSecondExchange: number;
+    arbitrageProfitHistogram: TwoLegArbitrageProfitOpportunity[];
 }
 
-export interface ProfitOpportunityCount {
+export interface ProfitStatisticOpportunityCount {
     profitPercentThreshold: number;
     count: number;
 }
@@ -48,5 +55,5 @@ export interface TwoLegArbitrageProfitStatistic {
     maxProfitPercent: number;
     minUsd24hVolume: number;
     averageProfitPercent: number;
-    profitOpportunityHistogram: ProfitOpportunityCount[];
+    profitOpportunityHistogram: ProfitStatisticOpportunityCount[];
 }

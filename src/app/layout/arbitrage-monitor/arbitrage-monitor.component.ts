@@ -9,6 +9,7 @@ interface LiveOpportunitiesFilter {
     minRelativePercentFilterValue: number;
     isMaxRelativePercentFilterOn: boolean;
     maxRelativePercentFilterValue: number;
+    orderBookAmountThresholdIndexSelected: number;
     isAutoRefreshOn: boolean;
     autoRefreshSeconds: number;
 }
@@ -24,6 +25,10 @@ interface CommonFilter {
     styleUrls: ['./arbitrage-monitor.component.scss']
 })
 export class ArbitrageMonitorComponent implements OnInit {
+    orderBookUsdAmountThresholds: number[] = [100, 200, 500, 1000, 2000];
+    orderBookUsdAmountThresholdsIndexes: number[] = this.orderBookUsdAmountThresholds.map((value, index) => {
+        return index;
+    });
     isLoadingLiveOpportunities: boolean;
     isLoadingStatistics = false;
     isOpportunitiesTabActive = true;
@@ -39,6 +44,7 @@ export class ArbitrageMonitorComponent implements OnInit {
         isMinRelativePercentFilterOn: false,
         maxRelativePercentFilterValue: null,
         minRelativePercentFilterValue: null,
+        orderBookAmountThresholdIndexSelected: 0,
         isAutoRefreshOn: false,
         autoRefreshSeconds: 10
     };
@@ -142,6 +148,15 @@ export class ArbitrageMonitorComponent implements OnInit {
         this.fetchStatistics();
     }
 
+    isOrderBookAmountThresholdSelected(orderBookUsdAmountThresholdIndex: number): boolean {
+        return this.liveOpportunitiesFilter.orderBookAmountThresholdIndexSelected === orderBookUsdAmountThresholdIndex;
+    }
+
+    setOrderBookUsdAmountThreshold(orderBookUsdAmountThresholdIndex: number) {
+        this.liveOpportunitiesFilter.orderBookAmountThresholdIndexSelected = orderBookUsdAmountThresholdIndex;
+        this.saveLiveOpportunitiesFilter();
+    }
+
     isShowingExchange(exchangeName: string): boolean {
         return this.exchangeVisibilityMap.get(exchangeName);
     }
@@ -239,40 +254,45 @@ export class ArbitrageMonitorComponent implements OnInit {
         return this.getNumber(value, 99999999);
     }
 
-    filterOpportunities(twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfit[]) {
+    filterOpportunities(twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfit[]): TwoLegArbitrageProfit[] {
+        const orderBookAmountThresholdIndexSelected = this.liveOpportunitiesFilter.orderBookAmountThresholdIndexSelected;
         return twoLegArbitrageProfitOpportunities
             .filter(item => {
+
+                if (item.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected] == null) {
+                    return false;
+                }
                 let isMeetingMinRelativePercentCriteria: boolean;
                 let isMeetingMaxRelativePercentCriteria: boolean;
 
                 if (this.isFilteringOpportunitiesByMinRelativePercent()) {
-                    isMeetingMinRelativePercentCriteria = item.relativeProfitPercent >= this.getMin(this.liveOpportunitiesFilter.minRelativePercentFilterValue);
+                    isMeetingMinRelativePercentCriteria = item.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].relativeProfitPercent >= this.getMin(this.liveOpportunitiesFilter.minRelativePercentFilterValue);
                 } else {
                     isMeetingMinRelativePercentCriteria = true;
                 }
 
                 if (this.isFilteringOpportunitiesByMaxRelativePercent()) {
-                    isMeetingMaxRelativePercentCriteria = item.relativeProfitPercent <= this.getMax(this.liveOpportunitiesFilter.maxRelativePercentFilterValue);
+                    isMeetingMaxRelativePercentCriteria = item.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].relativeProfitPercent <= this.getMax(this.liveOpportunitiesFilter.maxRelativePercentFilterValue);
                 } else {
                     isMeetingMaxRelativePercentCriteria = true;
                 }
 
                 let isMeetingVolumeCriteria: boolean;
                 if (this.isFilteringByMin24hVolume()) {
-                    isMeetingVolumeCriteria = item.usd24hVolumeAtBuyExchange >= this.getMin(this.commonFilter.min24hUsdVolume) &&
-                        item.usd24hVolumeAtSellExchange >= this.getMin(this.commonFilter.min24hUsdVolume);
+                    isMeetingVolumeCriteria = item.usd24hVolumeAtSecondExchange >= this.getMin(this.commonFilter.min24hUsdVolume) &&
+                        item.usd24hVolumeAtFirstExchange >= this.getMin(this.commonFilter.min24hUsdVolume);
                 } else {
                     isMeetingVolumeCriteria = true;
                 }
 
-                return this.isShowingExchange(item.buyAtExchange.toLowerCase()) &&
-                    this.isShowingExchange(item.sellAtExchange.toLowerCase()) &&
+                return this.isShowingExchange(item.secondExchange.toLowerCase()) &&
+                    this.isShowingExchange(item.firstExchange.toLowerCase()) &&
                     isMeetingMinRelativePercentCriteria &&
                     isMeetingMaxRelativePercentCriteria &&
                     isMeetingVolumeCriteria;
             })
             .sort((a, b) => {
-                return b.relativeProfitPercent - a.relativeProfitPercent;
+                return b.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].relativeProfitPercent - a.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].relativeProfitPercent;
             });
     }
 

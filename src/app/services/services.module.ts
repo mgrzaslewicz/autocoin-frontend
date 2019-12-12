@@ -15,6 +15,7 @@ import {ExchangeWalletService} from './exchange-wallet.service';
 import {
     ArbitrageMonitorEndpointUrlToken,
     ChangePasswordEndpointUrlToken,
+    ExchangeKeysCapabilityEndpointUrlToken,
     ExchangeUsersEndpointUrlToken,
     ExchangeWalletEndpointUrlToken,
     HealthEndpointUrlToken,
@@ -45,6 +46,7 @@ import {ExchangeMarketLink} from './exchange-market-link.service';
         {provide: ChangePasswordEndpointUrlToken, useValue: environment.changePasswordEndpointUrl},
         {provide: ExchangeWalletEndpointUrlToken, useValue: environment.exchangeWalletEndpointUrl},
         {provide: OrdersEndpointUrlToken, useValue: environment.ordersEndpointUrl},
+        {provide: ExchangeKeysCapabilityEndpointUrlToken, useValue: environment.exchangeKeysCapabilityEndpointUrl},
         {provide: PricesEndpointUrlToken, useValue: environment.pricesEndpointUrl},
         {provide: StrategiesEndpointUrlToken, useValue: environment.strategiesEndpointUrl},
         {provide: HealthEndpointUrlToken, useValue: environment.healthEndpointUrl},

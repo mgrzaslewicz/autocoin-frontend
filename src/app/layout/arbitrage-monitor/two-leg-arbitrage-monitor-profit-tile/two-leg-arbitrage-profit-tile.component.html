@@ -5,41 +5,42 @@
             {{twoLegArbitrageProfitOpportunity.baseCurrency}}/{{twoLegArbitrageProfitOpportunity.counterCurrency}}
         </span>
         <span class="badge badge-light mr-1">
-            {{twoLegArbitrageProfitOpportunity.relativeProfitPercent}}%
+            {{twoLegArbitrageProfitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].relativeProfitPercent}}
+            %
         </span>
         <span class="badge badge-light mr-1">
-            {{twoLegArbitrageProfitOpportunity.sellAtExchange}}
+            {{twoLegArbitrageProfitOpportunity.firstExchange}}
         </span>
         <span class="badge badge-light">
-            {{twoLegArbitrageProfitOpportunity.buyAtExchange}}
+            {{twoLegArbitrageProfitOpportunity.secondExchange}}
         </span>
     </div>
     <div class="card-body pt-0 pb-0" [@myAnimation]="slide">
         <div *ngIf="showDetails" class="pt-3 pb-3">
             <div class="row">
                 <div class="col-6">
-                    {{twoLegArbitrageProfitOpportunity.sellPrice}}
+                    {{twoLegArbitrageProfitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].sellPrice}}
                     <div *ngIf="sellAtLink != null">
                         <a [href]="sellAtLink | safeUrl" target="_blank">
-                            Sell at {{twoLegArbitrageProfitOpportunity.sellAtExchange}}
+                            Sell at {{twoLegArbitrageProfitOpportunity.firstExchange}}
                         </a>
                     </div>
                     <div *ngIf="sellAtLink == null">
-                        Sell at {{twoLegArbitrageProfitOpportunity.sellAtExchange}}
+                        Sell at {{twoLegArbitrageProfitOpportunity.firstExchange}}
                     </div>
-                    <div>24h volume ${{twoLegArbitrageProfitOpportunity.usd24hVolumeAtSellExchange}}</div>
+                    <div>24h volume ${{twoLegArbitrageProfitOpportunity.usd24hVolumeAtFirstExchange}}</div>
                 </div>
                 <div class="col-6">
-                    {{twoLegArbitrageProfitOpportunity.buyPrice}}
+                    {{twoLegArbitrageProfitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].buyPrice}}
                     <div *ngIf="buyAtLink != null">
                         <a [href]="buyAtLink | safeUrl" target="_blank">
-                            Buy at {{twoLegArbitrageProfitOpportunity.buyAtExchange}}
+                            Buy at {{twoLegArbitrageProfitOpportunity.secondExchange}}
                         </a>
                     </div>
                     <div *ngIf="buyAtLink == null">
-                        Buy at {{twoLegArbitrageProfitOpportunity.buyAtExchange}}
+                        Buy at {{twoLegArbitrageProfitOpportunity.secondExchange}}
                     </div>
-                    <div>24h volume ${{twoLegArbitrageProfitOpportunity.usd24hVolumeAtBuyExchange}}</div>
+                    <div>24h volume ${{twoLegArbitrageProfitOpportunity.usd24hVolumeAtSecondExchange}}</div>
                 </div>
             </div>
         </div>

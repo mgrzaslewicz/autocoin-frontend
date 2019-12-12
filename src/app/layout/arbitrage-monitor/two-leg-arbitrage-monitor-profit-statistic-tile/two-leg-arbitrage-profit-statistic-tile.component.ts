@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ProfitOpportunityCount, TwoLegArbitrageProfitStatistic} from '../../../services/arbitrage-monitor.service';
+import {ProfitStatisticOpportunityCount, TwoLegArbitrageProfitStatistic} from '../../../services/arbitrage-monitor.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {ExchangeMarketLink} from '../../../services/exchange-market-link.service';
 
@@ -45,7 +45,7 @@ export class TwoLegArbitrageProfitStatisticTileComponent implements OnInit {
     }
 
 
-    toChartBar(profitOpportunityCountList: ProfitOpportunityCount[]): ProfitOpportunityCountChartBar[] {
+    toChartBar(profitOpportunityCountList: ProfitStatisticOpportunityCount[]): ProfitOpportunityCountChartBar[] {
         let sum = 0;
         profitOpportunityCountList.forEach(item => {
             sum += item.count;

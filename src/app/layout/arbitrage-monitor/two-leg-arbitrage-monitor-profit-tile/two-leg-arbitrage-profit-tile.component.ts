@@ -24,6 +24,7 @@ import {ExchangeMarketLink} from '../../../services/exchange-market-link.service
 })
 export class TwoLegArbitrageProfitTileComponent implements OnInit {
     @Input() twoLegArbitrageProfitOpportunity: TwoLegArbitrageProfit;
+    @Input() orderBookAmountThresholdIndexSelected: number;
 
     showDetails = false;
     slide = 'out';
@@ -39,11 +40,11 @@ export class TwoLegArbitrageProfitTileComponent implements OnInit {
     }
 
     private getBuyAtLink() {
-        return this.exchangeMarketLink.getExchangeMarketLink(this.twoLegArbitrageProfitOpportunity.buyAtExchange, this.twoLegArbitrageProfitOpportunity.baseCurrency, this.twoLegArbitrageProfitOpportunity.counterCurrency);
+        return this.exchangeMarketLink.getExchangeMarketLink(this.twoLegArbitrageProfitOpportunity.secondExchange, this.twoLegArbitrageProfitOpportunity.baseCurrency, this.twoLegArbitrageProfitOpportunity.counterCurrency);
     }
 
     private getSellAtLink() {
-        return this.exchangeMarketLink.getExchangeMarketLink(this.twoLegArbitrageProfitOpportunity.sellAtExchange, this.twoLegArbitrageProfitOpportunity.baseCurrency, this.twoLegArbitrageProfitOpportunity.counterCurrency);
+        return this.exchangeMarketLink.getExchangeMarketLink(this.twoLegArbitrageProfitOpportunity.firstExchange, this.twoLegArbitrageProfitOpportunity.baseCurrency, this.twoLegArbitrageProfitOpportunity.counterCurrency);
     }
 
     ngOnInit(): void {

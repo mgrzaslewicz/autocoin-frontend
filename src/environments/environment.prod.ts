@@ -14,6 +14,7 @@ export const environment = {
     changePasswordEndpointUrl: `${authServiceUrl}/user-accounts/password`,
     exchangeWalletEndpointUrl: exchangeMediatorServiceUrl,
     ordersEndpointUrl: exchangeMediatorServiceUrl,
+    exchangeKeysCapabilityEndpointUrl: exchangeMediatorServiceUrl,
     pricesEndpointUrl: `${exchangeMediatorServiceUrl}/prices`,
     strategiesEndpointUrl: strategyExecutorServiceUrl,
     healthEndpointUrl: `${exchangeMediatorServiceUrl}/health`,
