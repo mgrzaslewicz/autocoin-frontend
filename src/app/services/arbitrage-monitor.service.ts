@@ -12,8 +12,8 @@ export class ArbitrageMonitorService {
                 @Inject(FeatureToggleToken) private featureToggle: FeatureToggle) {
     }
 
-    public getTwoLegArbitrageProfitOpportunities(): Observable<TwoLegArbitrageProfit[]> {
-        return this.http.get<Array<TwoLegArbitrageProfit>>(`${this.arbitrageMonitorEndpointUrl}/two-leg-arbitrage-profits`);
+    public getTwoLegArbitrageProfitOpportunities(): Observable<TwoLegArbitrageResponseDto> {
+        return this.http.get<TwoLegArbitrageResponseDto>(`${this.arbitrageMonitorEndpointUrl}/two-leg-arbitrage-profits`);
     }
 
     public getTwoLegArbitrageProfitStatistics(): Observable<TwoLegArbitrageProfitStatistic[]> {
@@ -29,6 +29,11 @@ export interface TwoLegArbitrageProfitOpportunity {
     buyAtExchange: string;
     relativeProfitPercent: number;
     usdDepthUpTo: string;
+}
+
+export interface TwoLegArbitrageResponseDto {
+    usdDepthThresholds: number[];
+    profits: TwoLegArbitrageProfit[];
 }
 
 export interface TwoLegArbitrageProfit {

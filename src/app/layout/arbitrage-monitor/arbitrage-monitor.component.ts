@@ -25,10 +25,8 @@ interface CommonFilter {
     styleUrls: ['./arbitrage-monitor.component.scss']
 })
 export class ArbitrageMonitorComponent implements OnInit {
-    orderBookUsdAmountThresholds: number[] = [100, 200, 500, 1000, 2000];
-    orderBookUsdAmountThresholdsIndexes: number[] = this.orderBookUsdAmountThresholds.map((value, index) => {
-        return index;
-    });
+    orderBookUsdAmountThresholds: number[] = [];
+    orderBookUsdAmountThresholdsIndexes: number[] = [];
     isLoadingLiveOpportunities: boolean;
     isLoadingStatistics = false;
     isOpportunitiesTabActive = true;
@@ -111,7 +109,11 @@ export class ArbitrageMonitorComponent implements OnInit {
         this.isLoadingLiveOpportunities = true;
         this.arbitrageMonitorService.getTwoLegArbitrageProfitOpportunities()
             .subscribe(twoLegArbitrageProfitOpportunities => {
-                    this.twoLegArbitrageProfitOpportunities = twoLegArbitrageProfitOpportunities;
+                    this.orderBookUsdAmountThresholds = twoLegArbitrageProfitOpportunities.usdDepthThresholds;
+                    this.orderBookUsdAmountThresholdsIndexes = this.orderBookUsdAmountThresholds.map((value, index) => {
+                        return index;
+                    });
+                    this.twoLegArbitrageProfitOpportunities = twoLegArbitrageProfitOpportunities.profits;
                     this.isLoadingLiveOpportunities = false;
                     localStorage.setItem(this.lastTwoLegArbitrageOpportunitiesRefreshTimeKey, new Date().getTime().toString());
                 },
