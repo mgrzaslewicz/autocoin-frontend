@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {AuthService} from '../../services/auth.service';
 import {ArbitrageMonitorService, TwoLegArbitrageProfit, TwoLegArbitrageProfitStatistic} from '../../services/arbitrage-monitor.service';
 import {ToastService} from '../../services/toast.service';
@@ -24,7 +24,7 @@ interface CommonFilter {
     templateUrl: './arbitrage-monitor.component.html',
     styleUrls: ['./arbitrage-monitor.component.scss']
 })
-export class ArbitrageMonitorComponent implements OnInit {
+export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
     orderBookUsdAmountThresholds: number[] = [];
     orderBookUsdAmountThresholdsIndexes: number[] = [];
     isLoadingLiveOpportunities: boolean;
@@ -84,6 +84,11 @@ export class ArbitrageMonitorComponent implements OnInit {
             this.fetchLiveOpportunities();
             this.onAutoRefreshChange();
         });
+    }
+
+    ngOnDestroy(): void {
+        clearInterval(this.scheduledLiveOpportunitiesRefresh);
+        this.scheduledLiveOpportunitiesRefresh = null;
     }
 
     getLastRefreshTime(): Date {
@@ -182,10 +187,14 @@ export class ArbitrageMonitorComponent implements OnInit {
         this.saveLiveOpportunitiesFilter();
     }
 
+    private cancelLiveOpportunitiesRefresh() {
+        clearInterval(this.scheduledLiveOpportunitiesRefresh);
+        this.scheduledLiveOpportunitiesRefresh = null;
+    }
+
     onAutoRefreshChange() {
         if (this.scheduledLiveOpportunitiesRefresh != null) {
-            clearInterval(this.scheduledLiveOpportunitiesRefresh);
-            this.scheduledLiveOpportunitiesRefresh = null;
+            this.cancelLiveOpportunitiesRefresh();
         }
         if (this.isAutoRefreshingLiveOpportunities()) {
             const autoRefreshMillis = this.getNumber(this.liveOpportunitiesFilter.autoRefreshSeconds, 10) * 1000;
