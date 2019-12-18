@@ -43,9 +43,11 @@ export class Oauth2TokenInterceptor implements HttpInterceptor {
                 if (response.error && (response.error.error === 'invalid_token' || response.error.error === 'unauthorized')
                 ) {
                     console.log('Token has expired, redirecting to login');
-                    this.authService.logout();
-                    this.redirectToLogin();
+                } else {
+                    console.log('Unknown reason for authorization error, redirecting to login');
                 }
+                this.authService.logout();
+                this.redirectToLogin();
             } else if (response.status === 400) {
                 console.log('Handling unauthorized 400 response');
                 if (response.error && (response.error.error === 'invalid_grant')) {
