@@ -24,7 +24,9 @@ export class ArbitrageMonitorService {
 
 export interface TwoLegArbitrageProfitOpportunity {
     sellPrice: number;
+    sellAmount: number;
     buyPrice: number;
+    buyAmount: number;
     sellAtExchange: string;
     buyAtExchange: string;
     relativeProfitPercent: number;
