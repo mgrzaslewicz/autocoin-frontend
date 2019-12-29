@@ -53,14 +53,18 @@ export interface ProfitStatisticOpportunityCount {
     count: number;
 }
 
+export interface ProfitStatisticHistogramByUsdDepth {
+    averageProfitPercent: number;
+    minProfitPercent: number;
+    maxProfitPercent: number;
+    profitOpportunityHistogram: ProfitStatisticOpportunityCount[];
+}
+
 export interface TwoLegArbitrageProfitStatistic {
     baseCurrency: string;
     counterCurrency: string;
     firstExchange: string;
     secondExchange: string;
-    minProfitPercent: number;
-    maxProfitPercent: number;
     minUsd24hVolume: number;
-    averageProfitPercent: number;
-    profitOpportunityHistogram: ProfitStatisticOpportunityCount[];
+    profitStatisticHistogramByUsdDepth: ProfitStatisticHistogramByUsdDepth[];
 }

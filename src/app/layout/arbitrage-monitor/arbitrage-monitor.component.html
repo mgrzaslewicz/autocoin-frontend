@@ -140,7 +140,8 @@
         <div *ngFor="let twoLegArbitrageProfitStatistic of filterStatistics(twoLegArbitrageProfitStatistics)"
              class="col-xs-12 col-sm-12 col-md-6 col-xl-4">
             <app-two-leg-arbitrage-profit-statistic-tile
-                [twoLegArbitrageProfitStatistic]="twoLegArbitrageProfitStatistic"></app-two-leg-arbitrage-profit-statistic-tile>
+                [twoLegArbitrageProfitStatistic]="twoLegArbitrageProfitStatistic"
+                [orderBookAmountThresholdIndexSelected]="commonFilter.orderBookAmountThresholdIndexSelected"></app-two-leg-arbitrage-profit-statistic-tile>
         </div>
     </div>
 

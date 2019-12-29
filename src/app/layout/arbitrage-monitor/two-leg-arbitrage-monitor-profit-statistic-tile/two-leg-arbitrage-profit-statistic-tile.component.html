@@ -5,7 +5,8 @@
             {{twoLegArbitrageProfitStatistic.baseCurrency}}/{{twoLegArbitrageProfitStatistic.counterCurrency}}
         </span>
         <span class="badge badge-light mr-1">
-            average {{twoLegArbitrageProfitStatistic.averageProfitPercent}}%
+            average {{twoLegArbitrageProfitStatistic.profitStatisticHistogramByUsdDepth[orderBookAmountThresholdIndexSelected].averageProfitPercent}}
+            %
         </span>
         <span class="badge badge-light mr-1">
             {{twoLegArbitrageProfitStatistic.firstExchange}}
@@ -19,10 +20,14 @@
             <div class="row">
                 <ul>
                     <li>
-                        Min profit: {{twoLegArbitrageProfitStatistic.minProfitPercent}}%
+                        Min
+                        profit: {{twoLegArbitrageProfitStatistic.profitStatisticHistogramByUsdDepth[orderBookAmountThresholdIndexSelected].minProfitPercent}}
+                        %
                     </li>
                     <li>
-                        Max profit: {{twoLegArbitrageProfitStatistic.maxProfitPercent}}%
+                        Max
+                        profit: {{twoLegArbitrageProfitStatistic.profitStatisticHistogramByUsdDepth[orderBookAmountThresholdIndexSelected].maxProfitPercent}}
+                        %
                     </li>
                     <li>
                         Min 24h volume: ${{twoLegArbitrageProfitStatistic.minUsd24hVolume}}
@@ -42,7 +47,7 @@
             <div class="row">
                 Opportunities count checked every 10s
                 <ul class="chart">
-                    <li *ngFor="let profitOpportunityCountChartBar of toChartBar(twoLegArbitrageProfitStatistic.profitOpportunityHistogram)">
+                    <li *ngFor="let profitOpportunityCountChartBar of toChartBar(twoLegArbitrageProfitStatistic.profitStatisticHistogramByUsdDepth[orderBookAmountThresholdIndexSelected].profitOpportunityHistogram)">
                         <span [style.height]="profitOpportunityCountChartBar.heightPercent + '%'"
                               [title]="'>'+profitOpportunityCountChartBar.profitPercentThreshold+'%'">
                             <span class="value">{{profitOpportunityCountChartBar.count}}</span>

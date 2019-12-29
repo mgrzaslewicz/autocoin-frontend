@@ -316,12 +316,19 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
                 } else {
                     isMeetingVolumeCriteria = true;
                 }
+
+                const hasAnyOpportunityInSelectedMarketDepth = item.profitStatisticHistogramByUsdDepth[this.commonFilter.orderBookAmountThresholdIndexSelected].profitOpportunityHistogram.some(opportunity => {
+                    return opportunity.count > 0;
+                });
+
                 return this.isShowingExchange(item.firstExchange.toLowerCase())
                     && this.isShowingExchange(item.secondExchange.toLowerCase())
-                    && isMeetingVolumeCriteria;
+                    && isMeetingVolumeCriteria
+                    && hasAnyOpportunityInSelectedMarketDepth;
             })
             .sort((a, b) => {
-                return b.averageProfitPercent - a.averageProfitPercent;
+                return b.profitStatisticHistogramByUsdDepth[this.commonFilter.orderBookAmountThresholdIndexSelected].averageProfitPercent
+                    - a.profitStatisticHistogramByUsdDepth[this.commonFilter.orderBookAmountThresholdIndexSelected].averageProfitPercent;
             });
     }
 }

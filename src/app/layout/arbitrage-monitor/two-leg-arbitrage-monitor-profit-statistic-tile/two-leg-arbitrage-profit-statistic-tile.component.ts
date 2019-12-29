@@ -30,6 +30,7 @@ interface ProfitOpportunityCountChartBar {
 })
 export class TwoLegArbitrageProfitStatisticTileComponent implements OnInit {
     @Input() twoLegArbitrageProfitStatistic: TwoLegArbitrageProfitStatistic;
+    @Input() orderBookAmountThresholdIndexSelected: number;
 
     showDetails = false;
     slide = 'out';
