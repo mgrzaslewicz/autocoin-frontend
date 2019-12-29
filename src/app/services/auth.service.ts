@@ -6,6 +6,7 @@ import {Observable} from 'rxjs';
 
 interface UserAccountDto {
     shouldChangePassword: boolean;
+    userAccountId: string;
 }
 
 interface TokenResponseDto {

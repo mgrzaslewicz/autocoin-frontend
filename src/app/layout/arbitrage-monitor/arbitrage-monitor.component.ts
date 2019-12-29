@@ -9,7 +9,6 @@ interface LiveOpportunitiesFilter {
     minRelativePercentFilterValue: number;
     isMaxRelativePercentFilterOn: boolean;
     maxRelativePercentFilterValue: number;
-    orderBookAmountThresholdIndexSelected: number;
     isAutoRefreshOn: boolean;
     autoRefreshSeconds: number;
 }
@@ -17,6 +16,7 @@ interface LiveOpportunitiesFilter {
 interface CommonFilter {
     min24hUsdVolume: number;
     isMin24hUsdVolumeFilterOn: boolean;
+    orderBookAmountThresholdIndexSelected: number;
 }
 
 @Component({
@@ -35,14 +35,14 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
     exchangeVisibilityMap: Map<string, boolean> = new Map<string, boolean>();
     commonFilter: CommonFilter = {
         min24hUsdVolume: 1000,
-        isMin24hUsdVolumeFilterOn: false
+        isMin24hUsdVolumeFilterOn: false,
+        orderBookAmountThresholdIndexSelected: 0
     };
     liveOpportunitiesFilter: LiveOpportunitiesFilter = {
         isMaxRelativePercentFilterOn: false,
         isMinRelativePercentFilterOn: false,
         maxRelativePercentFilterValue: null,
         minRelativePercentFilterValue: null,
-        orderBookAmountThresholdIndexSelected: 0,
         isAutoRefreshOn: false,
         autoRefreshSeconds: 10
     };
@@ -156,12 +156,12 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
     }
 
     isOrderBookAmountThresholdSelected(orderBookUsdAmountThresholdIndex: number): boolean {
-        return this.liveOpportunitiesFilter.orderBookAmountThresholdIndexSelected === orderBookUsdAmountThresholdIndex;
+        return this.commonFilter.orderBookAmountThresholdIndexSelected === orderBookUsdAmountThresholdIndex;
     }
 
     setOrderBookUsdAmountThreshold(orderBookUsdAmountThresholdIndex: number) {
-        this.liveOpportunitiesFilter.orderBookAmountThresholdIndexSelected = orderBookUsdAmountThresholdIndex;
-        this.saveLiveOpportunitiesFilter();
+        this.commonFilter.orderBookAmountThresholdIndexSelected = orderBookUsdAmountThresholdIndex;
+        this.saveCommonFilter();
     }
 
     isShowingExchange(exchangeName: string): boolean {
@@ -266,7 +266,7 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
     }
 
     filterOpportunities(twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfit[]): TwoLegArbitrageProfit[] {
-        const orderBookAmountThresholdIndexSelected = this.liveOpportunitiesFilter.orderBookAmountThresholdIndexSelected;
+        const orderBookAmountThresholdIndexSelected = this.commonFilter.orderBookAmountThresholdIndexSelected;
         return twoLegArbitrageProfitOpportunities
             .filter(item => {
 
