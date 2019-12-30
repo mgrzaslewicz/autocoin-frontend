@@ -3,6 +3,7 @@ import {Injectable} from '@angular/core';
 @Injectable()
 export class ExchangeMarketLink {
     private exchangeLinks: Map<string, string> = new Map<string, string>([
+        ['bibox', 'https://www.bibox.com/exchange?coinPair={BASE}_{COUNTER}'],
         ['binance', 'https://www.binance.com/en/trade/{BASE}_{COUNTER}'],
         ['bitbay', 'https://app.bitbay.net/market/{BASE}-{COUNTER}'],
         ['bitstamp', 'https://www.bitstamp.net/market/tradeview/'],
