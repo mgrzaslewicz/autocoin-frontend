@@ -31,7 +31,7 @@ export class HealthComponent implements OnInit {
                         return 1;
                     } else if (a.healthy === true && b.healthy === false) {
                         return -1;
-                    } else if (a.canGetTicker === true && b.canGetTicker === false) {
+                    } else if (a.canGetPublicMarketData === true && b.canGetPublicMarketData === false) {
                         return -1;
                     } else {
                         return 0;

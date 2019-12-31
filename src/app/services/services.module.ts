@@ -29,7 +29,7 @@ import {
 import {environment} from '../../environments/environment';
 import {SignupService} from './signup.service';
 import {ArbitrageMonitorService} from './arbitrage-monitor.service';
-import {ExchangeNamesSupportedForReadingPricesToken, ExchangeNamesSupportedForTradingToken} from '../../environments/environment.default';
+import {ExchangeNamesSupportedForGettingPublicMarketData, ExchangeNamesSupportedForTradingToken} from '../../environments/environment.default';
 import {ExchangeMarketLink} from './exchange-market-link.service';
 
 @NgModule({
@@ -53,7 +53,7 @@ import {ExchangeMarketLink} from './exchange-market-link.service';
         {provide: SignupEndpointUrlToken, useValue: environment.signupEndpointUrl},
         {provide: TwoFactorAuthenticationEndpointUrlToken, useValue: environment.twoFactorAuthenticationEndpointUrl},
         {provide: ExchangeNamesSupportedForTradingToken, useValue: environment.exchangeNamesSupportedForTrading},
-        {provide: ExchangeNamesSupportedForReadingPricesToken, useValue: environment.exchangeNamesSupportedForReadingPrices},
+        {provide: ExchangeNamesSupportedForGettingPublicMarketData, useValue: environment.exchangeNamesSupportedForGettingPublicMarketData},
         {provide: ArbitrageMonitorEndpointUrlToken, useValue: environment.arbitrageMonitorEndpointUrl},
         AuthService,
         UserAccountService,

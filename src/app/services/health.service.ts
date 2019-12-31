@@ -26,10 +26,8 @@ export interface ExchangeCapabilityDto {
 export interface ExchangeHealthDto {
     exchangeName: String;
     healthy: Boolean;
-    canGetTicker: Boolean;
-    canGetOrderBook: Boolean;
-    canReadWallet: Boolean;
-    canMakeAndCancelOrders: Boolean;
+    canTrade: Boolean;
+    canGetPublicMarketData: Boolean;
     capabilities: ExchangeCapabilityDto[];
     timestamp: number;
 }

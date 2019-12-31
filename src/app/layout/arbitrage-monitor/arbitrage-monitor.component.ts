@@ -2,7 +2,7 @@ import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {AuthService} from '../../services/auth.service';
 import {ArbitrageMonitorService, TwoLegArbitrageProfit, TwoLegArbitrageProfitStatistic} from '../../services/arbitrage-monitor.service';
 import {ToastService} from '../../services/toast.service';
-import {ExchangeNamesSupportedForReadingPricesToken} from '../../../environments/environment.default';
+import {ExchangeNamesSupportedForGettingPublicMarketData} from '../../../environments/environment.default';
 
 interface LiveOpportunitiesFilter {
     isMinRelativePercentFilterOn: boolean;
@@ -53,10 +53,10 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
         private authService: AuthService,
         private arbitrageMonitorService: ArbitrageMonitorService,
         private toastService: ToastService,
-        @Inject(ExchangeNamesSupportedForReadingPricesToken)
-        public exchangeNamesSupportedForReadingPrices: string[]
+        @Inject(ExchangeNamesSupportedForGettingPublicMarketData)
+        public exchangeNamesSupportedForGettingPublicMarketData: string[]
     ) {
-        exchangeNamesSupportedForReadingPrices.forEach(exchangeName => {
+        exchangeNamesSupportedForGettingPublicMarketData.forEach(exchangeName => {
             const localStorageKey = `arbitrage-monitor.show-${exchangeName}`;
             const isShowingExchange = localStorage.getItem(localStorageKey) !== 'false';
             this.exchangeVisibilityMap.set(exchangeName, isShowingExchange);

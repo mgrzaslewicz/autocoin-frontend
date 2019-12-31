@@ -3,7 +3,7 @@
 
     <div class="row mb-1">
         <div class="col-12">
-            <button *ngFor="let exchangeName of exchangeNamesSupportedForReadingPrices"
+            <button *ngFor="let exchangeName of exchangeNamesSupportedForGettingPublicMarketData"
                     (click)="toggleExchangeFilter(exchangeName)"
                     class="btn btn-sm mr-1 mb-1" type="button">{{exchangeName}}
                 <i class="fa" [class.fa-toggle-on]="isShowingExchange(exchangeName)"
