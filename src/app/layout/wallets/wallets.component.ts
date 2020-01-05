@@ -281,7 +281,7 @@ export class WalletsComponent implements OnInit, OnDestroy {
             (currencyPrices: CurrencyPriceDto[]) => {
                 currencyPrices.forEach(it => {
                     this.savePrice(it);
-                    console.log(`Next price for ${it.currency} is ${1 / it.price}${it.unitCurrency}`);
+                    console.log(`Next price for ${it.baseCurrency} is ${1 / it.price}${it.counterCurrency}`);
                 });
             },
             err => {
@@ -299,14 +299,14 @@ export class WalletsComponent implements OnInit, OnDestroy {
 
     private savePrice(currencyPrice: CurrencyPriceDto) {
         // This assumes all prices are in relation to BTC and USD. If other fiat or other crypto is to be used this needs to change
-        if (currencyPrice.currency === 'BTC' && currencyPrice.unitCurrency === 'USD') {
+        if (currencyPrice.baseCurrency === 'BTC' && currencyPrice.counterCurrency === 'USD') {
             localStorage.setItem(this.btcUsdPriceKey, currencyPrice.price.toString());
             this.currencyPairPrices.set(this.btcUsd, currencyPrice.price);
         } else {
-            const currencyKey = `price-${currencyPrice.currency}-${currencyPrice.unitCurrency}`;
+            const currencyKey = `price-${currencyPrice.baseCurrency}-${currencyPrice.counterCurrency}`;
             const price = 1 / currencyPrice.price;
             localStorage.setItem(currencyKey, price.toString());
-            this.currencyPairPrices.set(`${currencyPrice.currency}-${currencyPrice.unitCurrency}`, price);
+            this.currencyPairPrices.set(`${currencyPrice.baseCurrency}-${currencyPrice.counterCurrency}`, price);
         }
     }
 

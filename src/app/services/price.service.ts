@@ -23,7 +23,7 @@ export class PriceService {
 }
 
 export interface CurrencyPriceDto {
-    currency: string;
+    baseCurrency: string;
     price: number;
-    unitCurrency: string;
+    counterCurrency: string;
 }
