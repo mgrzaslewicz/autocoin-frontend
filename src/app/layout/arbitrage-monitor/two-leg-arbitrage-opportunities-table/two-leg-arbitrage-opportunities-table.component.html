@@ -1,0 +1,78 @@
+<div class="col-12">
+    <div>
+        {{profitOpportunities.length}} opportunities
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped table-dark table-hover">
+            <thead>
+            <tr>
+                <th scope="col">Profit <i class="fa fa-arrow-down" aria-hidden="true"></i></th>
+                <th scope="col">Currency pair</th>
+                <th scope="col">Buy at</th>
+                <th scope="col">price <i class="fa fa-arrow-right" aria-hidden="true"></i></th>
+                <th scope="col">Sell at</th>
+                <th scope="col">price</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let profitOpportunity of profitOpportunities">
+                <th scope="row">
+                    {{profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].relativeProfitPercent}}
+                    %
+                </th>
+                <td>
+                    {{profitOpportunity.baseCurrency}}/{{profitOpportunity.counterCurrency}}
+                </td>
+                <td>
+                    <div *ngIf="hasBuyAtLink(profitOpportunity)">
+                        <a [href]="getBuyAtLink(profitOpportunity)" target="_blank">
+                            {{profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].buyAtExchange}}
+                        </a>
+                    </div>
+                    <div *ngIf="!hasBuyAtLink(profitOpportunity)">
+                        {{profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].buyAtExchange}}
+                    </div>
+                    <div>
+                        Amount {{profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].buyAmount}}
+                    </div>
+                    <div>
+                        Volume ${{getVolumeAtBuyExchange(profitOpportunity)}}
+                    </div>
+                </td>
+                <td>
+                    <div class="empty-invisible-line" aria-hidden="true">
+                        empty invisible line
+                    </div>
+                    <div>
+                        {{profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].buyPrice}}
+                    </div>
+                </td>
+                <td>
+                    <div *ngIf="hasSellAtLink(profitOpportunity)">
+                        <a [href]="getSellAtLink(profitOpportunity)" target="_blank">
+                            {{profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].sellAtExchange}}
+                        </a>
+                    </div>
+                    <div *ngIf="!hasSellAtLink(profitOpportunity)">
+                        {{profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].sellAtExchange}}
+                    </div>
+                    <div>
+                        Amount {{profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].sellAmount}}
+                    </div>
+                    <div>
+                        Volume ${{getVolumeAtSellExchange(profitOpportunity)}}
+                    </div>
+                </td>
+                <td>
+                    <div class="empty-invisible-line" aria-hidden="true">
+                        empty invisible line
+                    </div>
+                    <div>
+                        {{profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].sellPrice}}
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

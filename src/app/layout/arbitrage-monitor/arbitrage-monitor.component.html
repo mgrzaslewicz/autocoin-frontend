@@ -120,14 +120,10 @@
         </div>
 
         <div class="row">
-            <div
-                *ngFor="let twoLegArbitrageProfitOpportunity of filterOpportunities(twoLegArbitrageProfitOpportunities)"
-                class="col-xs-12 col-sm-12 col-md-6 col-xl-4">
-                <app-two-leg-arbitrage-profit-tile
-                    [twoLegArbitrageProfitOpportunity]="twoLegArbitrageProfitOpportunity"
-                    [orderBookAmountThresholdIndexSelected]="commonFilter.orderBookAmountThresholdIndexSelected"
-                ></app-two-leg-arbitrage-profit-tile>
-            </div>
+            <app-two-leg-arbitrage-opportunities-table
+                [profitOpportunities]="filterOpportunities(twoLegArbitrageProfitOpportunities)"
+                [orderBookAmountThresholdIndexSelected]="commonFilter.orderBookAmountThresholdIndexSelected"
+            ></app-two-leg-arbitrage-opportunities-table>
         </div>
     </div>
 

@@ -8,6 +8,7 @@ export class ExchangeMarketLink {
         ['bitbay', 'https://app.bitbay.net/market/{BASE}-{COUNTER}'],
         ['bitstamp', 'https://www.bitstamp.net/market/tradeview/'],
         ['bittrex', 'https://global.bittrex.com/Market/Index?MarketName={COUNTER}-{BASE}'],
+        ['coinbasepro', 'https://pro.coinbase.com/trade/{COUNTER}-{BASE}'],
         ['gateio', 'https://www.gate.io/trade/{BASE}_{COUNTER}'],
         ['kraken', 'https://trade.kraken.com/markets/kraken/{BASE}/{COUNTER}'],
         ['kucoin', ' https://trade.kucoin.com/spot/{BASE}-{COUNTER}']
