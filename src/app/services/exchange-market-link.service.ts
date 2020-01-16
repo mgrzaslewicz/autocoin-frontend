@@ -10,8 +10,10 @@ export class ExchangeMarketLink {
         ['bittrex', 'https://global.bittrex.com/Market/Index?MarketName={COUNTER}-{BASE}'],
         ['coinbasepro', 'https://pro.coinbase.com/trade/{COUNTER}-{BASE}'],
         ['gateio', 'https://www.gate.io/trade/{BASE}_{COUNTER}'],
+        ['gemini', 'https://gemini.com'],
+        ['hitbtc', 'https://hitbtc.com/{BASE}-to-{COUNTER}'],
         ['kraken', 'https://trade.kraken.com/markets/kraken/{BASE}/{COUNTER}'],
-        ['kucoin', ' https://trade.kucoin.com/spot/{BASE}-{COUNTER}']
+        ['kucoin', 'https://trade.kucoin.com/spot/{BASE}-{COUNTER}']
     ]);
 
     constructor() {

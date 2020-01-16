@@ -18,7 +18,9 @@ export const defaultEnvironment = {
         'coinbasepro',
         'gateio',
         'gemini',
+        'hitbtc',
         'kraken'
+        //'yobit' // fetching tickers for many pairs gets rejected quickly by exchange
     ]
         .concat(exchangesForTrading).sort((a, b) => {
             return a.localeCompare(b);
