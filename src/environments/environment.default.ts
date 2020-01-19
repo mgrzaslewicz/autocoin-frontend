@@ -15,11 +15,14 @@ export const defaultEnvironment = {
         'bitbay',
         'bitmex',
         'bitstamp',
+        'bleutrade',
         'coinbasepro',
+        'exmo',
         'gateio',
         'gemini',
         'hitbtc',
-        'kraken'
+        'kraken',
+        'livecoin'
         //'yobit' // fetching tickers for many pairs gets rejected quickly by exchange
     ]
         .concat(exchangesForTrading).sort((a, b) => {
