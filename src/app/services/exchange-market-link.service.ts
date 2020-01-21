@@ -9,6 +9,7 @@ export class ExchangeMarketLink {
         ['bitstamp', 'https://www.bitstamp.net/market/tradeview/'],
         ['bittrex', 'https://global.bittrex.com/Market/Index?MarketName={COUNTER}-{BASE}'],
         ['bleutrade', 'https://bleutrade.com/exchange/{BASE}/{COUNTER}'],
+        ['cexio', 'https://cex.io/#{BASE}-{COUNTER}'],
         ['coinbasepro', 'https://pro.coinbase.com/trade/{BASE}-{COUNTER}'],
         ['exmo', 'https://exmo.com/en/trade#?pair={BASE}_{COUNTER}'],
         ['gateio', 'https://www.gate.io/trade/{BASE}_{COUNTER}'],

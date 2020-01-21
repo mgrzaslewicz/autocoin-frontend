@@ -16,6 +16,7 @@ export const defaultEnvironment = {
         'bitmex',
         'bitstamp',
         'bleutrade',
+        'cexio',
         'coinbasepro',
         'exmo',
         'gateio',
