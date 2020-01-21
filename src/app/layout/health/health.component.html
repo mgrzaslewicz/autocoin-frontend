@@ -1,6 +1,12 @@
-<div class="row">
-    <div *ngFor="let exchangeHealthEntry of exchangesHealth | keyvalue"
+<div *ngFor="let exchangeHealthCategory of healthCategories()" class="row mb-4">
+    <div class="col-12">
+        <h2>{{exchangeHealthCategory}}</h2>
+        <div *ngIf="hasNoExchangesInCategory(exchangeHealthCategory)">
+            <h3>Empty</h3>
+        </div>
+    </div>
+    <div *ngFor="let exchangeHealth of exchangesHealth.get(exchangeHealthCategory)"
          class="col-xs-12 col-sm-12 col-md-6 col-xl-4">
-        <app-health-panel [exchangeHealth]="exchangeHealthEntry.value"></app-health-panel>
+        <app-health-panel [exchangeHealth]="exchangeHealth"></app-health-panel>
     </div>
 </div>

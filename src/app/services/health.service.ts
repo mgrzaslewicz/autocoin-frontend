@@ -19,12 +19,12 @@ export class HealthService {
 }
 
 export interface ExchangeCapabilityDto {
-    name: String;
+    name: string;
     capable?: Boolean;
 }
 
 export interface ExchangeHealthDto {
-    exchangeName: String;
+    exchangeName: string;
     healthy: Boolean;
     canTrade: Boolean;
     canGetPublicMarketData: Boolean;

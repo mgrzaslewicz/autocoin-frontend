@@ -9,7 +9,7 @@ import {AuthService} from '../../services/auth.service';
     styleUrls: ['health.component.scss']
 })
 export class HealthComponent implements OnInit {
-    exchangesHealth: Array<ExchangeHealthDto> = [];
+    exchangesHealth: Map<String, Array<ExchangeHealthDto>> = new Map<String, Array<ExchangeHealthDto>>();
 
     constructor(private healthService: HealthService,
                 private toastService: ToastService,
@@ -22,27 +22,40 @@ export class HealthComponent implements OnInit {
         });
     }
 
+    healthCategories(): String[] {
+        return Array.from(this.exchangesHealth.keys());
+    }
+
     private getExchangesHealth() {
         this.healthService.getExchangesHealth().subscribe(
             healthDtoList => {
-                // order: healthy, can read prices, not healthy
-                healthDtoList.sort((a, b) => {
-                    if (a.healthy === false && b.healthy === true) {
-                        return 1;
-                    } else if (a.healthy === true && b.healthy === false) {
-                        return -1;
-                    } else if (a.canGetPublicMarketData === true && b.canGetPublicMarketData === false) {
-                        return -1;
-                    } else {
-                        return 0;
-                    }
-                });
-                this.exchangesHealth = healthDtoList;
+                console.log(healthDtoList);
+                this.exchangesHealth.set('Unhealthy', healthDtoList.filter(it =>
+                    !it.canGetPublicMarketData
+                ).sort((a, b) => {
+                    return a.exchangeName.localeCompare(b.exchangeName);
+                }));
+                this.exchangesHealth.set('Ok for public data', healthDtoList.filter(it => {
+                    return it.canGetPublicMarketData;
+                }).sort((a, b) => {
+                    return a.exchangeName.localeCompare(b.exchangeName);
+                }));
+                this.exchangesHealth.set('Ok for trading', healthDtoList.filter(it => {
+                    return it.healthy;
+                }).sort((a, b) => {
+                    return a.exchangeName.localeCompare(b.exchangeName);
+                }));
+                console.log(this.exchangesHealth);
             },
             error => {
                 this.toastService.warning('Could not get exchanges health');
             }
         );
+    }
+
+    hasNoExchangesInCategory(exchangeHealthCategory: String) {
+        const exchanges = this.exchangesHealth.get(exchangeHealthCategory);
+        return exchanges === undefined || exchanges === null || exchanges.length === 0;
     }
 
 }
