@@ -1,16 +1,26 @@
 <div class="card text-white bg-{{getTileBackgroundColorBasedOnHealth()}} m-2">
     <div class="card-header">
         <div class="flex-row">
-            <div class="d-block"><i class="fa fa-heartbeat"></i> {{exchangeHealth.exchangeName}}</div>
+            <div class="d-block">
+                <i class="fa fa-heartbeat"></i> {{exchangeHealth.exchangeName}}
+                <span *ngIf="exchangeHealth.comments.length > 0">*</span>
+            </div>
         </div>
     </div>
     <div class="card-body pt-0 pb-0" [@myAnimation]="slide">
         <div class="pt-3 pb-3">
+            Capabilities
             <ul>
                 <li *ngFor="let capability of exchangeHealth.capabilities">
                     {{capability.name}}: {{capability.capable === true ? 'OK' : capability.capable === false ? 'Bad' : 'Unknown'}}
                 </li>
             </ul>
+            <div *ngIf="exchangeHealth.comments.length > 0">
+                Comments
+                <ul>
+                    <li *ngFor="let comment of exchangeHealth.comments">{{comment}}</li>
+                </ul>
+            </div>
             <div>Last check: {{exchangeHealth.timestamp | date: 'y-MM-dd HH:mm:ss' }}</div>
         </div>
     </div>

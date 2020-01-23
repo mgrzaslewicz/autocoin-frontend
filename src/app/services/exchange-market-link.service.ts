@@ -11,6 +11,7 @@ export class ExchangeMarketLink {
         ['bleutrade', 'https://bleutrade.com/exchange/{BASE}/{COUNTER}'],
         ['cexio', 'https://cex.io/#{BASE}-{COUNTER}'],
         ['coinbasepro', 'https://pro.coinbase.com/trade/{BASE}-{COUNTER}'],
+        ['coindeal', 'https://pro.coindeal.com/{BASE}-{COUNTER}'],
         ['exmo', 'https://exmo.com/en/trade#?pair={BASE}_{COUNTER}'],
         ['gateio', 'https://www.gate.io/trade/{BASE}_{COUNTER}'],
         ['gemini', 'https://gemini.com'],
