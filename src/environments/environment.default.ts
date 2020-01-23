@@ -24,7 +24,8 @@ export const defaultEnvironment = {
         'hitbtc',
         'kraken',
         'livecoin',
-        'luno'
+        'luno',
+        'poloniex'
         //'yobit' // fetching tickers for many pairs gets rejected quickly by exchange
     ]
         .concat(exchangesForTrading).sort((a, b) => {

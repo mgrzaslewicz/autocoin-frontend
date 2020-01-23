@@ -18,7 +18,8 @@ export class ExchangeMarketLink {
         ['hitbtc', 'https://hitbtc.com/{BASE}-to-{COUNTER}'],
         ['kraken', 'https://trade.kraken.com/markets/kraken/{BASE}/{COUNTER}'],
         ['kucoin', 'https://trade.kucoin.com/spot/{BASE}-{COUNTER}'],
-        ['livecoin', 'https://www.livecoin.net/en/trading/{BASE}_{COUNTER}']
+        ['livecoin', 'https://www.livecoin.net/en/trading/{BASE}_{COUNTER}'],
+        ['poloniex', 'https://poloniex.com/exchange#{COUNTER}_{BASE}']
     ]);
 
     constructor() {
