@@ -17,6 +17,8 @@ interface CommonFilter {
     min24hUsdVolume: number;
     isMin24hUsdVolumeFilterOn: boolean;
     orderBookAmountThresholdIndexSelected: number;
+    baseCurrencyBlackList: string[];
+    counterCurrencyBlackList: string[];
 }
 
 @Component({
@@ -25,6 +27,11 @@ interface CommonFilter {
     styleUrls: ['./arbitrage-monitor.component.scss']
 })
 export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
+    baseCurrenciesMonitored: string[] = [];
+    selectedBaseCurrenciesMonitored: string[] = [];
+    counterCurrenciesMonitored: string[] = [];
+    selectedCounterCurrenciesMonitored: string[] = [];
+
     orderBookUsdAmountThresholds: number[] = [];
     orderBookUsdAmountThresholdsIndexes: number[] = [];
     isLoadingLiveOpportunities: boolean;
@@ -36,7 +43,9 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
     commonFilter: CommonFilter = {
         min24hUsdVolume: 1000,
         isMin24hUsdVolumeFilterOn: false,
-        orderBookAmountThresholdIndexSelected: 0
+        orderBookAmountThresholdIndexSelected: 0,
+        baseCurrencyBlackList: [],
+        counterCurrencyBlackList: []
     };
     liveOpportunitiesFilter: LiveOpportunitiesFilter = {
         isMaxRelativePercentFilterOn: false,
@@ -73,6 +82,12 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
         if (savedCommonFilters != null) {
             try {
                 this.commonFilter = JSON.parse(savedCommonFilters);
+                if (this.commonFilter.baseCurrencyBlackList === undefined) {
+                    this.commonFilter.baseCurrencyBlackList = [];
+                }
+                if (this.commonFilter.counterCurrencyBlackList === undefined) {
+                    this.commonFilter.counterCurrencyBlackList = [];
+                }
             } catch (e) {
                 localStorage.removeItem('arbitrage-monitor.common-filter');
             }
@@ -81,6 +96,7 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.authService.refreshTokenIfExpiringSoon().subscribe(() => {
+            this.fetchArbitrageMetadata();
             this.fetchLiveOpportunities();
             this.onAutoRefreshChange();
         });
@@ -107,6 +123,32 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
         }
     }
 
+    fetchArbitrageMetadata() {
+        this.arbitrageMonitorService.getArbitrageMetadata()
+            .subscribe(arbitrageMetadata => {
+                this.baseCurrenciesMonitored = arbitrageMetadata.baseCurrenciesMonitored.sort((a, b) => {
+                    return a.localeCompare(b);
+                });
+                this.selectedBaseCurrenciesMonitored = this.baseCurrenciesMonitored.slice(0, this.baseCurrenciesMonitored.length);
+                this.commonFilter.baseCurrencyBlackList.forEach(item => {
+                    const indexToRemove = this.selectedBaseCurrenciesMonitored.indexOf(item);
+                    if (indexToRemove >= 0) {
+                        this.selectedBaseCurrenciesMonitored.splice(indexToRemove, 1);
+                    }
+                });
+                this.counterCurrenciesMonitored = arbitrageMetadata.counterCurrenciesMonitored.sort((a, b) => {
+                    return a.localeCompare(b);
+                });
+                this.selectedCounterCurrenciesMonitored = this.counterCurrenciesMonitored.slice(0, this.counterCurrenciesMonitored.length);
+                this.commonFilter.counterCurrencyBlackList.forEach(item => {
+                    const indexToRemove = this.selectedCounterCurrenciesMonitored.indexOf(item);
+                    if (indexToRemove >= 0) {
+                        this.selectedCounterCurrenciesMonitored.splice(indexToRemove, 1);
+                    }
+                });
+            });
+    }
+
     fetchLiveOpportunities() {
         if (this.isLoadingLiveOpportunities) {
             return;
@@ -127,6 +169,55 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
                     this.toastService.danger('Sorry, something went wrong. Could not refresh arbitrage opportunities');
                 }
             );
+    }
+
+    addBaseCurrencyToBlackList(event: any) {
+        this.commonFilter.baseCurrencyBlackList.push(event.value);
+        this.saveCommonFilter();
+    }
+
+    addAllBaseCurrenciesToBlackList() {
+        this.commonFilter.baseCurrencyBlackList = this.baseCurrenciesMonitored.slice(0, this.baseCurrenciesMonitored.length);
+        this.saveCommonFilter();
+    }
+
+    clearBaseCurrenciesBlackList() {
+        this.commonFilter.baseCurrencyBlackList = [];
+        this.selectedBaseCurrenciesMonitored = this.baseCurrenciesMonitored.slice(0, this.baseCurrenciesMonitored.length);
+        this.saveCommonFilter();
+    }
+
+    removeBaseCurrencyFromBlackList(value: string | any) {
+        const index = this.commonFilter.baseCurrencyBlackList.indexOf(value);
+        if (index >= 0) {
+            this.commonFilter.baseCurrencyBlackList.splice(index, 1);
+            this.saveCommonFilter();
+        }
+    }
+
+
+    addCounterCurrencyToBlackList(event: any) {
+        this.commonFilter.counterCurrencyBlackList.push(event.value);
+        this.saveCommonFilter();
+    }
+
+    addAllCounterCurrenciesToBlackList() {
+        this.commonFilter.counterCurrencyBlackList = this.counterCurrenciesMonitored.slice(0, this.counterCurrenciesMonitored.length);
+        this.saveCommonFilter();
+    }
+
+    clearCounterCurrenciesBlackList() {
+        this.commonFilter.counterCurrencyBlackList = [];
+        this.selectedCounterCurrenciesMonitored = this.counterCurrenciesMonitored.slice(0, this.counterCurrenciesMonitored.length);
+        this.saveCommonFilter();
+    }
+
+    removeCounterCurrencyFromBlackList(value: string | any) {
+        const index = this.commonFilter.counterCurrencyBlackList.indexOf(value);
+        if (index >= 0) {
+            this.commonFilter.counterCurrencyBlackList.splice(index, 1);
+            this.saveCommonFilter();
+        }
     }
 
     showOpportunitiesTab() {
@@ -265,6 +356,15 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
         return this.getNumber(value, 99999999);
     }
 
+    getTotalNumberOfOpportunities(twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfit[]) {
+        const orderBookAmountThresholdIndexSelected = this.commonFilter.orderBookAmountThresholdIndexSelected;
+        return twoLegArbitrageProfitOpportunities
+            .filter(item => {
+                    return item.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected] != null;
+                }
+            ).length;
+    }
+
     filterOpportunities(twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfit[]): TwoLegArbitrageProfit[] {
         const orderBookAmountThresholdIndexSelected = this.commonFilter.orderBookAmountThresholdIndexSelected;
         return twoLegArbitrageProfitOpportunities
@@ -296,11 +396,16 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
                     isMeetingVolumeCriteria = true;
                 }
 
+                const isMeetingBaseCurrencyCriteria = this.commonFilter.baseCurrencyBlackList.indexOf(item.baseCurrency) < 0;
+                const isMeetingCounterCurrencyCriteria = this.commonFilter.counterCurrencyBlackList.indexOf(item.counterCurrency) < 0;
+
                 return this.isShowingExchange(item.secondExchange.toLowerCase()) &&
                     this.isShowingExchange(item.firstExchange.toLowerCase()) &&
                     isMeetingMinRelativePercentCriteria &&
                     isMeetingMaxRelativePercentCriteria &&
-                    isMeetingVolumeCriteria;
+                    isMeetingVolumeCriteria &&
+                    isMeetingBaseCurrencyCriteria &&
+                    isMeetingCounterCurrencyCriteria;
             })
             .sort((a, b) => {
                 return b.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].relativeProfitPercent - a.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].relativeProfitPercent;

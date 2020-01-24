@@ -15,6 +15,7 @@ $cyan:    #3498db !default;
 @import "utils";
 @import "rtl";
 @import "responsive";
+@import "~@ng-select/ng-select/themes/default.theme.css";
 
 html, body {
     min-height: 100%;

@@ -9,6 +9,7 @@ import {ExchangeMarketLink} from '../../../services/exchange-market-link.service
 })
 export class TwoLegArbitrageOpportunitiesTableComponent {
     @Input() profitOpportunities: TwoLegArbitrageProfit[];
+    @Input() totalNumberOfUnfilteredOpportunities: number;
     @Input() orderBookAmountThresholdIndexSelected: number;
 
     private exchangeLinkCache: Map<String, String> = new Map<String, String>();

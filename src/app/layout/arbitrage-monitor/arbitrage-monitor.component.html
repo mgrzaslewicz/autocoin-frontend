@@ -24,7 +24,7 @@
             </div>
         </div>
     </div>
-    <div class="row mt-1">
+    <div class="row mb-1">
         <div class="col-12">
             Market depth up to:
             <div>
@@ -39,6 +39,62 @@
                     </li>
                 </nav>
             </div>
+        </div>
+    </div>
+    <div class="row mb-1">
+        <div class="col-6">
+            <span>
+                Selected {{selectedBaseCurrenciesMonitored.length}} of {{baseCurrenciesMonitored.length}} base currencies:
+            <button [class.invisible]="selectedBaseCurrenciesMonitored.length === baseCurrenciesMonitored.length" class="btn btn-sm btn-light" (click)="clearBaseCurrenciesBlackList()">select all</button>
+            </span>
+            <ng-select
+                class="select-currencies mt-1"
+                [items]="baseCurrenciesMonitored"
+                [multiple]="true"
+                (add)="removeBaseCurrencyFromBlackList($event)"
+                (remove)="addBaseCurrencyToBlackList($event)"
+                (clear)="addAllBaseCurrenciesToBlackList()"
+                bindLabel="currency"
+                bindValue="currency"
+                placeholder="Select base currencies"
+                [(ngModel)]="selectedBaseCurrenciesMonitored">
+                <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+                    <div class="ng-value" *ngFor="let currency of items | slice:0:2">
+                        <span class="ng-value-label">{{currency}}</span>
+                        <span class="ng-value-icon right" (click)="clear(currency)" aria-hidden="true">×</span>
+                    </div>
+                    <div class="ng-value" *ngIf="items.length > 2">
+                        <span class="ng-value-label">{{items.length - 2}} more...</span>
+                    </div>
+                </ng-template>
+            </ng-select>
+        </div>
+        <div class="col-6">
+            <span>
+                Selected {{selectedCounterCurrenciesMonitored.length}} of {{counterCurrenciesMonitored.length}} counter currencies:
+                            <button [class.invisible]="selectedCounterCurrenciesMonitored.length === counterCurrenciesMonitored.length" class="btn btn-sm btn-light" (click)="clearCounterCurrenciesBlackList()">select all</button>
+            </span>
+            <ng-select
+                class="select-currencies mt-1"
+                [items]="counterCurrenciesMonitored"
+                [multiple]="true"
+                (add)="removeCounterCurrencyFromBlackList($event)"
+                (remove)="addCounterCurrencyToBlackList($event)"
+                (clear)="addAllCounterCurrenciesToBlackList()"
+                bindLabel="currency"
+                bindValue="currency"
+                placeholder="Select counter currencies"
+                [(ngModel)]="selectedCounterCurrenciesMonitored">
+                <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+                    <div class="ng-value" *ngFor="let currency of items | slice:0:2">
+                        <span class="ng-value-label">{{currency}}</span>
+                        <span class="ng-value-icon right" (click)="clear(currency)" aria-hidden="true">×</span>
+                    </div>
+                    <div class="ng-value" *ngIf="items.length > 2">
+                        <span class="ng-value-label">{{items.length - 2}} more...</span>
+                    </div>
+                </ng-template>
+            </ng-select>
         </div>
     </div>
     <nav class="nav nav-pills pb-1 border border-top-0 border-left-0 border-right-0">
@@ -122,6 +178,7 @@
         <div class="row">
             <app-two-leg-arbitrage-opportunities-table
                 [profitOpportunities]="filterOpportunities(twoLegArbitrageProfitOpportunities)"
+                [totalNumberOfUnfilteredOpportunities]="getTotalNumberOfOpportunities(twoLegArbitrageProfitOpportunities)"
                 [orderBookAmountThresholdIndexSelected]="commonFilter.orderBookAmountThresholdIndexSelected"
             ></app-two-leg-arbitrage-opportunities-table>
         </div>

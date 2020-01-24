@@ -16,6 +16,10 @@ export class ArbitrageMonitorService {
         return this.http.get<TwoLegArbitrageResponseDto>(`${this.arbitrageMonitorEndpointUrl}/two-leg-arbitrage-profits`);
     }
 
+    public getArbitrageMetadata(): Observable<TwoLegArbitrageMetadataResponseDto> {
+        return this.http.get<TwoLegArbitrageMetadataResponseDto>(`${this.arbitrageMonitorEndpointUrl}/two-leg-arbitrage-metadata`);
+    }
+
     public getTwoLegArbitrageProfitStatistics(): Observable<TwoLegArbitrageProfitStatistic[]> {
         return this.http.get<Array<TwoLegArbitrageProfitStatistic>>(`${this.arbitrageMonitorEndpointUrl}/two-leg-arbitrage-profit-statistics`);
     }
@@ -31,6 +35,11 @@ export interface TwoLegArbitrageProfitOpportunity {
     buyAtExchange: string;
     relativeProfitPercent: number;
     usdDepthUpTo: string;
+}
+
+export interface TwoLegArbitrageMetadataResponseDto {
+    baseCurrenciesMonitored: string[];
+    counterCurrenciesMonitored: string[];
 }
 
 export interface TwoLegArbitrageResponseDto {
