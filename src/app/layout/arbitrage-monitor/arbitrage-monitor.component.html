@@ -3,14 +3,33 @@
 
     <div class="row mb-1">
         <div class="col-12">
-            <button *ngFor="let exchangeName of exchangeNamesSupportedForGettingPublicMarketData"
-                    (click)="toggleExchangeFilter(exchangeName)"
-                    class="btn btn-sm mr-1 mb-1" type="button">{{exchangeName}}
-                <i class="fa" [class.fa-toggle-on]="isShowingExchange(exchangeName)"
-                   [class.fa-toggle-off]="!isShowingExchange(exchangeName)"></i>
-            </button>
+            <span>
+                Selected {{selectedExchanges.length}} of {{exchangeNamesSupportedForGettingPublicMarketData.length}} exchanges
+                 <button [class.invisible]="selectedExchanges.length === exchangeNamesSupportedForGettingPublicMarketData.length" class="btn btn-sm btn-light" (click)="clearExchangesBlackList()">select all</button>
+            </span>
+            <ng-select
+                class="select-currencies mt-1 mb-1"
+                [items]="exchangeNamesSupportedForGettingPublicMarketData"
+                [multiple]="true"
+                (add)="removeExchangeFromBlackList($event)"
+                (remove)="addExchangeToBlackList($event)"
+                (clear)="addAllExchangesToBlackList()"
+                bindLabel="exchange"
+                bindValue="exchange"
+                placeholder="Select exchanges"
+                [(ngModel)]="selectedExchanges">
+                <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+                    <div class="ng-value" *ngFor="let exchange of items | slice:0:3">
+                        <span class="ng-value-label">{{exchange}}</span>
+                        <span class="ng-value-icon right" (click)="clear(exchange)" aria-hidden="true">×</span>
+                    </div>
+                    <div class="ng-value" *ngIf="items.length > 3">
+                        <span class="ng-value-label">{{items.length - 3}} more...</span>
+                    </div>
+                </ng-template>
+            </ng-select>
         </div>
-        <div class="col-3">
+        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12">
             <div class="input-group">
                 <button (click)="toggleMinUsd24hVolumeFilter()"
                         class="btn btn-sm mr-1 mb-1" type="button">
@@ -141,7 +160,7 @@
             </div>
         </div>
         <div class="row mt-1">
-            <div class="col-xs-12 col-sm-6 col-md-5 col-lg-3">
+            <div class="col-xl-3 col-lg-5 col-md-6 col-sm-12 col-xs-12">
                 <div class="input-group">
                     <button (click)="toggleLiveOpportunitiesAutoRefresh()" class="btn btn-sm mr-1 mb-1" type="button">
                         Auto refresh seconds (min 10)

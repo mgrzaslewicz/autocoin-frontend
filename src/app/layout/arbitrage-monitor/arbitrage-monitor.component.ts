@@ -19,6 +19,7 @@ interface CommonFilter {
     orderBookAmountThresholdIndexSelected: number;
     baseCurrencyBlackList: string[];
     counterCurrencyBlackList: string[];
+    exchangeBlackList: string[];
 }
 
 @Component({
@@ -31,6 +32,7 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
     selectedBaseCurrenciesMonitored: string[] = [];
     counterCurrenciesMonitored: string[] = [];
     selectedCounterCurrenciesMonitored: string[] = [];
+    selectedExchanges: string[] = [];
 
     orderBookUsdAmountThresholds: number[] = [];
     orderBookUsdAmountThresholdsIndexes: number[] = [];
@@ -39,13 +41,13 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
     isOpportunitiesTabActive = true;
     twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfit[] = [];
     twoLegArbitrageProfitStatistics: TwoLegArbitrageProfitStatistic[] = [];
-    exchangeVisibilityMap: Map<string, boolean> = new Map<string, boolean>();
     commonFilter: CommonFilter = {
         min24hUsdVolume: 1000,
         isMin24hUsdVolumeFilterOn: false,
         orderBookAmountThresholdIndexSelected: 0,
         baseCurrencyBlackList: [],
-        counterCurrencyBlackList: []
+        counterCurrencyBlackList: [],
+        exchangeBlackList: []
     };
     liveOpportunitiesFilter: LiveOpportunitiesFilter = {
         isMaxRelativePercentFilterOn: false,
@@ -65,11 +67,7 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
         @Inject(ExchangeNamesSupportedForGettingPublicMarketData)
         public exchangeNamesSupportedForGettingPublicMarketData: string[]
     ) {
-        exchangeNamesSupportedForGettingPublicMarketData.forEach(exchangeName => {
-            const localStorageKey = `arbitrage-monitor.show-${exchangeName}`;
-            const isShowingExchange = localStorage.getItem(localStorageKey) !== 'false';
-            this.exchangeVisibilityMap.set(exchangeName, isShowingExchange);
-        });
+        this.selectedExchanges = exchangeNamesSupportedForGettingPublicMarketData.slice(0, exchangeNamesSupportedForGettingPublicMarketData.length);
         const savedLiveOpportunityFilters = localStorage.getItem('arbitrage-monitor.live-opportunities-filter');
         if (savedLiveOpportunityFilters != null) {
             try {
@@ -88,6 +86,10 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
                 if (this.commonFilter.counterCurrencyBlackList === undefined) {
                     this.commonFilter.counterCurrencyBlackList = [];
                 }
+                if (this.commonFilter.exchangeBlackList === undefined) {
+                    this.commonFilter.exchangeBlackList = [];
+                }
+                this.removeBlacklistedExchangesFromSelected();
             } catch (e) {
                 localStorage.removeItem('arbitrage-monitor.common-filter');
             }
@@ -256,7 +258,7 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
     }
 
     isShowingExchange(exchangeName: string): boolean {
-        return this.exchangeVisibilityMap.get(exchangeName);
+        return this.commonFilter.exchangeBlackList.indexOf(exchangeName) < 0;
     }
 
     toggleLiveOpportunitiesMinFilter() {
@@ -326,15 +328,28 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
         this.saveCommonFilter();
     }
 
-    toggleExchangeFilter(exchangeName: string) {
-        const localStorageKey = `arbitrage-monitor.show-${exchangeName}`;
-        if (this.isShowingExchange(exchangeName)) {
-            localStorage.setItem(localStorageKey, 'false');
-            this.exchangeVisibilityMap.set(exchangeName, false);
-        } else {
-            localStorage.removeItem(localStorageKey);
-            this.exchangeVisibilityMap.set(exchangeName, true);
+    removeExchangeFromBlackList(exchangeName: string | any) {
+        const index = this.commonFilter.exchangeBlackList.indexOf(exchangeName);
+        if (index >= 0) {
+            this.commonFilter.exchangeBlackList.splice(index, 1);
+            this.saveCommonFilter();
         }
+    }
+
+    addExchangeToBlackList(event: any) {
+        this.commonFilter.exchangeBlackList.push(event.value);
+        this.saveCommonFilter();
+    }
+
+    addAllExchangesToBlackList() {
+        this.commonFilter.exchangeBlackList = this.exchangeNamesSupportedForGettingPublicMarketData.slice(0, this.exchangeNamesSupportedForGettingPublicMarketData.length);
+        this.saveCommonFilter();
+    }
+
+    clearExchangesBlackList() {
+        this.commonFilter.exchangeBlackList = [];
+        this.selectedExchanges = this.exchangeNamesSupportedForGettingPublicMarketData.slice(0, this.exchangeNamesSupportedForGettingPublicMarketData.length);
+        this.saveCommonFilter();
     }
 
     private getNumber(value: any, defaultValue: number): number {
@@ -426,14 +441,26 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
                     return opportunity.count > 0;
                 });
 
+                const isMeetingBaseCurrencyCriteria = this.commonFilter.baseCurrencyBlackList.indexOf(item.baseCurrency) < 0;
+                const isMeetingCounterCurrencyCriteria = this.commonFilter.counterCurrencyBlackList.indexOf(item.counterCurrency) < 0;
+
                 return this.isShowingExchange(item.firstExchange.toLowerCase())
                     && this.isShowingExchange(item.secondExchange.toLowerCase())
                     && isMeetingVolumeCriteria
-                    && hasAnyOpportunityInSelectedMarketDepth;
+                    && hasAnyOpportunityInSelectedMarketDepth
+                    && isMeetingBaseCurrencyCriteria
+                    && isMeetingCounterCurrencyCriteria;
             })
             .sort((a, b) => {
                 return b.profitStatisticHistogramByUsdDepth[this.commonFilter.orderBookAmountThresholdIndexSelected].averageProfitPercent
                     - a.profitStatisticHistogramByUsdDepth[this.commonFilter.orderBookAmountThresholdIndexSelected].averageProfitPercent;
             });
     }
+
+    private removeBlacklistedExchangesFromSelected() {
+        this.commonFilter.exchangeBlackList.forEach(it => {
+            this.selectedExchanges.splice(this.selectedExchanges.indexOf(it), 1);
+        });
+    }
+
 }
