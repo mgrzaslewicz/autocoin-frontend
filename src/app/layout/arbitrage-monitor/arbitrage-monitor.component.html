@@ -10,6 +10,7 @@
             <ng-select
                 class="select-currencies mt-1 mb-1"
                 [items]="exchangeNamesSupportedForGettingPublicMarketData"
+                [virtualScroll]="true"
                 [multiple]="true"
                 (add)="removeExchangeFromBlackList($event)"
                 (remove)="addExchangeToBlackList($event)"
@@ -69,6 +70,7 @@
             <ng-select
                 class="select-currencies mt-1"
                 [items]="baseCurrenciesMonitored"
+                [virtualScroll]="true"
                 [multiple]="true"
                 (add)="removeBaseCurrencyFromBlackList($event)"
                 (remove)="addBaseCurrencyToBlackList($event)"
@@ -96,6 +98,7 @@
             <ng-select
                 class="select-currencies mt-1"
                 [items]="counterCurrenciesMonitored"
+                [virtualScroll]="true"
                 [multiple]="true"
                 (add)="removeCounterCurrencyFromBlackList($event)"
                 (remove)="addCounterCurrencyToBlackList($event)"

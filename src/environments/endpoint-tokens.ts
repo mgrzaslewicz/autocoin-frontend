@@ -8,6 +8,7 @@ export const ExchangeWalletEndpointUrlToken = new InjectionToken('ExchangeWallet
 export const OrdersEndpointUrlToken = new InjectionToken('OrdersEndpointUrlToken');
 export const ExchangeKeysCapabilityEndpointUrlToken = new InjectionToken('ExchangeKeysCapabilityEndpointUrlToken');
 export const PricesEndpointUrlToken = new InjectionToken('PricesEndpointUrlToken');
+export const ExchangeMetadataEndpointUrlToken = new InjectionToken('ExchangeMetadataEndpointUrlToken');
 export const StrategiesEndpointUrlToken = new InjectionToken('StrategiesEndpointUrlToken');
 export const HealthEndpointUrlToken = new InjectionToken('HealthEndpointUrlToken');
 export const SignupEndpointUrlToken = new InjectionToken('SignupEndpointUrlToken');

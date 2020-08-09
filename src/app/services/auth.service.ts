@@ -1,12 +1,12 @@
 import {Inject, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {FeatureToggle, FeatureToggleToken} from './feature.toogle.service';
 import {OauthEndpointUrlToken} from '../../environments/endpoint-tokens';
 import {Observable} from 'rxjs';
 
 interface UserAccountDto {
     shouldChangePassword: boolean;
     userAccountId: string;
+    userRoles: string[];
 }
 
 interface TokenResponseDto {
@@ -15,6 +15,7 @@ interface TokenResponseDto {
     expires_in: number;
     userAccount: UserAccountDto;
 }
+
 
 @Injectable()
 export class AuthService {
@@ -26,8 +27,7 @@ export class AuthService {
 
     constructor(
         @Inject(OauthEndpointUrlToken) private oauthTokenEndpointUrl,
-        private http: HttpClient,
-        @Inject(FeatureToggleToken) private featureToggle: FeatureToggle
+        private http: HttpClient
     ) {
     }
 
@@ -73,8 +73,9 @@ export class AuthService {
     }
 
     refreshTokenAndDoNothing() {
-        this.refreshToken().subscribe(() => {
-        });
+        this.refreshToken()
+            .subscribe(() => {
+            });
     }
 
     refreshToken(): Observable<TokenResponseDto> {
@@ -167,5 +168,9 @@ export class AuthService {
         } else {
             return false;
         }
+    }
+
+    isRoleAssignedToUser(roleName: string) {
+        return this.userAccount.userRoles.indexOf(roleName) !== -1;
     }
 }

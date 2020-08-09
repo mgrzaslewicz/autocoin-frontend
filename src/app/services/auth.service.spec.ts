@@ -1,8 +1,6 @@
-import {TestBed, inject, async} from '@angular/core/testing';
+import {async, inject, TestBed} from '@angular/core/testing';
 
 import {AuthService} from './auth.service';
-import {MarketsService} from './markets.service';
-import {MockBackend} from '@angular/http/testing';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 

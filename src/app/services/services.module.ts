@@ -1,6 +1,5 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {MarketsService} from './markets.service';
 import {HttpClientModule} from '@angular/common/http';
 import {ToastService} from './toast.service';
 import {OrdersService} from './orders.service';
@@ -15,7 +14,7 @@ import {ExchangeWalletService} from './exchange-wallet.service';
 import {
     ArbitrageMonitorEndpointUrlToken,
     ChangePasswordEndpointUrlToken,
-    ExchangeKeysCapabilityEndpointUrlToken,
+    ExchangeKeysCapabilityEndpointUrlToken, ExchangeMetadataEndpointUrlToken,
     ExchangeUsersEndpointUrlToken,
     ExchangeWalletEndpointUrlToken,
     HealthEndpointUrlToken,
@@ -31,6 +30,7 @@ import {SignupService} from './signup.service';
 import {ArbitrageMonitorService} from './arbitrage-monitor.service';
 import {ExchangeNamesSupportedForGettingPublicMarketData, ExchangeNamesSupportedForTradingToken} from '../../environments/environment.default';
 import {ExchangeMarketLink} from './exchange-market-link.service';
+import {ExchangeMetadataService} from "./exchange-metadata.service";
 
 @NgModule({
     imports: [
@@ -48,6 +48,7 @@ import {ExchangeMarketLink} from './exchange-market-link.service';
         {provide: OrdersEndpointUrlToken, useValue: environment.ordersEndpointUrl},
         {provide: ExchangeKeysCapabilityEndpointUrlToken, useValue: environment.exchangeKeysCapabilityEndpointUrl},
         {provide: PricesEndpointUrlToken, useValue: environment.pricesEndpointUrl},
+        {provide: ExchangeMetadataEndpointUrlToken, useValue: environment.exchangeMetadataEndpointUrlToken},
         {provide: StrategiesEndpointUrlToken, useValue: environment.strategiesEndpointUrl},
         {provide: HealthEndpointUrlToken, useValue: environment.healthEndpointUrl},
         {provide: SignupEndpointUrlToken, useValue: environment.signupEndpointUrl},
@@ -61,7 +62,7 @@ import {ExchangeMarketLink} from './exchange-market-link.service';
         ExchangeWalletService,
         ExchangeKeyCapabilityService,
         PriceService,
-        MarketsService,
+        ExchangeMetadataService,
         ToastService,
         OrdersService,
         HealthService,

@@ -30,6 +30,11 @@ const routes: Routes = [
                 canActivate: [AllowOnlyShouldNotChangePasswordGuard]
             },
             {
+                path: 'client-side-orders',
+                loadChildren: () => import('./client-side-orders/client-side-orders.module').then(m => m.ClientSideOrdersModule),
+                canActivate: [AllowOnlyShouldNotChangePasswordGuard]
+            },
+            {
                 path: 'orders',
                 loadChildren: () => import('./orders/orders.module').then(m => m.OrdersModule),
                 canActivate: [AllowOnlyShouldNotChangePasswordGuard]

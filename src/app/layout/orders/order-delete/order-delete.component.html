@@ -6,14 +6,13 @@
         </button>
     </div>
     <div class="modal-body">
-        <p>You're about to cancelling the order.</p>
-          
+        <p>You're about to cancel the order.</p>
         <p>
-          <strong>Order ID:</strong> {{ order.orderId }}<br>
-          <strong>Currency Pair:</strong> {{ order.currencyPair().symbol() }}<br>
-          <strong>Type:</strong> {{ order.orderType }}<br>
-          <strong>Amount:</strong> {{ order.orderedAmount }}<br>
-          <strong>Price:</strong> {{ order.price }}<br>
+            <strong>Order ID:</strong> {{ order.orderId }}<br>
+            <strong>Currency Pair:</strong> {{ order.baseCurrencyCode }}/{{ order.counterCurrencyCode }}/<br>
+            <strong>Type:</strong> {{ order.orderType }}<br>
+            <strong>Amount:</strong> {{ order.orderedAmount }}<br>
+            <strong>Price:</strong> {{ order.price }}<br>
         </p>
 
         <p>Proceed?</p>
@@ -22,4 +21,4 @@
         <button type="button" class="btn btn-danger" (click)="c('delete')">Yes. I am sure.</button>
         <button type="button" class="btn btn-secondary" (click)="d('Dismiss')">Dismiss</button>
     </div>
-  </ng-template>
+</ng-template>
