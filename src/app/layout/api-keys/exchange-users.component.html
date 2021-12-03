@@ -1,6 +1,6 @@
 <app-page-header [heading]="'API keys'" [icon]="'fa-users'"></app-page-header>
 
-<div class="card mb-3 bg-dark">
+<div class="card mb-3">
     <div class="card-header">API keys can be grouped (e.g. 'john', 'test')
     </div>
     <div *ngIf="!isLoading && exchangeUsers.length == 0" class="alert alert-primary">
@@ -14,7 +14,7 @@
 
 <div *ngFor="let exchangeUser of exchangeUsers" class="row">
     <div class="col-12">
-        <div class="card bg-dark mb-3">
+        <div class="card mb-3">
             <div class="card-header">
                 <div class="flex-row">
                     <div class="d-block"><i class="fa fa-user"></i> {{ exchangeUser.name }}</div>
