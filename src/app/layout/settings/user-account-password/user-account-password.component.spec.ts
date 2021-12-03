@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {UserAccountPasswordComponent} from "./user-account-password.component";
 
-import { UserAccountPasswordComponent } from './two-factor-authentication.component';
 
-describe('TwoFactorAuthenticationComponent', () => {
+describe('UserAccountPasswordComponent', () => {
   let component: UserAccountPasswordComponent;
   let fixture: ComponentFixture<UserAccountPasswordComponent>;
 

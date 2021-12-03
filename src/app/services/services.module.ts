@@ -13,7 +13,7 @@ import {ExchangeWalletService} from './exchange-wallet.service';
 import {
     ArbitrageMonitorEndpointUrlToken,
     ChangePasswordEndpointUrlToken,
-    ExchangeKeysCapabilityEndpointUrlToken, ExchangeMetadataEndpointUrlToken,
+    ExchangeKeysCapabilityEndpointUrlToken,
     ExchangeUsersEndpointUrlToken,
     ExchangeWalletEndpointUrlToken,
     HealthEndpointUrlToken,
@@ -29,7 +29,6 @@ import {SignupService} from './signup.service';
 import {ArbitrageMonitorService} from './arbitrage-monitor.service';
 import {ExchangeNamesSupportedForGettingPublicMarketData, ExchangeNamesSupportedForTradingToken} from '../../environments/environment.default';
 import {ExchangeMarketLink} from './exchange-market-link.service';
-import {ExchangeMetadataService} from "./exchange-metadata.service";
 
 @NgModule({
     imports: [
@@ -47,7 +46,6 @@ import {ExchangeMetadataService} from "./exchange-metadata.service";
         {provide: OrdersEndpointUrlToken, useValue: environment.ordersEndpointUrl},
         {provide: ExchangeKeysCapabilityEndpointUrlToken, useValue: environment.exchangeKeysCapabilityEndpointUrl},
         {provide: PricesEndpointUrlToken, useValue: environment.pricesEndpointUrl},
-        {provide: ExchangeMetadataEndpointUrlToken, useValue: environment.exchangeMetadataEndpointUrlToken},
         {provide: StrategiesEndpointUrlToken, useValue: environment.strategiesEndpointUrl},
         {provide: HealthEndpointUrlToken, useValue: environment.healthEndpointUrl},
         {provide: SignupEndpointUrlToken, useValue: environment.signupEndpointUrl},
@@ -61,7 +59,6 @@ import {ExchangeMetadataService} from "./exchange-metadata.service";
         ExchangeWalletService,
         ExchangeKeyCapabilityService,
         PriceService,
-        ExchangeMetadataService,
         ToastService,
         HealthService,
         SignupService,

@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {ExchangeHealthTileComponent} from "./exchange-health-tile.component";
 
-import { ExchangeHealthTileComponent } from './health-panel.component';
 
 describe('HealthPanelComponent', () => {
     let component: ExchangeHealthTileComponent;
