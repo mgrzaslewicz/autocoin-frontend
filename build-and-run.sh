@@ -13,8 +13,8 @@ removeOldContainer() {
         echo "No previous containers running found"
     else
         echo "Removing old containers"
-        docker stop ${ALREADY_RUNNING_CONTAINER}
-        docker rm ${ALREADY_RUNNING_CONTAINER}
+        docker stop "${ALREADY_RUNNING_CONTAINER}"
+        docker rm "${ALREADY_RUNNING_CONTAINER}"
     fi
 }
 

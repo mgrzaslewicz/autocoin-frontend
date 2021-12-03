@@ -1,14 +1,14 @@
-<app-page-header [heading]="'Users & API keys'" [icon]="'fa-users'"></app-page-header>
+<app-page-header [heading]="'API keys'" [icon]="'fa-users'"></app-page-header>
 
 <div class="card mb-3 bg-dark">
-    <div class="card-header">API <i class="fa fa-key"></i> key of each autocoin user which allow you to group the keys
+    <div class="card-header">API keys can be grouped (e.g. 'john', 'test')
     </div>
     <div *ngIf="!isLoading && exchangeUsers.length == 0" class="alert alert-primary">
-        Start with adding your first exchange user for grouping API keys, eg your name. Then assign API keys for each
+        Start with adding your first API key group, eg your name. Then assign API keys for each
         exchange
     </div>
     <div class="card-body">
-        <a routerLink="/api-keys/create" class="btn btn-info">Add user <i class="fa fa-user-plus"></i></a>
+        <a routerLink="/api-keys/create" class="btn btn-info">Add group <i class="fa fa-user-plus"></i></a>
     </div>
 </div>
 

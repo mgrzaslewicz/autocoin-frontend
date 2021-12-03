@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {ArbitrageMonitorComponent} from "./arbitrage-monitor.component";
 
-import { ArbitrageMonitorComponent } from './orders.component';
 
-describe('OrdersComponent', () => {
+describe('ArbitrageMonitorComponent', () => {
   let component: ArbitrageMonitorComponent;
   let fixture: ComponentFixture<ArbitrageMonitorComponent>;
 

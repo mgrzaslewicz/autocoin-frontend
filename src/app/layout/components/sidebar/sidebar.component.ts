@@ -2,8 +2,7 @@ import {Component, Inject} from '@angular/core';
 import {
     FeatureToggle,
     FeatureToggleToken,
-    FEATURE_HEALTH,
-    FEATURE_CLIENT_SIDE_ORDER, ROLE_CLIENT_SIDE_ORDER
+    FEATURE_HEALTH
 } from '../../../services/feature.toogle.service';
 
 @Component({
@@ -14,12 +13,10 @@ import {
 export class SidebarComponent {
     isActive = false;
     isHealthTabAvailable = false;
-    isCreateClientSideOrderTabAvailable = false;
     showMenu = '';
 
     constructor(@Inject(FeatureToggleToken) private featureToggle: FeatureToggle) {
         this.isHealthTabAvailable = featureToggle.isActive(FEATURE_HEALTH);
-        this.isCreateClientSideOrderTabAvailable = featureToggle.isActiveByToggleOrRole(FEATURE_CLIENT_SIDE_ORDER, ROLE_CLIENT_SIDE_ORDER);
     }
 
     eventCalled() {

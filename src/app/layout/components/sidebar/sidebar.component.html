@@ -12,18 +12,6 @@
             <i class="fa fa-fw fa-money"></i>&nbsp;{{ 'Wallets' | translate }}
         </a>
 
-        <a routerLink="/trading-automation" [routerLinkActive]="['router-link-active']" class="list-group-item">
-            <i class="fa fa-line-chart"></i>&nbsp;{{ 'Trading automation' | translate }}
-        </a>
-
-        <a routerLink="/client-side-orders" [routerLinkActive]="['router-link-active']" class="list-group-item" *ngIf="isCreateClientSideOrderTabAvailable">
-            <i class="fa fa-fw fa-exchange"></i>&nbsp;{{ 'Create order' | translate }}
-        </a>
-
-        <a routerLink="/orders" [routerLinkActive]="['router-link-active']" class="list-group-item">
-            <i class="fa fa-fw fa-calendar"></i>&nbsp;{{ 'Open orders' | translate }}
-        </a>
-
         <a routerLink="/arbitrage-monitor" [routerLinkActive]="['router-link-active']" class="list-group-item">
             <i class="fa fa-fw fa-binoculars"></i>&nbsp;{{ 'Arbitrage monitor' | translate }}
         </a>

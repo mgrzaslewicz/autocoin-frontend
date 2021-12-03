@@ -2,7 +2,6 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
 import {ToastService} from './toast.service';
-import {OrdersService} from './orders.service';
 import {HealthService} from './health.service';
 import {AuthService} from './auth.service';
 import {PriceService} from './price.service';
@@ -64,7 +63,6 @@ import {ExchangeMetadataService} from "./exchange-metadata.service";
         PriceService,
         ExchangeMetadataService,
         ToastService,
-        OrdersService,
         HealthService,
         SignupService,
         ArbitrageMonitorService,
