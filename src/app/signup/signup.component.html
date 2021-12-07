@@ -3,7 +3,7 @@
         <div class="col-xs-12 col-sm-12 col-md-7 col-lg-5 col-xl-4">
 
             <div *ngIf="!isShowingThankYou">
-                <h1>Try the trading automation for free</h1>
+                <h1>Try it for free. Just leave your email and tell me what you need</h1>
                 <form id="signupForm" ngForm role="form" (ngSubmit)="onSubmit(signupForm)" #signupForm="ngForm">
                     <div class="form-content">
                         <div class="form-group">
@@ -22,16 +22,16 @@
                                    required
                                    id="question1" type="text"
                                    class="form-control input-underline input-lg"
-                                   placeholder="What would you like to automate most?"
+                                   placeholder="What takes you the most time or is inconvenient for you?"
                                    [class.is-invalid]="isQuestionOneInvalid"
                                    (input)="onQuestionOneInput()">
                             <div class="invalid-feedback">
-                                Provide a question
+                                Provide an answer
                             </div>
                         </div>
                         <div class="form-group">
                             <input id="question2" type="text" class="form-control input-underline input-lg"
-                                   placeholder="Questions?">
+                                   placeholder="Functionality related to cryptocurrencies you need is..?">
                         </div>
                     </div>
                     <button type="submit" [disabled]="isSubmitInProgress"
