@@ -47,7 +47,7 @@
             </div>
         </div>
         <ng-container *ngFor="let exchangeBalance of exchangeUser.exchangeBalances">
-            <span class="badge badge-light"><i class="fa fa-money" aria-hidden="true"></i> {{ exchangeBalance.exchangeName }}</span>
+            <span class="badge badge-secondary"><i class="fa fa-money" aria-hidden="true"></i> {{ exchangeBalance.exchangeName }}</span>
             <span *ngIf="exchangeBalance.errorMessage != null" class="badge badge-warning">
                     {{ exchangeBalance.errorMessage }}
                 </span>
