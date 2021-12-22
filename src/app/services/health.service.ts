@@ -28,6 +28,7 @@ export interface ExchangeHealthDto {
     healthy: Boolean;
     canTrade: Boolean;
     canGetPublicMarketData: Boolean;
+    canGetTradingFeeRanges: Boolean;
     capabilities: ExchangeCapabilityDto[];
     comments: string[];
     timestamp: number;

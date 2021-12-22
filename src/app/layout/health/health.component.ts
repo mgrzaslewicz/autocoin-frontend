@@ -40,6 +40,11 @@ export class HealthComponent implements OnInit {
                 }).sort((a, b) => {
                     return a.exchangeName.localeCompare(b.exchangeName);
                 }));
+                this.exchangesHealth.set('Ok for detailed arbitrage monitoring', healthDtoList.filter(it => {
+                    return it.canGetTradingFeeRanges;
+                }).sort((a, b) => {
+                    return a.exchangeName.localeCompare(b.exchangeName);
+                }));
                 this.exchangesHealth.set('Ok for trading', healthDtoList.filter(it => {
                     return it.healthy;
                 }).sort((a, b) => {
