@@ -31,6 +31,7 @@ export interface ExchangeHealthDto {
     canGetTradingFeeRanges: Boolean;
     capabilities: ExchangeCapabilityDto[];
     comments: string[];
+    warningsAndErrors: string[];
     timestamp: number;
 }
 

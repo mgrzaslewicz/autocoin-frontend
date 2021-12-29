@@ -3,7 +3,13 @@
         <div class="flex-row">
             <div class="d-block">
                 <i class="fa fa-heartbeat"></i> {{exchangeHealth.exchangeName}}
-                <span *ngIf="exchangeHealth.comments.length > 0">*</span>
+                <button
+                    *ngIf="exchangeHealth.warningsAndErrors && exchangeHealth.warningsAndErrors.length > 0"
+                    (click)="showWarnings()"
+                    class="btn btn-warning btn-sm">
+                    <span class="badge">{{exchangeHealth.warningsAndErrors.length}} warnings/errors</span>
+                </button>
+                <span *ngIf="exchangeHealth.comments.length > 0" class="badge">{{exchangeHealth.comments.length}} comments</span>
             </div>
         </div>
     </div>

@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {ExchangeHealthDto} from '../../../services/health.service';
+import {ToastService} from "../../../services/toast.service";
 
 @Component({
     selector: 'app-health-panel',
@@ -27,7 +28,7 @@ export class ExchangeHealthTileComponent implements OnInit {
     showDetails = false;
     slide = 'out';
 
-    constructor() {
+    constructor(private toastService: ToastService) {
     }
 
     ngOnInit() {
@@ -46,5 +47,11 @@ export class ExchangeHealthTileComponent implements OnInit {
     toggleDetailsVisibility() {
         this.showDetails = !this.showDetails;
         this.slide = this.slide === 'in' ? 'out' : 'in';
+    }
+
+    showWarnings() {
+        console.log(this.exchangeHealth.exchangeName + 'health warnings:');
+        console.log(this.exchangeHealth.warningsAndErrors);
+        this.toastService.info(this.exchangeHealth.exchangeName + ' health warnings printed to console');
     }
 }
