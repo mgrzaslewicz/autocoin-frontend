@@ -20,7 +20,7 @@ export class HealthService {
 
 export interface ExchangeCapabilityDto {
     name: string;
-    capable?: Boolean;
+    value?: string;
 }
 
 export interface ExchangeHealthDto {

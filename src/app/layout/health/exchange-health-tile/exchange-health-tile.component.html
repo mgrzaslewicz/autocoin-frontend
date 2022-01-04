@@ -18,7 +18,7 @@
             Capabilities
             <ul>
                 <li *ngFor="let capability of exchangeHealth.capabilities">
-                    {{capability.name}}: {{capability.capable === true ? 'OK' : capability.capable === false ? 'Bad' : 'Unknown'}}
+                    {{capability.name}}: {{capability.value === null ? 'Unknown' : capability.value}}
                 </li>
             </ul>
             <div *ngIf="exchangeHealth.comments.length > 0">
