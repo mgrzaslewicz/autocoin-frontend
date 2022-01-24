@@ -38,7 +38,6 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
     orderBookUsdAmountThresholdsIndexes: number[] = [];
     isLoadingLiveOpportunities: boolean;
     isLoadingStatistics = false;
-    isOpportunitiesTabActive = true;
     twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfit[] = [];
     twoLegArbitrageProfitStatistics: TwoLegArbitrageProfitStatistic[] = [];
     commonFilter: CommonFilter = {
@@ -222,32 +221,6 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
         }
     }
 
-    showOpportunitiesTab() {
-        this.isOpportunitiesTabActive = true;
-    }
-
-    private fetchStatistics() {
-        if (this.isLoadingStatistics) {
-            return;
-        }
-        this.isLoadingStatistics = true;
-        this.arbitrageMonitorService.getTwoLegArbitrageProfitStatistics()
-            .subscribe(twoLegArbitrageProfitStatistics => {
-                    this.twoLegArbitrageProfitStatistics = twoLegArbitrageProfitStatistics;
-                    this.isLoadingStatistics = false;
-                },
-                error => {
-                    this.isLoadingStatistics = false;
-                    this.toastService.danger('Sorry, something went wrong. Could not refresh arbitrage opportunities statistics');
-                }
-            );
-    }
-
-    showStatisticsTab() {
-        this.isOpportunitiesTabActive = false;
-        this.fetchStatistics();
-    }
-
     isOrderBookAmountThresholdSelected(orderBookUsdAmountThresholdIndex: number): boolean {
         return this.commonFilter.orderBookAmountThresholdIndexSelected === orderBookUsdAmountThresholdIndex;
     }
@@ -424,36 +397,6 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
             })
             .sort((a, b) => {
                 return b.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].relativeProfitPercent - a.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].relativeProfitPercent;
-            });
-    }
-
-    filterStatistics(twoLegArbitrageProfitStatistics: TwoLegArbitrageProfitStatistic[]) {
-        return twoLegArbitrageProfitStatistics
-            .filter(item => {
-                let isMeetingVolumeCriteria: boolean;
-                if (this.isFilteringByMin24hVolume()) {
-                    isMeetingVolumeCriteria = item.minUsd24hVolume >= this.getMin(this.commonFilter.min24hUsdVolume);
-                } else {
-                    isMeetingVolumeCriteria = true;
-                }
-
-                const hasAnyOpportunityInSelectedMarketDepth = item.profitStatisticHistogramByUsdDepth[this.commonFilter.orderBookAmountThresholdIndexSelected].profitOpportunityHistogram.some(opportunity => {
-                    return opportunity.count > 0;
-                });
-
-                const isMeetingBaseCurrencyCriteria = this.commonFilter.baseCurrencyBlackList.indexOf(item.baseCurrency) < 0;
-                const isMeetingCounterCurrencyCriteria = this.commonFilter.counterCurrencyBlackList.indexOf(item.counterCurrency) < 0;
-
-                return this.isShowingExchange(item.firstExchange.toLowerCase())
-                    && this.isShowingExchange(item.secondExchange.toLowerCase())
-                    && isMeetingVolumeCriteria
-                    && hasAnyOpportunityInSelectedMarketDepth
-                    && isMeetingBaseCurrencyCriteria
-                    && isMeetingCounterCurrencyCriteria;
-            })
-            .sort((a, b) => {
-                return b.profitStatisticHistogramByUsdDepth[this.commonFilter.orderBookAmountThresholdIndexSelected].averageProfitPercent
-                    - a.profitStatisticHistogramByUsdDepth[this.commonFilter.orderBookAmountThresholdIndexSelected].averageProfitPercent;
             });
     }
 

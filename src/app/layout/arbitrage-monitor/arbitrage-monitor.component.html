@@ -5,7 +5,8 @@
         <div class="col-12">
             <span>
                 Selected {{selectedExchanges.length}} of {{exchangeNamesSupportedForGettingPublicMarketData.length}} exchanges
-                 <button [class.invisible]="selectedExchanges.length === exchangeNamesSupportedForGettingPublicMarketData.length" class="btn btn-sm btn-light" (click)="clearExchangesBlackList()">select all</button>
+                 <button [class.invisible]="selectedExchanges.length === exchangeNamesSupportedForGettingPublicMarketData.length" class="btn btn-sm btn-light"
+                         (click)="clearExchangesBlackList()">select all</button>
             </span>
             <ng-select
                 class="select-currencies mt-1 mb-1"
@@ -65,7 +66,8 @@
         <div class="col-6">
             <span>
                 Selected {{selectedBaseCurrenciesMonitored.length}} of {{baseCurrenciesMonitored.length}} base currencies:
-            <button [class.invisible]="selectedBaseCurrenciesMonitored.length === baseCurrenciesMonitored.length" class="btn btn-sm btn-light" (click)="clearBaseCurrenciesBlackList()">select all</button>
+            <button [class.invisible]="selectedBaseCurrenciesMonitored.length === baseCurrenciesMonitored.length" class="btn btn-sm btn-light"
+                    (click)="clearBaseCurrenciesBlackList()">select all</button>
             </span>
             <ng-select
                 class="select-currencies mt-1"
@@ -93,7 +95,8 @@
         <div class="col-6">
             <span>
                 Selected {{selectedCounterCurrenciesMonitored.length}} of {{counterCurrenciesMonitored.length}} counter currencies:
-                            <button [class.invisible]="selectedCounterCurrenciesMonitored.length === counterCurrenciesMonitored.length" class="btn btn-sm btn-light" (click)="clearCounterCurrenciesBlackList()">select all</button>
+                            <button [class.invisible]="selectedCounterCurrenciesMonitored.length === counterCurrenciesMonitored.length" class="btn btn-sm btn-light"
+                                    (click)="clearCounterCurrenciesBlackList()">select all</button>
             </span>
             <ng-select
                 class="select-currencies mt-1"
@@ -119,105 +122,77 @@
             </ng-select>
         </div>
     </div>
-    <nav class="nav nav-pills pb-1 border border-top-0 border-left-0 border-right-0">
-        <li class="nav-item">
-            <a (click)="showOpportunitiesTab()" class="nav-link" [class.active]="isOpportunitiesTabActive">
-                Live opportunities
-            </a>
-        </li>
-        <li class="nav-item">
-            <a (click)="showStatisticsTab()" class="nav-link" [class.active]="!isOpportunitiesTabActive">
-                24h statistics
-            </a>
-        </li>
-    </nav>
 
-    <div *ngIf="isOpportunitiesTabActive">
-        <div class="row mt-1">
-            <div class="col-xs-12 col-sm-6 col-md-5 col-lg-3">
-                <div class="input-group">
-                    <button (click)="toggleLiveOpportunitiesMinFilter()" class="btn btn-sm mr-1 mb-1" type="button">
-                        Min profit %
-                        <i class="fa" [class.fa-toggle-on]="isFilteringOpportunitiesByMinRelativePercent()"
-                           [class.fa-toggle-off]="!isFilteringOpportunitiesByMinRelativePercent()"></i>
-                    </button>
-                    <input [(ngModel)]="liveOpportunitiesFilter.minRelativePercentFilterValue"
-                           (input)="saveLiveOpportunitiesFilter()"
-                           type="text"
-                           class="form-control minw-30"
-                           [disabled]="!isFilteringOpportunitiesByMinRelativePercent()">
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-6 col-md-5 col-lg-3">
-                <div class="input-group">
-                    <button (click)="toggleLiveOpportunitiesMaxFilter()" class="btn btn-sm mr-1 mb-1" type="button">
-                        Max profit %
-                        <i class="fa" [class.fa-toggle-on]="isFilteringOpportunitiesByMaxRelativePercent()"
-                           [class.fa-toggle-off]="!isFilteringOpportunitiesByMaxRelativePercent()"></i>
-                    </button>
-                    <input [(ngModel)]="liveOpportunitiesFilter.maxRelativePercentFilterValue"
-                           (input)="saveLiveOpportunitiesFilter()"
-                           type="text" class="form-control minw-30"
-                           [disabled]="!isFilteringOpportunitiesByMaxRelativePercent()">
-                </div>
-            </div>
-        </div>
-        <div class="row mt-1">
-            <div class="col-xl-3 col-lg-5 col-md-6 col-sm-12 col-xs-12">
-                <div class="input-group">
-                    <button (click)="toggleLiveOpportunitiesAutoRefresh()" class="btn btn-sm mr-1 mb-1" type="button">
-                        Auto refresh seconds (min 10)
-                        <i class="fa" [class.fa-toggle-on]="isAutoRefreshingLiveOpportunities()"
-                           [class.fa-toggle-off]="!isAutoRefreshingLiveOpportunities()"></i>
-                    </button>
-                    <input [(ngModel)]="liveOpportunitiesFilter.autoRefreshSeconds"
-                           (input)="onAutoRefreshChange()"
-                           type="text"
-                           class="form-control minw-30"
-                           [disabled]="!isAutoRefreshingLiveOpportunities()">
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <button class="btn btn-info btn-sm mr-1 mt-1 mb-1" (click)="fetchLiveOpportunities()"
-                        [disabled]="isLoadingLiveOpportunities">
-                    <i class="fa fa-refresh" [class.is-pending]="isLoadingLiveOpportunities"></i> Refresh arbitrage
-                    opportunities
+    <div class="row mt-1">
+        <div class="col-xs-12 col-sm-6 col-md-5 col-lg-3">
+            <div class="input-group">
+                <button (click)="toggleLiveOpportunitiesMinFilter()" class="btn btn-sm mr-1 mb-1" type="button">
+                    Min profit %
+                    <i class="fa" [class.fa-toggle-on]="isFilteringOpportunitiesByMinRelativePercent()"
+                       [class.fa-toggle-off]="!isFilteringOpportunitiesByMinRelativePercent()"></i>
                 </button>
-                <div class="text-muted ml-auto mb-1">
-                    <small>
-                        Last refresh: {{ (getLastRefreshTime() | date: 'y-MM-dd HH:mm:ss') || '-' }}
-                    </small>
-                </div>
-            </div>
-            <div *ngIf="!isLoadingLiveOpportunities && twoLegArbitrageProfitOpportunities.length === 0"
-                 class="col-12">
-                <span class="badge badge-warning">No arbitrage opportunities found, refresh to check again</span>
+                <input [(ngModel)]="liveOpportunitiesFilter.minRelativePercentFilterValue"
+                       (input)="saveLiveOpportunitiesFilter()"
+                       type="text"
+                       class="form-control minw-30"
+                       [disabled]="!isFilteringOpportunitiesByMinRelativePercent()">
             </div>
         </div>
-
-        <div class="row">
-            <app-two-leg-arbitrage-opportunities-table
-                [profitOpportunities]="filterOpportunities(twoLegArbitrageProfitOpportunities)"
-                [totalNumberOfUnfilteredOpportunities]="getTotalNumberOfOpportunities(twoLegArbitrageProfitOpportunities)"
-                [orderBookAmountThresholdIndexSelected]="commonFilter.orderBookAmountThresholdIndexSelected"
-            ></app-two-leg-arbitrage-opportunities-table>
+        <div class="col-xs-12 col-sm-6 col-md-5 col-lg-3">
+            <div class="input-group">
+                <button (click)="toggleLiveOpportunitiesMaxFilter()" class="btn btn-sm mr-1 mb-1" type="button">
+                    Max profit %
+                    <i class="fa" [class.fa-toggle-on]="isFilteringOpportunitiesByMaxRelativePercent()"
+                       [class.fa-toggle-off]="!isFilteringOpportunitiesByMaxRelativePercent()"></i>
+                </button>
+                <input [(ngModel)]="liveOpportunitiesFilter.maxRelativePercentFilterValue"
+                       (input)="saveLiveOpportunitiesFilter()"
+                       type="text" class="form-control minw-30"
+                       [disabled]="!isFilteringOpportunitiesByMaxRelativePercent()">
+            </div>
         </div>
     </div>
-
-    <div *ngIf="!isOpportunitiesTabActive && isLoadingStatistics" class="row">
+    <div class="row mt-1">
+        <div class="col-xl-3 col-lg-5 col-md-6 col-sm-12 col-xs-12">
+            <div class="input-group">
+                <button (click)="toggleLiveOpportunitiesAutoRefresh()" class="btn btn-sm mr-1 mb-1" type="button">
+                    Auto refresh seconds (min 10)
+                    <i class="fa" [class.fa-toggle-on]="isAutoRefreshingLiveOpportunities()"
+                       [class.fa-toggle-off]="!isAutoRefreshingLiveOpportunities()"></i>
+                </button>
+                <input [(ngModel)]="liveOpportunitiesFilter.autoRefreshSeconds"
+                       (input)="onAutoRefreshChange()"
+                       type="text"
+                       class="form-control minw-30"
+                       [disabled]="!isAutoRefreshingLiveOpportunities()">
+            </div>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-12">
-            <span class="badge badge-info"><i class="fa fa-refresh is-pending"></i> Loading statistics</span>
+            <button class="btn btn-info btn-sm mr-1 mt-1 mb-1" (click)="fetchLiveOpportunities()"
+                    [disabled]="isLoadingLiveOpportunities">
+                <i class="fa fa-refresh" [class.is-pending]="isLoadingLiveOpportunities"></i> Refresh arbitrage
+                opportunities
+            </button>
+            <div class="text-muted ml-auto mb-1">
+                <small>
+                    Last refresh: {{ (getLastRefreshTime() | date: 'y-MM-dd HH:mm:ss') || '-' }}
+                </small>
+            </div>
+        </div>
+        <div *ngIf="!isLoadingLiveOpportunities && twoLegArbitrageProfitOpportunities.length === 0"
+             class="col-12">
+            <span class="badge badge-warning">No arbitrage opportunities found, refresh to check again</span>
         </div>
     </div>
-    <div *ngIf="!isOpportunitiesTabActive && !isLoadingStatistics" class="row">
-        <div *ngFor="let twoLegArbitrageProfitStatistic of filterStatistics(twoLegArbitrageProfitStatistics)"
-             class="col-xs-12 col-sm-12 col-md-6 col-xl-4">
-            <app-two-leg-arbitrage-profit-statistic-tile
-                [twoLegArbitrageProfitStatistic]="twoLegArbitrageProfitStatistic"
-                [orderBookAmountThresholdIndexSelected]="commonFilter.orderBookAmountThresholdIndexSelected"></app-two-leg-arbitrage-profit-statistic-tile>
-        </div>
+
+    <div class="row">
+        <app-two-leg-arbitrage-opportunities-table
+            [profitOpportunities]="filterOpportunities(twoLegArbitrageProfitOpportunities)"
+            [totalNumberOfUnfilteredOpportunities]="getTotalNumberOfOpportunities(twoLegArbitrageProfitOpportunities)"
+            [orderBookAmountThresholdIndexSelected]="commonFilter.orderBookAmountThresholdIndexSelected"
+        ></app-two-leg-arbitrage-opportunities-table>
     </div>
 
 </div>
