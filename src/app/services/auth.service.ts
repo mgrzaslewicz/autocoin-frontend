@@ -22,6 +22,7 @@ export class AuthService {
     private refreshTokenKey = 'refreshToken';
     private tokenExpiresAtMillisKey = 'tokenExpiresAtMillis';
     private accessTokenKey = 'accessToken';
+    private userRolesKey = 'userRoles';
     private userNameKey = 'userName';
     private userAccount: UserAccountDto = null;
 
@@ -56,6 +57,7 @@ export class AuthService {
                 this.storeAccessToken(response.access_token);
                 this.storeRefreshToken(response.refresh_token);
                 this.storeUserName(emailAddress);
+                this.storeUserRoles(response.userAccount.userRoles);
                 this.setUserAccount(response.userAccount);
             });
     }
@@ -144,6 +146,10 @@ export class AuthService {
         localStorage.setItem(this.userNameKey, userName);
     }
 
+    private storeUserRoles(userRoles) {
+        localStorage.setItem(this.userRolesKey, JSON.stringify(userRoles));
+    }
+
     private setUserAccount(userAccount: UserAccountDto) {
         this.userAccount = userAccount;
     }
@@ -170,7 +176,16 @@ export class AuthService {
         }
     }
 
+    private getUserRoles(): string[] {
+        const userRoles = localStorage.getItem(this.userRolesKey);
+        if (userRoles != null) {
+           return JSON.parse(userRoles);
+        } else {
+            return [];
+        }
+    }
+
     isRoleAssignedToUser(roleName: string) {
-        return this.userAccount.userRoles.indexOf(roleName) !== -1;
+        return this.getUserRoles().indexOf(roleName) !== -1;
     }
 }

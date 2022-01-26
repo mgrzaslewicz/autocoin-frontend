@@ -3,6 +3,7 @@ import {AuthService} from '../../services/auth.service';
 import {ArbitrageMonitorService, TwoLegArbitrageProfit, TwoLegArbitrageProfitStatistic} from '../../services/arbitrage-monitor.service';
 import {ToastService} from '../../services/toast.service';
 import {ExchangeNamesSupportedForGettingPublicMarketData} from '../../../environments/environment.default';
+import {animate, state, style, transition, trigger} from "@angular/animations";
 
 interface LiveOpportunitiesFilter {
     isMinRelativePercentFilterOn: boolean;
@@ -25,7 +26,21 @@ interface CommonFilter {
 @Component({
     selector: 'app-arbitrage-monitor',
     templateUrl: './arbitrage-monitor.component.html',
-    styleUrls: ['./arbitrage-monitor.component.scss']
+    styleUrls: ['./arbitrage-monitor.component.scss'],
+    animations: [
+        trigger('myAnimation', [
+            state('in', style({
+                height: '*',
+                overflow: 'hidden'
+            })),
+            state('out', style({
+                height: '0',
+                overflow: 'hidden'
+            })),
+            transition('in => out', animate('100ms ease-in-out')),
+            transition('out => in', animate('100ms ease-in-out'))
+        ])
+    ]
 })
 export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
     baseCurrenciesMonitored: string[] = [];
@@ -58,6 +73,10 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
     };
     private lastTwoLegArbitrageOpportunitiesRefreshTimeKey = 'lastTwoLegArbitrageOpportunitiesRefreshTime';
     private scheduledLiveOpportunitiesRefresh: number = null;
+
+    showSubscriptionPlanDetails = false;
+    slide = 'out';
+
 
     constructor(
         private authService: AuthService,
@@ -404,6 +423,15 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
         this.commonFilter.exchangeBlackList.forEach(it => {
             this.selectedExchanges.splice(this.selectedExchanges.indexOf(it), 1);
         });
+    }
+
+    hasArbitrageSubscriptionActive() {
+       return this.authService.isRoleAssignedToUser("ROLE_DETAILED_ARBITRAGE_USER");
+    }
+
+    toggleSubscriptionPlanDetailsVisibility() {
+        this.showSubscriptionPlanDetails = !this.showSubscriptionPlanDetails;
+        this.slide = this.slide === 'in' ? 'out' : 'in';
     }
 
 }
