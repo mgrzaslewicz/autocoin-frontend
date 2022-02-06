@@ -12,9 +12,11 @@ import {ToastService} from '../services/toast.service';
     animations: [routerTransition()]
 })
 export class LoginComponent implements OnInit {
-
-    @ViewChild('loginForm', { static: true })
+    @ViewChild('loginForm', {static: true})
     public loginForm: NgForm;
+
+    private invalidLoginMessage = 'Wrong login or password or account with this login does not exist.';
+
     isShowingTwoFactorAuthenticationCodeInput = false;
 
     constructor(public router: Router,
@@ -39,8 +41,10 @@ export class LoginComponent implements OnInit {
                         }
                         this.isShowingTwoFactorAuthenticationCodeInput = true;
                     } else {
-                        this.toastService.danger('Wrong username or password.');
+                        this.toastService.danger(this.invalidLoginMessage);
                     }
+                } else if (response.status === 401) {
+                    this.toastService.danger(this.invalidLoginMessage);
                 } else {
                     this.toastService.danger('Service is unavailable. Try again later.');
                 }
