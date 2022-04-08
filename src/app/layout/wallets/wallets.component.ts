@@ -57,7 +57,9 @@ export class WalletsComponent implements OnInit, OnDestroy {
     private exchangeUsersSubscription: Subscription;
     private currencyPairPrices: Map<string, number> = new Map();
     private btcUsd = 'BTC-USD';
+    private usdBtc = 'USD-BTC';
     private btcUsdPriceKey = 'price-BTC-USD';
+    private usdBtcPriceKey = 'price-USD-BTC';
     private lastWalletsRefreshTimeKey = 'lastWalletsRefreshTime';
 
     constructor(
@@ -70,18 +72,20 @@ export class WalletsComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.authService.refreshTokenIfExpiringSoon().subscribe(() => {
-            this.exchangeUsersSubscription = forkJoin(
-                this.exchangeUsersService.getExchangeUsers()
-            ).subscribe(([exchangeUsers]) => {
-                this.exchangeUsers = exchangeUsers.map(eu => new ExchangeUserWithBalance(eu.id, eu.name));
-                this.calculateAllExchangeUsersBalances();
-                this.restorePricesFromLocalStorage();
-            }, () => {
-                this.exchangeUsers = [];
-                this.toastService.danger('Sorry, something went wrong. Could not get exchange user list');
+        this.authService.refreshTokenIfExpiringSoon()
+            .subscribe(() => {
+                this.exchangeUsersSubscription = forkJoin(
+                    this.exchangeUsersService.getExchangeUsers()
+                )
+                    .subscribe(([exchangeUsers]) => {
+                        this.exchangeUsers = exchangeUsers.map(eu => new ExchangeUserWithBalance(eu.id, eu.name));
+                        this.calculateAllExchangeUsersBalances();
+                        this.restorePricesFromLocalStorage();
+                    }, () => {
+                        this.exchangeUsers = [];
+                        this.toastService.danger('Sorry, something went wrong. Could not get exchange user list');
+                    });
             });
-        });
     }
 
     getLastWalletsRefreshTime(): Date {
@@ -147,20 +151,22 @@ export class WalletsComponent implements OnInit, OnDestroy {
         this.exchangeUsers.forEach((exchangeUser, index) => {
             this.fetchExchangeBalancesForExchangeUser(exchangeUser);
         });
-        localStorage.setItem(this.lastWalletsRefreshTimeKey, new Date().getTime().toString());
+        localStorage.setItem(this.lastWalletsRefreshTimeKey, new Date().getTime()
+            .toString());
     }
 
     private fetchExchangeBalancesForExchangeUser(exchangeUser: ExchangeUser) {
-        this.exchangeWalletService.getAccountBalances(exchangeUser.id).subscribe(
-            accountBalances => {
-                const accountBalancesSortedByExchangeAZ = accountBalances.exchangeBalances
-                    .sort((a, b) => a.exchangeName.localeCompare(b.exchangeName));
-                localStorage.setItem('exchange-user-portfolio-balances-' + exchangeUser.id, JSON.stringify(accountBalancesSortedByExchangeAZ));
-                this.fetchPrices();
-            }, () => {
-                this.toastService.danger(`Sorry, something went wrong. Could not get wallet balance for user ${exchangeUser.name}`);
-            }
-        );
+        this.exchangeWalletService.getAccountBalances(exchangeUser.id)
+            .subscribe(
+                accountBalances => {
+                    const accountBalancesSortedByExchangeAZ = accountBalances.exchangeBalances
+                        .sort((a, b) => a.exchangeName.localeCompare(b.exchangeName));
+                    localStorage.setItem('exchange-user-portfolio-balances-' + exchangeUser.id, JSON.stringify(accountBalancesSortedByExchangeAZ));
+                    this.fetchPrices();
+                }, () => {
+                    this.toastService.danger(`Sorry, something went wrong. Could not get wallet balance for user ${exchangeUser.name}`);
+                }
+            );
     }
 
     ngOnDestroy() {
@@ -197,7 +203,7 @@ export class WalletsComponent implements OnInit, OnDestroy {
             const usdBtcPrice = this.currencyPairPrices.get(this.btcUsd);
             return currencyBtcValue * usdBtcPrice;
         } else {
-            console.log(`No USD-BTC price when calculating value of currency ${currencyBalance.currencyCode}`);
+            console.log(`No BTC-USD price when calculating value of currency ${currencyBalance.currencyCode}`);
             return null;
         }
     }
@@ -257,7 +263,9 @@ export class WalletsComponent implements OnInit, OnDestroy {
         const distinctCurrencyCodesString = localStorage.getItem('wallet-distinct-currency-codes');
         if (distinctCurrencyCodesString != null) {
             const btcUsdPrice = Number(localStorage.getItem(this.btcUsdPriceKey));
+            const usdBtcPrice = Number(localStorage.getItem(this.usdBtcPriceKey));
             this.currencyPairPrices.set(this.btcUsd, btcUsdPrice);
+            this.currencyPairPrices.set(this.usdBtc, usdBtcPrice);
             const distinctCurrencyCodes: string[] = JSON.parse(distinctCurrencyCodesString);
             console.log(`Found ${distinctCurrencyCodes.length} prices to restore`);
             distinctCurrencyCodes.forEach(currencyCode => {
@@ -277,23 +285,24 @@ export class WalletsComponent implements OnInit, OnDestroy {
         localStorage.setItem('wallet-distinct-currency-codes', JSON.stringify(distinctCurrencyCodes));
 
         this.pending = true;
-        this.priceService.getPrices(distinctCurrencyCodes).subscribe(
-            (currencyPrices: CurrencyPriceDto[]) => {
-                currencyPrices.forEach(it => {
-                    this.savePrice(it);
-                    console.log(`Next price for ${it.baseCurrency} is ${1 / it.price}${it.counterCurrency}`);
-                });
-            },
-            err => {
-                console.log(`Failed to refresh prices.`, err);
-                this.pending = false;
-            },
-            () => {
-                console.log('Refresh prices complete');
-                this.calculateAllExchangeUsersBalances();
-                this.pending = false;
-            }
-        );
+        this.priceService.getPrices(distinctCurrencyCodes)
+            .subscribe(
+                (currencyPrices: CurrencyPriceDto[]) => {
+                    currencyPrices.forEach(it => {
+                        this.savePrice(it);
+                        console.log(`Next price for ${it.baseCurrency} is ${1 / it.price}${it.counterCurrency}`);
+                    });
+                },
+                err => {
+                    console.log(`Failed to refresh prices.`, err);
+                    this.pending = false;
+                },
+                () => {
+                    console.log('Refresh prices complete');
+                    this.calculateAllExchangeUsersBalances();
+                    this.pending = false;
+                }
+            );
         return distinctCurrencyCodes;
     }
 
@@ -301,7 +310,10 @@ export class WalletsComponent implements OnInit, OnDestroy {
         // This assumes all prices are in relation to BTC and USD. If other fiat or other crypto is to be used this needs to change
         if (currencyPrice.baseCurrency === 'BTC' && currencyPrice.counterCurrency === 'USD') {
             localStorage.setItem(this.btcUsdPriceKey, currencyPrice.price.toString());
+            localStorage.setItem(this.usdBtcPriceKey, currencyPrice.price.toString());
+
             this.currencyPairPrices.set(this.btcUsd, currencyPrice.price);
+            this.currencyPairPrices.set(this.usdBtc, currencyPrice.price);
         } else {
             const currencyKey = `price-${currencyPrice.baseCurrency}-${currencyPrice.counterCurrency}`;
             const price = 1 / currencyPrice.price;
