@@ -94,10 +94,11 @@
         <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12">
             <div class="input-group">
                 <button (click)="toggleMinUsd24hVolumeFilter()"
-                        class="btn btn-sm mr-1 mb-1" type="button">
-                    Min volume $
+                        class="btn btn-sm mr-1 mb-1" type="button" title="Volume traded daily at the exchange, sum of buy and sell orders value. Using exchanges with low volume means greater risk to not have order filled quickly">
+                    Hide exchanges with volume less than $
                     <i class="fa" [class.fa-toggle-on]="isFilteringByMin24hVolume()"
                        [class.fa-toggle-off]="!isFilteringByMin24hVolume()"></i>
+                    <i class="fa fa-question" aria-hidden="true"></i>
                 </button>
                 <input [(ngModel)]="commonFilter.min24hUsdVolume"
                        (input)="saveCommonFilter()"
@@ -107,7 +108,7 @@
     </div>
     <div class="row mb-1">
         <div class="col-12">
-            Market depth up to:
+            I want to use up to:
             <div>
                 <nav class="nav nav-pills pb-1">
                     <li *ngFor="let orderBookUsdAmountThresholdIndex of orderBookUsdAmountThresholdsIndexes"
