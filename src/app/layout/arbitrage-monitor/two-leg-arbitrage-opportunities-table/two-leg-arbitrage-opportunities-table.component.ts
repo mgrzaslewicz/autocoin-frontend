@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {TwoLegArbitrageProfit} from '../../../services/arbitrage-monitor.service';
+import {TwoLegArbitrageProfitDto} from '../../../services/arbitrage-monitor.service';
 import {ExchangeMarketLink} from '../../../services/exchange-market-link.service';
 
 @Component({
@@ -8,7 +8,7 @@ import {ExchangeMarketLink} from '../../../services/exchange-market-link.service
     styleUrls: ['./two-leg-arbitrage-opportunities-table.component.scss']
 })
 export class TwoLegArbitrageOpportunitiesTableComponent {
-    @Input() profitOpportunities: TwoLegArbitrageProfit[];
+    @Input() profitOpportunities: TwoLegArbitrageProfitDto[];
     @Input() totalNumberOfUnfilteredOpportunities: number;
     @Input() orderBookAmountThresholdIndexSelected: number;
 
@@ -17,11 +17,11 @@ export class TwoLegArbitrageOpportunitiesTableComponent {
     constructor(private exchangeMarketLink: ExchangeMarketLink) {
     }
 
-    hasBuyAtLink(arbitrageProfit: TwoLegArbitrageProfit): boolean {
+    hasBuyAtLink(arbitrageProfit: TwoLegArbitrageProfitDto): boolean {
         return this.getBuyAtLink(arbitrageProfit) != null;
     }
 
-    getBuyAtLink(arbitrageProfit: TwoLegArbitrageProfit) {
+    getBuyAtLink(arbitrageProfit: TwoLegArbitrageProfitDto) {
         const profitOpportunity = arbitrageProfit.arbitrageProfitHistogram[this.orderBookAmountThresholdIndexSelected];
         const cacheKey = profitOpportunity.buyAtExchange
             + '-' + arbitrageProfit.baseCurrency
@@ -33,11 +33,11 @@ export class TwoLegArbitrageOpportunitiesTableComponent {
         return this.exchangeLinkCache.get(cacheKey);
     }
 
-    hasSellAtLink(arbitrageProfit: TwoLegArbitrageProfit): boolean {
+    hasSellAtLink(arbitrageProfit: TwoLegArbitrageProfitDto): boolean {
         return this.getSellAtLink(arbitrageProfit) != null;
     }
 
-    getSellAtLink(arbitrageProfit: TwoLegArbitrageProfit) {
+    getSellAtLink(arbitrageProfit: TwoLegArbitrageProfitDto) {
         const profitOpportunity = arbitrageProfit.arbitrageProfitHistogram[this.orderBookAmountThresholdIndexSelected];
         const cacheKey = profitOpportunity.sellAtExchange
             + '-' + arbitrageProfit.baseCurrency
@@ -49,7 +49,7 @@ export class TwoLegArbitrageOpportunitiesTableComponent {
         return this.exchangeLinkCache.get(cacheKey);
     }
 
-    getVolumeAtBuyExchange(profitOpportunity: TwoLegArbitrageProfit): number {
+    getVolumeAtBuyExchange(profitOpportunity: TwoLegArbitrageProfitDto): number {
         if (profitOpportunity.arbitrageProfitHistogram[this.orderBookAmountThresholdIndexSelected].buyAtExchange === profitOpportunity.firstExchange) {
             return profitOpportunity.usd24hVolumeAtFirstExchange;
         } else {
@@ -57,7 +57,7 @@ export class TwoLegArbitrageOpportunitiesTableComponent {
         }
     }
 
-    getVolumeAtSellExchange(profitOpportunity: TwoLegArbitrageProfit): number {
+    getVolumeAtSellExchange(profitOpportunity: TwoLegArbitrageProfitDto): number {
         if (profitOpportunity.arbitrageProfitHistogram[this.orderBookAmountThresholdIndexSelected].sellAtExchange === profitOpportunity.firstExchange) {
             return profitOpportunity.usd24hVolumeAtFirstExchange;
         } else {

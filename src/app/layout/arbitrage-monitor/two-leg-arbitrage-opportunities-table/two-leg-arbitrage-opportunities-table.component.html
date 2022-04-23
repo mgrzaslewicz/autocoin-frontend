@@ -51,19 +51,27 @@
                     </div>
                 </td>
                 <td>
-                    <div *ngIf="hasSellAtLink(profitOpportunity)">
-                        <a [href]="getSellAtLink(profitOpportunity)" target="_blank">
+                    <div *ngIf="profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].areDetailsHidden">
+                        <div class="empty-invisible-line" aria-hidden="true">
+                            empty invisible line
+                        </div>
+                        Full details available in Pro version
+                    </div>
+                    <div *ngIf="!profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].areDetailsHidden">
+                        <div *ngIf="hasSellAtLink(profitOpportunity)">
+                            <a [href]="getSellAtLink(profitOpportunity)" target="_blank">
+                                {{profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].sellAtExchange}}
+                            </a>
+                        </div>
+                        <div *ngIf="!hasSellAtLink(profitOpportunity)">
                             {{profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].sellAtExchange}}
-                        </a>
-                    </div>
-                    <div *ngIf="!hasSellAtLink(profitOpportunity)">
-                        {{profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].sellAtExchange}}
-                    </div>
-                    <div>
-                        Amount {{profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].sellAmount}}
-                    </div>
-                    <div>
-                        Volume ${{getVolumeAtSellExchange(profitOpportunity)}}
+                        </div>
+                        <div>
+                            Amount {{profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].sellAmount}}
+                        </div>
+                        <div>
+                            Volume ${{getVolumeAtSellExchange(profitOpportunity)}}
+                        </div>
                     </div>
                 </td>
                 <td>

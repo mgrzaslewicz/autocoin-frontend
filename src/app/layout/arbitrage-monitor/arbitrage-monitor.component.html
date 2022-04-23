@@ -9,55 +9,14 @@
         <div class="card text-white bg-warning m-2">
             <div class="card-header">
                 <div class="flex-row">
-                    <div *ngIf="hasArbitrageSubscriptionActive()" class="d-block">
-                        You're using Pro plan
+                    <div *ngIf="isIncludingProPlanOpportunities === true" class="d-block">
+                        You're using Pro plan which shows also opportunities above {{freePlanProfitPercentCutOff}}%
                     </div>
-                    <div *ngIf="!hasArbitrageSubscriptionActive()" class="d-block">
-                        You're using Free plan. To join Pro plan, ping @mikolaj grzaslewicz on autocoin <a href="https://t.me/joinchat/DQ56VEbfV3uIQlrJphtLbw" target="_blank">telegram group</a> or send an email to mikolaj.grzaslewicz@gmail.com
+                    <div *ngIf="isIncludingProPlanOpportunities === false" class="d-block">
+                        You're using Free plan which does not show opportunities above {{freePlanProfitPercentCutOff}}%. To join Pro plan, ping @mikolaj grzaslewicz on autocoin <a
+                        href="https://t.me/joinchat/DQ56VEbfV3uIQlrJphtLbw" target="_blank">telegram group</a> or send an email to mikolaj.grzaslewicz@gmail.com
                     </div>
                 </div>
-            </div>
-            <div class="card-body pt-0 pb-0" [@myAnimation]="slide">
-                <div class="pt-3 pb-3">
-                    <table class="table table-striped table-hover">
-                        <thead>
-                        <tr>
-                            <th scope="col">Feature</th>
-                            <th scope="col">Free</th>
-                            <th scope="col">Pro</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <th>Include trading fee into calculations</th>
-                            <th><i class="fa fa-times" aria-hidden="true"></i></th>
-                            <th><i class="fa fa-check-square" aria-hidden="true"></i></th>
-                        </tr>
-                        <tr>
-                            <th>Include withdrawal fee into calculations</th>
-                            <th><i class="fa fa-times" aria-hidden="true"></i></th>
-                            <th><i class="fa fa-check-square" aria-hidden="true"></i></th>
-                        </tr>
-                        <tr>
-                            <th>Do not show currencies that cannot be withdrawn</th>
-                            <th><i class="fa fa-times" aria-hidden="true"></i></th>
-                            <th><i class="fa fa-check-square" aria-hidden="true"></i></th>
-                        </tr>
-                        <tr>
-                            <th></th>
-                            <th>Might show opportunities that after including fees generate loss</th>
-                            <th>More reliable</th>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div (click)="toggleSubscriptionPlanDetailsVisibility()" class="card-footer toggle-details-visibility">
-        <span>
-                <i *ngIf="showSubscriptionPlanDetails" class="fa fa-angle-double-up"></i>
-                <i *ngIf="!showSubscriptionPlanDetails" class="fa fa-angle-double-down"></i>
-                Show benefits of Pro plan
-        </span>
             </div>
         </div>
     </div>
@@ -94,7 +53,8 @@
         <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12">
             <div class="input-group">
                 <button (click)="toggleMinUsd24hVolumeFilter()"
-                        class="btn btn-sm mr-1 mb-1" type="button" title="Volume traded daily at the exchange, sum of buy and sell orders value. Using exchanges with low volume means greater risk to not have order filled quickly">
+                        class="btn btn-sm mr-1 mb-1" type="button"
+                        title="Volume traded daily at the exchange, sum of buy and sell orders value. Using exchanges with low volume means greater risk to not have order filled quickly">
                     Hide exchanges with volume less than $
                     <i class="fa" [class.fa-toggle-on]="isFilteringByMin24hVolume()"
                        [class.fa-toggle-off]="!isFilteringByMin24hVolume()"></i>
@@ -102,7 +62,7 @@
                 </button>
                 <input [(ngModel)]="commonFilter.min24hUsdVolume"
                        (input)="saveCommonFilter()"
-                       type="text" class="form-control minw-30">
+                       type="text" class="form-control minw-60">
             </div>
         </div>
     </div>

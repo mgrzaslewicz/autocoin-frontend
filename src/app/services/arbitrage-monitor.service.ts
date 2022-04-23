@@ -26,35 +26,38 @@ export class ArbitrageMonitorService {
 
 }
 
-export interface TwoLegArbitrageProfitOpportunity {
-    sellPrice: number;
-    sellAmount: number;
+export interface TwoLegArbitrageProfitOpportunityDto {
+    sellPrice?: number;
+    sellAmount?: number;
     buyPrice: number;
     buyAmount: number;
-    sellAtExchange: string;
+    sellAtExchange?: string;
     buyAtExchange: string;
     relativeProfitPercent: number;
     usdDepthUpTo: string;
+    areDetailsHidden: boolean;
 }
 
 export interface TwoLegArbitrageMetadataResponseDto {
     baseCurrenciesMonitored: string[];
     counterCurrenciesMonitored: string[];
+    freePlanProfitPercentCutOff: string;
+    isIncludingProPlanOpportunities: boolean;
 }
 
 export interface TwoLegArbitrageResponseDto {
     usdDepthThresholds: number[];
-    profits: TwoLegArbitrageProfit[];
+    profits: TwoLegArbitrageProfitDto[];
 }
 
-export interface TwoLegArbitrageProfit {
+export interface TwoLegArbitrageProfitDto {
     baseCurrency: string;
     counterCurrency: string;
     firstExchange: string;
     usd24hVolumeAtFirstExchange: number;
     secondExchange: string;
     usd24hVolumeAtSecondExchange: number;
-    arbitrageProfitHistogram: TwoLegArbitrageProfitOpportunity[];
+    arbitrageProfitHistogram: TwoLegArbitrageProfitOpportunityDto[];
 }
 
 export interface ProfitStatisticOpportunityCount {

@@ -1,6 +1,6 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {AuthService} from '../../services/auth.service';
-import {ArbitrageMonitorService, TwoLegArbitrageProfit, TwoLegArbitrageProfitStatistic} from '../../services/arbitrage-monitor.service';
+import {ArbitrageMonitorService, TwoLegArbitrageProfitDto, TwoLegArbitrageProfitStatistic} from '../../services/arbitrage-monitor.service';
 import {ToastService} from '../../services/toast.service';
 import {ExchangeNamesSupportedForGettingPublicMarketData} from '../../../environments/environment.default';
 import {animate, state, style, transition, trigger} from "@angular/animations";
@@ -52,9 +52,7 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
     orderBookUsdAmountThresholds: number[] = [];
     orderBookUsdAmountThresholdsIndexes: number[] = [];
     isLoadingLiveOpportunities: boolean;
-    isLoadingStatistics = false;
-    twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfit[] = [];
-    twoLegArbitrageProfitStatistics: TwoLegArbitrageProfitStatistic[] = [];
+    twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfitDto[] = [];
     commonFilter: CommonFilter = {
         min24hUsdVolume: 1000,
         isMin24hUsdVolumeFilterOn: false,
@@ -71,12 +69,10 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
         isAutoRefreshOn: false,
         autoRefreshSeconds: 10
     };
+    freePlanProfitPercentCutOff: string = "...";
+    isIncludingProPlanOpportunities: boolean = null;
     private lastTwoLegArbitrageOpportunitiesRefreshTimeKey = 'lastTwoLegArbitrageOpportunitiesRefreshTime';
     private scheduledLiveOpportunitiesRefresh: number = null;
-
-    showSubscriptionPlanDetails = false;
-    slide = 'out';
-
 
     constructor(
         private authService: AuthService,
@@ -115,11 +111,12 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.authService.refreshTokenIfExpiringSoon().subscribe(() => {
-            this.fetchArbitrageMetadata();
-            this.fetchLiveOpportunities();
-            this.onAutoRefreshChange();
-        });
+        this.authService.refreshTokenIfExpiringSoon()
+            .subscribe(() => {
+                this.fetchArbitrageMetadata();
+                this.fetchLiveOpportunities();
+                this.onAutoRefreshChange();
+            });
     }
 
     ngOnDestroy(): void {
@@ -146,6 +143,9 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
     fetchArbitrageMetadata() {
         this.arbitrageMonitorService.getArbitrageMetadata()
             .subscribe(arbitrageMetadata => {
+                this.freePlanProfitPercentCutOff = arbitrageMetadata.freePlanProfitPercentCutOff;
+                this.isIncludingProPlanOpportunities = arbitrageMetadata.isIncludingProPlanOpportunities;
+
                 this.baseCurrenciesMonitored = arbitrageMetadata.baseCurrenciesMonitored.sort((a, b) => {
                     return a.localeCompare(b);
                 });
@@ -182,7 +182,8 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
                     });
                     this.twoLegArbitrageProfitOpportunities = twoLegArbitrageProfitOpportunities.profits;
                     this.isLoadingLiveOpportunities = false;
-                    localStorage.setItem(this.lastTwoLegArbitrageOpportunitiesRefreshTimeKey, new Date().getTime().toString());
+                    localStorage.setItem(this.lastTwoLegArbitrageOpportunitiesRefreshTimeKey, new Date().getTime()
+                        .toString());
                 },
                 error => {
                     this.isLoadingLiveOpportunities = false;
@@ -249,8 +250,12 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
         this.saveCommonFilter();
     }
 
-    isShowingExchange(exchangeName: string): boolean {
-        return this.commonFilter.exchangeBlackList.indexOf(exchangeName) < 0;
+    isShowingExchange(exchangeName?: string): boolean {
+        if (exchangeName == null) {
+            return true;
+        } else {
+            return this.commonFilter.exchangeBlackList.indexOf(exchangeName.toLowerCase()) < 0;
+        }
     }
 
     toggleLiveOpportunitiesMinFilter() {
@@ -363,7 +368,7 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
         return this.getNumber(value, 99999999);
     }
 
-    getTotalNumberOfOpportunities(twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfit[]) {
+    getTotalNumberOfOpportunities(twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfitDto[]) {
         const orderBookAmountThresholdIndexSelected = this.commonFilter.orderBookAmountThresholdIndexSelected;
         return twoLegArbitrageProfitOpportunities
             .filter(item => {
@@ -372,7 +377,7 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
             ).length;
     }
 
-    filterOpportunities(twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfit[]): TwoLegArbitrageProfit[] {
+    filterOpportunities(twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfitDto[]): TwoLegArbitrageProfitDto[] {
         const orderBookAmountThresholdIndexSelected = this.commonFilter.orderBookAmountThresholdIndexSelected;
         return twoLegArbitrageProfitOpportunities
             .filter(item => {
@@ -406,8 +411,8 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
                 const isMeetingBaseCurrencyCriteria = this.commonFilter.baseCurrencyBlackList.indexOf(item.baseCurrency) < 0;
                 const isMeetingCounterCurrencyCriteria = this.commonFilter.counterCurrencyBlackList.indexOf(item.counterCurrency) < 0;
 
-                return this.isShowingExchange(item.secondExchange.toLowerCase()) &&
-                    this.isShowingExchange(item.firstExchange.toLowerCase()) &&
+                return this.isShowingExchange(item.secondExchange) &&
+                    this.isShowingExchange(item.firstExchange) &&
                     isMeetingMinRelativePercentCriteria &&
                     isMeetingMaxRelativePercentCriteria &&
                     isMeetingVolumeCriteria &&
@@ -423,15 +428,6 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
         this.commonFilter.exchangeBlackList.forEach(it => {
             this.selectedExchanges.splice(this.selectedExchanges.indexOf(it), 1);
         });
-    }
-
-    hasArbitrageSubscriptionActive() {
-       return this.authService.isRoleAssignedToUser("ROLE_DETAILED_ARBITRAGE_USER");
-    }
-
-    toggleSubscriptionPlanDetailsVisibility() {
-        this.showSubscriptionPlanDetails = !this.showSubscriptionPlanDetails;
-        this.slide = this.slide === 'in' ? 'out' : 'in';
     }
 
 }
