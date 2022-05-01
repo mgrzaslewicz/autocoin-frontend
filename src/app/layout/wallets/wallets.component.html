@@ -28,78 +28,80 @@
 </div>
 <div>
     <div *ngFor="let exchangeUser of exchangeUsers" class="card mb-3 exchange-user-wallet">
-        <div class="card-header d-flex flex-column">
+        <div class="card-header">
             <div class="d-flex flex-row mb-2">
                 <h3><i class="fa fa-user"></i> {{ exchangeUser.name }}</h3>
             </div>
-        </div>
-        <div class="d-flex flex-row m-3">
-            <div>
-                <div class="p-1">
+            <h5>
+            <span class="badge bg-secondary text-light m-1 p-1">
                     Total BTC: <span
-                    class="sensitive-data">{{ getTotalExchangeUserBtcValue(exchangeUser) | number : '1.8' || '-' }}</span>
+                class="sensitive-data">{{ getTotalExchangeUserBtcValue(exchangeUser) | number : '1.8' || '-' }}</span>
                     <i class="fa fa-btc"></i>
-                </div>
-                <div class="p-1">
-                    Total USD: <span
-                    class="sensitive-data">{{ getTotalExchangeUserUsdValue(exchangeUser) | number : '1.2' || '-' }}</span>
+            </span>
+                <span class="badge bg-secondary text-light m-1 p-1">
+                    Total USD:
+                <span class="sensitive-data">
+                {{ getTotalExchangeUserUsdValue(exchangeUser) | number : '1.2' || '-' }}
+            </span>
                     <i class="fa fa-usd"></i>
-                </div>
-            </div>
-            <div class="p-1 mr-2 ml-auto">
+            </span>
+                <span class="badge bg-secondary m-1 p-1 text-light">
                 1 <i class="fa fa-btc"></i> = <i class="fa fa-usd"></i> <span
-                class="sensitive-data">{{ get1BtcValue() | number : '1.2' || '-' }}</span>
-            </div>
+                    class="sensitive-data">{{ get1BtcValue() | number : '1.2' || '-' }}</span>
+            </span>
+            </h5>
         </div>
-        <ng-container *ngFor="let exchangeBalance of exchangeUser.exchangeBalances">
-            <span class="badge badge-secondary"><i class="fa fa-money" aria-hidden="true"></i> {{ exchangeBalance.exchangeName }}</span>
-            <span *ngIf="exchangeBalance.errorMessage != null" class="badge badge-warning">
+        <div class="card-body">
+            <ng-container *ngFor="let exchangeBalance of exchangeUser.exchangeBalances">
+                <h4>{{ exchangeBalance.exchangeName }}</h4>
+                <span *ngIf="exchangeBalance.errorMessage != null" class="badge badge-warning">
                     {{ exchangeBalance.errorMessage }}
                 </span>
-            <span *ngIf="exchangeBalance.currencyBalances.length == 0 && exchangeBalance.errorMessage == null"
-                  class="alert">No currencies held</span>
-            <div *ngIf="exchangeBalance.currencyBalances.length > 0 && exchangeBalance.errorMessage == null"
-                 class="table-responsive mb-3">
-                <table class="card-body table table-sm table-hover">
-                    <thead>
-                    <tr>
-                        <th>Currency</th>
-                        <th class="text-right">Available</th>
-                        <th class="text-right">Frozen</th>
-                        <th class="text-right">Total</th>
-                        <th class="text-right">BTC Price</th>
-                        <th class="text-right">BTC value <i class="fa fa-sort-amount-desc" aria-hidden="true"></i></th>
-                        <th class="text-right">USD value</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr *ngFor="let currencyBalance of getSortedBalances(exchangeBalance.currencyBalances)">
-                        <td class="sensitive-data">{{ currencyBalance.currencyCode }}</td>
-                        <td class="text-right sensitive-data">{{ currencyBalance.available | number : '1.8-8' }}</td>
-                        <td class="text-right sensitive-data">{{ currencyBalance.frozen | number : '1.8-8' }}</td>
-                        <td class="text-right sensitive-data">{{ currencyBalance.total | number : '1.8-8' }}</td>
-                        <td class="text-right sensitive-data">{{ currencyBalance.btcPrice | number : '1.8-8' }}</td>
-                        <td class="text-right sensitive-data">{{ currencyBalance.btcValue | number : '1.8' || '-' }}
-                        </td>
-                        <td class="text-right sensitive-data">{{ currencyBalance.usdValue | number : '1.2' || '-' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td class="text-right font-weight-bold sensitive-data">
-                            {{ getTotalExchangeBtcValue(exchangeBalance) | number : '1.8' }}
-                        </td>
-                        <td class="text-right font-weight-bold sensitive-data">
-                            {{ getTotalExchangeUsdValue(exchangeBalance) | number : '1.2' }}
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </ng-container>
+                <span *ngIf="exchangeBalance.currencyBalances.length == 0 && exchangeBalance.errorMessage == null"
+                      class="alert balance-table mt-3">No currencies held</span>
+                <div *ngIf="exchangeBalance.currencyBalances.length > 0 && exchangeBalance.errorMessage == null"
+                     class="table-responsive mb-3">
+                    <table class="table table-sm table-hover balance-table">
+                        <thead>
+                        <tr>
+                            <th>Currency</th>
+                            <th class="text-right">Available</th>
+                            <th class="text-right">Frozen</th>
+                            <th class="text-right">Total</th>
+                            <th class="text-right">BTC Price</th>
+                            <th class="text-right">BTC value <i class="fa fa-sort-amount-desc" aria-hidden="true"></i></th>
+                            <th class="text-right">USD value</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let currencyBalance of getSortedBalances(exchangeBalance.currencyBalances)">
+                            <td class="sensitive-data">{{ currencyBalance.currencyCode }}</td>
+                            <td class="text-right sensitive-data">{{ currencyBalance.available | number : '1.8-8' }}</td>
+                            <td class="text-right sensitive-data">{{ currencyBalance.frozen | number : '1.8-8' }}</td>
+                            <td class="text-right sensitive-data">{{ currencyBalance.total | number : '1.8-8' }}</td>
+                            <td class="text-right sensitive-data">{{ currencyBalance.btcPrice | number : '1.8-8' }}</td>
+                            <td class="text-right sensitive-data">{{ currencyBalance.btcValue | number : '1.8' || '-' }}
+                            </td>
+                            <td class="text-right sensitive-data">{{ currencyBalance.usdValue | number : '1.2' || '-' }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="text-right font-weight-bold sensitive-data">
+                                {{ getTotalExchangeBtcValue(exchangeBalance) | number : '1.8' }}
+                            </td>
+                            <td class="text-right font-weight-bold sensitive-data">
+                                {{ getTotalExchangeUsdValue(exchangeBalance) | number : '1.2' }}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </ng-container>
+        </div>
     </div>
 </div>
