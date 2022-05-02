@@ -54,6 +54,7 @@ export class WalletsComponent implements OnInit, OnDestroy {
     pending = false;
     showBalancesPerExchange = true;
     showUnder1Dollar = false;
+    hideBalances = false;
     private exchangeUsersSubscription: Subscription;
     private currencyPairPrices: Map<string, number> = new Map();
     private btcUsd = 'BTC-USD';
@@ -343,4 +344,7 @@ export class WalletsComponent implements OnInit, OnDestroy {
         };
     }
 
+    toggleHideBalances() {
+        this.hideBalances = !this.hideBalances;
+    }
 }

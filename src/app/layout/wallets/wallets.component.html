@@ -15,9 +15,13 @@
             Show summary per user <i class="fa" [class.fa-toggle-on]="!showBalancesPerExchange"
                                      [class.fa-toggle-off]="showBalancesPerExchange"></i>
         </button>
-        <button (click)="flipShowingUnderOneDollar()" type="button" class="btn btn-sm mb-1">
+        <button (click)="flipShowingUnderOneDollar()" type="button" class="btn btn-sm mr-1 mb-1">
             Show small amounts <i class="fa" [class.fa-toggle-on]="showUnder1Dollar"
                                   [class.fa-toggle-off]="!showUnder1Dollar"></i>
+        </button>
+        <button (click)="toggleHideBalances()" type="button" class="btn btn-sm mb-1">
+            Hide balances <i class="fa" [class.fa-toggle-on]="hideBalances"
+                                  [class.fa-toggle-off]="!hideBalances"></i>
         </button>
         <div class="text-muted ml-auto mb-1">
             <small>
@@ -35,19 +39,18 @@
             <h5>
             <span class="badge bg-secondary text-light m-1 p-1">
                     Total BTC: <span
-                class="sensitive-data">{{ getTotalExchangeUserBtcValue(exchangeUser) | number : '1.8' || '-' }}</span>
+                [className]="hideBalances ?'hide-balances' : ''">{{ getTotalExchangeUserBtcValue(exchangeUser) | number : '1.8' || '-' }}</span>
                     <i class="fa fa-btc"></i>
             </span>
                 <span class="badge bg-secondary text-light m-1 p-1">
                     Total USD:
-                <span class="sensitive-data">
+                <span [className]="hideBalances ?'hide-balances' : ''">
                 {{ getTotalExchangeUserUsdValue(exchangeUser) | number : '1.2' || '-' }}
             </span>
                     <i class="fa fa-usd"></i>
             </span>
                 <span class="badge bg-secondary m-1 p-1 text-light">
-                1 <i class="fa fa-btc"></i> = <i class="fa fa-usd"></i> <span
-                    class="sensitive-data">{{ get1BtcValue() | number : '1.2' || '-' }}</span>
+                1 <i class="fa fa-btc"></i> = <i class="fa fa-usd"></i> <span>{{ get1BtcValue() | number : '1.2' || '-' }}</span>
             </span>
             </h5>
         </div>
@@ -75,14 +78,14 @@
                         </thead>
                         <tbody>
                         <tr *ngFor="let currencyBalance of getSortedBalances(exchangeBalance.currencyBalances)">
-                            <td class="sensitive-data">{{ currencyBalance.currencyCode }}</td>
-                            <td class="text-right sensitive-data">{{ currencyBalance.available | number : '1.8-8' }}</td>
-                            <td class="text-right sensitive-data">{{ currencyBalance.frozen | number : '1.8-8' }}</td>
-                            <td class="text-right sensitive-data">{{ currencyBalance.total | number : '1.8-8' }}</td>
-                            <td class="text-right sensitive-data">{{ currencyBalance.btcPrice | number : '1.8-8' }}</td>
-                            <td class="text-right sensitive-data">{{ currencyBalance.btcValue | number : '1.8' || '-' }}
+                            <td>{{ currencyBalance.currencyCode }}</td>
+                            <td class="text-right" [className]="hideBalances ?'hide-balances' : ''">{{ currencyBalance.available | number : '1.8-8' }}</td>
+                            <td class="text-right" [className]="hideBalances ?'hide-balances' : ''">{{ currencyBalance.frozen | number : '1.8-8' }}</td>
+                            <td class="text-right" [className]="hideBalances ?'hide-balances' : ''">{{ currencyBalance.total | number : '1.8-8' }}</td>
+                            <td class="text-right" [className]="hideBalances ?'hide-balances' : ''">{{ currencyBalance.btcPrice | number : '1.8-8' }}</td>
+                            <td class="text-right" [className]="hideBalances ?'hide-balances' : ''">{{ currencyBalance.btcValue | number : '1.8' || '-' }}
                             </td>
-                            <td class="text-right sensitive-data">{{ currencyBalance.usdValue | number : '1.2' || '-' }}
+                            <td class="text-right" [className]="hideBalances ?'hide-balances' : ''">{{ currencyBalance.usdValue | number : '1.2' || '-' }}
                             </td>
                         </tr>
                         <tr>
@@ -91,10 +94,10 @@
                             <td></td>
                             <td></td>
                             <td></td>
-                            <td class="text-right font-weight-bold sensitive-data">
+                            <td class="text-right font-weight-bold" [className]="hideBalances ?'hide-balances' : ''">
                                 {{ getTotalExchangeBtcValue(exchangeBalance) | number : '1.8' }}
                             </td>
-                            <td class="text-right font-weight-bold sensitive-data">
+                            <td class="text-right font-weight-bold" [className]="hideBalances ?'hide-balances' : ''">
                                 {{ getTotalExchangeUsdValue(exchangeBalance) | number : '1.2' }}
                             </td>
                         </tr>
