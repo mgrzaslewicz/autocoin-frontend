@@ -241,13 +241,13 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
         }
     }
 
-    isOrderBookAmountThresholdSelected(orderBookUsdAmountThresholdIndex: number): boolean {
-        return this.commonFilter.orderBookAmountThresholdIndexSelected === orderBookUsdAmountThresholdIndex;
-    }
-
     setOrderBookUsdAmountThreshold(orderBookUsdAmountThresholdIndex: number) {
         this.commonFilter.orderBookAmountThresholdIndexSelected = orderBookUsdAmountThresholdIndex;
         this.saveCommonFilter();
+    }
+
+    getSelectedOrderBookUsdAmountThreshold() {
+        return this.orderBookUsdAmountThresholds[this.commonFilter.orderBookAmountThresholdIndexSelected];
     }
 
     isShowingExchange(exchangeName?: string): boolean {

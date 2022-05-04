@@ -143,19 +143,19 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Opportunities</h5>
-                    <div>
+                    <div class="mb-1">
                         I want to use up to:
-                        <div>
-                            <nav class="nav nav-pills pb-1">
-                                <li *ngFor="let orderBookUsdAmountThresholdIndex of orderBookUsdAmountThresholdsIndexes"
-                                    class="nav-item btn-sm p-1">
-                                    <a (click)="setOrderBookUsdAmountThreshold(orderBookUsdAmountThresholdIndex)"
-                                       class="nav-link p-1"
-                                       [class.active]="isOrderBookAmountThresholdSelected(orderBookUsdAmountThresholdIndex)">
-                                        ${{orderBookUsdAmountThresholds[orderBookUsdAmountThresholdIndex]}}
-                                    </a>
-                                </li>
-                            </nav>
+                        <div ngbDropdown class="d-inline-block">
+                            <button type="button" class="btn btn-primary btn-sm" id="dropdownBasic1" ngbDropdownToggle>
+                                ${{getSelectedOrderBookUsdAmountThreshold()}}
+                            </button>
+                            <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                                <button ngbDropdownItem *ngFor="let orderBookUsdAmountThresholdIndex of orderBookUsdAmountThresholdsIndexes"
+                                        (click)="setOrderBookUsdAmountThreshold(orderBookUsdAmountThresholdIndex)"
+                                        class="btn btn-sm">
+                                    ${{orderBookUsdAmountThresholds[orderBookUsdAmountThresholdIndex]}}
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div class="input-group">
