@@ -26,6 +26,12 @@ export class ArbitrageMonitorService {
 
 }
 
+export interface TwoLegArbitrageProfitOpportunityFeesDto {
+    buyFee?: string;
+    withdrawalFee?: string;
+    sellFee?: string;
+}
+
 export interface TwoLegArbitrageProfitOpportunityDto {
     sellPrice?: number;
     sellAmount?: number;
@@ -36,6 +42,7 @@ export interface TwoLegArbitrageProfitOpportunityDto {
     relativeProfitPercent: number;
     usdDepthUpTo: string;
     areDetailsHidden: boolean;
+    fees: TwoLegArbitrageProfitOpportunityFeesDto;
 }
 
 export interface TwoLegArbitrageMetadataResponseDto {

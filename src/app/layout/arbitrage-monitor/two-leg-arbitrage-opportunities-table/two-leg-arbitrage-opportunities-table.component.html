@@ -15,6 +15,11 @@
                 <th scope="col">price <i class="fa fa-arrow-right" aria-hidden="true"></i></th>
                 <th scope="col">Sell at</th>
                 <th scope="col">price</th>
+                <th scope="col">
+                    <span class="badge bg-success text-light mr-1">available</span>
+                    <span class="badge bg-danger text-light">not available</span>
+                    <div>fees in calculation</div>
+                </th>
             </tr>
             </thead>
             <tbody>
@@ -80,6 +85,27 @@
                     </div>
                     <div>
                         {{profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].sellPrice}}
+                    </div>
+                </td>
+                <td>
+
+                    <div class="empty-invisible-line" aria-hidden="true">
+                        empty invisible line
+                    </div>
+                        <span
+                            [className]="profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].fees.buyFee != null ? 'badge bg-success text-light mr-1' : 'badge bg-danger text-light mr-1'">
+                            buy
+                        </span>
+                    <span
+                        [className]="profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].fees.withdrawalFee != null ? 'badge bg-success text-light mr-1' : 'badge bg-danger text-light mr-1'">
+                        withdraw
+                    </span>
+                    <span
+                        [className]="profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].fees.sellFee != null ? 'badge bg-success text-light' : 'badge bg-danger text-light'">
+                        sell
+                    </span>
+                    <div class="empty-invisible-line" aria-hidden="true">
+                        empty invisible line
                     </div>
                 </td>
             </tr>
