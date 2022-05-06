@@ -24,90 +24,93 @@
             </thead>
             <tbody>
             <tr *ngFor="let profitOpportunity of profitOpportunities">
-                <th scope="row">
-                    {{profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].relativeProfitPercent}}
-                    %
-                </th>
-                <td>
-                    {{profitOpportunity.baseCurrency}}/{{profitOpportunity.counterCurrency}}
-                </td>
-                <td>
-                    <div *ngIf="hasBuyAtLink(profitOpportunity)">
-                        <a [href]="getBuyAtLink(profitOpportunity)" target="_blank">
-                            {{profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].buyAtExchange}}
-                        </a>
-                    </div>
-                    <div *ngIf="!hasBuyAtLink(profitOpportunity)">
-                        {{profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].buyAtExchange}}
-                    </div>
-                    <div>
-                        Amount {{profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].buyAmount}}
-                    </div>
-                    <div>
-                        Volume ${{getVolumeAtBuyExchange(profitOpportunity)}}
-                    </div>
-                </td>
-                <td>
-                    <div class="empty-invisible-line" aria-hidden="true">
-                        empty invisible line
-                    </div>
-                    <div>
-                        {{profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].buyPrice}}
-                    </div>
-                </td>
-                <td>
-                    <div *ngIf="profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].areDetailsHidden">
+                <ng-container *ngIf="profitOpportunityAtSelectedUsdDepth(profitOpportunity); let profitOpportunityAtSelectedUsdDepth">
+                    <th scope="row">
+                        {{profitOpportunityAtSelectedUsdDepth.relativeProfitPercent}}
+                        %
+                    </th>
+                    <td>
+                        {{profitOpportunity.baseCurrency}}/{{profitOpportunity.counterCurrency}}
+                    </td>
+                    <td>
+                        <div *ngIf="hasBuyAtLink(profitOpportunity)">
+                            <a [href]="getBuyAtLink(profitOpportunity)" target="_blank">
+                                {{profitOpportunityAtSelectedUsdDepth.buyAtExchange}}
+                            </a>
+                        </div>
+                        <div *ngIf="!hasBuyAtLink(profitOpportunity)">
+                            {{profitOpportunityAtSelectedUsdDepth.buyAtExchange}}
+                        </div>
+                        <div>
+                            Amount {{profitOpportunityAtSelectedUsdDepth.buyAmount}}
+                        </div>
+                        <div>
+                            Volume ${{getVolumeAtBuyExchange(profitOpportunity)}}
+                        </div>
+                    </td>
+                    <td>
                         <div class="empty-invisible-line" aria-hidden="true">
                             empty invisible line
                         </div>
-                        Full details available in Pro version
-                    </div>
-                    <div *ngIf="!profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].areDetailsHidden">
-                        <div *ngIf="hasSellAtLink(profitOpportunity)">
-                            <a [href]="getSellAtLink(profitOpportunity)" target="_blank">
-                                {{profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].sellAtExchange}}
-                            </a>
+                        <div>
+                            {{profitOpportunityAtSelectedUsdDepth.buyPrice}}
                         </div>
-                        <div *ngIf="!hasSellAtLink(profitOpportunity)">
-                            {{profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].sellAtExchange}}
+                    </td>
+                    <td>
+                        <div *ngIf="profitOpportunityAtSelectedUsdDepth.areDetailsHidden">
+                            <div class="empty-invisible-line" aria-hidden="true">
+                                empty invisible line
+                            </div>
+                            Full details available in Pro version
+                        </div>
+                        <div *ngIf="!profitOpportunityAtSelectedUsdDepth.areDetailsHidden">
+                            <div *ngIf="hasSellAtLink(profitOpportunity)">
+                                <a [href]="getSellAtLink(profitOpportunity)" target="_blank">
+                                    {{profitOpportunityAtSelectedUsdDepth.sellAtExchange}}
+                                </a>
+                            </div>
+                            <div *ngIf="!hasSellAtLink(profitOpportunity)">
+                                {{profitOpportunityAtSelectedUsdDepth.sellAtExchange}}
+                            </div>
+                            <div>
+                                Amount {{profitOpportunityAtSelectedUsdDepth.sellAmount}}
+                            </div>
+                            <div>
+                                Volume ${{getVolumeAtSellExchange(profitOpportunity)}}
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="empty-invisible-line" aria-hidden="true">
+                            empty invisible line
                         </div>
                         <div>
-                            Amount {{profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].sellAmount}}
+                            {{profitOpportunityAtSelectedUsdDepth.sellPrice}}
                         </div>
-                        <div>
-                            Volume ${{getVolumeAtSellExchange(profitOpportunity)}}
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <div class="empty-invisible-line" aria-hidden="true">
-                        empty invisible line
-                    </div>
-                    <div>
-                        {{profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].sellPrice}}
-                    </div>
-                </td>
-                <td>
+                    </td>
+                    <td>
 
-                    <div class="empty-invisible-line" aria-hidden="true">
-                        empty invisible line
-                    </div>
+                        <div class="empty-invisible-line" aria-hidden="true">
+                            empty invisible line
+                        </div>
                         <span
-                            [className]="profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].fees.buyFee != null ? 'badge bg-success text-light mr-1' : 'badge bg-danger text-light mr-1'">
+                            [className]="profitOpportunityAtSelectedUsdDepth.fees.buyFee != null ? 'badge bg-success text-light mr-1' : 'badge bg-danger text-light mr-1'">
                             buy
                         </span>
-                    <span
-                        [className]="profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].fees.withdrawalFee != null ? 'badge bg-success text-light mr-1' : 'badge bg-danger text-light mr-1'">
+                        <span
+                            [className]="profitOpportunityAtSelectedUsdDepth.fees.withdrawalFee != null ? 'badge bg-success text-light mr-1' : 'badge bg-danger text-light mr-1'">
                         withdraw
                     </span>
-                    <span
-                        [className]="profitOpportunity.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].fees.sellFee != null ? 'badge bg-success text-light' : 'badge bg-danger text-light'">
+                        <span
+                            [className]="profitOpportunityAtSelectedUsdDepth.fees.sellFee != null ? 'badge bg-success text-light' : 'badge bg-danger text-light'">
                         sell
                     </span>
-                    <div class="empty-invisible-line" aria-hidden="true">
-                        empty invisible line
-                    </div>
-                </td>
+                        <div class="empty-invisible-line" aria-hidden="true">
+                            empty invisible line
+                        </div>
+                    </td>
+                </ng-container>
+
             </tr>
             </tbody>
         </table>

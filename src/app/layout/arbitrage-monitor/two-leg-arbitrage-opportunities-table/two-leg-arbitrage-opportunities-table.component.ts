@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {TwoLegArbitrageProfitDto} from '../../../services/arbitrage-monitor.service';
+import {TwoLegArbitrageProfitDto, TwoLegArbitrageProfitOpportunityDto} from '../../../services/arbitrage-monitor.service';
 import {ExchangeMarketLink} from '../../../services/exchange-market-link.service';
 
 @Component({
@@ -19,6 +19,10 @@ export class TwoLegArbitrageOpportunitiesTableComponent {
 
     hasBuyAtLink(arbitrageProfit: TwoLegArbitrageProfitDto): boolean {
         return this.getBuyAtLink(arbitrageProfit) != null;
+    }
+
+    profitOpportunityAtSelectedUsdDepth(opportunity: TwoLegArbitrageProfitDto): TwoLegArbitrageProfitOpportunityDto {
+        return opportunity.arbitrageProfitHistogram[this.orderBookAmountThresholdIndexSelected];
     }
 
     getBuyAtLink(arbitrageProfit: TwoLegArbitrageProfitDto) {
