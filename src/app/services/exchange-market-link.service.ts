@@ -22,18 +22,33 @@ export class ExchangeMarketLink {
         ['poloniex', 'https://poloniex.com/exchange#{COUNTER}_{BASE}']
     ]);
 
+    private exchangeLinkCache: Map<string, string> = new Map<string, string>();
+
     constructor() {
     }
 
     getExchangeMarketLink(exchangeName: string, baseCurrency: string, counterCurrency: string): string | null {
-        const key = exchangeName.toLowerCase();
-        if (this.exchangeLinks.has(key)) {
-            return this.exchangeLinks.get(key)
+        return this.getCachedExchangeMarketLink(exchangeName, baseCurrency, counterCurrency);
+    }
+
+    private calculateExchangeMarketLink(exchangeName: string, baseCurrency: string, counterCurrency: string): string | null {
+        const exchangeLinkKey = exchangeName.toLowerCase();
+        if (this.exchangeLinks.has(exchangeLinkKey)) {
+            return this.exchangeLinks.get(exchangeLinkKey)
                 .replace('{BASE}', baseCurrency)
                 .replace('{COUNTER}', counterCurrency);
         } else {
             return null;
         }
+    }
+
+    private getCachedExchangeMarketLink(exchangeName: string, baseCurrency: string, counterCurrency: string): string | null {
+        const cacheKey = exchangeName + '-' + baseCurrency + '-' + counterCurrency;
+        if (!this.exchangeLinkCache.has(cacheKey)) {
+            const link = this.calculateExchangeMarketLink(exchangeName, baseCurrency, counterCurrency);
+            this.exchangeLinkCache.set(cacheKey, link);
+        }
+        return this.exchangeLinkCache.get(cacheKey);
     }
 
 }

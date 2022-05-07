@@ -40,6 +40,7 @@ export interface TwoLegArbitrageProfitOpportunityDto {
     sellAtExchange?: string;
     buyAtExchange: string;
     relativeProfitPercent: number;
+    profitUsd: number;
     usdDepthUpTo: string;
     areDetailsHidden: boolean;
     fees: TwoLegArbitrageProfitOpportunityFeesDto;

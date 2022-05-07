@@ -29,6 +29,7 @@ import {SignupService} from './signup.service';
 import {ArbitrageMonitorService} from './arbitrage-monitor.service';
 import {ExchangeNamesSupportedForGettingPublicMarketData, ExchangeNamesSupportedForTradingToken} from '../../environments/environment.default';
 import {ExchangeMarketLink} from './exchange-market-link.service';
+import {ArbitrageOpportunityExchangeMarketLinkService} from "./arbitrage-opportunity-exchange-market-link.service";
 
 @NgModule({
     imports: [
@@ -63,7 +64,8 @@ import {ExchangeMarketLink} from './exchange-market-link.service';
         HealthService,
         SignupService,
         ArbitrageMonitorService,
-        ExchangeMarketLink
+        ExchangeMarketLink,
+        ArbitrageOpportunityExchangeMarketLinkService
     ]
 })
 export class ServicesModule {

@@ -1,0 +1,126 @@
+<ng-template #content let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title">Arbitrage profit opportunity up to ${{opportunityAtSelectedDepth.usdDepthUpTo}}</h4>
+    </div>
+    <div class="modal-body">
+        <div>
+            Volumes
+            <ul>
+                <li>{{opportunityAtSelectedDepth.buyAtExchange}}: ${{getVolumeAtBuyExchange()}}</li>
+                <li>
+                    <ng-container *ngIf="opportunityAtSelectedDepth.areDetailsHidden">
+                        <span class="badge badge-warning">Full details available in Pro version</span>
+                    </ng-container>
+                    <ng-container *ngIf="!opportunityAtSelectedDepth.areDetailsHidden">
+                        {{opportunityAtSelectedDepth.sellAtExchange}}: ${{getVolumeAtSellExchange()}}
+                    </ng-container>
+                </li>
+            </ul>
+        </div>
+        <div>
+            Steps
+            <ul>
+                <li>At
+                    <ng-container *ngIf="hasBuyAtLink()">
+                        <a target="_blank" [href]="getBuyAtLink()">{{opportunityAtSelectedDepth.buyAtExchange}}</a>
+                    </ng-container>
+                    <ng-container *ngIf="!hasBuyAtLink()">
+                        {{opportunityAtSelectedDepth.buyAtExchange}}
+                    </ng-container>
+                    buy max {{opportunityAtSelectedDepth.buyAmount}} {{opportunity.baseCurrency}}
+                    <div>with price  {{opportunityAtSelectedDepth.buyPrice}} {{opportunity.counterCurrency}}</div>
+                </li>
+                <li>Transfer {{opportunity.baseCurrency}} to
+                    <ng-container *ngIf="opportunityAtSelectedDepth.areDetailsHidden">
+                        <span class="badge badge-warning">Full details available in Pro version</span>
+                    </ng-container>
+                    <ng-container *ngIf="!opportunityAtSelectedDepth.areDetailsHidden">
+                        {{opportunity.secondExchange}}
+                    </ng-container>
+                </li>
+                <li>At
+                    <ng-container *ngIf="opportunityAtSelectedDepth.areDetailsHidden">
+                        <span class="badge badge-warning">Full details available in Pro version</span>
+                    </ng-container>
+                    <ng-container *ngIf="!opportunityAtSelectedDepth.areDetailsHidden">
+                        <ng-container *ngIf="hasSellAtLink()">
+                            <a target="_blank" [href]="getSellAtLink()">{{opportunityAtSelectedDepth.sellAtExchange}}</a>
+                        </ng-container>
+                        <ng-container *ngIf="!hasSellAtLink()">
+                            {{opportunityAtSelectedDepth.sellAtExchange}}
+                        </ng-container>
+                    </ng-container>
+                    sell {{opportunity.baseCurrency}}
+                    <div>with price
+                        <ng-container *ngIf="opportunityAtSelectedDepth.areDetailsHidden">
+                            <span class="badge badge-warning">Full details available in Pro version</span>
+                        </ng-container>
+                        <ng-container *ngIf="!opportunityAtSelectedDepth.areDetailsHidden">
+                            {{opportunityAtSelectedDepth.sellPrice}}
+                        </ng-container>
+                        {{opportunity.counterCurrency}}</div>
+                </li>
+            </ul>
+        </div>
+        <div>
+            Fees impacting the profit
+            <ul>
+                <li>Buy:
+                    <ng-container *ngIf="opportunityAtSelectedDepth.fees.buyFee != null">
+                        {{opportunityAtSelectedDepth.fees.buyFee}} {{opportunity.baseCurrency}}
+                    </ng-container>
+                    <ng-container *ngIf="opportunityAtSelectedDepth.fees.buyFee == null">
+                        not available
+                    </ng-container>
+                </li>
+                <li>Transfer:
+                    <ng-container *ngIf="opportunityAtSelectedDepth.fees.withdrawalFee != null">
+                        {{opportunityAtSelectedDepth.fees.withdrawalFee}} {{opportunity.baseCurrency}}
+                    </ng-container>
+                    <ng-container *ngIf="opportunityAtSelectedDepth.fees.withdrawalFee == null">
+                        not available
+                    </ng-container>
+                </li>
+                <li>Sell:
+                    <ng-container *ngIf="opportunityAtSelectedDepth.fees.sellFee != null">
+                        {{opportunityAtSelectedDepth.fees.sellFee}} {{opportunity.baseCurrency}}
+                    </ng-container>
+                    <ng-container *ngIf="opportunityAtSelectedDepth.fees.sellFee == null">
+                        not available
+                    </ng-container>
+                </li>
+            </ul>
+        </div>
+        <div>
+            Potential profit
+            <ul>
+                <li>Potential profit is {{opportunityAtSelectedDepth.relativeProfitPercent}}% (${{opportunityAtSelectedDepth.profitUsd}})</li>
+                <li>
+                    % profit might be higher when amount of {{opportunity.baseCurrency}} is lower than {{opportunityAtSelectedDepth.buyAmount}}
+                </li>
+            </ul>
+        </div>
+        <div>
+            Risks
+            <ul>
+                <li *ngIf="areSomeOrAllFeesUnavailable()">
+                    Not all fees are available so the profit might be lower.
+                    <ng-container *ngIf="isTransferFeeUnavailable()"> Transfer fee is not available - the profit might be lower or even be negative</ng-container>
+                    <ng-container *ngIf="!isTransferFeeUnavailable()"> The most important transfer fee is available</ng-container>
+                </li>
+                <li>
+                    Make sure that {{opportunity.baseCurrency}} means the same currency at both exchanges, otherwise you might lose all coins when transferring between exchanges
+                </li>
+                <li>
+                    If volume at exchanges is low it might be hard to sell or buy {{opportunity.baseCurrency}}
+                </li>
+                <li>
+                    Timing is important. Before you make the transfer, prices can change
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="c('close')">Close</button>
+    </div>
+</ng-template>

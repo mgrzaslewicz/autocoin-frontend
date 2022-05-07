@@ -9,6 +9,7 @@ import {TwoLegArbitrageProfitStatisticTileComponent} from './two-leg-arbitrage-m
 import {FormsModule} from '@angular/forms';
 import {TwoLegArbitrageOpportunitiesTableComponent} from './two-leg-arbitrage-opportunities-table/two-leg-arbitrage-opportunities-table.component';
 import {NgSelectModule} from '@ng-select/ng-select';
+import {TwoLegArbitrageOpportunityDialog} from "./two-leg-arbitrage-opportunities-table/two-leg-arbitrag-opportunity-dialog/two-leg-arbitrage-opportunity-dialog";
 
 @NgModule({
     imports: [
@@ -23,7 +24,8 @@ import {NgSelectModule} from '@ng-select/ng-select';
     declarations: [
         ArbitrageMonitorComponent,
         TwoLegArbitrageProfitStatisticTileComponent,
-        TwoLegArbitrageOpportunitiesTableComponent
+        TwoLegArbitrageOpportunitiesTableComponent,
+        TwoLegArbitrageOpportunityDialog
     ]
 })
 export class ArbitrageMonitorModule {

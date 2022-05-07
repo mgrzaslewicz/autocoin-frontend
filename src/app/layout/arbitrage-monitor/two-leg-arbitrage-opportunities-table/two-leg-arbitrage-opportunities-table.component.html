@@ -2,14 +2,12 @@
     <div>
         Showing {{profitOpportunities.length}} of {{totalNumberOfUnfilteredOpportunities}} opportunities
     </div>
-    <div>
-        <span class="badge badge-warning">Before making a transfer make sure the same symbols at 2 different exchanges means the same and withdrawing is not blocked</span>
-    </div>
     <div class="table-responsive">
         <table class="table table-striped table-hover">
             <thead>
             <tr>
-                <th scope="col">Profit <i class="fa fa-arrow-down" aria-hidden="true"></i></th>
+                <th scope="col">Profit %<i class="fa fa-arrow-down" aria-hidden="true"></i></th>
+                <th scope="col">$Profit</th>
                 <th scope="col">Currency pair</th>
                 <th scope="col">Buy at</th>
                 <th scope="col">price <i class="fa fa-arrow-right" aria-hidden="true"></i></th>
@@ -26,8 +24,16 @@
             <tr *ngFor="let profitOpportunity of profitOpportunities">
                 <ng-container *ngIf="profitOpportunityAtSelectedUsdDepth(profitOpportunity); let profitOpportunityAtSelectedUsdDepth">
                     <th scope="row">
-                        {{profitOpportunityAtSelectedUsdDepth.relativeProfitPercent}}
-                        %
+                        {{profitOpportunityAtSelectedUsdDepth.relativeProfitPercent}} %
+                        <div>
+                            <button (click)="twoLegArbitrageOpportunityDialog.showOpportunityDetails(profitOpportunity, profitOpportunityAtSelectedUsdDepth)"
+                                    class="btn btn-sm btn-info">
+                                <i class="fa fa-info-circle" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </th>
+                    <th scope="row">
+                        <div>${{profitOpportunityAtSelectedUsdDepth.profitUsd}}</div>
                     </th>
                     <td>
                         {{profitOpportunity.baseCurrency}}/{{profitOpportunity.counterCurrency}}
@@ -42,26 +48,17 @@
                             {{profitOpportunityAtSelectedUsdDepth.buyAtExchange}}
                         </div>
                         <div>
-                            Amount {{profitOpportunityAtSelectedUsdDepth.buyAmount}}
-                        </div>
-                        <div>
-                            Volume ${{getVolumeAtBuyExchange(profitOpportunity)}}
+                            Max {{profitOpportunityAtSelectedUsdDepth.buyAmount}} {{profitOpportunity.baseCurrency}}
                         </div>
                     </td>
                     <td>
-                        <div class="empty-invisible-line" aria-hidden="true">
-                            empty invisible line
-                        </div>
                         <div>
                             {{profitOpportunityAtSelectedUsdDepth.buyPrice}}
                         </div>
                     </td>
                     <td>
                         <div *ngIf="profitOpportunityAtSelectedUsdDepth.areDetailsHidden">
-                            <div class="empty-invisible-line" aria-hidden="true">
-                                empty invisible line
-                            </div>
-                            Full details available in Pro version
+                            <span class="badge badge-warning">Full details available in Pro version</span>
                         </div>
                         <div *ngIf="!profitOpportunityAtSelectedUsdDepth.areDetailsHidden">
                             <div *ngIf="hasSellAtLink(profitOpportunity)">
@@ -72,27 +69,14 @@
                             <div *ngIf="!hasSellAtLink(profitOpportunity)">
                                 {{profitOpportunityAtSelectedUsdDepth.sellAtExchange}}
                             </div>
-                            <div>
-                                Amount {{profitOpportunityAtSelectedUsdDepth.sellAmount}}
-                            </div>
-                            <div>
-                                Volume ${{getVolumeAtSellExchange(profitOpportunity)}}
-                            </div>
                         </div>
                     </td>
                     <td>
-                        <div class="empty-invisible-line" aria-hidden="true">
-                            empty invisible line
-                        </div>
                         <div>
                             {{profitOpportunityAtSelectedUsdDepth.sellPrice}}
                         </div>
                     </td>
                     <td>
-
-                        <div class="empty-invisible-line" aria-hidden="true">
-                            empty invisible line
-                        </div>
                         <span
                             [className]="profitOpportunityAtSelectedUsdDepth.fees.buyFee != null ? 'badge bg-success text-light mr-1' : 'badge bg-danger text-light mr-1'">
                             buy
@@ -116,3 +100,5 @@
         </table>
     </div>
 </div>
+
+<app-two-leg-arbitrage-opportunity-dialog #twoLegArbitrageOpportunityDialog></app-two-leg-arbitrage-opportunity-dialog>
