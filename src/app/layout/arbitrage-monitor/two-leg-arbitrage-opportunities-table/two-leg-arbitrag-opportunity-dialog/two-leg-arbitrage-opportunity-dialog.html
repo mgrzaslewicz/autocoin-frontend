@@ -5,17 +5,32 @@
     <div class="modal-body">
         <div>
             Volumes
-            <ul>
-                <li>{{opportunity.buyAtExchange}}: ${{opportunity.usd24hVolumeAtBuyExchange}}</li>
-                <li>
-                    <ng-container *ngIf="opportunity.areDetailsHidden">
-                        <span class="badge badge-warning">Full details available in Pro version</span>
-                    </ng-container>
-                    <ng-container *ngIf="!opportunity.areDetailsHidden">
-                        {{opportunity.sellAtExchange}}: ${{opportunity.usd24hVolumeAtSellExchange}}
-                    </ng-container>
-                </li>
-            </ul>
+            <table class="table table-striped table-hover">
+                <tbody>
+                <tr>
+                    <td>{{opportunity.buyAtExchange}}</td>
+                    <td class="text-right">${{opportunity.usd24hVolumeAtBuyExchange | number: '.2'}}</td>
+                </tr>
+                <tr>
+                    <td>
+                        <ng-container *ngIf="opportunity.areDetailsHidden">
+                            <span class="badge badge-warning">Full details available in Pro version</span>
+                        </ng-container>
+                        <ng-container *ngIf="!opportunity.areDetailsHidden">
+                            {{opportunity.sellAtExchange}}
+                        </ng-container>
+                    </td>
+                    <td class="text-right">
+                        <ng-container *ngIf="opportunity.areDetailsHidden">
+                            <span class="badge badge-warning">Full details available in Pro version</span>
+                        </ng-container>
+                        <ng-container *ngIf="!opportunity.areDetailsHidden">
+                            ${{opportunity.usd24hVolumeAtSellExchange | number: '.2'}}
+                        </ng-container>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
         <div>
             Steps
