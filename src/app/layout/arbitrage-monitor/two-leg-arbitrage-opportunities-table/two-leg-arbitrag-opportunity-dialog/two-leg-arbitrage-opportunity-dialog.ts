@@ -18,6 +18,7 @@ export class TwoLegArbitrageOpportunityDialog implements OnInit {
 
     @Output('refresh')
     refreshEmmitter: EventEmitter<any> = new EventEmitter();
+    proVersionEncouragement = 'Full details available in Pro version';
 
     constructor(
         private modalService: NgbModal,
