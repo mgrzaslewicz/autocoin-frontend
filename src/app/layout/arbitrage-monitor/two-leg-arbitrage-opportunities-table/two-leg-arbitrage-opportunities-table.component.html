@@ -41,11 +41,11 @@
                     <td>
                         <div *ngIf="hasBuyAtLink(profitOpportunity)">
                             <a [href]="getBuyAtLink(profitOpportunity)" target="_blank">
-                                {{profitOpportunityAtSelectedUsdDepth.buyAtExchange}}
+                                {{profitOpportunity.buyAtExchange}}
                             </a>
                         </div>
                         <div *ngIf="!hasBuyAtLink(profitOpportunity)">
-                            {{profitOpportunityAtSelectedUsdDepth.buyAtExchange}}
+                            {{profitOpportunity.buyAtExchange}}
                         </div>
                         <div>
                             Max {{profitOpportunityAtSelectedUsdDepth.buyAmount}} {{profitOpportunity.baseCurrency}}
@@ -57,17 +57,17 @@
                         </div>
                     </td>
                     <td>
-                        <div *ngIf="profitOpportunityAtSelectedUsdDepth.areDetailsHidden">
+                        <div *ngIf="profitOpportunity.areDetailsHidden">
                             <span class="badge badge-warning">Full details available in Pro version</span>
                         </div>
-                        <div *ngIf="!profitOpportunityAtSelectedUsdDepth.areDetailsHidden">
+                        <div *ngIf="!profitOpportunity.areDetailsHidden">
                             <div *ngIf="hasSellAtLink(profitOpportunity)">
                                 <a [href]="getSellAtLink(profitOpportunity)" target="_blank">
-                                    {{profitOpportunityAtSelectedUsdDepth.sellAtExchange}}
+                                    {{profitOpportunity.sellAtExchange}}
                                 </a>
                             </div>
                             <div *ngIf="!hasSellAtLink(profitOpportunity)">
-                                {{profitOpportunityAtSelectedUsdDepth.sellAtExchange}}
+                                {{profitOpportunity.sellAtExchange}}
                             </div>
                         </div>
                     </td>

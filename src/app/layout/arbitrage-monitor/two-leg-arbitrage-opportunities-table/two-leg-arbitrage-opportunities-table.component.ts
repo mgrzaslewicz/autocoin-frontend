@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {TwoLegArbitrageProfitDto, TwoLegArbitrageProfitOpportunityDto} from '../../../services/arbitrage-monitor.service';
+import {TwoLegArbitrageProfitOpportunityDto, TwoLegArbitrageProfitOpportunityAtDepthDto} from '../../../services/arbitrage-monitor.service';
 import {ArbitrageOpportunityExchangeMarketLinkService} from "../../../services/arbitrage-opportunity-exchange-market-link.service";
 
 @Component({
@@ -8,31 +8,31 @@ import {ArbitrageOpportunityExchangeMarketLinkService} from "../../../services/a
     styleUrls: ['./two-leg-arbitrage-opportunities-table.component.scss']
 })
 export class TwoLegArbitrageOpportunitiesTableComponent {
-    @Input() profitOpportunities: TwoLegArbitrageProfitDto[];
+    @Input() profitOpportunities: TwoLegArbitrageProfitOpportunityDto[];
     @Input() totalNumberOfUnfilteredOpportunities: number;
     @Input() orderBookAmountThresholdIndexSelected: number;
 
     constructor(private marketLinkService: ArbitrageOpportunityExchangeMarketLinkService) {
     }
 
-    profitOpportunityAtSelectedUsdDepth(opportunity: TwoLegArbitrageProfitDto): TwoLegArbitrageProfitOpportunityDto {
-        return opportunity.arbitrageProfitHistogram[this.orderBookAmountThresholdIndexSelected];
+    profitOpportunityAtSelectedUsdDepth(opportunity: TwoLegArbitrageProfitOpportunityDto): TwoLegArbitrageProfitOpportunityAtDepthDto {
+        return opportunity.profitOpportunityHistogram[this.orderBookAmountThresholdIndexSelected];
     }
 
-    hasBuyAtLink(arbitrageProfit: TwoLegArbitrageProfitDto): boolean {
-        return this.getBuyAtLink(arbitrageProfit) != null;
+    hasBuyAtLink(profitOpportunity: TwoLegArbitrageProfitOpportunityDto): boolean {
+        return this.getBuyAtLink(profitOpportunity) != null;
     }
 
-    getBuyAtLink(arbitrageProfit: TwoLegArbitrageProfitDto) {
-        return this.marketLinkService.getBuyAtLink(arbitrageProfit, this.profitOpportunityAtSelectedUsdDepth(arbitrageProfit));
+    getBuyAtLink(profitOpportunity: TwoLegArbitrageProfitOpportunityDto) {
+        return this.marketLinkService.getBuyAtLink(profitOpportunity);
     }
 
-    hasSellAtLink(arbitrageProfit: TwoLegArbitrageProfitDto): boolean {
+    hasSellAtLink(arbitrageProfit: TwoLegArbitrageProfitOpportunityDto): boolean {
         return this.getSellAtLink(arbitrageProfit) != null;
     }
 
-    getSellAtLink(arbitrageProfit: TwoLegArbitrageProfitDto) {
-        return this.marketLinkService.getSellAtLink(arbitrageProfit, this.profitOpportunityAtSelectedUsdDepth(arbitrageProfit));
+    getSellAtLink(profitOpportunity: TwoLegArbitrageProfitOpportunityDto) {
+        return this.marketLinkService.getSellAtLink(profitOpportunity);
     }
 
 }

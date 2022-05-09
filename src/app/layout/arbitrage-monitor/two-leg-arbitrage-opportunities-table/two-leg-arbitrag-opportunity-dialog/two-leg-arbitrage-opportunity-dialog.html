@@ -6,13 +6,13 @@
         <div>
             Volumes
             <ul>
-                <li>{{opportunityAtSelectedDepth.buyAtExchange}}: ${{getVolumeAtBuyExchange()}}</li>
+                <li>{{opportunity.buyAtExchange}}: ${{opportunity.usd24hVolumeAtBuyExchange}}</li>
                 <li>
-                    <ng-container *ngIf="opportunityAtSelectedDepth.areDetailsHidden">
+                    <ng-container *ngIf="opportunity.areDetailsHidden">
                         <span class="badge badge-warning">Full details available in Pro version</span>
                     </ng-container>
-                    <ng-container *ngIf="!opportunityAtSelectedDepth.areDetailsHidden">
-                        {{opportunityAtSelectedDepth.sellAtExchange}}: ${{getVolumeAtSellExchange()}}
+                    <ng-container *ngIf="!opportunity.areDetailsHidden">
+                        {{opportunity.sellAtExchange}}: ${{opportunity.usd24hVolumeAtSellExchange}}
                     </ng-container>
                 </li>
             </ul>
@@ -22,40 +22,40 @@
             <ul>
                 <li>At
                     <ng-container *ngIf="hasBuyAtLink()">
-                        <a target="_blank" [href]="getBuyAtLink()">{{opportunityAtSelectedDepth.buyAtExchange}}</a>
+                        <a target="_blank" [href]="getBuyAtLink()">{{opportunity.buyAtExchange}}</a>
                     </ng-container>
                     <ng-container *ngIf="!hasBuyAtLink()">
-                        {{opportunityAtSelectedDepth.buyAtExchange}}
+                        {{opportunity.buyAtExchange}}
                     </ng-container>
                     buy max {{opportunityAtSelectedDepth.buyAmount}} {{opportunity.baseCurrency}}
                     <div>with price  {{opportunityAtSelectedDepth.buyPrice}} {{opportunity.counterCurrency}}</div>
                 </li>
                 <li>Transfer {{opportunity.baseCurrency}} to
-                    <ng-container *ngIf="opportunityAtSelectedDepth.areDetailsHidden">
+                    <ng-container *ngIf="opportunity.areDetailsHidden">
                         <span class="badge badge-warning">Full details available in Pro version</span>
                     </ng-container>
-                    <ng-container *ngIf="!opportunityAtSelectedDepth.areDetailsHidden">
-                        {{opportunity.secondExchange}}
+                    <ng-container *ngIf="!opportunity.areDetailsHidden">
+                        {{opportunity.sellAtExchange}}
                     </ng-container>
                 </li>
                 <li>At
-                    <ng-container *ngIf="opportunityAtSelectedDepth.areDetailsHidden">
+                    <ng-container *ngIf="opportunity.areDetailsHidden">
                         <span class="badge badge-warning">Full details available in Pro version</span>
                     </ng-container>
-                    <ng-container *ngIf="!opportunityAtSelectedDepth.areDetailsHidden">
+                    <ng-container *ngIf="!opportunity.areDetailsHidden">
                         <ng-container *ngIf="hasSellAtLink()">
-                            <a target="_blank" [href]="getSellAtLink()">{{opportunityAtSelectedDepth.sellAtExchange}}</a>
+                            <a target="_blank" [href]="getSellAtLink()">{{opportunity.sellAtExchange}}</a>
                         </ng-container>
                         <ng-container *ngIf="!hasSellAtLink()">
-                            {{opportunityAtSelectedDepth.sellAtExchange}}
+                            {{opportunity.sellAtExchange}}
                         </ng-container>
                     </ng-container>
                     sell {{opportunity.baseCurrency}}
                     <div>with price
-                        <ng-container *ngIf="opportunityAtSelectedDepth.areDetailsHidden">
+                        <ng-container *ngIf="opportunity.areDetailsHidden">
                             <span class="badge badge-warning">Full details available in Pro version</span>
                         </ng-container>
-                        <ng-container *ngIf="!opportunityAtSelectedDepth.areDetailsHidden">
+                        <ng-container *ngIf="!opportunity.areDetailsHidden">
                             {{opportunityAtSelectedDepth.sellPrice}}
                         </ng-container>
                         {{opportunity.counterCurrency}}</div>

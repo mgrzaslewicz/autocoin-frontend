@@ -12,8 +12,8 @@ export class ArbitrageMonitorService {
                 @Inject(FeatureToggleToken) private featureToggle: FeatureToggle) {
     }
 
-    public getTwoLegArbitrageProfitOpportunities(): Observable<TwoLegArbitrageResponseDto> {
-        return this.http.get<TwoLegArbitrageResponseDto>(`${this.arbitrageMonitorEndpointUrl}/two-leg-arbitrage-profits`);
+    public getTwoLegArbitrageProfitOpportunities(): Observable<TwoLegArbitrageProfitOpportunitiesResponseDto> {
+        return this.http.get<TwoLegArbitrageProfitOpportunitiesResponseDto>(`${this.arbitrageMonitorEndpointUrl}/two-leg-arbitrage-profits`);
     }
 
     public getArbitrageMetadata(): Observable<TwoLegArbitrageMetadataResponseDto> {
@@ -32,17 +32,14 @@ export interface TwoLegArbitrageProfitOpportunityFeesDto {
     sellFee?: string;
 }
 
-export interface TwoLegArbitrageProfitOpportunityDto {
-    sellPrice?: number;
-    sellAmount?: number;
+export interface TwoLegArbitrageProfitOpportunityAtDepthDto {
     buyPrice: number;
     buyAmount: number;
-    sellAtExchange?: string;
-    buyAtExchange: string;
+    sellPrice?: number;
+    sellAmount?: number;
     relativeProfitPercent: number;
     profitUsd: number;
     usdDepthUpTo: string;
-    areDetailsHidden: boolean;
     fees: TwoLegArbitrageProfitOpportunityFeesDto;
 }
 
@@ -53,19 +50,20 @@ export interface TwoLegArbitrageMetadataResponseDto {
     isIncludingProPlanOpportunities: boolean;
 }
 
-export interface TwoLegArbitrageResponseDto {
+export interface TwoLegArbitrageProfitOpportunitiesResponseDto {
     usdDepthThresholds: number[];
-    profits: TwoLegArbitrageProfitDto[];
+    profits: TwoLegArbitrageProfitOpportunityDto[];
 }
 
-export interface TwoLegArbitrageProfitDto {
+export interface TwoLegArbitrageProfitOpportunityDto {
     baseCurrency: string;
     counterCurrency: string;
-    firstExchange: string;
-    usd24hVolumeAtFirstExchange: number;
-    secondExchange: string;
-    usd24hVolumeAtSecondExchange: number;
-    arbitrageProfitHistogram: TwoLegArbitrageProfitOpportunityDto[];
+    buyAtExchange: string;
+    sellAtExchange?: string;
+    usd24hVolumeAtBuyExchange: number;
+    usd24hVolumeAtSellExchange?: number;
+    areDetailsHidden: boolean;
+    profitOpportunityHistogram: TwoLegArbitrageProfitOpportunityAtDepthDto[];
 }
 
 export interface ProfitStatisticOpportunityCount {

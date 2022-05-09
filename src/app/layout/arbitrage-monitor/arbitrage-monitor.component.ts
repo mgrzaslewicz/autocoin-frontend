@@ -1,6 +1,6 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {AuthService} from '../../services/auth.service';
-import {ArbitrageMonitorService, TwoLegArbitrageProfitDto, TwoLegArbitrageProfitStatistic} from '../../services/arbitrage-monitor.service';
+import {ArbitrageMonitorService, TwoLegArbitrageProfitOpportunityDto, TwoLegArbitrageProfitStatistic} from '../../services/arbitrage-monitor.service';
 import {ToastService} from '../../services/toast.service';
 import {ExchangeNamesSupportedForGettingPublicMarketData} from '../../../environments/environment.default';
 import {animate, state, style, transition, trigger} from "@angular/animations";
@@ -52,7 +52,7 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
     orderBookUsdAmountThresholds: number[] = [];
     orderBookUsdAmountThresholdsIndexes: number[] = [];
     isLoadingLiveOpportunities: boolean;
-    twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfitDto[] = [];
+    twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfitOpportunityDto[] = [];
     commonFilter: CommonFilter = {
         min24hUsdVolume: 1000,
         isMin24hUsdVolumeFilterOn: false,
@@ -368,42 +368,42 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
         return this.getNumber(value, 99999999);
     }
 
-    getTotalNumberOfOpportunities(twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfitDto[]) {
+    getTotalNumberOfOpportunities(twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfitOpportunityDto[]) {
         const orderBookAmountThresholdIndexSelected = this.commonFilter.orderBookAmountThresholdIndexSelected;
         return twoLegArbitrageProfitOpportunities
             .filter(item => {
-                    return item.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected] != null;
+                    return item.profitOpportunityHistogram[orderBookAmountThresholdIndexSelected] != null;
                 }
             ).length;
     }
 
-    filterOpportunities(twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfitDto[]): TwoLegArbitrageProfitDto[] {
+    filterOpportunities(twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfitOpportunityDto[]): TwoLegArbitrageProfitOpportunityDto[] {
         const orderBookAmountThresholdIndexSelected = this.commonFilter.orderBookAmountThresholdIndexSelected;
         return twoLegArbitrageProfitOpportunities
             .filter(item => {
 
-                if (item.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected] == null) {
+                if (item.profitOpportunityHistogram[orderBookAmountThresholdIndexSelected] == null) {
                     return false;
                 }
                 let isMeetingMinRelativePercentCriteria: boolean;
                 let isMeetingMaxRelativePercentCriteria: boolean;
 
                 if (this.isFilteringOpportunitiesByMinRelativePercent()) {
-                    isMeetingMinRelativePercentCriteria = item.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].relativeProfitPercent >= this.getMin(this.liveOpportunitiesFilter.minRelativePercentFilterValue);
+                    isMeetingMinRelativePercentCriteria = item.profitOpportunityHistogram[orderBookAmountThresholdIndexSelected].relativeProfitPercent >= this.getMin(this.liveOpportunitiesFilter.minRelativePercentFilterValue);
                 } else {
                     isMeetingMinRelativePercentCriteria = true;
                 }
 
                 if (this.isFilteringOpportunitiesByMaxRelativePercent()) {
-                    isMeetingMaxRelativePercentCriteria = item.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].relativeProfitPercent <= this.getMax(this.liveOpportunitiesFilter.maxRelativePercentFilterValue);
+                    isMeetingMaxRelativePercentCriteria = item.profitOpportunityHistogram[orderBookAmountThresholdIndexSelected].relativeProfitPercent <= this.getMax(this.liveOpportunitiesFilter.maxRelativePercentFilterValue);
                 } else {
                     isMeetingMaxRelativePercentCriteria = true;
                 }
 
                 let isMeetingVolumeCriteria: boolean;
                 if (this.isFilteringByMin24hVolume()) {
-                    isMeetingVolumeCriteria = item.usd24hVolumeAtSecondExchange >= this.getMin(this.commonFilter.min24hUsdVolume) &&
-                        item.usd24hVolumeAtFirstExchange >= this.getMin(this.commonFilter.min24hUsdVolume);
+                    isMeetingVolumeCriteria = item.usd24hVolumeAtSellExchange >= this.getMin(this.commonFilter.min24hUsdVolume) &&
+                        item.usd24hVolumeAtBuyExchange >= this.getMin(this.commonFilter.min24hUsdVolume);
                 } else {
                     isMeetingVolumeCriteria = true;
                 }
@@ -411,8 +411,8 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
                 const isMeetingBaseCurrencyCriteria = this.commonFilter.baseCurrencyBlackList.indexOf(item.baseCurrency) < 0;
                 const isMeetingCounterCurrencyCriteria = this.commonFilter.counterCurrencyBlackList.indexOf(item.counterCurrency) < 0;
 
-                return this.isShowingExchange(item.secondExchange) &&
-                    this.isShowingExchange(item.firstExchange) &&
+                return this.isShowingExchange(item.sellAtExchange) &&
+                    this.isShowingExchange(item.buyAtExchange) &&
                     isMeetingMinRelativePercentCriteria &&
                     isMeetingMaxRelativePercentCriteria &&
                     isMeetingVolumeCriteria &&
@@ -420,7 +420,7 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
                     isMeetingCounterCurrencyCriteria;
             })
             .sort((a, b) => {
-                return b.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].relativeProfitPercent - a.arbitrageProfitHistogram[orderBookAmountThresholdIndexSelected].relativeProfitPercent;
+                return b.profitOpportunityHistogram[orderBookAmountThresholdIndexSelected].relativeProfitPercent - a.profitOpportunityHistogram[orderBookAmountThresholdIndexSelected].relativeProfitPercent;
             });
     }
 

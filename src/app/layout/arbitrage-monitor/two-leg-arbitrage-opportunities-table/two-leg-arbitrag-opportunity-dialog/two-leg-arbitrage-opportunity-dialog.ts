@@ -1,6 +1,6 @@
 import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {TwoLegArbitrageProfitDto, TwoLegArbitrageProfitOpportunityDto} from "../../../../services/arbitrage-monitor.service";
+import {TwoLegArbitrageProfitOpportunityDto, TwoLegArbitrageProfitOpportunityAtDepthDto} from "../../../../services/arbitrage-monitor.service";
 import {ArbitrageOpportunityExchangeMarketLinkService} from "../../../../services/arbitrage-opportunity-exchange-market-link.service";
 
 @Component({
@@ -10,8 +10,8 @@ import {ArbitrageOpportunityExchangeMarketLinkService} from "../../../../service
 })
 export class TwoLegArbitrageOpportunityDialog implements OnInit {
 
-    private opportunity: TwoLegArbitrageProfitDto;
-    private opportunityAtSelectedDepth: TwoLegArbitrageProfitOpportunityDto;
+    private opportunity: TwoLegArbitrageProfitOpportunityDto;
+    private opportunityAtSelectedDepth: TwoLegArbitrageProfitOpportunityAtDepthDto;
 
     @ViewChild('content', {static: true})
     content;
@@ -28,27 +28,11 @@ export class TwoLegArbitrageOpportunityDialog implements OnInit {
     ngOnInit() {
     }
 
-    showOpportunityDetails(opportunity: TwoLegArbitrageProfitDto, opportunityAtSelectedDepth: TwoLegArbitrageProfitOpportunityDto) {
+    showOpportunityDetails(opportunity: TwoLegArbitrageProfitOpportunityDto, opportunityAtSelectedDepth: TwoLegArbitrageProfitOpportunityAtDepthDto) {
         this.opportunity = opportunity;
         this.opportunityAtSelectedDepth = opportunityAtSelectedDepth;
 
         this.modalService.open(this.content);
-    }
-
-    getVolumeAtBuyExchange(): number {
-        if (this.opportunityAtSelectedDepth.buyAtExchange === this.opportunity.firstExchange) {
-            return this.opportunity.usd24hVolumeAtFirstExchange;
-        } else {
-            return this.opportunity.usd24hVolumeAtSecondExchange;
-        }
-    }
-
-    getVolumeAtSellExchange(): number {
-        if (this.opportunityAtSelectedDepth.sellAtExchange === this.opportunity.firstExchange) {
-            return this.opportunity.usd24hVolumeAtFirstExchange;
-        } else {
-            return this.opportunity.usd24hVolumeAtSecondExchange;
-        }
     }
 
     areSomeOrAllFeesUnavailable(): boolean {
@@ -66,7 +50,7 @@ export class TwoLegArbitrageOpportunityDialog implements OnInit {
     }
 
     getBuyAtLink() {
-        return this.marketLinkService.getBuyAtLink(this.opportunity, this.opportunityAtSelectedDepth);
+        return this.marketLinkService.getBuyAtLink(this.opportunity);
     }
 
     hasSellAtLink(): boolean {
@@ -74,6 +58,6 @@ export class TwoLegArbitrageOpportunityDialog implements OnInit {
     }
 
     getSellAtLink() {
-        return this.marketLinkService.getSellAtLink(this.opportunity, this.opportunityAtSelectedDepth);
+        return this.marketLinkService.getSellAtLink(this.opportunity);
     }
 }
