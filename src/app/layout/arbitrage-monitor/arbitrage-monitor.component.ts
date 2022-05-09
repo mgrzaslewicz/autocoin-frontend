@@ -1,6 +1,6 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {AuthService} from '../../services/auth.service';
-import {ArbitrageMonitorService, TwoLegArbitrageProfitOpportunityDto, TwoLegArbitrageProfitStatistic} from '../../services/arbitrage-monitor.service';
+import {ArbitrageMonitorService, TwoLegArbitrageProfitOpportunityDto} from '../../services/arbitrage-monitor.service';
 import {ToastService} from '../../services/toast.service';
 import {ExchangeNamesSupportedForGettingPublicMarketData} from '../../../environments/environment.default';
 import {animate, state, style, transition, trigger} from "@angular/animations";
@@ -402,7 +402,8 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
 
                 let isMeetingVolumeCriteria: boolean;
                 if (this.isFilteringByMin24hVolume()) {
-                    isMeetingVolumeCriteria = item.usd24hVolumeAtSellExchange >= this.getMin(this.commonFilter.min24hUsdVolume) &&
+                    let usd24hVolumeAtSellExchange = item.usd24hVolumeAtSellExchange == null ? Number.MAX_VALUE : item.usd24hVolumeAtSellExchange;
+                    isMeetingVolumeCriteria = usd24hVolumeAtSellExchange >= this.getMin(this.commonFilter.min24hUsdVolume) &&
                         item.usd24hVolumeAtBuyExchange >= this.getMin(this.commonFilter.min24hUsdVolume);
                 } else {
                     isMeetingVolumeCriteria = true;
