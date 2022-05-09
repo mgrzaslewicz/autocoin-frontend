@@ -24,13 +24,11 @@
             <tr *ngFor="let profitOpportunity of profitOpportunities">
                 <ng-container *ngIf="profitOpportunityAtSelectedUsdDepth(profitOpportunity); let profitOpportunityAtSelectedUsdDepth">
                     <th scope="row">
+                        <button (click)="twoLegArbitrageOpportunityDialog.showOpportunityDetails(profitOpportunity, profitOpportunityAtSelectedUsdDepth)"
+                                class="btn btn-sm btn-info">
+                            <i class="fa fa-info-circle" aria-hidden="true"></i>
+                        </button>
                         {{profitOpportunityAtSelectedUsdDepth.relativeProfitPercent}} %
-                        <div>
-                            <button (click)="twoLegArbitrageOpportunityDialog.showOpportunityDetails(profitOpportunity, profitOpportunityAtSelectedUsdDepth)"
-                                    class="btn btn-sm btn-info">
-                                <i class="fa fa-info-circle" aria-hidden="true"></i>
-                            </button>
-                        </div>
                     </th>
                     <th scope="row">
                         <div>${{profitOpportunityAtSelectedUsdDepth.profitUsd}}</div>
@@ -46,9 +44,6 @@
                         </div>
                         <div *ngIf="!hasBuyAtLink(profitOpportunity)">
                             {{profitOpportunity.buyAtExchange}}
-                        </div>
-                        <div>
-                            Max {{profitOpportunityAtSelectedUsdDepth.buyAmount}} {{profitOpportunity.baseCurrency}}
                         </div>
                     </td>
                     <td>
@@ -89,9 +84,6 @@
                             [className]="profitOpportunityAtSelectedUsdDepth.fees.sellFee != null ? 'badge bg-success text-light' : 'badge bg-danger text-light'">
                         sell
                     </span>
-                        <div class="empty-invisible-line" aria-hidden="true">
-                            empty invisible line
-                        </div>
                     </td>
                 </ng-container>
 
