@@ -69,6 +69,7 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
         isAutoRefreshOn: false,
         autoRefreshSeconds: 10
     };
+    defaultTransactionFeePercent = "...";
     freePlanProfitPercentCutOff: string = "...";
     isIncludingProPlanOpportunities: boolean = null;
     private lastTwoLegArbitrageOpportunitiesRefreshTimeKey = 'lastTwoLegArbitrageOpportunitiesRefreshTime';
@@ -144,6 +145,7 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
         this.arbitrageMonitorService.getArbitrageMetadata()
             .subscribe(arbitrageMetadata => {
                 this.freePlanProfitPercentCutOff = arbitrageMetadata.freePlanProfitPercentCutOff;
+                this.defaultTransactionFeePercent = arbitrageMetadata.defaultTransactionFeePercent;
                 this.isIncludingProPlanOpportunities = arbitrageMetadata.isIncludingProPlanOpportunities;
 
                 this.baseCurrenciesMonitored = arbitrageMetadata.baseCurrenciesMonitored.sort((a, b) => {

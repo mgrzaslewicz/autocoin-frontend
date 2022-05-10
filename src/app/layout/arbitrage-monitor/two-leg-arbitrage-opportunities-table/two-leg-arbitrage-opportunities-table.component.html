@@ -15,6 +15,11 @@
                 <th scope="col">price</th>
                 <th scope="col">
                     <span class="badge bg-success text-light mr-1">available</span>
+                    <span class="badge bg-warning text-light mr-1"
+                          title="When no fee available during calculating profit opportunity, default value {{defaultTransactionFeePercent}}% is used">
+                        default
+                       <i class="fa fa-question" aria-hidden="true"></i>
+                    </span>
                     <span class="badge bg-danger text-light">not available</span>
                     <div>fees in calculation</div>
                 </th>
@@ -24,8 +29,9 @@
             <tr *ngFor="let profitOpportunity of profitOpportunities">
                 <ng-container *ngIf="profitOpportunityAtSelectedUsdDepth(profitOpportunity); let profitOpportunityAtSelectedUsdDepth">
                     <th scope="row">
-                        <button (click)="twoLegArbitrageOpportunityDialog.showOpportunityDetails(profitOpportunity, profitOpportunityAtSelectedUsdDepth)"
-                                class="btn btn-sm btn-info">
+                        <button
+                            (click)="twoLegArbitrageOpportunityDialog.showOpportunityDetails(profitOpportunity, profitOpportunityAtSelectedUsdDepth, defaultTransactionFeePercent)"
+                            class="btn btn-sm btn-info">
                             <i class="fa fa-info-circle" aria-hidden="true"></i>
                         </button>
                         {{profitOpportunityAtSelectedUsdDepth.relativeProfitPercent}} %
@@ -73,15 +79,15 @@
                     </td>
                     <td>
                         <span
-                            [className]="profitOpportunityAtSelectedUsdDepth.fees.buyFee != null ? 'badge bg-success text-light mr-1' : 'badge bg-danger text-light mr-1'">
+                            [className]="profitOpportunityAtSelectedUsdDepth.fees.isDefaultBuyFeeUsed ? 'badge bg-warning text-light mr-1' : 'badge bg-success text-light mr-1'">
                             buy
                         </span>
                         <span
                             [className]="profitOpportunityAtSelectedUsdDepth.fees.withdrawalFee != null ? 'badge bg-success text-light mr-1' : 'badge bg-danger text-light mr-1'">
-                        withdraw
+                        transfer
                     </span>
                         <span
-                            [className]="profitOpportunityAtSelectedUsdDepth.fees.sellFee != null ? 'badge bg-success text-light' : 'badge bg-danger text-light'">
+                            [className]="profitOpportunityAtSelectedUsdDepth.fees.isDefaultSellFeeUsed ? 'badge bg-warning text-light' : 'badge bg-success text-light'">
                         sell
                     </span>
                     </td>

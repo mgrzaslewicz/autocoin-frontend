@@ -8,7 +8,7 @@
                 <thead>
                 <tr>
                     <th>Go to market</th>
-                    <th>Volume</th>
+                    <th>Daily volume</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -122,10 +122,12 @@
         <div>
             Risks
             <ul>
-                <li *ngIf="areSomeOrAllFeesUnavailable()">
-                    Not all fees are available so the profit might be lower.
-                    <ng-container *ngIf="isTransferFeeUnavailable()"> Transfer fee is not available - the profit might be lower or even be negative</ng-container>
-                    <ng-container *ngIf="!isTransferFeeUnavailable()"> The most important transfer fee is available</ng-container>
+                <li *ngIf="someTransactionFeesHaveDefaultValue()">
+                    Some transaction fees are not available with exact value from exchange market transaction fee.
+                    Default value {{defaultTransactionFeePercent}}% is used. Some exchanges might have higher fees so the potential profit might be lower in such case
+                </li>
+                <li *ngIf="isTransferFeeUnavailable()">
+                    Transfer fee is not available so the profit might be lower or even be negative
                 </li>
                 <li>
                     Make sure that {{opportunity.baseCurrency}} means the same currency at both exchanges, otherwise you might lose all coins when transferring between exchanges

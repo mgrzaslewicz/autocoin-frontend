@@ -8,6 +8,7 @@ import {ArbitrageOpportunityExchangeMarketLinkService} from "../../../services/a
     styleUrls: ['./two-leg-arbitrage-opportunities-table.component.scss']
 })
 export class TwoLegArbitrageOpportunitiesTableComponent {
+    @Input() defaultTransactionFeePercent: string;
     @Input() profitOpportunities: TwoLegArbitrageProfitOpportunityDto[];
     @Input() totalNumberOfUnfilteredOpportunities: number;
     @Input() orderBookAmountThresholdIndexSelected: number;

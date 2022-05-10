@@ -27,9 +27,11 @@ export class ArbitrageMonitorService {
 }
 
 export interface TwoLegArbitrageProfitOpportunityFeesDto {
-    buyFee?: string;
+    buyFee: string;
+    isDefaultBuyFeeUsed: boolean,
     withdrawalFee?: string;
-    sellFee?: string;
+    sellFee: string;
+    isDefaultSellFeeUsed: boolean;
 }
 
 export interface TwoLegArbitrageProfitOpportunityAtDepthDto {
@@ -48,6 +50,7 @@ export interface TwoLegArbitrageMetadataResponseDto {
     counterCurrenciesMonitored: string[];
     freePlanProfitPercentCutOff: string;
     isIncludingProPlanOpportunities: boolean;
+    defaultTransactionFeePercent: string;
 }
 
 export interface TwoLegArbitrageProfitOpportunitiesResponseDto {

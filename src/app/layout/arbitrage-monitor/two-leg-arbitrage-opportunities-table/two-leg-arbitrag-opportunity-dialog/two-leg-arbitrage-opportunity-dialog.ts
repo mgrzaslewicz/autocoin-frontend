@@ -1,6 +1,6 @@
 import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {TwoLegArbitrageProfitOpportunityDto, TwoLegArbitrageProfitOpportunityAtDepthDto} from "../../../../services/arbitrage-monitor.service";
+import {TwoLegArbitrageProfitOpportunityAtDepthDto, TwoLegArbitrageProfitOpportunityDto} from "../../../../services/arbitrage-monitor.service";
 import {ArbitrageOpportunityExchangeMarketLinkService} from "../../../../services/arbitrage-opportunity-exchange-market-link.service";
 
 @Component({
@@ -11,6 +11,7 @@ import {ArbitrageOpportunityExchangeMarketLinkService} from "../../../../service
 export class TwoLegArbitrageOpportunityDialog implements OnInit {
 
     private opportunity: TwoLegArbitrageProfitOpportunityDto;
+    private defaultTransactionFeePercent: string;
     private opportunityAtSelectedDepth: TwoLegArbitrageProfitOpportunityAtDepthDto;
 
     @ViewChild('content', {static: true})
@@ -29,17 +30,17 @@ export class TwoLegArbitrageOpportunityDialog implements OnInit {
     ngOnInit() {
     }
 
-    showOpportunityDetails(opportunity: TwoLegArbitrageProfitOpportunityDto, opportunityAtSelectedDepth: TwoLegArbitrageProfitOpportunityAtDepthDto) {
+    showOpportunityDetails(opportunity: TwoLegArbitrageProfitOpportunityDto, opportunityAtSelectedDepth: TwoLegArbitrageProfitOpportunityAtDepthDto, defaultTransactionFeePercent: string) {
         this.opportunity = opportunity;
         this.opportunityAtSelectedDepth = opportunityAtSelectedDepth;
+        this.defaultTransactionFeePercent = defaultTransactionFeePercent;
 
         this.modalService.open(this.content);
     }
 
-    areSomeOrAllFeesUnavailable(): boolean {
-        return this.opportunityAtSelectedDepth.fees.buyFee == null ||
-            this.opportunityAtSelectedDepth.fees.withdrawalFee == null ||
-            this.opportunityAtSelectedDepth.fees.sellFee == null
+    someTransactionFeesHaveDefaultValue(): boolean {
+        return this.opportunityAtSelectedDepth.fees.isDefaultBuyFeeUsed ||
+            this.opportunityAtSelectedDepth.fees.isDefaultSellFeeUsed
     }
 
     isTransferFeeUnavailable(): boolean {
