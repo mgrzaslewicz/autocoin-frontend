@@ -10,8 +10,6 @@ interface LiveOpportunitiesFilter {
     minRelativePercentFilterValue: number;
     isMaxRelativePercentFilterOn: boolean;
     maxRelativePercentFilterValue: number;
-    isAutoRefreshOn: boolean;
-    autoRefreshSeconds: number;
 }
 
 interface CommonFilter {
@@ -51,7 +49,6 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
 
     orderBookUsdAmountThresholds: number[] = [];
     orderBookUsdAmountThresholdsIndexes: number[] = [];
-    isLoadingLiveOpportunities: boolean;
     twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfitOpportunityDto[] = [];
     commonFilter: CommonFilter = {
         min24hUsdVolume: 1000,
@@ -66,9 +63,9 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
         isMinRelativePercentFilterOn: false,
         maxRelativePercentFilterValue: null,
         minRelativePercentFilterValue: null,
-        isAutoRefreshOn: false,
-        autoRefreshSeconds: 10
     };
+
+    autoRefreshSeconds = 5;
     defaultTransactionFeePercent = "...";
     freePlanProfitPercentCutOff: string = "...";
     isIncludingProPlanOpportunities: boolean = null;
@@ -116,13 +113,12 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
             .subscribe(() => {
                 this.fetchArbitrageMetadata();
                 this.fetchLiveOpportunities();
-                this.onAutoRefreshChange();
+                this.startAutoRefresh();
             });
     }
 
     ngOnDestroy(): void {
-        clearInterval(this.scheduledLiveOpportunitiesRefresh);
-        this.scheduledLiveOpportunitiesRefresh = null;
+        this.cancelLiveOpportunitiesRefresh();
     }
 
     getLastRefreshTime(): Date {
@@ -172,10 +168,6 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
     }
 
     fetchLiveOpportunities() {
-        if (this.isLoadingLiveOpportunities) {
-            return;
-        }
-        this.isLoadingLiveOpportunities = true;
         this.arbitrageMonitorService.getTwoLegArbitrageProfitOpportunities()
             .subscribe(twoLegArbitrageProfitOpportunities => {
                     this.orderBookUsdAmountThresholds = twoLegArbitrageProfitOpportunities.usdDepthThresholds;
@@ -183,12 +175,10 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
                         return index;
                     });
                     this.twoLegArbitrageProfitOpportunities = twoLegArbitrageProfitOpportunities.profits;
-                    this.isLoadingLiveOpportunities = false;
                     localStorage.setItem(this.lastTwoLegArbitrageOpportunitiesRefreshTimeKey, new Date().getTime()
                         .toString());
                 },
                 error => {
-                    this.isLoadingLiveOpportunities = false;
                     this.toastService.danger('Sorry, something went wrong. Could not refresh arbitrage opportunities');
                 }
             );
@@ -265,15 +255,6 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
         this.saveLiveOpportunitiesFilter();
     }
 
-    isAutoRefreshingLiveOpportunities(): boolean {
-        return this.liveOpportunitiesFilter.isAutoRefreshOn;
-    }
-
-    toggleLiveOpportunitiesAutoRefresh() {
-        this.liveOpportunitiesFilter.isAutoRefreshOn = !this.liveOpportunitiesFilter.isAutoRefreshOn;
-        this.onAutoRefreshChange();
-    }
-
     toggleLiveOpportunitiesMaxFilter() {
         this.liveOpportunitiesFilter.isMaxRelativePercentFilterOn = !this.liveOpportunitiesFilter.isMaxRelativePercentFilterOn;
         this.saveLiveOpportunitiesFilter();
@@ -284,17 +265,13 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
         this.scheduledLiveOpportunitiesRefresh = null;
     }
 
-    onAutoRefreshChange() {
+    startAutoRefresh() {
         if (this.scheduledLiveOpportunitiesRefresh != null) {
             this.cancelLiveOpportunitiesRefresh();
         }
-        if (this.isAutoRefreshingLiveOpportunities()) {
-            const autoRefreshMillis = this.getNumber(this.liveOpportunitiesFilter.autoRefreshSeconds, 10) * 1000;
-            this.scheduledLiveOpportunitiesRefresh = setInterval(() => {
-                this.fetchLiveOpportunities();
-            }, autoRefreshMillis);
-        }
-        this.saveLiveOpportunitiesFilter();
+        this.scheduledLiveOpportunitiesRefresh = setInterval(() => {
+            this.fetchLiveOpportunities();
+        }, this.autoRefreshSeconds * 1000);
     }
 
     saveLiveOpportunitiesFilter() {

@@ -185,26 +185,7 @@
                         </div>
                     </div>
                     <div>
-                        <div class="input-group">
-                            <button (click)="toggleLiveOpportunitiesAutoRefresh()" class="btn btn-sm mr-1 mb-1" type="button">
-                                Auto refresh seconds (min 10)
-                                <i class="fa" [class.fa-toggle-on]="isAutoRefreshingLiveOpportunities()"
-                                   [class.fa-toggle-off]="!isAutoRefreshingLiveOpportunities()"></i>
-                            </button>
-                            <input [(ngModel)]="liveOpportunitiesFilter.autoRefreshSeconds"
-                                   (input)="onAutoRefreshChange()"
-                                   type="text"
-                                   class="form-control minw-30"
-                                   [disabled]="!isAutoRefreshingLiveOpportunities()">
-                        </div>
-                    </div>
-                    <div>
-                        <button class="btn btn-info btn-sm mr-1 mt-1 mb-1" (click)="fetchLiveOpportunities()"
-                                [disabled]="isLoadingLiveOpportunities">
-                            <i class="fa fa-refresh" [class.is-pending]="isLoadingLiveOpportunities"></i> Refresh arbitrage
-                            opportunities
-                        </button>
-                        <div class="text-muted ml-auto mb-1">
+                        <div class="text-muted ml-auto">
                             <small>
                                 Last refresh: {{ (getLastRefreshTime() | date: 'y-MM-dd HH:mm:ss') || '-' }}
                             </small>
@@ -216,9 +197,8 @@
     </div>
 
     <div class="row">
-        <div *ngIf="!isLoadingLiveOpportunities && twoLegArbitrageProfitOpportunities.length === 0"
-             class="col-12">
-            <span class="badge badge-warning">No arbitrage opportunities found, refresh to check again</span>
+        <div *ngIf="twoLegArbitrageProfitOpportunities.length === 0" class="col-12">
+            <span class="badge badge-warning">Please wait, no arbitrage opportunities found at the moment</span>
         </div>
     </div>
 
