@@ -18,13 +18,21 @@
                     <span class="badge bg-warning text-light mr-1">default </span>
                     <span class="badge bg-danger text-light">not available</span>
                     <div>
-                        fees in calculation
+                        Fees in calculation
                         <button
                             (click)="textDialog.showWithoutHeader('When fee not available, presented opportunity potential profit might be lower. Default transaction fee means it was not available during calculating profit opportunity and default value ' + defaultTransactionFeePercent + '% was used. Fees (including transfer fee) are not related to ability to deposit or withdraw the currency')"
                             class="btn btn-sm btn-info info-button">
                             <i class="fa fa-question" aria-hidden="true"></i>
                         </button>
                     </div>
+                </th>
+                <th scope="col">
+                    How long ago found
+                    <button
+                        (click)="textDialog.showWithoutHeader('The younger the opportunity, the higher chance it still exists')"
+                        class="btn btn-sm btn-info info-button">
+                        <i class="fa fa-question" aria-hidden="true"></i>
+                    </button>
                 </th>
             </tr>
             </thead>
@@ -93,6 +101,9 @@
                             [className]="profitOpportunityAtSelectedUsdDepth.fees.isDefaultSellFeeUsed ? 'badge bg-warning text-light' : 'badge bg-success text-light'">
                         sell
                     </span>
+                    </td>
+                    <td>
+                        {{getOpportunityAgeFormatted(profitOpportunity)}}
                     </td>
                 </ng-container>
 

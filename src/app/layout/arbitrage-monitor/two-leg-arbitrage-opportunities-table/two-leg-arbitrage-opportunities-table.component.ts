@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {TwoLegArbitrageProfitOpportunityDto, TwoLegArbitrageProfitOpportunityAtDepthDto} from '../../../services/arbitrage-monitor.service';
+import {TwoLegArbitrageProfitOpportunityAtDepthDto, TwoLegArbitrageProfitOpportunityDto} from '../../../services/arbitrage-monitor.service';
 import {ArbitrageOpportunityExchangeMarketLinkService} from "../../../services/arbitrage-opportunity-exchange-market-link.service";
 
 @Component({
@@ -32,8 +32,12 @@ export class TwoLegArbitrageOpportunitiesTableComponent {
         return this.getSellAtLink(arbitrageProfit) != null;
     }
 
-    getSellAtLink(profitOpportunity: TwoLegArbitrageProfitOpportunityDto) {
+    getSellAtLink(profitOpportunity: TwoLegArbitrageProfitOpportunityDto): string {
         return this.marketLinkService.getSellAtLink(profitOpportunity);
     }
 
+    getOpportunityAgeFormatted(profitOpportunity: TwoLegArbitrageProfitOpportunityDto): string {
+        return new Date(profitOpportunity.ageSeconds * 1000).toISOString()
+            .substring(14, 19);
+    }
 }

@@ -67,6 +67,7 @@ export interface TwoLegArbitrageProfitOpportunityDto {
     usd24hVolumeAtSellExchange?: number;
     areDetailsHidden: boolean;
     profitOpportunityHistogram: TwoLegArbitrageProfitOpportunityAtDepthDto[];
+    ageSeconds: number;
 }
 
 export interface ProfitStatisticOpportunityCount {
