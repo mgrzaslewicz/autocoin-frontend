@@ -13,9 +13,30 @@
                         You're using Pro plan which shows also opportunities above {{freePlanProfitPercentCutOff}}%
                     </div>
                     <div *ngIf="isIncludingProPlanOpportunities === false" class="d-block">
-                        You're using Free plan which does not show opportunities above {{freePlanProfitPercentCutOff}}%. To join Pro plan, ping @mikolaj grzaslewicz on autocoin <a
-                        href="https://t.me/joinchat/DQ56VEbfV3uIQlrJphtLbw" target="_blank">telegram group</a> or send an email to mikolaj.grzaslewicz@gmail.com.
-                        Currently Pro plan is 10 USDT/month. You can make a decision up to 7 days after payment - to stay with Pro plan or have a refund and stay with Free one
+                        You're using Free plan which does not show opportunities above {{freePlanProfitPercentCutOff}}%
+                        <ul>
+                            <li>
+                                To join Pro plan, ping @mikolaj grzaslewicz on autocoin
+                                <a href="https://t.me/joinchat/DQ56VEbfV3uIQlrJphtLbw" target="_blank">telegram group</a>
+                                or send an email to mikolaj.grzaslewicz@gmail.com
+                            </li>
+                            <li>
+                                What's the pricing?
+                                <button
+                                    (click)="textDialog.showWithoutHeader('Currently Pro plan is 10 USDT/month. You can make a decision up to 7 days after payment - to stay with Pro plan or have a refund and stay with Free one.')"
+                                    class="btn btn-sm btn-info">
+                                    <i class="fa fa-question" aria-hidden="true"></i>
+                                </button>
+                            </li>
+                            <li>
+                                Honestly, what to expect from using arbitrage opportunities?
+                                <button
+                                    (click)="textDialog.showWithoutHeader('You can earn some money from time to time. There are people on telegram group that have earned hundreds of dollars per opportunity. But that happens rarely. Don\'t expect to make a living out of doing the arbitrage')"
+                                    class="btn btn-sm btn-info">
+                                    <i class="fa fa-question" aria-hidden="true"></i>
+                                </button>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -62,7 +83,7 @@
                                        [class.fa-toggle-off]="!isFilteringByMin24hVolume()"></i>
                                 </button>
                                 <button
-                                    (click)="textDialog.showWithoutHeader('Volume traded daily at the exchange, sum of buy and sell orders value. Using exchanges with low volume means greater risk to not have order filled quickly')"
+                                    (click)="textDialog.showWithoutHeader('What\'s the volume and how it\'s calculated? It\'s sum of buy and sell orders traded daily at the exchange. Using exchanges with low volume means greater risk to not have order filled quickly')"
                                     class="btn btn-sm btn-info mr-1 mb-1">
                                     <i class="fa fa-question" aria-hidden="true"></i>
                                 </button>
