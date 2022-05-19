@@ -56,12 +56,14 @@
                         </ng-select>
                         <div>
                             <div class="input-group">
-                                <button (click)="toggleMinUsd24hVolumeFilter()"
-                                        class="btn btn-sm mr-1 mb-1" type="button"
-                                        title="Volume traded daily at the exchange, sum of buy and sell orders value. Using exchanges with low volume means greater risk to not have order filled quickly">
+                                <button (click)="toggleMinUsd24hVolumeFilter()" class="btn btn-sm mr-1 mb-1" type="button">
                                     Hide exchanges with volume less than $
                                     <i class="fa" [class.fa-toggle-on]="isFilteringByMin24hVolume()"
                                        [class.fa-toggle-off]="!isFilteringByMin24hVolume()"></i>
+                                </button>
+                                <button
+                                    (click)="textDialog.showWithoutHeader('Volume traded daily at the exchange, sum of buy and sell orders value. Using exchanges with low volume means greater risk to not have order filled quickly')"
+                                    class="btn btn-sm btn-info mr-1 mb-1">
                                     <i class="fa fa-question" aria-hidden="true"></i>
                                 </button>
                                 <input [(ngModel)]="commonFilter.min24hUsdVolume"
@@ -212,3 +214,4 @@
     </div>
 
 </div>
+<app-text-dialog #textDialog></app-text-dialog>

@@ -15,13 +15,16 @@
                 <th scope="col">price</th>
                 <th scope="col">
                     <span class="badge bg-success text-light mr-1">available</span>
-                    <span class="badge bg-warning text-light mr-1"
-                          title="When no fee available during calculating profit opportunity, default value {{defaultTransactionFeePercent}}% is used">
-                        default
-                       <i class="fa fa-question" aria-hidden="true"></i>
-                    </span>
+                    <span class="badge bg-warning text-light mr-1">default </span>
                     <span class="badge bg-danger text-light">not available</span>
-                    <div>fees in calculation</div>
+                    <div>
+                        fees in calculation
+                        <button
+                            (click)="textDialog.showWithoutHeader('When fee not available, presented opportunity potential profit might be lower. Default transaction fee means it was not available during calculating profit opportunity and default value ' + defaultTransactionFeePercent + '% was used. Fees (including transfer fee) are not related to ability to deposit or withdraw the currency')"
+                            class="btn btn-sm btn-info info-button">
+                            <i class="fa fa-question" aria-hidden="true"></i>
+                        </button>
+                    </div>
                 </th>
             </tr>
             </thead>
@@ -100,3 +103,4 @@
 </div>
 
 <app-two-leg-arbitrage-opportunity-dialog #twoLegArbitrageOpportunityDialog></app-two-leg-arbitrage-opportunity-dialog>
+<app-text-dialog #textDialog></app-text-dialog>

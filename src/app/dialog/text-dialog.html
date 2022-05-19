@@ -1,0 +1,11 @@
+<ng-template #content let-c="close" let-d="dismiss">
+    <div *ngIf="header != null" class="modal-header">
+        <h4 class="modal-title">{{header}}</h4>
+    </div>
+    <div class="modal-body">
+        {{text}}
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="c('close')">Close</button>
+    </div>
+</ng-template>

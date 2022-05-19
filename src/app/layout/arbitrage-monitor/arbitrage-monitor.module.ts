@@ -10,6 +10,7 @@ import {FormsModule} from '@angular/forms';
 import {TwoLegArbitrageOpportunitiesTableComponent} from './two-leg-arbitrage-opportunities-table/two-leg-arbitrage-opportunities-table.component';
 import {NgSelectModule} from '@ng-select/ng-select';
 import {TwoLegArbitrageOpportunityDialog} from "./two-leg-arbitrage-opportunities-table/two-leg-arbitrag-opportunity-dialog/two-leg-arbitrage-opportunity-dialog";
+import {DialogModule} from "../../dialog/dialog.module";
 
 @NgModule({
     imports: [
@@ -19,7 +20,8 @@ import {TwoLegArbitrageOpportunityDialog} from "./two-leg-arbitrage-opportunitie
         NgbModule,
         FormsModule,
         NgSelectModule,
-        SharedPipesModule
+        SharedPipesModule,
+        DialogModule
     ],
     declarations: [
         ArbitrageMonitorComponent,
