@@ -1,9 +1,11 @@
 ### STAGE 1: Build ###
 
 # We label our stage as 'builder'
-FROM node:13.0.1-alpine as builder
+FROM node:12.22.12-alpine as builder
 
 COPY package.json package-lock.json ./
+
+#RUN apk add --no-cache python2
 
 RUN npm set progress=false && \
     npm config set depth 0 && \
