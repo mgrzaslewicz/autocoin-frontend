@@ -12,7 +12,7 @@ import {ToastService} from '../services/toast.service';
     animations: [routerTransition()]
 })
 export class SignupComponent implements OnInit {
-    @ViewChild('signupForm', { static: false })
+    @ViewChild('signupForm')
     public signupForm: NgForm;
     @ViewChild('iframe', { static: true })
     public iframe: any;
