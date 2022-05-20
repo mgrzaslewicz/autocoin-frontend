@@ -56,7 +56,7 @@ export class ExchangeUsersService {
     }
 
     findExchangeUser(exchangeUserId): Observable<ExchangeUser> {
-        return this.http.get(`${this.exchangeUsersApiUrl}/exchange-users`)
+        return this.http.get<ExchangeUser[]>(`${this.exchangeUsersApiUrl}/exchange-users`)
             .map(response => {
                 const data = _(response).find({id: exchangeUserId});
 

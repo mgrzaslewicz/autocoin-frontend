@@ -19,7 +19,7 @@ import {ExchangeUserDeleteComponent} from './exchange-user-delete/exchange-user-
         ApiKeysRoutingModule,
         ValidatorsModule,
         FormsModule,
-        NgbModule.forRoot()
+        NgbModule
     ],
     declarations: [
         ExchangeUsersComponent,

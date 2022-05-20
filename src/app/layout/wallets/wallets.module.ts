@@ -11,7 +11,7 @@ import { WalletsComponent } from './wallets.component';
     CommonModule,
     WalletsRoutingModule,
     PageHeaderModule,
-    NgbModule.forRoot(),
+    NgbModule,
   ],
   declarations: [WalletsComponent]
 })
