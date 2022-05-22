@@ -1,8 +1,7 @@
-import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AuthService} from '../../services/auth.service';
 import {ArbitrageMonitorService, TwoLegArbitrageProfitOpportunityDto} from '../../services/arbitrage-monitor.service';
 import {ToastService} from '../../services/toast.service';
-import {ExchangeNamesSupportedForGettingPublicMarketData} from '../../../environments/environment.default';
 import {animate, state, style, transition, trigger} from "@angular/animations";
 
 interface LiveOpportunitiesFilter {
@@ -70,16 +69,14 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
     freePlanProfitPercentCutOff: string = "...";
     isIncludingProPlanOpportunities: boolean = null;
     private lastTwoLegArbitrageOpportunitiesRefreshTimeKey = 'lastTwoLegArbitrageOpportunitiesRefreshTime';
-    private scheduledLiveOpportunitiesRefresh: number = null;
+    private scheduledLiveOpportunitiesRefresh: number | any = null;
+    private exchangesSupportedForMonitoring: string[] = [];
 
     constructor(
         private authService: AuthService,
         private arbitrageMonitorService: ArbitrageMonitorService,
-        private toastService: ToastService,
-        @Inject(ExchangeNamesSupportedForGettingPublicMarketData)
-        public exchangeNamesSupportedForGettingPublicMarketData: string[]
+        private toastService: ToastService
     ) {
-        this.selectedExchanges = exchangeNamesSupportedForGettingPublicMarketData.slice(0, exchangeNamesSupportedForGettingPublicMarketData.length);
         const savedLiveOpportunityFilters = localStorage.getItem('arbitrage-monitor.live-opportunities-filter');
         if (savedLiveOpportunityFilters != null) {
             try {
@@ -143,6 +140,14 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
                 this.freePlanProfitPercentCutOff = arbitrageMetadata.freePlanProfitPercentCutOff;
                 this.defaultTransactionFeePercent = arbitrageMetadata.defaultTransactionFeePercent;
                 this.isIncludingProPlanOpportunities = arbitrageMetadata.isIncludingProPlanOpportunities;
+                this.exchangesSupportedForMonitoring = arbitrageMetadata.exchangesMonitored;
+                this.selectedExchanges = this.exchangesSupportedForMonitoring
+                    .slice(0, this.exchangesSupportedForMonitoring.length)
+                    .sort((a, b) => {
+                        return a.localeCompare(b);
+                    });
+
+                this.removeBlacklistedExchangesFromSelected();
 
                 this.baseCurrenciesMonitored = arbitrageMetadata.baseCurrenciesMonitored.sort((a, b) => {
                     return a.localeCompare(b);
@@ -318,13 +323,13 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
     }
 
     addAllExchangesToBlackList() {
-        this.commonFilter.exchangeBlackList = this.exchangeNamesSupportedForGettingPublicMarketData.slice(0, this.exchangeNamesSupportedForGettingPublicMarketData.length);
+        this.commonFilter.exchangeBlackList = this.exchangesSupportedForMonitoring.slice(0, this.exchangesSupportedForMonitoring.length);
         this.saveCommonFilter();
     }
 
     clearExchangesBlackList() {
         this.commonFilter.exchangeBlackList = [];
-        this.selectedExchanges = this.exchangeNamesSupportedForGettingPublicMarketData.slice(0, this.exchangeNamesSupportedForGettingPublicMarketData.length);
+        this.selectedExchanges = this.exchangesSupportedForMonitoring.slice(0, this.exchangesSupportedForMonitoring.length);
         this.saveCommonFilter();
     }
 

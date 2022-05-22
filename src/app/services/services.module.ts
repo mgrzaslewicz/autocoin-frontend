@@ -27,7 +27,6 @@ import {
 import {environment} from '../../environments/environment';
 import {SignupService} from './signup.service';
 import {ArbitrageMonitorService} from './arbitrage-monitor.service';
-import {ExchangeNamesSupportedForGettingPublicMarketData, ExchangeNamesSupportedForTradingToken} from '../../environments/environment.default';
 import {ExchangeMarketLink} from './exchange-market-link.service';
 import {ArbitrageOpportunityExchangeMarketLinkService} from "./arbitrage-opportunity-exchange-market-link.service";
 
@@ -51,8 +50,6 @@ import {ArbitrageOpportunityExchangeMarketLinkService} from "./arbitrage-opportu
         {provide: HealthEndpointUrlToken, useValue: environment.healthEndpointUrl},
         {provide: SignupEndpointUrlToken, useValue: environment.signupEndpointUrl},
         {provide: TwoFactorAuthenticationEndpointUrlToken, useValue: environment.twoFactorAuthenticationEndpointUrl},
-        {provide: ExchangeNamesSupportedForTradingToken, useValue: environment.exchangeNamesSupportedForTrading},
-        {provide: ExchangeNamesSupportedForGettingPublicMarketData, useValue: environment.exchangeNamesSupportedForGettingPublicMarketData},
         {provide: ArbitrageMonitorEndpointUrlToken, useValue: environment.arbitrageMonitorEndpointUrl},
         AuthService,
         UserAccountService,

@@ -49,13 +49,13 @@
                     <h5 class="card-title">Exchanges</h5>
                     <div>
             <span>
-                Selected {{selectedExchanges.length}} of {{exchangeNamesSupportedForGettingPublicMarketData.length}} exchanges
-                 <button [class.invisible]="selectedExchanges.length === exchangeNamesSupportedForGettingPublicMarketData.length" class="btn btn-sm btn-light"
+                Selected {{selectedExchanges.length}} of {{exchangesSupportedForMonitoring.length}} exchanges
+                 <button [class.invisible]="selectedExchanges.length === exchangesSupportedForMonitoring.length" class="btn btn-sm btn-light"
                          (click)="clearExchangesBlackList()">select all</button>
             </span>
                         <ng-select
                             class="select-currencies mt-1 mb-1"
-                            [items]="exchangeNamesSupportedForGettingPublicMarketData"
+                            [items]="exchangesSupportedForMonitoring"
                             [virtualScroll]="true"
                             [multiple]="true"
                             (add)="removeExchangeFromBlackList($event)"
@@ -83,7 +83,7 @@
                                        [class.fa-toggle-off]="!isFilteringByMin24hVolume()"></i>
                                 </button>
                                 <button
-                                    (click)="textDialog.showWithoutHeader('What\'s the volume and how it\'s calculated? It\'s sum of buy and sell orders traded daily at the exchange. Using exchanges with low volume means greater risk to not have order filled quickly')"
+                                    (click)="textDialog.showWithoutHeader('What\'s the volume and how it\'s calculated? It\'s sum of buy and sell orders traded daily at the exchange. Using exchanges with low volume means greater risk to not have order filled quickly. Some exchanges might not have volume available - in such case those won\'t be filtered out')"
                                     class="btn btn-sm btn-info mr-1 mb-1">
                                     <i class="fa fa-question" aria-hidden="true"></i>
                                 </button>
@@ -233,6 +233,5 @@
             [defaultTransactionFeePercent]="defaultTransactionFeePercent"
         ></app-two-leg-arbitrage-opportunities-table>
     </div>
-
 </div>
 <app-text-dialog #textDialog></app-text-dialog>
