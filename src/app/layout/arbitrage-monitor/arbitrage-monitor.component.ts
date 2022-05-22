@@ -68,9 +68,10 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
     defaultTransactionFeePercent = "...";
     freePlanProfitPercentCutOff: string = "...";
     isIncludingProPlanOpportunities: boolean = null;
+    exchangesSupportedForMonitoring: string[] = [];
+
     private lastTwoLegArbitrageOpportunitiesRefreshTimeKey = 'lastTwoLegArbitrageOpportunitiesRefreshTime';
     private scheduledLiveOpportunitiesRefresh: number | any = null;
-    private exchangesSupportedForMonitoring: string[] = [];
 
     constructor(
         private authService: AuthService,

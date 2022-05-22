@@ -48,6 +48,7 @@ export interface TwoLegArbitrageProfitOpportunityAtDepthDto {
 export interface TwoLegArbitrageMetadataResponseDto {
     baseCurrenciesMonitored: string[];
     counterCurrenciesMonitored: string[];
+    exchangesMonitored: string[];
     freePlanProfitPercentCutOff: string;
     isIncludingProPlanOpportunities: boolean;
     defaultTransactionFeePercent: string;
@@ -63,7 +64,7 @@ export interface TwoLegArbitrageProfitOpportunityDto {
     counterCurrency: string;
     buyAtExchange: string;
     sellAtExchange?: string;
-    usd24hVolumeAtBuyExchange: number;
+    usd24hVolumeAtBuyExchange?: number;
     usd24hVolumeAtSellExchange?: number;
     areDetailsHidden: boolean;
     profitOpportunityHistogram: TwoLegArbitrageProfitOpportunityAtDepthDto[];

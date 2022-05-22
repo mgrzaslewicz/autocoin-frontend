@@ -21,7 +21,8 @@
                             {{opportunity.buyAtExchange}} {{opportunity.baseCurrency}}/{{opportunity.counterCurrency}}
                         </ng-container>
                     </td>
-                    <td class="text-right">${{opportunity.usd24hVolumeAtBuyExchange | number: '.2'}}</td>
+                    <td *ngIf="opportunity.usd24hVolumeAtBuyExchange != null" class="text-right">${{opportunity.usd24hVolumeAtBuyExchange | number: '.2'}}</td>
+                    <td *ngIf="opportunity.usd24hVolumeAtBuyExchange == null" class="text-right">Not available</td>
                 </tr>
                 <tr>
                     <ng-container *ngIf="opportunity.areDetailsHidden">
@@ -39,8 +40,11 @@
                                 {{opportunity.sellAtExchange}} {{opportunity.baseCurrency}}/{{opportunity.counterCurrency}}
                             </ng-container>
                         </td>
-                        <td class="text-right">
+                        <td *ngIf="opportunity.usd24hVolumeAtSellExchange != null" class="text-right">
                             ${{opportunity.usd24hVolumeAtSellExchange | number: '.2'}}
+                        </td>
+                        <td *ngIf="opportunity.usd24hVolumeAtSellExchange == null" class="text-right">
+                            Not available
                         </td>
                     </ng-container>
                 </tr>
@@ -97,7 +101,7 @@
                         {{opportunityAtSelectedDepth.fees.withdrawalFee}} {{opportunity.baseCurrency}}
                     </ng-container>
                     <ng-container *ngIf="opportunityAtSelectedDepth.fees.withdrawalFee == null">
-                        not available
+                        Not available
                     </ng-container>
                 </li>
                 <li>Sell:
@@ -132,8 +136,11 @@
                 <li>
                     Make sure that {{opportunity.baseCurrency}} means the same currency at both exchanges, otherwise you might lose all coins when transferring between exchanges
                 </li>
-                <li>
+                <li *ngIf="isVolumeAvailableForBothExchanges()">
                     If volume at exchanges is low it might be hard to sell or buy {{opportunity.baseCurrency}}
+                </li>
+                <li *ngIf="isVolumeNotAvailableForBothExchanges()">
+                    Volume at exchanges is not available so make sure you check it. In case it's low it might be hard to sell or buy {{opportunity.baseCurrency}}
                 </li>
                 <li>
                     Timing is important. Before you make the transfer, prices can change

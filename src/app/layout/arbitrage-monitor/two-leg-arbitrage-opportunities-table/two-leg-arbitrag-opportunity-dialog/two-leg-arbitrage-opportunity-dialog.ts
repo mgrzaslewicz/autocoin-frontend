@@ -47,6 +47,14 @@ export class TwoLegArbitrageOpportunityDialog implements OnInit {
         return this.opportunityAtSelectedDepth.fees.withdrawalFee == null;
     }
 
+    isVolumeNotAvailableForBothExchanges(): boolean {
+        return this.opportunity.usd24hVolumeAtBuyExchange == null || (!this.opportunity.areDetailsHidden && this.opportunity.sellAtExchange == null);
+    }
+
+    isVolumeAvailableForBothExchanges(): boolean {
+        return this.opportunity.usd24hVolumeAtBuyExchange != null && (this.opportunity.areDetailsHidden || this.opportunity.sellAtExchange != null);
+    }
+
     hasBuyAtLink(): boolean {
         return this.getBuyAtLink() != null;
     }
