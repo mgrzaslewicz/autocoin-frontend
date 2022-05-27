@@ -87,8 +87,8 @@
                                     class="btn btn-sm btn-info mr-1 mb-1">
                                     <i class="fa fa-question" aria-hidden="true"></i>
                                 </button>
-                                <input [(ngModel)]="commonFilter.min24hUsdVolume"
-                                       (input)="saveCommonFilter()"
+                                <input [(ngModel)]="opportunitiesFilter.min24hUsdVolume"
+                                       (input)="saveOpportunitiesFilter()"
                                        type="text" class="form-control minw-60">
                             </div>
                         </div>
@@ -188,29 +188,30 @@
                             <i class="fa" [class.fa-toggle-on]="isFilteringOpportunitiesByMinRelativePercent()"
                                [class.fa-toggle-off]="!isFilteringOpportunitiesByMinRelativePercent()"></i>
                         </button>
-                        <input [(ngModel)]="liveOpportunitiesFilter.minRelativePercentFilterValue"
-                               (input)="saveLiveOpportunitiesFilter()"
+                        <input [(ngModel)]="opportunitiesFilter.minRelativePercentFilterValue"
+                               (input)="saveOpportunitiesFilter()"
                                type="text"
                                class="form-control minw-30"
                                [disabled]="!isFilteringOpportunitiesByMinRelativePercent()">
                     </div>
-                    <div>
-                        <div class="input-group">
-                            <button (click)="toggleLiveOpportunitiesMaxFilter()" class="btn btn-sm mr-1 mb-1" type="button">
-                                Max profit %
-                                <i class="fa" [class.fa-toggle-on]="isFilteringOpportunitiesByMaxRelativePercent()"
-                                   [class.fa-toggle-off]="!isFilteringOpportunitiesByMaxRelativePercent()"></i>
-                            </button>
-                            <input [(ngModel)]="liveOpportunitiesFilter.maxRelativePercentFilterValue"
-                                   (input)="saveLiveOpportunitiesFilter()"
-                                   type="text" class="form-control minw-30"
-                                   [disabled]="!isFilteringOpportunitiesByMaxRelativePercent()">
-                        </div>
+                    <div class="input-group">
+                        <button (click)="toggleLiveOpportunitiesMaxFilter()" class="btn btn-sm mr-1 mb-1" type="button">
+                            Max profit %
+                            <i class="fa" [class.fa-toggle-on]="isFilteringOpportunitiesByMaxRelativePercent()"
+                               [class.fa-toggle-off]="!isFilteringOpportunitiesByMaxRelativePercent()"></i>
+                        </button>
+                        <input [(ngModel)]="opportunitiesFilter.maxRelativePercentFilterValue"
+                               (input)="saveOpportunitiesFilter()"
+                               type="text" class="form-control minw-30"
+                               [disabled]="!isFilteringOpportunitiesByMaxRelativePercent()">
+                    </div>
+                    <div class="input-group">
+                        <button (click)="resetFilters()" class="btn btn-sm btn-primary">Reset filters</button>
                     </div>
                     <div>
                         <div class="text-muted ml-auto">
                             <small>
-                                Last refresh: {{ (getLastRefreshTime() | date: 'y-MM-dd HH:mm:ss') || '-' }}
+                                Last refresh: {{ (getLastRefreshTime() | date: 'HH:mm:ss') || '-' }}
                             </small>
                         </div>
                     </div>
@@ -224,12 +225,11 @@
             <span class="badge badge-warning">Please wait, no arbitrage opportunities found at the moment</span>
         </div>
     </div>
-
     <div class="row">
         <app-two-leg-arbitrage-opportunities-table
             [profitOpportunities]="filterOpportunities(twoLegArbitrageProfitOpportunities)"
             [totalNumberOfUnfilteredOpportunities]="getTotalNumberOfOpportunities(twoLegArbitrageProfitOpportunities)"
-            [orderBookAmountThresholdIndexSelected]="commonFilter.orderBookAmountThresholdIndexSelected"
+            [orderBookAmountThresholdIndexSelected]="opportunitiesFilter.orderBookAmountThresholdIndexSelected"
             [defaultTransactionFeePercent]="defaultTransactionFeePercent"
         ></app-two-leg-arbitrage-opportunities-table>
     </div>

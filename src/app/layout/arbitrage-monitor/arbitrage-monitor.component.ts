@@ -9,9 +9,6 @@ interface LiveOpportunitiesFilter {
     minRelativePercentFilterValue: number;
     isMaxRelativePercentFilterOn: boolean;
     maxRelativePercentFilterValue: number;
-}
-
-interface CommonFilter {
     min24hUsdVolume: number;
     isMin24hUsdVolumeFilterOn: boolean;
     orderBookAmountThresholdIndexSelected: number;
@@ -49,7 +46,12 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
     orderBookUsdAmountThresholds: number[] = [];
     orderBookUsdAmountThresholdsIndexes: number[] = [];
     twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfitOpportunityDto[] = [];
-    commonFilter: CommonFilter = {
+
+    private defaultOpportunitiesFilter: LiveOpportunitiesFilter = {
+        isMaxRelativePercentFilterOn: false,
+        isMinRelativePercentFilterOn: false,
+        maxRelativePercentFilterValue: null,
+        minRelativePercentFilterValue: null,
         min24hUsdVolume: 1000,
         isMin24hUsdVolumeFilterOn: false,
         orderBookAmountThresholdIndexSelected: 0,
@@ -57,12 +59,8 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
         counterCurrencyBlackList: [],
         exchangeBlackList: []
     };
-    liveOpportunitiesFilter: LiveOpportunitiesFilter = {
-        isMaxRelativePercentFilterOn: false,
-        isMinRelativePercentFilterOn: false,
-        maxRelativePercentFilterValue: null,
-        minRelativePercentFilterValue: null,
-    };
+
+    opportunitiesFilter: LiveOpportunitiesFilter = Object.create(this.defaultOpportunitiesFilter);
 
     autoRefreshSeconds = 5;
     defaultTransactionFeePercent = "...";
@@ -72,36 +70,25 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
 
     private lastTwoLegArbitrageOpportunitiesRefreshTimeKey = 'lastTwoLegArbitrageOpportunitiesRefreshTime';
     private scheduledLiveOpportunitiesRefresh: number | any = null;
+    private opportunitiesFilterLocalStorageKey = 'arbitrage-monitor.opportunities-filter';
 
     constructor(
         private authService: AuthService,
         private arbitrageMonitorService: ArbitrageMonitorService,
         private toastService: ToastService
     ) {
-        const savedLiveOpportunityFilters = localStorage.getItem('arbitrage-monitor.live-opportunities-filter');
-        if (savedLiveOpportunityFilters != null) {
+        this.restoreOpportunitiesFilterFromLocalStorage();
+    }
+
+    private restoreOpportunitiesFilterFromLocalStorage() {
+        const savedOpportunitiesFilter = localStorage.getItem(this.opportunitiesFilterLocalStorageKey);
+        if (savedOpportunitiesFilter != null) {
             try {
-                this.liveOpportunitiesFilter = JSON.parse(savedLiveOpportunityFilters);
-            } catch (e) {
-                localStorage.removeItem('arbitrage-monitor.live-opportunities-filter');
-            }
-        }
-        const savedCommonFilters = localStorage.getItem('arbitrage-monitor.common-filter');
-        if (savedCommonFilters != null) {
-            try {
-                this.commonFilter = JSON.parse(savedCommonFilters);
-                if (this.commonFilter.baseCurrencyBlackList === undefined) {
-                    this.commonFilter.baseCurrencyBlackList = [];
-                }
-                if (this.commonFilter.counterCurrencyBlackList === undefined) {
-                    this.commonFilter.counterCurrencyBlackList = [];
-                }
-                if (this.commonFilter.exchangeBlackList === undefined) {
-                    this.commonFilter.exchangeBlackList = [];
-                }
+                this.opportunitiesFilter = JSON.parse(savedOpportunitiesFilter);
+                this.opportunitiesFilter = {...this.defaultOpportunitiesFilter, ...this.opportunitiesFilter};
                 this.removeBlacklistedExchangesFromSelected();
             } catch (e) {
-                localStorage.removeItem('arbitrage-monitor.common-filter');
+                localStorage.removeItem(this.opportunitiesFilterLocalStorageKey);
             }
         }
     }
@@ -110,13 +97,13 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
         this.authService.refreshTokenIfExpiringSoon()
             .subscribe(() => {
                 this.fetchArbitrageMetadata();
-                this.fetchLiveOpportunities();
+                this.fetchOpportunities();
                 this.startAutoRefresh();
             });
     }
 
     ngOnDestroy(): void {
-        this.cancelLiveOpportunitiesRefresh();
+        this.cancelOpportunitiesRefresh();
     }
 
     getLastRefreshTime(): Date {
@@ -154,7 +141,7 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
                     return a.localeCompare(b);
                 });
                 this.selectedBaseCurrenciesMonitored = this.baseCurrenciesMonitored.slice(0, this.baseCurrenciesMonitored.length);
-                this.commonFilter.baseCurrencyBlackList.forEach(item => {
+                this.opportunitiesFilter.baseCurrencyBlackList.forEach(item => {
                     const indexToRemove = this.selectedBaseCurrenciesMonitored.indexOf(item);
                     if (indexToRemove >= 0) {
                         this.selectedBaseCurrenciesMonitored.splice(indexToRemove, 1);
@@ -164,7 +151,7 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
                     return a.localeCompare(b);
                 });
                 this.selectedCounterCurrenciesMonitored = this.counterCurrenciesMonitored.slice(0, this.counterCurrenciesMonitored.length);
-                this.commonFilter.counterCurrencyBlackList.forEach(item => {
+                this.opportunitiesFilter.counterCurrencyBlackList.forEach(item => {
                     const indexToRemove = this.selectedCounterCurrenciesMonitored.indexOf(item);
                     if (indexToRemove >= 0) {
                         this.selectedCounterCurrenciesMonitored.splice(indexToRemove, 1);
@@ -173,7 +160,7 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
             });
     }
 
-    fetchLiveOpportunities() {
+    fetchOpportunities() {
         this.arbitrageMonitorService.getTwoLegArbitrageProfitOpportunities()
             .subscribe(twoLegArbitrageProfitOpportunities => {
                     this.orderBookUsdAmountThresholds = twoLegArbitrageProfitOpportunities.usdDepthThresholds;
@@ -191,147 +178,141 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
     }
 
     addBaseCurrencyToBlackList(event: any) {
-        this.commonFilter.baseCurrencyBlackList.push(event.value);
-        this.saveCommonFilter();
+        this.opportunitiesFilter.baseCurrencyBlackList.push(event.value);
+        this.saveOpportunitiesFilter();
     }
 
     addAllBaseCurrenciesToBlackList() {
-        this.commonFilter.baseCurrencyBlackList = this.baseCurrenciesMonitored.slice(0, this.baseCurrenciesMonitored.length);
-        this.saveCommonFilter();
+        this.opportunitiesFilter.baseCurrencyBlackList = this.baseCurrenciesMonitored.slice(0, this.baseCurrenciesMonitored.length);
+        this.saveOpportunitiesFilter();
     }
 
     clearBaseCurrenciesBlackList() {
-        this.commonFilter.baseCurrencyBlackList = [];
+        this.opportunitiesFilter.baseCurrencyBlackList = [];
         this.selectedBaseCurrenciesMonitored = this.baseCurrenciesMonitored.slice(0, this.baseCurrenciesMonitored.length);
-        this.saveCommonFilter();
+        this.saveOpportunitiesFilter();
     }
 
     removeBaseCurrencyFromBlackList(value: string | any) {
-        const index = this.commonFilter.baseCurrencyBlackList.indexOf(value);
+        const index = this.opportunitiesFilter.baseCurrencyBlackList.indexOf(value);
         if (index >= 0) {
-            this.commonFilter.baseCurrencyBlackList.splice(index, 1);
-            this.saveCommonFilter();
+            this.opportunitiesFilter.baseCurrencyBlackList.splice(index, 1);
+            this.saveOpportunitiesFilter();
         }
     }
 
-
     addCounterCurrencyToBlackList(event: any) {
-        this.commonFilter.counterCurrencyBlackList.push(event.value);
-        this.saveCommonFilter();
+        this.opportunitiesFilter.counterCurrencyBlackList.push(event.value);
+        this.saveOpportunitiesFilter();
     }
 
     addAllCounterCurrenciesToBlackList() {
-        this.commonFilter.counterCurrencyBlackList = this.counterCurrenciesMonitored.slice(0, this.counterCurrenciesMonitored.length);
-        this.saveCommonFilter();
+        this.opportunitiesFilter.counterCurrencyBlackList = this.counterCurrenciesMonitored.slice(0, this.counterCurrenciesMonitored.length);
+        this.saveOpportunitiesFilter();
     }
 
     clearCounterCurrenciesBlackList() {
-        this.commonFilter.counterCurrencyBlackList = [];
+        this.opportunitiesFilter.counterCurrencyBlackList = [];
         this.selectedCounterCurrenciesMonitored = this.counterCurrenciesMonitored.slice(0, this.counterCurrenciesMonitored.length);
-        this.saveCommonFilter();
+        this.saveOpportunitiesFilter();
     }
 
     removeCounterCurrencyFromBlackList(value: string | any) {
-        const index = this.commonFilter.counterCurrencyBlackList.indexOf(value);
+        const index = this.opportunitiesFilter.counterCurrencyBlackList.indexOf(value);
         if (index >= 0) {
-            this.commonFilter.counterCurrencyBlackList.splice(index, 1);
-            this.saveCommonFilter();
+            this.opportunitiesFilter.counterCurrencyBlackList.splice(index, 1);
+            this.saveOpportunitiesFilter();
         }
     }
 
     setOrderBookUsdAmountThreshold(orderBookUsdAmountThresholdIndex: number) {
-        this.commonFilter.orderBookAmountThresholdIndexSelected = orderBookUsdAmountThresholdIndex;
-        this.saveCommonFilter();
+        this.opportunitiesFilter.orderBookAmountThresholdIndexSelected = orderBookUsdAmountThresholdIndex;
+        this.saveOpportunitiesFilter();
     }
 
     getSelectedOrderBookUsdAmountThreshold() {
-        return this.orderBookUsdAmountThresholds[this.commonFilter.orderBookAmountThresholdIndexSelected];
+        return this.orderBookUsdAmountThresholds[this.opportunitiesFilter.orderBookAmountThresholdIndexSelected];
     }
 
     isShowingExchange(exchangeName?: string): boolean {
         if (exchangeName == null) {
             return true;
         } else {
-            return this.commonFilter.exchangeBlackList.indexOf(exchangeName.toLowerCase()) < 0;
+            return this.opportunitiesFilter.exchangeBlackList.indexOf(exchangeName.toLowerCase()) < 0;
         }
     }
 
     toggleLiveOpportunitiesMinFilter() {
-        this.liveOpportunitiesFilter.isMinRelativePercentFilterOn = !this.liveOpportunitiesFilter.isMinRelativePercentFilterOn;
-        this.saveLiveOpportunitiesFilter();
+        this.opportunitiesFilter.isMinRelativePercentFilterOn = !this.opportunitiesFilter.isMinRelativePercentFilterOn;
+        this.saveOpportunitiesFilter();
     }
 
     toggleLiveOpportunitiesMaxFilter() {
-        this.liveOpportunitiesFilter.isMaxRelativePercentFilterOn = !this.liveOpportunitiesFilter.isMaxRelativePercentFilterOn;
-        this.saveLiveOpportunitiesFilter();
+        this.opportunitiesFilter.isMaxRelativePercentFilterOn = !this.opportunitiesFilter.isMaxRelativePercentFilterOn;
+        this.saveOpportunitiesFilter();
     }
 
-    private cancelLiveOpportunitiesRefresh() {
+    private cancelOpportunitiesRefresh() {
         clearInterval(this.scheduledLiveOpportunitiesRefresh);
         this.scheduledLiveOpportunitiesRefresh = null;
     }
 
     startAutoRefresh() {
         if (this.scheduledLiveOpportunitiesRefresh != null) {
-            this.cancelLiveOpportunitiesRefresh();
+            this.cancelOpportunitiesRefresh();
         }
         this.scheduledLiveOpportunitiesRefresh = setInterval(() => {
-            this.fetchLiveOpportunities();
+            this.fetchOpportunities();
         }, this.autoRefreshSeconds * 1000);
     }
 
-    saveLiveOpportunitiesFilter() {
-        localStorage.setItem('arbitrage-monitor.live-opportunities-filter', JSON.stringify(this.liveOpportunitiesFilter));
+    saveOpportunitiesFilter() {
+        localStorage.setItem(this.opportunitiesFilterLocalStorageKey, JSON.stringify(this.opportunitiesFilter));
     }
 
     isFilteringOpportunitiesByMinRelativePercent(): boolean {
-        return this.liveOpportunitiesFilter.isMinRelativePercentFilterOn;
+        return this.opportunitiesFilter.isMinRelativePercentFilterOn;
     }
 
     isFilteringOpportunitiesByMaxRelativePercent(): boolean {
-        return this.liveOpportunitiesFilter.isMaxRelativePercentFilterOn;
-    }
-
-    saveCommonFilter() {
-        const localStorageKey = `arbitrage-monitor.common-filter`;
-        localStorage.setItem(localStorageKey, JSON.stringify(this.commonFilter));
+        return this.opportunitiesFilter.isMaxRelativePercentFilterOn;
     }
 
     isFilteringByMin24hVolume(): boolean {
-        return this.commonFilter.isMin24hUsdVolumeFilterOn;
+        return this.opportunitiesFilter.isMin24hUsdVolumeFilterOn;
     }
 
     toggleMinUsd24hVolumeFilter() {
         if (this.isFilteringByMin24hVolume()) {
-            this.commonFilter.isMin24hUsdVolumeFilterOn = false;
+            this.opportunitiesFilter.isMin24hUsdVolumeFilterOn = false;
         } else {
-            this.commonFilter.isMin24hUsdVolumeFilterOn = true;
+            this.opportunitiesFilter.isMin24hUsdVolumeFilterOn = true;
         }
-        this.saveCommonFilter();
+        this.saveOpportunitiesFilter();
     }
 
     removeExchangeFromBlackList(exchangeName: string | any) {
-        const index = this.commonFilter.exchangeBlackList.indexOf(exchangeName);
+        const index = this.opportunitiesFilter.exchangeBlackList.indexOf(exchangeName);
         if (index >= 0) {
-            this.commonFilter.exchangeBlackList.splice(index, 1);
-            this.saveCommonFilter();
+            this.opportunitiesFilter.exchangeBlackList.splice(index, 1);
+            this.saveOpportunitiesFilter();
         }
     }
 
     addExchangeToBlackList(event: any) {
-        this.commonFilter.exchangeBlackList.push(event.value);
-        this.saveCommonFilter();
+        this.opportunitiesFilter.exchangeBlackList.push(event.value);
+        this.saveOpportunitiesFilter();
     }
 
     addAllExchangesToBlackList() {
-        this.commonFilter.exchangeBlackList = this.exchangesSupportedForMonitoring.slice(0, this.exchangesSupportedForMonitoring.length);
-        this.saveCommonFilter();
+        this.opportunitiesFilter.exchangeBlackList = this.exchangesSupportedForMonitoring.slice(0, this.exchangesSupportedForMonitoring.length);
+        this.saveOpportunitiesFilter();
     }
 
     clearExchangesBlackList() {
-        this.commonFilter.exchangeBlackList = [];
+        this.opportunitiesFilter.exchangeBlackList = [];
         this.selectedExchanges = this.exchangesSupportedForMonitoring.slice(0, this.exchangesSupportedForMonitoring.length);
-        this.saveCommonFilter();
+        this.saveOpportunitiesFilter();
     }
 
     private getNumber(value: any, defaultValue: number): number {
@@ -354,7 +335,7 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
     }
 
     getTotalNumberOfOpportunities(twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfitOpportunityDto[]) {
-        const orderBookAmountThresholdIndexSelected = this.commonFilter.orderBookAmountThresholdIndexSelected;
+        const orderBookAmountThresholdIndexSelected = this.opportunitiesFilter.orderBookAmountThresholdIndexSelected;
         return twoLegArbitrageProfitOpportunities
             .filter(item => {
                     return item.profitOpportunityHistogram[orderBookAmountThresholdIndexSelected] != null;
@@ -363,7 +344,7 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
     }
 
     filterOpportunities(twoLegArbitrageProfitOpportunities: TwoLegArbitrageProfitOpportunityDto[]): TwoLegArbitrageProfitOpportunityDto[] {
-        const orderBookAmountThresholdIndexSelected = this.commonFilter.orderBookAmountThresholdIndexSelected;
+        const orderBookAmountThresholdIndexSelected = this.opportunitiesFilter.orderBookAmountThresholdIndexSelected;
         return twoLegArbitrageProfitOpportunities
             .filter(item => {
 
@@ -374,13 +355,13 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
                 let isMeetingMaxRelativePercentCriteria: boolean;
 
                 if (this.isFilteringOpportunitiesByMinRelativePercent()) {
-                    isMeetingMinRelativePercentCriteria = item.profitOpportunityHistogram[orderBookAmountThresholdIndexSelected].relativeProfitPercent >= this.getMin(this.liveOpportunitiesFilter.minRelativePercentFilterValue);
+                    isMeetingMinRelativePercentCriteria = item.profitOpportunityHistogram[orderBookAmountThresholdIndexSelected].relativeProfitPercent >= this.getMin(this.opportunitiesFilter.minRelativePercentFilterValue);
                 } else {
                     isMeetingMinRelativePercentCriteria = true;
                 }
 
                 if (this.isFilteringOpportunitiesByMaxRelativePercent()) {
-                    isMeetingMaxRelativePercentCriteria = item.profitOpportunityHistogram[orderBookAmountThresholdIndexSelected].relativeProfitPercent <= this.getMax(this.liveOpportunitiesFilter.maxRelativePercentFilterValue);
+                    isMeetingMaxRelativePercentCriteria = item.profitOpportunityHistogram[orderBookAmountThresholdIndexSelected].relativeProfitPercent <= this.getMax(this.opportunitiesFilter.maxRelativePercentFilterValue);
                 } else {
                     isMeetingMaxRelativePercentCriteria = true;
                 }
@@ -388,14 +369,14 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
                 let isMeetingVolumeCriteria: boolean;
                 if (this.isFilteringByMin24hVolume()) {
                     let usd24hVolumeAtSellExchange = item.usd24hVolumeAtSellExchange == null ? Number.MAX_VALUE : item.usd24hVolumeAtSellExchange;
-                    isMeetingVolumeCriteria = usd24hVolumeAtSellExchange >= this.getMin(this.commonFilter.min24hUsdVolume) &&
-                        item.usd24hVolumeAtBuyExchange >= this.getMin(this.commonFilter.min24hUsdVolume);
+                    isMeetingVolumeCriteria = usd24hVolumeAtSellExchange >= this.getMin(this.opportunitiesFilter.min24hUsdVolume) &&
+                        item.usd24hVolumeAtBuyExchange >= this.getMin(this.opportunitiesFilter.min24hUsdVolume);
                 } else {
                     isMeetingVolumeCriteria = true;
                 }
 
-                const isMeetingBaseCurrencyCriteria = this.commonFilter.baseCurrencyBlackList.indexOf(item.baseCurrency) < 0;
-                const isMeetingCounterCurrencyCriteria = this.commonFilter.counterCurrencyBlackList.indexOf(item.counterCurrency) < 0;
+                const isMeetingBaseCurrencyCriteria = this.opportunitiesFilter.baseCurrencyBlackList.indexOf(item.baseCurrency) < 0;
+                const isMeetingCounterCurrencyCriteria = this.opportunitiesFilter.counterCurrencyBlackList.indexOf(item.counterCurrency) < 0;
 
                 return this.isShowingExchange(item.sellAtExchange) &&
                     this.isShowingExchange(item.buyAtExchange) &&
@@ -411,9 +392,13 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
     }
 
     private removeBlacklistedExchangesFromSelected() {
-        this.commonFilter.exchangeBlackList.forEach(it => {
+        this.opportunitiesFilter.exchangeBlackList.forEach(it => {
             this.selectedExchanges.splice(this.selectedExchanges.indexOf(it), 1);
         });
     }
 
+    resetFilters() {
+        this.opportunitiesFilter = Object.create(this.defaultOpportunitiesFilter);
+        this.saveOpportunitiesFilter();
+    }
 }

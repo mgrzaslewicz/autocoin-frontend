@@ -16,6 +16,14 @@ export class TwoLegArbitrageOpportunitiesTableComponent {
     constructor(private marketLinkService: ArbitrageOpportunityExchangeMarketLinkService) {
     }
 
+    howManyFilteredOutOpportunities(): number {
+        return this.totalNumberOfUnfilteredOpportunities - this.profitOpportunities.length;
+    }
+
+    isAnyOpportunityFilteredOut(): boolean {
+        return this.howManyFilteredOutOpportunities() > 0;
+    }
+
     profitOpportunityAtSelectedUsdDepth(opportunity: TwoLegArbitrageProfitOpportunityDto): TwoLegArbitrageProfitOpportunityAtDepthDto {
         return opportunity.profitOpportunityHistogram[this.orderBookAmountThresholdIndexSelected];
     }
