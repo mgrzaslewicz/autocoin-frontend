@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, Output, ViewChild} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {TwoLegArbitrageProfitOpportunityAtDepthDto, TwoLegArbitrageProfitOpportunityDto} from "../../../../services/arbitrage-monitor.service";
 import {ArbitrageOpportunityExchangeMarketLinkService} from "../../../../services/arbitrage-opportunity-exchange-market-link.service";
@@ -8,11 +8,12 @@ import {ArbitrageOpportunityExchangeMarketLinkService} from "../../../../service
     templateUrl: './two-leg-arbitrage-opportunity-dialog.html',
     styleUrls: ['./two-leg-arbitrage-opportunity-dialog.scss']
 })
-export class TwoLegArbitrageOpportunityDialog implements OnInit {
+export class TwoLegArbitrageOpportunityDialog implements OnDestroy {
 
     private opportunity: TwoLegArbitrageProfitOpportunityDto;
     private defaultTransactionFeePercent: string;
     private opportunityAtSelectedDepth: TwoLegArbitrageProfitOpportunityAtDepthDto;
+    private scheduledOpportunityAgeRefresh: number | any = null;
 
     @ViewChild('content', {static: true})
     content;
@@ -20,6 +21,7 @@ export class TwoLegArbitrageOpportunityDialog implements OnInit {
     @Output('refresh')
     refreshEmmitter: EventEmitter<any> = new EventEmitter();
     proVersionEncouragement = 'Full details available in Pro version';
+    opportunityAgeSeconds: number = null;
 
     constructor(
         private modalService: NgbModal,
@@ -27,15 +29,18 @@ export class TwoLegArbitrageOpportunityDialog implements OnInit {
     ) {
     }
 
-    ngOnInit() {
+    ngOnDestroy(): void {
+        this.cancelOpportunityAgeRefresh();
     }
 
     showOpportunityDetails(opportunity: TwoLegArbitrageProfitOpportunityDto, opportunityAtSelectedDepth: TwoLegArbitrageProfitOpportunityAtDepthDto, defaultTransactionFeePercent: string) {
         this.opportunity = opportunity;
+        this.opportunityAgeSeconds = opportunity.ageSeconds;
         this.opportunityAtSelectedDepth = opportunityAtSelectedDepth;
         this.defaultTransactionFeePercent = defaultTransactionFeePercent;
 
         this.modalService.open(this.content);
+        this.startOpportunityAgeRefresh();
     }
 
     someTransactionFeesHaveDefaultValue(): boolean {
@@ -72,8 +77,19 @@ export class TwoLegArbitrageOpportunityDialog implements OnInit {
     }
 
     getOpportunityAgeFormatted(): string {
-        return new Date(this.opportunity.ageSeconds * 1000)
+        return new Date(this.opportunityAgeSeconds * 1000)
             .toISOString()
             .substring(14, 19);
     }
+
+    private cancelOpportunityAgeRefresh() {
+        clearInterval(this.scheduledOpportunityAgeRefresh);
+    }
+
+    private startOpportunityAgeRefresh() {
+        this.scheduledOpportunityAgeRefresh = setInterval(() => {
+            this.opportunityAgeSeconds = this.opportunityAgeSeconds + 1;
+        }, 1000);
+    }
+
 }
