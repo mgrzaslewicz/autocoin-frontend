@@ -29,7 +29,7 @@
                 <th scope="col">
                     How long ago found
                     <button
-                        (click)="textDialog.showWithoutHeader('The younger the opportunity, the higher chance it still exists')"
+                        (click)="textDialog.showWithoutHeader('The younger the opportunity, the higher chance it still exists. It\'s shown as minutes:seconds')"
                         class="btn btn-sm btn-info info-button">
                         <i class="fa fa-question" aria-hidden="true"></i>
                     </button>
@@ -103,7 +103,7 @@
                     </span>
                     </td>
                     <td>
-                        {{getOpportunityAgeFormatted(profitOpportunity)}}
+                        {{getOpportunityAgeFormatted(profitOpportunity)}}s
                     </td>
                 </ng-container>
 
