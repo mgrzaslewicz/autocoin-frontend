@@ -45,7 +45,8 @@ export class TwoLegArbitrageOpportunitiesTableComponent {
     }
 
     getOpportunityAgeFormatted(profitOpportunity: TwoLegArbitrageProfitOpportunityDto): string {
-        return new Date(profitOpportunity.ageSeconds * 1000).toISOString()
+        return new Date(profitOpportunity.ageSeconds * 1000)
+            .toISOString()
             .substring(14, 19);
     }
 }

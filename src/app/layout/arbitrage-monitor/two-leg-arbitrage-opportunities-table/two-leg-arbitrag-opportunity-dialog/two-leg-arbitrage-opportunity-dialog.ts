@@ -70,4 +70,10 @@ export class TwoLegArbitrageOpportunityDialog implements OnInit {
     getSellAtLink() {
         return this.marketLinkService.getSellAtLink(this.opportunity);
     }
+
+    getOpportunityAgeFormatted(): string {
+        return new Date(this.opportunity.ageSeconds * 1000)
+            .toISOString()
+            .substring(14, 19);
+    }
 }

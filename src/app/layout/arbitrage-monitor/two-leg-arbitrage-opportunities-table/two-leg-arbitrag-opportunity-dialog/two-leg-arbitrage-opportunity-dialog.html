@@ -1,6 +1,6 @@
 <ng-template #content let-c="close" let-d="dismiss">
     <div class="modal-header">
-        <h4 class="modal-title">Arbitrage profit opportunity up to ${{opportunityAtSelectedDepth.usdDepthUpTo}}</h4>
+        <h4 class="modal-title">Opportunity up to ${{opportunityAtSelectedDepth.usdDepthUpTo}}, found {{getOpportunityAgeFormatted()}}s ago</h4>
     </div>
     <div class="modal-body">
         <div class="border-bottom-1">
