@@ -50,6 +50,9 @@ export class HealthComponent implements OnInit {
                 }).sort((a, b) => {
                     return a.exchangeName.localeCompare(b.exchangeName);
                 }));
+                this.exchangesHealth.set('All exchanges', healthDtoList.sort((a, b) => {
+                    return a.exchangeName.localeCompare(b.exchangeName);
+                }));
                 console.log(this.exchangesHealth);
             },
             error => {
