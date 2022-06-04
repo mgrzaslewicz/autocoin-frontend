@@ -10,10 +10,15 @@ interface UserAccountDto {
 }
 
 interface TokenResponseDto {
-    access_token: String;
-    refresh_token: String;
+    access_token: string;
+    refresh_token: string;
     expires_in: number;
     userAccount: UserAccountDto;
+}
+
+export interface ClientTokenResponseDto {
+    access_token: string;
+    token_type: string;
 }
 
 
@@ -60,6 +65,22 @@ export class AuthService {
                 this.storeUserRoles(response.userAccount.userRoles);
                 this.setUserAccount(response.userAccount);
             });
+    }
+
+    public requestClientToken(): Observable<ClientTokenResponseDto> {
+        const body = new HttpParams()
+            .set('client_id', 'SPA')
+            .set('client_secret', 'superSecretPassword')
+            .set('grant_type', 'client_credentials');
+
+        const headers = new HttpHeaders()
+            .append('Cache-Control', 'no-cache')
+            .append('Content-Type', 'application/x-www-form-urlencoded');
+
+        const options = {
+            headers
+        };
+        return this.http.post<ClientTokenResponseDto>(this.oauthTokenEndpointUrl, body, options);
     }
 
     /**

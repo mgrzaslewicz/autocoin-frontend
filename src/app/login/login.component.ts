@@ -4,6 +4,7 @@ import {routerTransition} from '../router.animations';
 import {AuthService} from '../services/auth.service';
 import {NgForm} from '@angular/forms';
 import {ToastService} from '../services/toast.service';
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
     selector: 'app-login',
@@ -31,7 +32,7 @@ export class LoginComponent implements OnInit {
         this.authService.login(loginForm.value.email, loginForm.value.password, loginForm.value.twoFactorAuthenticationCode)
             .subscribe(() => {
                 this.router.navigate(['/dashboard']);
-            }, response => {
+            }, (response: HttpErrorResponse) => {
                 if (response.error.error === 'invalid_grant') {
                     if (this.isTwoFactorAuthenticationCodeInvalid(response.error)) {
                         if (this.isShowingTwoFactorAuthenticationCodeInput) {

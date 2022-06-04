@@ -18,6 +18,11 @@ const routes: Routes = [
         loadChildren: () => import('./signup/signup.module').then(m => m.SignupModule),
         canActivate: [AllowOnlyNotLoggedInGuard]
     },
+    {
+        path: 'reset-password',
+        loadChildren: () => import('./reset-password/reset-password.module').then(m => m.ResetPasswordModule),
+        canActivate: [AllowOnlyNotLoggedInGuard]
+    },
     {path: 'not-found', loadChildren: () => import('./not-found/not-found.module').then(m => m.NotFoundModule)},
     {path: '**', redirectTo: 'not-found'}
 ];

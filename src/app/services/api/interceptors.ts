@@ -12,7 +12,7 @@ export class Oauth2TokenInterceptor implements HttpInterceptor {
     }
 
     private addOauth2BearerToken(request: HttpRequest<any>): HttpRequest<any> {
-        if (request.headers.has('refresh_token')) {
+        if (request.headers && request.headers.has('Authorization')) {
             return request;
         } else {
             return request.clone({

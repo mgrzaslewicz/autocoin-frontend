@@ -12,14 +12,14 @@ import {ExchangeKeyCapabilityService} from './exchange-key-capability.service';
 import {ExchangeWalletService} from './exchange-wallet.service';
 import {
     ArbitrageMonitorEndpointUrlToken,
-    ChangePasswordEndpointUrlToken,
+    ChangePasswordEndpointUrlToken, ChangePasswordWithResetPasswordTokenEndpointUrlToken,
     ExchangeKeysCapabilityEndpointUrlToken,
     ExchangeUsersEndpointUrlToken,
     ExchangeWalletEndpointUrlToken,
     HealthEndpointUrlToken,
     OauthEndpointUrlToken,
     OrdersEndpointUrlToken,
-    PricesEndpointUrlToken,
+    PricesEndpointUrlToken, RequestEmailWithResetPasswordTokenEndpointUrlToken,
     SignupEndpointUrlToken,
     StrategiesEndpointUrlToken,
     TwoFactorAuthenticationEndpointUrlToken
@@ -42,6 +42,8 @@ import {ArbitrageOpportunityExchangeMarketLinkService} from "./arbitrage-opportu
         {provide: OauthEndpointUrlToken, useValue: environment.oauthEndpointUrl},
         {provide: ExchangeUsersEndpointUrlToken, useValue: environment.exchangeUsersApiUrl},
         {provide: ChangePasswordEndpointUrlToken, useValue: environment.changePasswordEndpointUrl},
+        {provide: RequestEmailWithResetPasswordTokenEndpointUrlToken, useValue: environment.requestEmailWithResetPasswordTokenEndpointUrl},
+        {provide: ChangePasswordWithResetPasswordTokenEndpointUrlToken, useValue: environment.changePasswordWithResetPasswordTokenEndpointUrl},
         {provide: ExchangeWalletEndpointUrlToken, useValue: environment.exchangeWalletEndpointUrl},
         {provide: OrdersEndpointUrlToken, useValue: environment.ordersEndpointUrl},
         {provide: ExchangeKeysCapabilityEndpointUrlToken, useValue: environment.exchangeKeysCapabilityEndpointUrl},

@@ -1,9 +1,15 @@
 import {Inject, Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {FeatureToggle, FeatureToggleToken} from './feature.toogle.service';
 import {Observable} from 'rxjs';
-import {AuthService} from './auth.service';
-import {ChangePasswordEndpointUrlToken, TwoFactorAuthenticationEndpointUrlToken} from '../../environments/endpoint-tokens';
+import {AuthService, ClientTokenResponseDto} from './auth.service';
+import {
+    ChangePasswordEndpointUrlToken,
+    ChangePasswordWithResetPasswordTokenEndpointUrlToken,
+    RequestEmailWithResetPasswordTokenEndpointUrlToken,
+    TwoFactorAuthenticationEndpointUrlToken
+} from '../../environments/endpoint-tokens';
+import {ToastService} from "./toast.service";
 
 export interface ChangePasswordResponseDto {
     success: boolean;
@@ -17,6 +23,11 @@ export interface ChangePasswordRequestDto {
     twoFactorAuthenticationCode: number;
 }
 
+export interface ResetUserAccountPasswordWithTokenRequestDto {
+    newPassword: string;
+    resetPasswordToken: string;
+}
+
 @Injectable()
 export class UserAccountService {
 
@@ -24,8 +35,11 @@ export class UserAccountService {
         private http: HttpClient,
         @Inject(TwoFactorAuthenticationEndpointUrlToken) private twoFactorAuthenticationEndpointUrl: string,
         @Inject(ChangePasswordEndpointUrlToken) private changePasswordEndpointUrl: string,
+        @Inject(RequestEmailWithResetPasswordTokenEndpointUrlToken) private requestEmailWithResetPasswordTokenEndpointUrlToken: string,
+        @Inject(ChangePasswordWithResetPasswordTokenEndpointUrlToken) private changePasswordWithResetPasswordTokenEndpointUrlToken: string,
         @Inject(FeatureToggleToken) private featureToggle: FeatureToggle,
-        private authService: AuthService
+        private authService: AuthService,
+        private toastService: ToastService
     ) {
     }
 
@@ -47,7 +61,7 @@ export class UserAccountService {
     }
 
     public changePassword(oldPassword: string, newPassword: string, confirmPassword: string, twoFactorAuthenticationCode: number): Observable<ChangePasswordResponseDto> {
-        return this.http.post<ChangePasswordResponseDto>(`${this.changePasswordEndpointUrl}`, {
+        return this.http.post<ChangePasswordResponseDto>(this.changePasswordEndpointUrl, {
             oldPassword: oldPassword,
             newPassword: newPassword,
             confirmPassword: confirmPassword,
@@ -59,4 +73,45 @@ export class UserAccountService {
                 }
             });
     }
+
+    public requestEmailWithResetPasswordToken(emailAddress: string, callback: (observable: Observable<string>) => void) {
+        this.authService.requestClientToken()
+            .subscribe((clientToken: ClientTokenResponseDto) => {
+                console.log('Received client access token');
+                const headers = new HttpHeaders({'Authorization': `Bearer ${clientToken.access_token}`});
+                callback(this.http.post(`${this.requestEmailWithResetPasswordTokenEndpointUrlToken}?email=${emailAddress}`,
+                    null,
+                    {
+                        headers: headers,
+                        responseType: 'text'
+                    }
+                ));
+            }, error => {
+                console.error(error);
+                console.error('Request to get client token failed');
+                this.toastService.warning('Something went wrong, please try again later');
+            });
+    }
+
+    public resetPasswordWithToken(newPassword: string, resetPasswordToken: string, callback: (observable: Observable<string>) => void) {
+        this.authService.requestClientToken()
+            .subscribe((clientToken: ClientTokenResponseDto) => {
+                console.log('Received client access token');
+                const headers = new HttpHeaders({'Authorization': `Bearer ${clientToken.access_token}`});
+                callback(this.http.post(this.changePasswordWithResetPasswordTokenEndpointUrlToken, {
+                            newPassword: newPassword,
+                            resetPasswordToken: resetPasswordToken
+                        } as ResetUserAccountPasswordWithTokenRequestDto,
+                        {
+                            headers: headers,
+                            responseType: 'text'
+                        })
+                );
+            }, error => {
+                console.error(error);
+                console.error('Request to get client token failed');
+                this.toastService.warning('Something went wrong, please try again later');
+            });
+    }
+
 }
