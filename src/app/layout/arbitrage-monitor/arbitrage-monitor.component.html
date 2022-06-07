@@ -221,17 +221,15 @@
     </div>
 
     <div class="row">
-        <div *ngIf="twoLegArbitrageProfitOpportunities.length === 0" class="col-12">
+        <div *ngIf="twoLegArbitrageProfitOpportunities.length === 0" class="col-12 mt-1">
             <span class="badge badge-warning">Please wait, no arbitrage opportunities found at the moment</span>
         </div>
     </div>
-    <div class="row">
-        <app-two-leg-arbitrage-opportunities-table
-            [profitOpportunities]="filterOpportunities(twoLegArbitrageProfitOpportunities)"
-            [totalNumberOfUnfilteredOpportunities]="getTotalNumberOfOpportunities(twoLegArbitrageProfitOpportunities)"
-            [orderBookAmountThresholdIndexSelected]="opportunitiesFilter.orderBookAmountThresholdIndexSelected"
-            [defaultTransactionFeePercent]="defaultTransactionFeePercent"
-        ></app-two-leg-arbitrage-opportunities-table>
-    </div>
+    <app-two-leg-arbitrage-opportunities-table
+        [profitOpportunities]="filterOpportunities(twoLegArbitrageProfitOpportunities)"
+        [totalNumberOfUnfilteredOpportunities]="getTotalNumberOfOpportunities(twoLegArbitrageProfitOpportunities)"
+        [orderBookAmountThresholdIndexSelected]="opportunitiesFilter.orderBookAmountThresholdIndexSelected"
+        [defaultTransactionFeePercent]="defaultTransactionFeePercent"
+    ></app-two-leg-arbitrage-opportunities-table>
 </div>
 <app-text-dialog #textDialog></app-text-dialog>

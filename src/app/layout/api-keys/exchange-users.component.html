@@ -1,7 +1,11 @@
 <app-page-header [heading]="'API keys'" [icon]="'fa-users'"></app-page-header>
-
+<div class="row">
+    <div class="col-12">
+        <h5>Providing keys allow you to view exchange wallets. Those are not related with arbitrage opportunities monitoring</h5>
+    </div>
+</div>
 <div class="card mb-3">
-    <div class="card-header">API keys can be grouped (e.g. 'john', 'test')
+    <div class="card-header">API keys can be grouped (e.g. 'john', 'test', 'my keys' etc.)
     </div>
     <div *ngIf="!isLoading && exchangeUsers.length == 0" class="alert alert-primary">
         Start with adding your first API key group, eg your name. Then assign API keys for each
@@ -11,7 +15,11 @@
         <a routerLink="/api-keys/create" class="btn btn-info">Add group <i class="fa fa-user-plus"></i></a>
     </div>
 </div>
-
+<div class="row">
+    <div class="col-12">
+        <h5>API keys groups</h5>
+    </div>
+</div>
 <div *ngFor="let exchangeUser of exchangeUsers" class="row">
     <div class="col-12">
         <div class="card mb-3">

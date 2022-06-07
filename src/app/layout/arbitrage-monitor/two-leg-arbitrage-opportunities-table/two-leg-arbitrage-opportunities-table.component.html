@@ -1,117 +1,130 @@
-<div class="col-12 mb-1">
-    <div class="mb-1">
-        {{profitOpportunities.length}} opportunities <ng-container *ngIf="isAnyOpportunityFilteredOut()">({{howManyFilteredOutOpportunities()}} filtered out)</ng-container>
+<div class="row">
+    <div class="col-12 mb-1">
+        {{profitOpportunities.length}} opportunities
+        <ng-container *ngIf="isAnyOpportunityFilteredOut()">({{howManyFilteredOutOpportunities()}} filtered out)</ng-container>
     </div>
-    <div class="table-responsive">
-        <table class="table table-striped table-hover">
-            <thead>
-            <tr>
-                <th scope="col">Profit %<i class="fa fa-arrow-down" aria-hidden="true"></i></th>
-                <th scope="col">$Profit</th>
-                <th scope="col">Currency pair</th>
-                <th scope="col">Buy at</th>
-                <th scope="col">price <i class="fa fa-arrow-right" aria-hidden="true"></i></th>
-                <th scope="col">Sell at</th>
-                <th scope="col">price</th>
-                <th scope="col">
-                    <span class="badge bg-success text-light mr-1">available</span>
-                    <span class="badge bg-warning text-light mr-1">default </span>
-                    <span class="badge bg-danger text-light">not available</span>
-                    <div>
-                        Fees in calculation
+</div>
+<div class="row">
+    <div class="col-12 mb-1">
+        <div class="table-responsive">
+            <table class="table table-striped table-sm table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">
+                    <span class="mr-1">
+                        Profit %<i class="fa fa-arrow-down" aria-hidden="true"></i>
+                    </span>
                         <button
-                            (click)="textDialog.showWithoutHeader('When fee not available, presented opportunity potential profit might be lower. Default transaction fee means it was not available during calculating profit opportunity and default value ' + defaultTransactionFeePercent + '% was used. Fees (including transfer fee) are not related to ability to deposit or withdraw the currency')"
+                            (click)="textDialog.showWithoutHeader('Fees (if available) are already deducted from the profit. You can see what fees are available in fees column')"
                             class="btn btn-sm btn-info info-button">
                             <i class="fa fa-question" aria-hidden="true"></i>
                         </button>
-                    </div>
-                </th>
-                <th scope="col">
-                    How long ago found
-                    <button
-                        (click)="textDialog.showWithoutHeader('The younger the opportunity, the higher chance it still exists. It\'s shown as minutes:seconds')"
-                        class="btn btn-sm btn-info info-button">
-                        <i class="fa fa-question" aria-hidden="true"></i>
-                    </button>
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let profitOpportunity of profitOpportunities">
-                <ng-container *ngIf="profitOpportunityAtSelectedUsdDepth(profitOpportunity); let profitOpportunityAtSelectedUsdDepth">
-                    <th scope="row">
-                        <button
-                            (click)="twoLegArbitrageOpportunityDialog.showOpportunityDetails(profitOpportunity, profitOpportunityAtSelectedUsdDepth, defaultTransactionFeePercent)"
-                            class="btn btn-sm btn-info">
-                            <i class="fa fa-info-circle" aria-hidden="true"></i>
-                        </button>
-                        {{profitOpportunityAtSelectedUsdDepth.relativeProfitPercent}} %
                     </th>
-                    <th scope="row">
-                        <div>${{profitOpportunityAtSelectedUsdDepth.profitUsd}}</div>
-                    </th>
-                    <td>
-                        {{profitOpportunity.baseCurrency}}/{{profitOpportunity.counterCurrency}}
-                    </td>
-                    <td>
-                        <div *ngIf="hasBuyAtLink(profitOpportunity)">
-                            <a [href]="getBuyAtLink(profitOpportunity)" target="_blank">
-                                {{profitOpportunity.buyAtExchange}}
-                            </a>
-                        </div>
-                        <div *ngIf="!hasBuyAtLink(profitOpportunity)">
-                            {{profitOpportunity.buyAtExchange}}
-                        </div>
-                    </td>
-                    <td>
+                    <th scope="col">$Profit</th>
+                    <th scope="col">Currency pair</th>
+                    <th scope="col">Buy at</th>
+                    <th scope="col">price <i class="fa fa-arrow-right" aria-hidden="true"></i></th>
+                    <th scope="col">Sell at</th>
+                    <th scope="col">price</th>
+                    <th scope="col">
+                        <span class="badge bg-success text-light mr-1">available</span>
+                        <span class="badge bg-warning text-light mr-1">default </span>
+                        <span class="badge bg-danger text-light">not available</span>
                         <div>
-                            {{profitOpportunityAtSelectedUsdDepth.buyPrice}}
+                            Fees in calculation
+                            <button
+                                (click)="textDialog.showWithoutHeader('When fee not available, presented opportunity potential profit might be lower. Default transaction fee means it was not available during calculating profit opportunity and default value ' + defaultTransactionFeePercent + '% was used. Fees (including transfer fee) are not related to ability to deposit or withdraw the currency')"
+                                class="btn btn-sm btn-info info-button">
+                                <i class="fa fa-question" aria-hidden="true"></i>
+                            </button>
                         </div>
-                    </td>
-                    <td>
-                        <div *ngIf="profitOpportunity.areDetailsHidden">
-                            <span class="badge badge-warning">Full details available in Pro version</span>
-                        </div>
-                        <div *ngIf="!profitOpportunity.areDetailsHidden">
-                            <div *ngIf="hasSellAtLink(profitOpportunity)">
-                                <a [href]="getSellAtLink(profitOpportunity)" target="_blank">
-                                    {{profitOpportunity.sellAtExchange}}
+                    </th>
+                    <th scope="col">
+                        How long ago found
+                        <button
+                            (click)="textDialog.showWithoutHeader('The younger the opportunity, the higher chance it still exists. It\'s shown as minutes:seconds')"
+                            class="btn btn-sm btn-info info-button">
+                            <i class="fa fa-question" aria-hidden="true"></i>
+                        </button>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let profitOpportunity of profitOpportunities">
+                    <ng-container *ngIf="profitOpportunityAtSelectedUsdDepth(profitOpportunity); let profitOpportunityAtSelectedUsdDepth">
+                        <th scope="row">
+                            <button
+                                (click)="twoLegArbitrageOpportunityDialog.showOpportunityDetails(profitOpportunity, profitOpportunityAtSelectedUsdDepth, defaultTransactionFeePercent)"
+                                class="btn btn-sm btn-info">
+                                <i class="fa fa-info-circle" aria-hidden="true"></i>
+                            </button>
+                            {{profitOpportunityAtSelectedUsdDepth.relativeProfitPercent}} %
+                        </th>
+                        <th scope="row">
+                            <div>${{profitOpportunityAtSelectedUsdDepth.profitUsd}}</div>
+                        </th>
+                        <td>
+                            {{profitOpportunity.baseCurrency}}/{{profitOpportunity.counterCurrency}}
+                        </td>
+                        <td>
+                            <div *ngIf="hasBuyAtLink(profitOpportunity)">
+                                <a [href]="getBuyAtLink(profitOpportunity)" target="_blank">
+                                    {{profitOpportunity.buyAtExchange}}
                                 </a>
                             </div>
-                            <div *ngIf="!hasSellAtLink(profitOpportunity)">
-                                {{profitOpportunity.sellAtExchange}}
+                            <div *ngIf="!hasBuyAtLink(profitOpportunity)">
+                                {{profitOpportunity.buyAtExchange}}
                             </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div>
-                            {{profitOpportunityAtSelectedUsdDepth.sellPrice}}
-                        </div>
-                    </td>
-                    <td>
+                        </td>
+                        <td>
+                            <div>
+                                {{profitOpportunityAtSelectedUsdDepth.buyPrice}}
+                            </div>
+                        </td>
+                        <td>
+                            <div *ngIf="profitOpportunity.areDetailsHidden">
+                                <span class="badge badge-warning">Full details available in Pro version</span>
+                            </div>
+                            <div *ngIf="!profitOpportunity.areDetailsHidden">
+                                <div *ngIf="hasSellAtLink(profitOpportunity)">
+                                    <a [href]="getSellAtLink(profitOpportunity)" target="_blank">
+                                        {{profitOpportunity.sellAtExchange}}
+                                    </a>
+                                </div>
+                                <div *ngIf="!hasSellAtLink(profitOpportunity)">
+                                    {{profitOpportunity.sellAtExchange}}
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                {{profitOpportunityAtSelectedUsdDepth.sellPrice}}
+                            </div>
+                        </td>
+                        <td>
                         <span
                             [className]="profitOpportunityAtSelectedUsdDepth.fees.isDefaultBuyFeeUsed ? 'badge bg-warning text-light mr-1' : 'badge bg-success text-light mr-1'">
                             buy
                         </span>
-                        <span
-                            [className]="profitOpportunityAtSelectedUsdDepth.fees.withdrawalFee != null ? 'badge bg-success text-light mr-1' : 'badge bg-danger text-light mr-1'">
+                            <span
+                                [className]="profitOpportunityAtSelectedUsdDepth.fees.withdrawalFee != null ? 'badge bg-success text-light mr-1' : 'badge bg-danger text-light mr-1'">
                         transfer
                     </span>
-                        <span
-                            [className]="profitOpportunityAtSelectedUsdDepth.fees.isDefaultSellFeeUsed ? 'badge bg-warning text-light' : 'badge bg-success text-light'">
+                            <span
+                                [className]="profitOpportunityAtSelectedUsdDepth.fees.isDefaultSellFeeUsed ? 'badge bg-warning text-light' : 'badge bg-success text-light'">
                         sell
                     </span>
-                    </td>
-                    <td>
-                        {{getOpportunityAgeFormatted(profitOpportunity)}}s
-                    </td>
-                </ng-container>
+                        </td>
+                        <td>
+                            {{getOpportunityAgeFormatted(profitOpportunity)}}s
+                        </td>
+                    </ng-container>
 
-            </tr>
-            </tbody>
-        </table>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
-
 <app-two-leg-arbitrage-opportunity-dialog #twoLegArbitrageOpportunityDialog></app-two-leg-arbitrage-opportunity-dialog>
 <app-text-dialog #textDialog></app-text-dialog>
