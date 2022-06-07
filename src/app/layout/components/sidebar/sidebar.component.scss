@@ -126,6 +126,16 @@ $topnav-background-color: #222;
     }
 }
 
+.logout-button {
+    cursor: pointer;
+}
+
+@media screen and (min-width: 992px) {
+    .logout-button {
+        display: none;
+    }
+}
+
 ::-webkit-scrollbar {
     width: 8px;
 }

@@ -10,7 +10,7 @@
                     <i class="fa fa-user"></i> {{userName}} <b class="caret"></b>
                 </a>
                 <div class="dropdown-menu-right" ngbDropdownMenu>
-                    <a class="dropdown-item" [routerLink]="['/login']" (click)="onLoggedout()">
+                    <a class="dropdown-item" [routerLink]="['/login']" (click)="logout()">
                         <i class="fa fa-fw fa-power-off"></i> {{ 'Log Out' | translate }}
                     </a>
                 </div>

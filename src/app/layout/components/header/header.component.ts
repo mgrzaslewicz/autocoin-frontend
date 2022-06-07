@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Router, NavigationEnd} from '@angular/router';
+import {NavigationEnd, Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {AuthService} from '../../../services/auth.service';
 
@@ -10,7 +10,7 @@ import {AuthService} from '../../../services/auth.service';
 })
 export class HeaderComponent implements OnInit {
     pushRightClass = 'push-right';
-    userName: String;
+    userName: string;
 
     constructor(private translate: TranslateService,
                 public router: Router,
@@ -49,8 +49,9 @@ export class HeaderComponent implements OnInit {
         dom.classList.toggle('rtl');
     }
 
-    onLoggedout() {
+    logout() {
         this.authService.logout();
+        this.router.navigate(['/login']);
     }
 
     changeLang(language: string) {

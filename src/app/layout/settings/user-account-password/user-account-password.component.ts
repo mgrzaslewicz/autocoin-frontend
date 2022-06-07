@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {UserAccountService} from '../../../services/user-account.service';
 import {ToastService} from '../../../services/toast.service';
+import {AuthService} from "../../../services/auth.service";
 
 @Component({
     selector: 'app-user-account-password',
@@ -19,7 +20,8 @@ export class UserAccountPasswordComponent implements OnInit {
     errorMessages: string[];
 
     constructor(private userAccountService: UserAccountService,
-                private toastService: ToastService) {
+                private toastService: ToastService,
+                private authService: AuthService) {
     }
 
 
@@ -106,4 +108,9 @@ export class UserAccountPasswordComponent implements OnInit {
         this.oldPassword = '';
         this.errorMessages = [];
     }
+
+    getLogin(): string {
+        return this.authService.userName();
+    }
+
 }

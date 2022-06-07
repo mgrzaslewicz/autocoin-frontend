@@ -140,7 +140,7 @@ export class AuthService {
     }
 
 
-    userName(): String {
+    userName(): string {
         return localStorage.getItem(this.userNameKey);
     }
 
@@ -200,13 +200,14 @@ export class AuthService {
     private getUserRoles(): string[] {
         const userRoles = localStorage.getItem(this.userRolesKey);
         if (userRoles != null) {
-           return JSON.parse(userRoles);
+            return JSON.parse(userRoles);
         } else {
             return [];
         }
     }
 
     isRoleAssignedToUser(roleName: string) {
-        return this.getUserRoles().indexOf(roleName) !== -1;
+        return this.getUserRoles()
+            .indexOf(roleName) !== -1;
     }
 }

@@ -1,9 +1,7 @@
 import {Component, Inject} from '@angular/core';
-import {
-    FeatureToggle,
-    FeatureToggleToken,
-    FEATURE_HEALTH
-} from '../../../services/feature.toogle.service';
+import {FEATURE_HEALTH, FeatureToggle, FeatureToggleToken} from '../../../services/feature.toogle.service';
+import {AuthService} from "../../../services/auth.service";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-sidebar',
@@ -15,7 +13,11 @@ export class SidebarComponent {
     isHealthTabAvailable = false;
     showMenu = '';
 
-    constructor(@Inject(FeatureToggleToken) private featureToggle: FeatureToggle) {
+    constructor(
+        @Inject(FeatureToggleToken) private featureToggle: FeatureToggle,
+        private authService: AuthService,
+        private router: Router
+    ) {
         this.isHealthTabAvailable = featureToggle.isActive(FEATURE_HEALTH);
     }
 
@@ -29,5 +31,10 @@ export class SidebarComponent {
         } else {
             this.showMenu = element;
         }
+    }
+
+    logout() {
+        this.authService.logout();
+        this.router.navigate(['/login']);
     }
 }
