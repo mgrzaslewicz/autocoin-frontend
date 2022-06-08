@@ -64,6 +64,8 @@ export interface TwoLegArbitrageProfitOpportunityDto {
     counterCurrency: string;
     buyAtExchange: string;
     sellAtExchange?: string;
+    withdrawalEnabled?: boolean;
+    depositEnabled?: boolean;
     usd24hVolumeAtBuyExchange?: number;
     usd24hVolumeAtSellExchange?: number;
     areDetailsHidden: boolean;

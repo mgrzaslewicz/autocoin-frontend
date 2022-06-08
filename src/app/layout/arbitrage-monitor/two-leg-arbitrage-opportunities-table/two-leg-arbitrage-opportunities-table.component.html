@@ -27,8 +27,21 @@
                     <th scope="col">Sell at</th>
                     <th scope="col">price</th>
                     <th scope="col">
+                        <span class="badge bg-success text-light mr-1">enabled</span>
+                        <span class="badge bg-warning text-light mr-1">unknown</span>
+                        <span class="badge bg-danger text-light">disabled</span>
+                        <div>
+                            Transfer status
+                            <button
+                                (click)="textDialog.showWithoutHeader('When withdrawal or deposit is disabled, you will not be able to use this opportunity. When unknown make sure to check it yourself')"
+                                class="btn btn-sm btn-info info-button">
+                                <i class="fa fa-question" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </th>
+                    <th scope="col">
                         <span class="badge bg-success text-light mr-1">available</span>
-                        <span class="badge bg-warning text-light mr-1">default </span>
+                        <span class="badge bg-warning text-light mr-1">default</span>
                         <span class="badge bg-danger text-light">not available</span>
                         <div>
                             Fees in calculation
@@ -102,18 +115,40 @@
                             </div>
                         </td>
                         <td>
-                        <span
-                            [className]="profitOpportunityAtSelectedUsdDepth.fees.isDefaultBuyFeeUsed ? 'badge bg-warning text-light mr-1' : 'badge bg-success text-light mr-1'">
-                            buy
-                        </span>
                             <span
-                                [className]="profitOpportunityAtSelectedUsdDepth.fees.withdrawalFee != null ? 'badge bg-success text-light mr-1' : 'badge bg-danger text-light mr-1'">
-                        transfer
-                    </span>
+                                [class.bg-success]="profitOpportunity.withdrawalEnabled === true"
+                                [class.bg-warning]="profitOpportunity.withdrawalEnabled === null"
+                                [class.bg-danger]="profitOpportunity.withdrawalEnabled === false"
+                                class="badge text-light mr-1">
+                                withdrawal
+                            </span>
                             <span
-                                [className]="profitOpportunityAtSelectedUsdDepth.fees.isDefaultSellFeeUsed ? 'badge bg-warning text-light' : 'badge bg-success text-light'">
-                        sell
-                    </span>
+                                [class.bg-success]="profitOpportunity.depositEnabled === true"
+                                [class.bg-warning]="profitOpportunity.depositEnabled === null"
+                                [class.bg-danger]="profitOpportunity.depositEnabled === false"
+                                class="badge text-light">
+                                deposit
+                            </span>
+                        </td>
+                        <td>
+                            <span
+                                [class.badge-warning]="profitOpportunityAtSelectedUsdDepth.fees.isDefaultBuyFeeUsed"
+                                [class.badge-success]="!profitOpportunityAtSelectedUsdDepth.fees.isDefaultBuyFeeUsed"
+                                class="badge text-light mr-1">
+                                buy
+                            </span>
+                            <span
+                                [class.bg-success]="profitOpportunityAtSelectedUsdDepth.fees.withdrawalFee !== null"
+                                [class.bg-danger]="profitOpportunityAtSelectedUsdDepth.fees.withdrawalFee === null"
+                                class="badge text-light mr-1">
+                                transfer
+                            </span>
+                            <span
+                                [class.bg-success]="profitOpportunityAtSelectedUsdDepth.fees.isDefaultSellFeeUsed"
+                                [class.bg-warning]="!profitOpportunityAtSelectedUsdDepth.fees.isDefaultSellFeeUsed"
+                                class="badge text-light">
+                                sell
+                            </span>
                         </td>
                         <td>
                             {{getOpportunityAgeFormatted(profitOpportunity)}}s
