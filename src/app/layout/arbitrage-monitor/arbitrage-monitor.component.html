@@ -10,10 +10,10 @@
             <div class="card-header">
                 <div class="flex-row">
                     <div *ngIf="isIncludingProPlanOpportunities === true" class="d-block">
-                        You're using Pro plan which shows also opportunities above {{freePlanProfitPercentCutOff}}%
+                        You're using Pro plan which shows full details for opportunities above {{freePlanProfitPercentCutOff}}%
                     </div>
                     <div *ngIf="isIncludingProPlanOpportunities === false" class="d-block">
-                        You're using Free plan which does not show opportunities above {{freePlanProfitPercentCutOff}}%
+                        You're using Free plan. You're going to see all available opportunities, but full details for opportunities above {{freePlanProfitPercentCutOff}}% are not shown
                         <ul>
                             <li>
                                 To join Pro plan, ping @mikolaj grzaslewicz on autocoin
