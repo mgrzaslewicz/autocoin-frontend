@@ -29,11 +29,10 @@
                     <th scope="col">
                         <span class="badge bg-success text-light mr-1">enabled</span>
                         <span class="badge bg-warning text-light mr-1">unknown</span>
-                        <span class="badge bg-danger text-light">disabled</span>
                         <div>
                             Transfer status
                             <button
-                                (click)="textDialog.showWithoutHeader('When withdrawal or deposit is disabled, you will not be able to use this opportunity. When unknown make sure to check it yourself')"
+                                (click)="textDialog.showWithoutHeader('When withdrawal or deposit status is unknown, make sure to check it yourself. If withdrawal or deposit is disabled at exchange, you will not be able to use this opportunity.')"
                                 class="btn btn-sm btn-info info-button">
                                 <i class="fa fa-question" aria-hidden="true"></i>
                             </button>
@@ -118,14 +117,12 @@
                             <span
                                 [class.bg-success]="profitOpportunity.withdrawalEnabled === true"
                                 [class.bg-warning]="profitOpportunity.withdrawalEnabled === null"
-                                [class.bg-danger]="profitOpportunity.withdrawalEnabled === false"
                                 class="badge text-light mr-1">
                                 withdrawal
                             </span>
                             <span
                                 [class.bg-success]="profitOpportunity.depositEnabled === true"
                                 [class.bg-warning]="profitOpportunity.depositEnabled === null"
-                                [class.bg-danger]="profitOpportunity.depositEnabled === false"
                                 class="badge text-light">
                                 deposit
                             </span>
