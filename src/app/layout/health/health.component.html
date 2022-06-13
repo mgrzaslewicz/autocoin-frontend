@@ -1,15 +1,55 @@
+<div class="row">
+    <div class="col-12 mb-1">
+        <div class="table-responsive">
+            <table class="table table-striped table-sm table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">Exchange</th>
+                    <th *ngFor="let capability of capabilities" scope="col">{{capability}}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let exchange of exchangesHealth">
+                    <td>{{exchange.exchangeName}}</td>
+                    <th *ngFor="let exchangeCapability of exchange.capabilities" scope="col">
+                        <ng-container *ngIf="exchangeCapability.value == 'true'">
+                            <span class="badge bg-success">
+                            <i class="fa fa-check" aria-hidden="true"></i>
+                            </span>
+                        </ng-container>
+                        <ng-container *ngIf="exchangeCapability.value == 'false'">
+                            <span class="badge bg-danger">
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                            </span>
+                        </ng-container>
+                        <ng-container *ngIf="exchangeCapability.value === null">
+                            <span class="badge bg-warning">
+                            <i class="fa fa-question" aria-hidden="true"></i>
+                            </span>
+                        </ng-container>
+                        <ng-container *ngIf="isNumeric(exchangeCapability.value)">
+                            {{exchangeCapability.value | number: '.2'}}
+                        </ng-container>
+                    </th>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
 <div *ngFor="let exchangeHealthCategory of healthCategories()" class="row mb-4">
     <div class="col-12">
         <h2>{{exchangeHealthCategory}}
-            <ng-container *ngIf="exchangesHealth.get(exchangeHealthCategory).length > 0">
-                ({{exchangesHealth.get(exchangeHealthCategory).length}})
+            <ng-container *ngIf="exchangesHealthGroupedByCategory.get(exchangeHealthCategory).length > 0">
+                ({{exchangesHealthGroupedByCategory.get(exchangeHealthCategory).length}})
             </ng-container>
         </h2>
         <div *ngIf="hasNoExchangesInCategory(exchangeHealthCategory)">
             <h3>Empty</h3>
         </div>
     </div>
-    <div *ngFor="let exchangeHealth of exchangesHealth.get(exchangeHealthCategory)"
+    <div *ngFor="let exchangeHealth of exchangesHealthGroupedByCategory.get(exchangeHealthCategory)"
          class="col-xs-12 col-sm-12 col-md-6 col-xl-4">
         <app-health-panel [exchangeHealth]="exchangeHealth"></app-health-panel>
     </div>
