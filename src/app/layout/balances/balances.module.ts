@@ -5,6 +5,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { BalancesRoutingModule } from './balances-routing.module';
 import { ExchangeWalletsComponent } from './exchange-wallets/exchange-wallets.component';
+import {BalancesComponent} from "./balances.component";
 
 @NgModule({
   imports: [
@@ -13,6 +14,6 @@ import { ExchangeWalletsComponent } from './exchange-wallets/exchange-wallets.co
     PageHeaderModule,
     NgbModule,
   ],
-  declarations: [ExchangeWalletsComponent]
+  declarations: [BalancesComponent, ExchangeWalletsComponent]
 })
 export class BalancesModule { }

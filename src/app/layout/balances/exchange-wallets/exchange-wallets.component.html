@@ -1,7 +1,7 @@
-<app-page-header [heading]="'View wallets from many exchanges in one place'"></app-page-header>
 <div class="row">
     <div class="col-12">
-        Requires API keys
+        <h5>View balance from many exchanges in one place</h5>
+        <h6>Requires API keys</h6>
     </div>
 </div>
 <div class="row">
@@ -21,7 +21,7 @@
         </button>
         <button (click)="toggleHideBalances()" type="button" class="btn btn-sm mb-1">
             Hide balances <i class="fa" [class.fa-toggle-on]="hideBalances"
-                                  [class.fa-toggle-off]="!hideBalances"></i>
+                             [class.fa-toggle-off]="!hideBalances"></i>
         </button>
         <div class="text-muted ml-auto mb-1">
             <small>

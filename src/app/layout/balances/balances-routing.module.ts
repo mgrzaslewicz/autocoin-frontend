@@ -1,15 +1,17 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { ExchangeWalletsComponent } from './exchange-wallets/exchange-wallets.component';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {ExchangeWalletsComponent} from './exchange-wallets/exchange-wallets.component';
+import {BalancesComponent} from "./balances.component";
 
 const routes: Routes = [
-  {
-    path: 'exchange', component: ExchangeWalletsComponent
-  }
+    {
+        path: '', component: BalancesComponent,
+    }
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+    imports: [RouterModule.forChild(routes)],
+    exports: [RouterModule]
 })
-export class BalancesRoutingModule { }
+export class BalancesRoutingModule {
+}
