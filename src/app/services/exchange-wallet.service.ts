@@ -1,9 +1,9 @@
 import {Inject, Injectable} from '@angular/core';
 import 'rxjs/add/operator/map';
-import {ExchangeCurrencyBalancesResponseDto} from '../layout/wallets/wallets.component';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {ExchangeWalletEndpointUrlToken} from '../../environments/endpoint-tokens';
+import {ExchangeCurrencyBalancesResponseDto} from "../layout/balances/exchange-wallets/exchange-wallets.component";
 
 @Injectable()
 export class ExchangeWalletService {

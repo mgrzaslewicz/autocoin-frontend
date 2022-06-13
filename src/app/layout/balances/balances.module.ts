@@ -3,16 +3,16 @@ import { CommonModule } from '@angular/common';
 import { PageHeaderModule } from '../../shared';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { WalletsRoutingModule } from './wallets-routing.module';
-import { WalletsComponent } from './wallets.component';
+import { BalancesRoutingModule } from './balances-routing.module';
+import { ExchangeWalletsComponent } from './exchange-wallets/exchange-wallets.component';
 
 @NgModule({
   imports: [
     CommonModule,
-    WalletsRoutingModule,
+    BalancesRoutingModule,
     PageHeaderModule,
     NgbModule,
   ],
-  declarations: [WalletsComponent]
+  declarations: [ExchangeWalletsComponent]
 })
-export class WalletsModule { }
+export class BalancesModule { }

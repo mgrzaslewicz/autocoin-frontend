@@ -1,13 +1,13 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {routerTransition} from '../../router.animations';
-import {ExchangeUser} from '../../models';
-import {ToastService} from '../../services/toast.service';
+import {routerTransition} from '../../../router.animations';
+import {ExchangeUser} from '../../../models';
+import {ToastService} from '../../../services/toast.service';
 import * as _ from 'underscore';
-import {CurrencyPriceDto, PriceService} from '../../services/price.service';
-import {ExchangeUsersService} from '../../services/api';
+import {CurrencyPriceDto, PriceService} from '../../../services/price.service';
+import {ExchangeUsersService} from '../../../services/api';
 import {forkJoin, Subscription} from 'rxjs';
-import {ExchangeWalletService} from '../../services/exchange-wallet.service';
-import {AuthService} from '../../services/auth.service';
+import {ExchangeWalletService} from '../../../services/exchange-wallet.service';
+import {AuthService} from '../../../services/auth.service';
 
 export interface CurrencyBalanceDto {
     currencyCode: string;
@@ -44,12 +44,12 @@ interface CurrencyBalanceTableRow {
 }
 
 @Component({
-    selector: 'app-wallets',
-    templateUrl: './wallets.component.html',
-    styleUrls: ['./wallets.component.scss'],
+    selector: 'app-exchange-wallets',
+    templateUrl: './exchange-wallets.component.html',
+    styleUrls: ['./exchange-wallets.component.scss'],
     animations: [routerTransition()]
 })
-export class WalletsComponent implements OnInit, OnDestroy {
+export class ExchangeWalletsComponent implements OnInit, OnDestroy {
     exchangeUsers: ExchangeUserWithBalance[] = [];
     pending = false;
     showBalancesPerExchange = true;

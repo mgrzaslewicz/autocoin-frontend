@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { WalletsComponent } from './wallets.component';
+import { ExchangeWalletsComponent } from './exchange-wallets/exchange-wallets.component';
 
 const routes: Routes = [
   {
-    path: '', component: WalletsComponent
+    path: 'exchange', component: ExchangeWalletsComponent
   }
 ];
 
@@ -12,4 +12,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class WalletsRoutingModule { }
+export class BalancesRoutingModule { }

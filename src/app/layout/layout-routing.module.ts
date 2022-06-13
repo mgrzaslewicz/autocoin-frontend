@@ -20,8 +20,8 @@ const routes: Routes = [
                 canActivate: [AllowOnlyShouldNotChangePasswordGuard]
             },
             {
-                path: 'wallets',
-                loadChildren: () => import('./wallets/wallets.module').then(m => m.WalletsModule),
+                path: 'balances',
+                loadChildren: () => import('./balances/balances.module').then(m => m.BalancesModule),
                 canActivate: [AllowOnlyShouldNotChangePasswordGuard]
             },
             {
