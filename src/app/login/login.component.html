@@ -29,9 +29,12 @@
                         </div>
                         <div *ngIf="isShowingTwoFactorAuthenticationCodeInput" class="form-group">
                             <div>Please input 2-factor authentication code</div>
-                            <input ngModel type="text" name="twoFactorAuthenticationCode"
+                            <input ngModel type="text"
+                                   #twoFactorAuthenticationCodeInput
+                                   name="twoFactorAuthenticationCode"
                                    class="form-control"
-                                   id="twoFactorAuthenticationCode" placeholder="Two factor authentication code"
+                                   id="twoFactorAuthenticationCode"
+                                   placeholder="Two factor authentication code"
                                    required>
                         </div>
                     </div>

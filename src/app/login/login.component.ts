@@ -16,6 +16,8 @@ export class LoginComponent implements OnInit {
     @ViewChild('loginForm', {static: true})
     public loginForm: NgForm;
 
+    @ViewChild('twoFactorAuthenticationCodeInput')
+    public twoFactorAuthenticationCodeInput;
     private invalidLoginMessage = 'Wrong login or password or account with this login does not exist.';
 
     isShowingTwoFactorAuthenticationCodeInput = false;
@@ -39,8 +41,12 @@ export class LoginComponent implements OnInit {
                             this.toastService.danger('Invalid 2-step authentication code');
                         } else {
                             this.toastService.warning('Please input 2-step authentication code');
+                            this.isShowingTwoFactorAuthenticationCodeInput = true;
+                            setTimeout(() => {
+                                this.twoFactorAuthenticationCodeInput.nativeElement.focus();
+                                this.twoFactorAuthenticationCodeInput.nativeElement.select();
+                            }, 0);
                         }
-                        this.isShowingTwoFactorAuthenticationCodeInput = true;
                     } else {
                         this.toastService.danger(this.invalidLoginMessage);
                     }
