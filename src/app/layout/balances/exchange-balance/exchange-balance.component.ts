@@ -6,31 +6,13 @@ import * as _ from 'underscore';
 import {CurrencyPriceDto, PriceService} from '../../../services/price.service';
 import {ExchangeUsersService} from '../../../services/api';
 import {forkJoin, Subscription} from 'rxjs';
-import {ExchangeWalletService} from '../../../services/exchange-wallet.service';
+import {CurrencyBalanceDto, ExchangeBalanceDto, ExchangeWalletService} from '../../../services/exchange-wallet.service';
 import {AuthService} from '../../../services/auth.service';
-
-export interface CurrencyBalanceDto {
-    currencyCode: string;
-    available: number;
-    frozen: number;
-    total: number;
-}
-
-export interface ExchangeBalanceDto {
-    exchangeName: string;
-    currencyBalances: CurrencyBalanceDto[];
-    errorMessage?: string;
-}
 
 export class ExchangeUserWithBalance extends ExchangeUser {
     constructor(id: string, name: string, public exchangeBalances: ExchangeBalanceDto[] = []) {
         super(id, name);
     }
-}
-
-export interface ExchangeCurrencyBalancesResponseDto {
-    exchangeUserId: string;
-    exchangeBalances: ExchangeBalanceDto[];
 }
 
 interface CurrencyBalanceTableRow {
@@ -44,12 +26,12 @@ interface CurrencyBalanceTableRow {
 }
 
 @Component({
-    selector: 'app-exchange-wallets',
-    templateUrl: './exchange-wallets.component.html',
-    styleUrls: ['./exchange-wallets.component.scss'],
+    selector: 'app-exchange-balance',
+    templateUrl: './exchange-balance.component.html',
+    styleUrls: ['./exchange-balance.component.scss'],
     animations: [routerTransition()]
 })
-export class ExchangeWalletsComponent implements OnInit, OnDestroy {
+export class ExchangeBalanceComponent implements OnInit, OnDestroy {
     exchangeUsers: ExchangeUserWithBalance[] = [];
     pending = false;
     showBalancesPerExchange = true;

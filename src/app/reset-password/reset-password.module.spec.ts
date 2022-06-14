@@ -1,4 +1,4 @@
-import { ResetPasswordModule } from './login.module';
+import {ResetPasswordModule} from "./reset-password.module";
 
 describe('LoginModule', () => {
     let loginModule: ResetPasswordModule;

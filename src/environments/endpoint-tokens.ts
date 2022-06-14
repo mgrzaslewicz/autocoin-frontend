@@ -2,6 +2,7 @@ import {InjectionToken} from '@angular/core';
 
 export const OauthEndpointUrlToken = new InjectionToken('OauthEndpointUrlToken');
 export const ExchangeUsersEndpointUrlToken = new InjectionToken('ExchangeUsersEndpointUrlToken');
+export const BalanceMonitorApiBaseUrlToken = new InjectionToken('BalanceMonitorEndpointUrlToken');
 export const TwoFactorAuthenticationEndpointUrlToken = new InjectionToken('TwoFactorAuthenticationEndpointUrlToken');
 export const ChangePasswordEndpointUrlToken = new InjectionToken('ChangePasswordEndpointUrlToken');
 export const RequestEmailWithResetPasswordTokenEndpointUrlToken = new InjectionToken('RequestEmailWithResetPasswordTokenEndpointUrlToken');

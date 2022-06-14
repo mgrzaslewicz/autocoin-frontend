@@ -3,7 +3,24 @@ import 'rxjs/add/operator/map';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {ExchangeWalletEndpointUrlToken} from '../../environments/endpoint-tokens';
-import {ExchangeCurrencyBalancesResponseDto} from "../layout/balances/exchange-wallets/exchange-wallets.component";
+
+export interface ExchangeCurrencyBalancesResponseDto {
+    exchangeUserId: string;
+    exchangeBalances: ExchangeBalanceDto[];
+}
+
+export interface CurrencyBalanceDto {
+    currencyCode: string;
+    available: number;
+    frozen: number;
+    total: number;
+}
+
+export interface ExchangeBalanceDto {
+    exchangeName: string;
+    currencyBalances: CurrencyBalanceDto[];
+    errorMessage?: string;
+}
 
 @Injectable()
 export class ExchangeWalletService {

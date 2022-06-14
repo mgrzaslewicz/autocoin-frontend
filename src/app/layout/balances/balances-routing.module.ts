@@ -1,6 +1,5 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {ExchangeWalletsComponent} from './exchange-wallets/exchange-wallets.component';
 import {BalancesComponent} from "./balances.component";
 
 const routes: Routes = [

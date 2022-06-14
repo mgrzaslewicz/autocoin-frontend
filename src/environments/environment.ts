@@ -8,6 +8,7 @@ const authServiceUrl = 'http://localhost:9002';
 const exchangeMediatorServiceUrl = 'http://localhost:9001';
 const strategyExecutorServiceUrl = 'http://localhost:9021';
 const arbitrageMonitorHost = 'http://localhost:10021';
+const balanceMonitorHost = 'http://localhost:10022'
 
 export const environment = {
     ...defaultEnvironment,
@@ -25,5 +26,6 @@ export const environment = {
     strategiesEndpointUrl: strategyExecutorServiceUrl,
     healthEndpointUrl: `${exchangeMediatorServiceUrl}/health`,
     signupEndpointUrl: `${authServiceUrl}/user-accounts`,
-    arbitrageMonitorEndpointUrl: `${arbitrageMonitorHost}`
+    arbitrageMonitorEndpointUrl: arbitrageMonitorHost,
+    balanceMonitorApiBaseUrl: balanceMonitorHost
 };

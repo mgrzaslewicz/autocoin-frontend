@@ -11,7 +11,7 @@ import {UserAccountService} from './user-account.service';
 import {ExchangeKeyCapabilityService} from './exchange-key-capability.service';
 import {ExchangeWalletService} from './exchange-wallet.service';
 import {
-    ArbitrageMonitorEndpointUrlToken,
+    ArbitrageMonitorEndpointUrlToken, BalanceMonitorApiBaseUrlToken,
     ChangePasswordEndpointUrlToken, ChangePasswordWithResetPasswordTokenEndpointUrlToken,
     ExchangeKeysCapabilityEndpointUrlToken,
     ExchangeUsersEndpointUrlToken,
@@ -29,6 +29,7 @@ import {SignupService} from './signup.service';
 import {ArbitrageMonitorService} from './arbitrage-monitor.service';
 import {ExchangeMarketLink} from './exchange-market-link.service';
 import {ArbitrageOpportunityExchangeMarketLinkService} from "./arbitrage-opportunity-exchange-market-link.service";
+import {BalanceMonitorService} from "./balance-monitor.service";
 
 @NgModule({
     imports: [
@@ -41,6 +42,7 @@ import {ArbitrageOpportunityExchangeMarketLinkService} from "./arbitrage-opportu
         {provide: FeatureToggleToken, useClass: LocalStorageFeatureToggle},
         {provide: OauthEndpointUrlToken, useValue: environment.oauthEndpointUrl},
         {provide: ExchangeUsersEndpointUrlToken, useValue: environment.exchangeUsersApiUrl},
+        {provide: BalanceMonitorApiBaseUrlToken, useValue: environment.balanceMonitorApiBaseUrl},
         {provide: ChangePasswordEndpointUrlToken, useValue: environment.changePasswordEndpointUrl},
         {provide: RequestEmailWithResetPasswordTokenEndpointUrlToken, useValue: environment.requestEmailWithResetPasswordTokenEndpointUrl},
         {provide: ChangePasswordWithResetPasswordTokenEndpointUrlToken, useValue: environment.changePasswordWithResetPasswordTokenEndpointUrl},
@@ -63,6 +65,7 @@ import {ArbitrageOpportunityExchangeMarketLinkService} from "./arbitrage-opportu
         HealthService,
         SignupService,
         ArbitrageMonitorService,
+        BalanceMonitorService,
         ExchangeMarketLink,
         ArbitrageOpportunityExchangeMarketLinkService
     ]

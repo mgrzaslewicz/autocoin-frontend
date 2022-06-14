@@ -2,6 +2,13 @@ import {Component, OnInit} from '@angular/core';
 import {routerTransition} from '../../router.animations';
 import {AuthService} from "../../services/auth.service";
 
+enum BalanceView {
+    Wallets = 1,
+    Coins,
+    Exchanges,
+    Summary,
+}
+
 @Component({
     selector: 'app-balances',
     templateUrl: './balances.component.html',
@@ -9,6 +16,12 @@ import {AuthService} from "../../services/auth.service";
     animations: [routerTransition()]
 })
 export class BalancesComponent implements OnInit {
+    walletsView = BalanceView.Wallets;
+    coinsView = BalanceView.Coins;
+    exchangesView = BalanceView.Exchanges;
+    summaryView = BalanceView.Summary;
+
+    selectedView: BalanceView = BalanceView.Wallets;
 
     constructor(
         private authService: AuthService
@@ -21,4 +34,7 @@ export class BalancesComponent implements OnInit {
             });
     }
 
+    selectView(view: BalanceView) {
+        this.selectedView = view;
+    }
 }

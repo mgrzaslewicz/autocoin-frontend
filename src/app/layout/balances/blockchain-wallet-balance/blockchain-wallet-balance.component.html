@@ -1,0 +1,90 @@
+<div class="row" xmlns="http://www.w3.org/1999/html">
+    <div class="col-12">
+        <h5>Wallets</h5>
+        <div class="card mb-3">
+            <div (click)="toggleAddWalletsVisibility()" class="card-header collapsable-header">
+                <span>
+                    <button class="btn btn-primary btn-sm">
+                        <i *ngIf="isAddWalletCardVisible" class="fa fa-angle-double-up"></i>
+                        <i *ngIf="!isAddWalletCardVisible" class="fa fa-angle-double-down"></i>
+                    </button>
+                    New wallets to track
+                </span>
+            </div>
+            <div class="card-body"
+                 [class.pt-0]="!isAddWalletCardVisible"
+                 [class.pb-0]="!isAddWalletCardVisible"
+                 [@addWalletAnimation]="addWalletCardVisibility">
+                <form role="form">
+                    <div class="form-content">
+                        <div class="form-group">
+                            <label for="currencySelector">Currency</label>
+                            <input type="text"
+                                   class="form-control"
+                                   name="currencyInput"
+                                   [(ngModel)]="currencyInput"
+                                   disabled
+                                   id="currencySelector">
+                        </div>
+                        <div class="form-group">
+                            <label for="walletsInput">Public wallet addresses</label>
+                            <textarea class="form-control wallet-address"
+                                      [(ngModel)]="walletsInput"
+                                      name="walletsInput"
+                                      id="walletsInput"
+                                      aria-describedby="walletsInputHelp"></textarea>
+                            <small id="walletsInputHelp" class="form-text text-muted">
+                                One wallet address per line with optional description after coma, e.g. '0x445c9d791b782a7b181194950e0c0ee8c14468f1,savings'
+                            </small>
+                        </div>
+                        <div *ngIf="invalidWallets.length > 0" class="form-group">
+                            All addresses were added apart from the following, invalid ones:
+                            <ul>
+                                <li *ngFor="let invalidWallet of invalidWallets">{{invalidWallet}}</li>
+                            </ul>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-success" (click)="addWallets()">Add wallets</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                Your wallets
+            </div>
+            <div class="card-body">
+                <h6 *ngIf="wallets.length ==0">No wallets added yet</h6>
+                <div *ngIf="wallets.length > 0" class="table-responsive">
+                    <table class="table table-striped table-sm table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">Currency</th>
+                            <th scope="col">Wallet</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Balance</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let wallet of wallets">
+                            <th scope="row">
+                                {{wallet.currency}}
+                            </th>
+                            <td>
+                                <span class="wallet-address">{{wallet.walletAddress}}</span>
+                            </td>
+                            <td>
+                                {{wallet.description}}
+                            </td>
+                            <td>
+                                {{wallet.balance}}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
