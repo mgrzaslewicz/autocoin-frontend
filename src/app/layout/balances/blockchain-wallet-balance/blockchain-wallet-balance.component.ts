@@ -1,11 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {routerTransition} from '../../../router.animations';
-import {AddWalletRequestDto, AddWalletsErrorResponseDto, BalanceMonitorService, WalletResponseDto} from "../../../services/balance-monitor.service";
+import {AddWalletRequestDto, BalanceMonitorService, WalletResponseDto} from "../../../services/balance-monitor.service";
 import {WalletsInputParser} from "./wallets-input-parser";
 import {ToastService} from "../../../services/toast.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {TextDialog} from "../../../dialog/text-dialog";
+import {Router} from "@angular/router";
 
 
 @Component({
@@ -29,92 +30,21 @@ import {TextDialog} from "../../../dialog/text-dialog";
     ]
 })
 export class BlockchainWalletBalanceComponent implements OnInit {
-    currencyInput: string = 'ETH';
-    walletsCsvInput: string;
-    walletAddressInput: string;
-    walletAddressDescriptionInput: string;
-    isRequestPending: boolean = false;
-
-    invalidWallets: Array<string> = [];
-
-    wallets: Array<WalletResponseDto> = [];
-
-    addWalletCardVisibility = 'hidden';
-    isAddWalletCardVisible: boolean = false;
-    isAddingMultipleWallets = false;
-
     private lastVisibleMenu: HTMLDivElement = null;
     private walletMenuVisibilityToggleClass = 'wallet-dropdown-menu-visible';
 
+    isRequestPending: boolean = false;
+    wallets: Array<WalletResponseDto> = [];
+
     constructor(private balanceMonitorService: BalanceMonitorService,
                 private walletsInputParser: WalletsInputParser,
-                private toastService: ToastService) {
+                private toastService: ToastService,
+                private router: Router) {
     }
 
     ngOnInit() {
         this.fetchWallets();
     }
-
-    private clearInputs() {
-        this.walletsCsvInput = '';
-        this.walletAddressDescriptionInput = '';
-        this.walletAddressInput = '';
-    }
-
-    areAddWalletsInputValid(): boolean {
-        if (this.isAddingMultipleWallets) {
-            return this.walletsInputParser.linesToDto(this.currencyInput, this.walletsCsvInput).length > 0;
-        } else {
-            return this.walletAddressInput != null && this.walletAddressInput.length > 0;
-        }
-    }
-
-    addWallets() {
-        if (!this.isRequestPending && this.areAddWalletsInputValid()) {
-            this.isRequestPending = true;
-            let addWalletsRequest: Array<AddWalletRequestDto> = [];
-            if (this.isAddingMultipleWallets) {
-                addWalletsRequest = this.walletsInputParser.linesToDto(this.currencyInput, this.walletsCsvInput);
-            } else {
-                addWalletsRequest.push({
-                    walletAddress: this.walletAddressInput,
-                    currency: this.currencyInput,
-                    description: this.walletAddressDescriptionInput
-                } as AddWalletRequestDto);
-            }
-            const requestContainsMultipleWallets = addWalletsRequest.length > 1;
-            this.balanceMonitorService.addWallets(addWalletsRequest)
-                .subscribe(
-                    () => {
-                        this.clearInputs();
-                        this.isRequestPending = false;
-                        this.fetchWallets();
-                        this.toastService.success('Wallets added');
-                    },
-                    (error: HttpErrorResponse) => {
-                        this.isRequestPending = false;
-                        console.log(error);
-                        if (error.status == 400) {
-                            const addWalletsErrorResponseDto: AddWalletsErrorResponseDto = error.error as AddWalletsErrorResponseDto;
-                            this.invalidWallets = addWalletsErrorResponseDto.invalidAddresses;
-                            if (addWalletsErrorResponseDto.duplicatedAddresses.length > 0) {
-                                if (requestContainsMultipleWallets) {
-                                    this.toastService.warning('Some addresses were skipped as already existing in your wallets')
-                                } else {
-                                    this.toastService.warning('Address was skipped as already existing in your wallets')
-                                }
-                            }
-                            this.clearInputs();
-                        } else {
-                            this.toastService.warning('Something went wrong, could not add wallets')
-                        }
-                        this.fetchWallets();
-                    }
-                );
-        }
-    }
-
-    private
 
     fetchWallets() {
         this.isRequestPending = true;
@@ -123,7 +53,6 @@ export class BlockchainWalletBalanceComponent implements OnInit {
                 (wallets: Array<WalletResponseDto>) => {
                     this.isRequestPending = false;
                     this.wallets = wallets;
-                    console.log(wallets);
                 },
                 error => {
                     this.isRequestPending = false;
@@ -131,9 +60,8 @@ export class BlockchainWalletBalanceComponent implements OnInit {
             );
     }
 
-    toggleAddWalletsVisibility() {
-        this.addWalletCardVisibility = this.addWalletCardVisibility === 'hidden' ? 'visible' : 'hidden';
-        this.isAddWalletCardVisible = !this.isAddWalletCardVisible;
+    goToAddNewWalletView() {
+        this.router.navigate(['/balances/wallets/add']);
     }
 
     refreshWalletsBalance() {
@@ -141,7 +69,7 @@ export class BlockchainWalletBalanceComponent implements OnInit {
             this.isRequestPending = true;
             this.balanceMonitorService.refreshWalletsBalance()
                 .subscribe(
-                    (response: Array<AddWalletRequestDto>) => {
+                    (response: Array<WalletResponseDto>) => {
                         this.wallets = response;
                         this.isRequestPending = false;
                         this.toastService.success('Wallets refreshed');
@@ -190,31 +118,18 @@ export class BlockchainWalletBalanceComponent implements OnInit {
         }
     }
 
-    editWallet(wallet
-                   :
-                   WalletResponseDto
-    ) {
+    editWallet(wallet: WalletResponseDto) {
 
     }
 
-    confirmRemoveWallet(hideWalletMenuLayer
-                            :
-                            HTMLDivElement, yesNoConfirmation
-                            :
-                            TextDialog, wallet
-                            :
-                            WalletResponseDto
-    ) {
+    confirmRemoveWallet(hideWalletMenuLayer: HTMLDivElement, yesNoConfirmation: TextDialog, wallet: WalletResponseDto) {
         this.hideWalletMenuIfAnyOpen(hideWalletMenuLayer);
         yesNoConfirmation.showYesNoConfirmation('Confirm your action', 'Do you want to remove this wallet address?', () => {
             this.deleteWallet(wallet);
         });
     }
 
-    deleteWallet(wallet
-                     :
-                     WalletResponseDto
-    ) {
+    deleteWallet(wallet: WalletResponseDto) {
         if (!this.isRequestPending) {
             this.isRequestPending = true;
             this.balanceMonitorService.deleteWallet(wallet.walletAddress)
@@ -231,10 +146,6 @@ export class BlockchainWalletBalanceComponent implements OnInit {
                     }
                 );
         }
-    }
-
-    toggleAddSingleWalletForm() {
-        this.isAddingMultipleWallets = !this.isAddingMultipleWallets;
     }
 
 }

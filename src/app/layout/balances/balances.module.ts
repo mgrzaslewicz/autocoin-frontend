@@ -10,6 +10,7 @@ import {FormsModule} from "@angular/forms";
 import {WalletsInputParser} from "./blockchain-wallet-balance/wallets-input-parser";
 import {DialogModule} from "../../dialog/dialog.module";
 import {BalancesMenuComponent} from "./balances-menu.component";
+import {BlockchainWalletAddComponent} from "./blockchain-wallet-balance/edit/blockchain-wallet-add.component";
 
 @NgModule({
     imports: [
@@ -23,7 +24,8 @@ import {BalancesMenuComponent} from "./balances-menu.component";
     declarations: [
         BalancesMenuComponent,
         ExchangeBalanceComponent,
-        BlockchainWalletBalanceComponent
+        BlockchainWalletBalanceComponent,
+        BlockchainWalletAddComponent
     ],
     providers: [
         WalletsInputParser

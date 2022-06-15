@@ -5,6 +5,7 @@ import {FeatureToggle, FeatureToggleToken} from "./feature.toogle.service";
 import {Observable} from "rxjs";
 
 export interface WalletResponseDto {
+    id: string;
     walletAddress: string;
     currency: string;
     description?: string;
