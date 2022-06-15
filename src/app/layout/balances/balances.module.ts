@@ -9,6 +9,7 @@ import {ExchangeBalanceComponent} from "./exchange-balance/exchange-balance.comp
 import {BlockchainWalletBalanceComponent} from "./blockchain-wallet-balance/blockchain-wallet-balance.component";
 import {FormsModule} from "@angular/forms";
 import {WalletsInputParser} from "./blockchain-wallet-balance/wallets-input-parser";
+import {DialogModule} from "../../dialog/dialog.module";
 
 @NgModule({
     imports: [
@@ -16,7 +17,8 @@ import {WalletsInputParser} from "./blockchain-wallet-balance/wallets-input-pars
         BalancesRoutingModule,
         PageHeaderModule,
         NgbModule,
-        FormsModule
+        FormsModule,
+        DialogModule
     ],
     declarations: [
         BalancesComponent,

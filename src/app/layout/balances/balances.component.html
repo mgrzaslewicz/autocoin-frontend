@@ -8,13 +8,13 @@
                     class="btn">
                 Wallets
             </button>
-            <button (click)="selectView(coinsView)"
+            <button (click)="selectView(currenciesView)"
                     type="button"
                     disabled
-                    [class.btn-primary]="selectedView == coinsView"
-                    [class.btn-outline-secondary]="selectedView != coinsView"
+                    [class.btn-primary]="selectedView == currenciesView"
+                    [class.btn-outline-secondary]="selectedView != currenciesView"
                     class="btn">
-                Coins (not available yet)
+                Currencies (not available yet)
             </button>
             <button (click)="selectView(exchangesView)"
                     type="button"

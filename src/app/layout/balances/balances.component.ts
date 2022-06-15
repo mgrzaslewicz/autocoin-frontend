@@ -4,7 +4,7 @@ import {AuthService} from "../../services/auth.service";
 
 enum BalanceView {
     Wallets = 1,
-    Coins,
+    Currencies,
     Exchanges,
     Summary,
 }
@@ -17,7 +17,7 @@ enum BalanceView {
 })
 export class BalancesComponent implements OnInit {
     walletsView = BalanceView.Wallets;
-    coinsView = BalanceView.Coins;
+    currenciesView = BalanceView.Currencies;
     exchangesView = BalanceView.Exchanges;
     summaryView = BalanceView.Summary;
 

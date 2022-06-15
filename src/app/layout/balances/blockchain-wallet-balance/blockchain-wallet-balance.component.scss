@@ -1,6 +1,23 @@
-.wallet-address{
-    font-family:monospace;
+.layer-for-hiding-add-wallet-menu {
+    z-index: 999; // 1 less than dropdown-menu
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    right: 0;
+    top: 0;
 }
+
+.wallet-address {
+    font-family: monospace;
+}
+
 .collapsable-header {
     cursor: pointer;
+}
+
+.wallet-dropdown-menu-visible {
+    display: inline-flex;
+    left: 2rem;
+    top: -0.5rem;
 }

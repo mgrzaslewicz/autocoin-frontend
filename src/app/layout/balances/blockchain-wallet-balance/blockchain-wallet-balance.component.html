@@ -1,4 +1,5 @@
-<div class="row" xmlns="http://www.w3.org/1999/html">
+<div #hideWalletMenuLayer (click)="hideWalletMenuIfAnyOpen(hideWalletMenuLayer)" class="d-none layer-for-hiding-add-wallet-menu"></div>
+<div class="row">
     <div class="col-12">
         <h5>Wallets</h5>
         <div class="card mb-3">
@@ -52,6 +53,9 @@
         </div>
         <div class="card">
             <div class="card-header">
+                <button (click)="refreshWalletsBalance()" class="btn btn-primary btn-sm">
+                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                </button>
                 Your wallets
             </div>
             <div class="card-body">
@@ -60,6 +64,7 @@
                     <table class="table table-striped table-sm table-hover">
                         <thead>
                         <tr>
+                            <th scope="col">Action</th>
                             <th scope="col">Currency</th>
                             <th scope="col">Wallet</th>
                             <th scope="col">Description</th>
@@ -68,6 +73,23 @@
                         </thead>
                         <tbody>
                         <tr *ngFor="let wallet of wallets">
+                            <td>
+                                <div style="position: relative">
+                                    <button (click)="toggleWalletMenuVisibility(menu, hideWalletMenuLayer)" class="btn btn-sm btn-primary">
+                                        <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                                    </button>
+                                    <div #menu class="dropdown-menu" [attr.wallet-address]="wallet.walletAddress">
+                                        <button (click)="editWallet(wallet)" class="ml-2 mr-2 btn btn-sm btn-success">
+                                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                        </button>
+                                        <button
+                                            (click)="confirmRemoveWallet(hideWalletMenuLayer, yesNoConfirmation, wallet)"
+                                            class="btn btn-sm btn-danger">
+                                            <i class="fa fa-times" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
                             <th scope="row">
                                 {{wallet.currency}}
                             </th>
@@ -88,3 +110,4 @@
         </div>
     </div>
 </div>
+<app-text-dialog #yesNoConfirmation></app-text-dialog>

@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {routerTransition} from '../../../router.animations';
-import {AddWalletsErrorResponseDto, BalanceMonitorService, WalletResponseDto} from "../../../services/balance-monitor.service";
+import {AddWalletRequestDto, AddWalletsErrorResponseDto, BalanceMonitorService, WalletResponseDto} from "../../../services/balance-monitor.service";
 import {WalletsInputParser} from "./wallets-input-parser";
 import {ToastService} from "../../../services/toast.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {animate, state, style, transition, trigger} from "@angular/animations";
+import {TextDialog} from "../../../dialog/text-dialog";
 
 
 @Component({
@@ -28,7 +29,6 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
     ]
 })
 export class BlockchainWalletBalanceComponent implements OnInit {
-
     currencyInput: string = 'ETH';
     walletsInput: string;
     isRequestPending: boolean = false;
@@ -39,6 +39,9 @@ export class BlockchainWalletBalanceComponent implements OnInit {
 
     addWalletCardVisibility = 'hidden';
     isAddWalletCardVisible: boolean = false;
+
+    private lastVisibleMenu: HTMLDivElement = null;
+    private walletMenuVisibilityToggleClass = 'wallet-dropdown-menu-visible';
 
     constructor(private balanceMonitorService: BalanceMonitorService,
                 private walletsInputParser: WalletsInputParser,
@@ -108,4 +111,79 @@ export class BlockchainWalletBalanceComponent implements OnInit {
         this.isAddWalletCardVisible = !this.isAddWalletCardVisible;
     }
 
+    refreshWalletsBalance() {
+        if (!this.isRequestPending) {
+            this.isRequestPending = true;
+            this.balanceMonitorService.refreshWalletsBalance()
+                .subscribe(
+                    (response: Array<AddWalletRequestDto>) => {
+                        this.wallets = response;
+                        this.isRequestPending = false;
+                        this.toastService.success('Wallets refreshed');
+                    },
+                    (error: HttpErrorResponse) => {
+                        console.log(error);
+                        this.toastService.danger('Something went wrong, could not refresh wallets balance');
+                        this.isRequestPending = false;
+
+                    }
+                )
+        }
+    }
+
+    toggleWalletMenuVisibility(menu: HTMLDivElement, hideWalletMenuLayer: HTMLDivElement) {
+        if (this.lastVisibleMenu != null) {
+            const lastVisibleMenuWalletAddress = this.lastVisibleMenu.getAttribute('wallet-address');
+            const currentMenuWalletAddress = menu.getAttribute('wallet-address');
+            if (lastVisibleMenuWalletAddress != currentMenuWalletAddress) {
+                this.lastVisibleMenu.classList.remove(this.walletMenuVisibilityToggleClass);
+            }
+        }
+        if (menu.classList.contains(this.walletMenuVisibilityToggleClass)) {
+            menu.classList.remove(this.walletMenuVisibilityToggleClass);
+            hideWalletMenuLayer.classList.add('d-none');
+        } else {
+            menu.classList.add(this.walletMenuVisibilityToggleClass);
+            this.lastVisibleMenu = menu;
+            hideWalletMenuLayer.classList.remove('d-none');
+        }
+    }
+
+    hideWalletMenuIfAnyOpen(hideWalletMenuLayer: HTMLDivElement) {
+        if (this.lastVisibleMenu != null) {
+            this.lastVisibleMenu.classList.remove(this.walletMenuVisibilityToggleClass);
+            this.lastVisibleMenu = null;
+            hideWalletMenuLayer.classList.add('d-none');
+        }
+    }
+
+    editWallet(wallet: WalletResponseDto) {
+
+    }
+
+    confirmRemoveWallet(hideWalletMenuLayer: HTMLDivElement, yesNoConfirmation: TextDialog, wallet: WalletResponseDto) {
+        this.hideWalletMenuIfAnyOpen(hideWalletMenuLayer);
+        yesNoConfirmation.showYesNoConfirmation('Confirm your action', 'Do you want to remove this wallet address?', () => {
+            this.deleteWallet(wallet);
+        });
+    }
+
+    deleteWallet(wallet: WalletResponseDto) {
+        if (!this.isRequestPending) {
+            this.isRequestPending = true;
+            this.balanceMonitorService.deleteWallet(wallet.walletAddress)
+                .subscribe(
+                    () => {
+                        this.isRequestPending = false;
+                        this.toastService.success('Wallet deleted');
+                        this.fetchWallets();
+                    },
+                    (error: HttpErrorResponse) => {
+                        console.log(error);
+                        this.toastService.danger('Something went wrong, could not delete the wallet')
+                        this.isRequestPending = false;
+                    }
+                );
+        }
+    }
 }

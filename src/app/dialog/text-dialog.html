@@ -6,6 +6,8 @@
         {{text}}
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="c('close')">Close</button>
+        <button *ngIf="isCloseButtonVisible" type="button" class="btn btn-primary" (click)="c('close')">Close</button>
+        <button *ngIf="isYesButtonVisible" type="button" class="btn btn-danger" (click)="c('yes')">Yes</button>
+        <button *ngIf="isNoButtonVisible" type="button" class="btn btn-secondary" (click)="d('Dismiss')">No</button>
     </div>
 </ng-template>

@@ -16,7 +16,7 @@ export interface AddWalletsErrorResponseDto {
     invalidAddresses: Array<string>;
 }
 
-export interface AddWalletRequestDto{
+export interface AddWalletRequestDto {
     walletAddress: string;
     currency: string;
     description?: string;
@@ -36,6 +36,14 @@ export class BalanceMonitorService {
     }
 
     addWallets(addWalletRequest: Array<AddWalletRequestDto>): Observable<string> {
-       return this.http.post<string>(`${this.balanceMonitorApiBaseUrl}/wallets`, addWalletRequest);
+        return this.http.post<string>(`${this.balanceMonitorApiBaseUrl}/wallets`, addWalletRequest);
+    }
+
+    deleteWallet(walletAddress: string): Observable<string> {
+        return this.http.delete<string>(`${this.balanceMonitorApiBaseUrl}/wallet/${walletAddress}`);
+    }
+
+    refreshWalletsBalance(): Observable<Array<AddWalletRequestDto>> {
+        return this.http.post<Array<AddWalletRequestDto>>(`${this.balanceMonitorApiBaseUrl}/wallets/balance/refresh`, null);
     }
 }
