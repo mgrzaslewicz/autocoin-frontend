@@ -28,16 +28,46 @@
                                    id="currencySelector">
                         </div>
                         <div class="form-group">
-                            <label for="walletsInput">Public wallet addresses</label>
+                            <button (click)="toggleAddSingleWalletForm()" class="btn btn-sm mr-1 mb-1" type="button">
+                                Add multiple wallets
+                                <i class="fa" [class.fa-toggle-on]="isAddingMultipleWallets"
+                                   [class.fa-toggle-off]="!isAddingMultipleWallets"></i>
+                            </button>
+                        </div>
+                        <div *ngIf="isAddingMultipleWallets" class="form-group">
+                            <label for="walletsCsvInput">Public wallet addresses</label>
                             <textarea class="form-control wallet-address"
-                                      [(ngModel)]="walletsInput"
-                                      name="walletsInput"
-                                      id="walletsInput"
-                                      aria-describedby="walletsInputHelp"></textarea>
-                            <small id="walletsInputHelp" class="form-text text-muted">
+                                      [(ngModel)]="walletsCsvInput"
+                                      name="walletsCsvInput"
+                                      id="walletsCsvInput"
+                                      aria-describedby="walletsCsvInputHelp"></textarea>
+                            <small id="walletsCsvInputHelp" class="form-text text-muted">
                                 One wallet address per line with optional description after coma, e.g. '0x445c9d791b782a7b181194950e0c0ee8c14468f1,savings'
                             </small>
                         </div>
+                        <ng-container *ngIf="!isAddingMultipleWallets">
+                            <div class="form-group">
+                                <label for="walletAddressInput">Public wallet address</label>
+                                <input type="text" class="form-control"
+                                       [(ngModel)]="walletAddressInput"
+                                       id="walletAddressInput"
+                                       name="walletAddressInput"
+                                       aria-describedby="walletAddressInputHelp">
+                                <small id="walletAddressInputHelp" class="form-text text-muted">
+                                    e.g. '0x445c9d791b782a7b181194950e0c0ee8c14468f1'
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <label for="walletAddressDescriptionInput">Description</label>
+                                <input type="text" class="form-control"
+                                       [(ngModel)]="walletAddressDescriptionInput"
+                                       id="walletAddressDescriptionInput"
+                                       name="walletAddressDescriptionInput"
+                                       aria-describedby="walletAddressDescriptionInputHelp">
+                                <small id="walletAddressDescriptionInputHelp" class="form-text text-muted">Optional, e.g. 'savings'</small>
+                            </div>
+                        </ng-container>
+
                         <div *ngIf="invalidWallets.length > 0" class="form-group">
                             All addresses were added apart from the following, invalid ones:
                             <ul>
@@ -45,7 +75,10 @@
                             </ul>
                         </div>
                         <div class="form-group">
-                            <button class="btn btn-success" (click)="addWallets()">Add wallets</button>
+                            <button class="btn btn-success" (click)="addWallets()" [disabled]="!areAddWalletsInputValid()">
+                                <span *ngIf="isAddingMultipleWallets">Add wallets</span>
+                                <span *ngIf="!isAddingMultipleWallets">Add wallet</span>
+                            </button>
                         </div>
                     </div>
                 </form>
