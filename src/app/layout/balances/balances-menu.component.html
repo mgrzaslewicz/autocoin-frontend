@@ -1,0 +1,30 @@
+<div class="row">
+    <div class="col-12">
+        <div class="btn-group mb-1" role="group">
+            <a routerLink="/balances/wallets" [routerLinkActive]="['router-link-active']"
+               [class.btn-primary]="router.url.startsWith('/balances/wallets')"
+               [class.btn-outline-secondary]="!router.url.startsWith('/balances/wallets')"
+               class="btn">
+                Wallets
+            </a>
+            <a routerLink="/balances/currencies" [routerLinkActive]="['router-link-active']"
+               [class.btn-primary]="router.url.startsWith('/balances/currencies')"
+               [class.btn-outline-secondary]="!router.url.startsWith('/balances/currencies')"
+               class="btn disabled">
+                Currencies (not available yet)
+            </a>
+            <a routerLink="/balances/exchanges" [routerLinkActive]="['router-link-active']"
+               [class.btn-primary]="router.url.startsWith('/balances/exchanges')"
+               [class.btn-outline-secondary]="!router.url.startsWith('/balances/exchanges')"
+               class="btn">
+                Exchanges
+            </a>
+            <a routerLink="/balances/summary" [routerLinkActive]="['router-link-active']"
+               [class.btn-primary]="router.url.startsWith('/balances/summary')"
+               [class.btn-outline-secondary]="!router.url.startsWith('/balances/summary')"
+               class="btn disabled">
+                Summary (not available yet)
+            </a>
+        </div>
+    </div>
+</div>

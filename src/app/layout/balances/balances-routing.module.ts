@@ -1,10 +1,14 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {BalancesComponent} from "./balances.component";
+import {BlockchainWalletBalanceComponent} from "./blockchain-wallet-balance/blockchain-wallet-balance.component";
+import {ExchangeBalanceComponent} from "./exchange-balance/exchange-balance.component";
 
 const routes: Routes = [
     {
-        path: '', component: BalancesComponent,
+        path: 'wallets', component: BlockchainWalletBalanceComponent,
+    },
+    {
+        path: 'exchanges', component: ExchangeBalanceComponent,
     }
 ];
 
