@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {routerTransition} from '../../../router.animations';
-import {AddWalletRequestDto, BalanceMonitorService, WalletResponseDto} from "../../../services/balance-monitor.service";
+import {BalanceMonitorService, WalletResponseDto} from "../../../services/balance-monitor.service";
 import {WalletsInputParser} from "./wallets-input-parser";
 import {ToastService} from "../../../services/toast.service";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -54,8 +54,10 @@ export class BlockchainWalletBalanceComponent implements OnInit {
                     this.isRequestPending = false;
                     this.wallets = wallets;
                 },
-                error => {
+                (error: HttpErrorResponse) => {
+                    console.error(error);
                     this.isRequestPending = false;
+                    this.toastService.danger('Something went wrong, could not get your wallets');
                 }
             );
     }
@@ -84,12 +86,7 @@ export class BlockchainWalletBalanceComponent implements OnInit {
         }
     }
 
-    toggleWalletMenuVisibility(menu
-                                   :
-                                   HTMLDivElement, hideWalletMenuLayer
-                                   :
-                                   HTMLDivElement
-    ) {
+    toggleWalletMenuVisibility(menu: HTMLDivElement, hideWalletMenuLayer: HTMLDivElement) {
         if (this.lastVisibleMenu != null) {
             const lastVisibleMenuWalletAddress = this.lastVisibleMenu.getAttribute('wallet-address');
             const currentMenuWalletAddress = menu.getAttribute('wallet-address');
@@ -107,10 +104,7 @@ export class BlockchainWalletBalanceComponent implements OnInit {
         }
     }
 
-    hideWalletMenuIfAnyOpen(hideWalletMenuLayer
-                                :
-                                HTMLDivElement
-    ) {
+    hideWalletMenuIfAnyOpen(hideWalletMenuLayer: HTMLDivElement) {
         if (this.lastVisibleMenu != null) {
             this.lastVisibleMenu.classList.remove(this.walletMenuVisibilityToggleClass);
             this.lastVisibleMenu = null;
@@ -119,7 +113,7 @@ export class BlockchainWalletBalanceComponent implements OnInit {
     }
 
     editWallet(wallet: WalletResponseDto) {
-
+        this.router.navigate([`/balances/wallets/edit/${wallet.id}`]);
     }
 
     confirmRemoveWallet(hideWalletMenuLayer: HTMLDivElement, yesNoConfirmation: TextDialog, wallet: WalletResponseDto) {

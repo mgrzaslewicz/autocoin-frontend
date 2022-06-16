@@ -12,6 +12,9 @@ const routes: Routes = [
         path: 'wallets/add', component: BlockchainWalletAddComponent
     },
     {
+        path: 'wallets/edit/:walletId', component: BlockchainWalletAddComponent
+    },
+    {
         path: 'exchanges', component: ExchangeBalanceComponent
     }
 ];

@@ -4,10 +4,18 @@
         <h5>Add wallets</h5>
         <div class="card mb-3">
             <div class="card-header">
-                <button disabled class="btn btn-sm btn-default">
-                    <i class="fa fa-plus-circle" aria-hidden="true"></i>
-                </button>
-                New wallets to track
+                <ng-container *ngIf="!isInUpdateMode">
+                    <button disabled class="btn btn-sm btn-default">
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </button>
+                    <span> New wallets to track</span>
+                </ng-container>
+                <ng-container *ngIf="isInUpdateMode">
+                    <button disabled class="btn btn-sm btn-default">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    </button>
+                    <span>Edit wallet</span>
+                </ng-container>
             </div>
             <div class="card-body">
                 <form role="form">
@@ -21,7 +29,7 @@
                                    disabled
                                    id="currencySelector">
                         </div>
-                        <div class="form-group">
+                        <div *ngIf="!isInUpdateMode" class="form-group">
                             <button (click)="toggleAddSingleWalletForm()" class="btn btn-sm mr-1 mb-1" type="button">
                                 Add multiple wallets
                                 <i class="fa" [class.fa-toggle-on]="isAddingMultipleWallets"
@@ -69,10 +77,14 @@
                             </ul>
                         </div>
                         <div class="form-group">
-                            <button class="btn btn-success mr-2" (click)="addWallets()" [disabled]="!areAddWalletsInputValid()">
+                            <button *ngIf="!isInUpdateMode" class="btn btn-success mr-2" (click)="addWallets()" [disabled]="!areAddWalletsInputValid()">
                                 <i class="fa fa-plus-circle" aria-hidden="true"></i>
-                                <span *ngIf="isAddingMultipleWallets">Add wallets</span>
-                                <span *ngIf="!isAddingMultipleWallets">Add wallet</span>
+                                <span *ngIf="isAddingMultipleWallets"> Add wallets</span>
+                                <span *ngIf="!isAddingMultipleWallets"> Add wallet</span>
+                            </button>
+                            <button *ngIf="isInUpdateMode" class="btn btn-success mr-2" (click)="saveWallet()" [disabled]="!areAddWalletsInputValid()">
+                                <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                                <span> Save wallet</span>
                             </button>
                             <button class="btn btn-default" (click)="goBackToWalletsView()">
                                 <i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Go back

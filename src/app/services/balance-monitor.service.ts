@@ -10,6 +10,7 @@ export interface WalletResponseDto {
     currency: string;
     description?: string;
     balance?: string;
+    usdBalance?: string;
 }
 
 export interface AddWalletsErrorResponseDto {
@@ -21,6 +22,25 @@ export interface AddWalletRequestDto {
     walletAddress: string;
     currency: string;
     description?: string;
+}
+
+export interface UpdateWalletRequestDto {
+    id: string;
+    walletAddress: string;
+    currency: string;
+    description?: string;
+}
+
+export interface UpdateWalletErrorResponseDto {
+    isAddressDuplicated: boolean;
+    isAddressInvalid: boolean;
+    isIdInvalid: boolean;
+}
+
+export interface UserCurrencyBalanceResponseDto{
+    currency: string;
+    balance: string;
+    usdBalance: string;
 }
 
 @Injectable()
@@ -36,8 +56,20 @@ export class BalanceMonitorService {
         return this.http.get<Array<WalletResponseDto>>(`${this.balanceMonitorApiBaseUrl}/wallets`);
     }
 
+    getCurrencyBalance(): Observable<Array<UserCurrencyBalanceResponseDto>> {
+        return this.http.get<Array<UserCurrencyBalanceResponseDto>>(`${this.balanceMonitorApiBaseUrl}/wallets/currency/balance`);
+    }
+
+    getWallet(walletId: string): Observable<WalletResponseDto> {
+        return this.http.get<WalletResponseDto>(`${this.balanceMonitorApiBaseUrl}/wallets/${walletId}`);
+    }
+
     addWallets(addWalletRequest: Array<AddWalletRequestDto>): Observable<string> {
         return this.http.post<string>(`${this.balanceMonitorApiBaseUrl}/wallets`, addWalletRequest);
+    }
+
+    updateWallet(updateWalletRequest: UpdateWalletRequestDto): Observable<UpdateWalletErrorResponseDto> {
+        return this.http.put<UpdateWalletErrorResponseDto>(`${this.balanceMonitorApiBaseUrl}/wallet`, updateWalletRequest);
     }
 
     deleteWallet(walletAddress: string): Observable<string> {

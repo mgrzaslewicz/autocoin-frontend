@@ -2,11 +2,17 @@ import {Component, OnInit} from '@angular/core';
 import {HttpErrorResponse} from "@angular/common/http";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {routerTransition} from "../../../../router.animations";
-import {AddWalletRequestDto, AddWalletsErrorResponseDto, BalanceMonitorService, WalletResponseDto} from "../../../../services/balance-monitor.service";
+import {
+    AddWalletRequestDto,
+    AddWalletsErrorResponseDto,
+    BalanceMonitorService,
+    UpdateWalletErrorResponseDto,
+    UpdateWalletRequestDto,
+    WalletResponseDto
+} from "../../../../services/balance-monitor.service";
 import {WalletsInputParser} from "../wallets-input-parser";
 import {ToastService} from "../../../../services/toast.service";
-import {TextDialog} from "../../../../dialog/text-dialog";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 
 @Component({
@@ -40,13 +46,33 @@ export class BlockchainWalletAddComponent implements OnInit {
 
     isAddingMultipleWallets = false;
 
+    isInUpdateMode: boolean = false;
+    private walletId = null;
+
     constructor(private balanceMonitorService: BalanceMonitorService,
                 private walletsInputParser: WalletsInputParser,
                 private toastService: ToastService,
+                private activatedRoute: ActivatedRoute,
                 private router: Router) {
+        this.walletId = this.activatedRoute.snapshot.paramMap.get('walletId');
+        this.isInUpdateMode = this.walletId != null;
     }
 
     ngOnInit() {
+        if (this.isInUpdateMode) {
+            this.balanceMonitorService.getWallet(this.walletId)
+                .subscribe(
+                    (response: WalletResponseDto) => {
+                        this.walletAddressInput = response.walletAddress;
+                        this.currencyInput = response.currency;
+                        this.walletAddressDescriptionInput = response.description;
+                    },
+                    (error: HttpErrorResponse) => {
+                        console.error(error);
+                        this.toastService.warning('Something went wrong, could not get wallet');
+                    }
+                );
+        }
     }
 
     private clearInputs() {
@@ -87,28 +113,27 @@ export class BlockchainWalletAddComponent implements OnInit {
                     },
                     (error: HttpErrorResponse) => {
                         this.isRequestPending = false;
-                        console.log(error);
+                        console.error(error);
                         if (error.status == 400) {
                             const addWalletsErrorResponseDto: AddWalletsErrorResponseDto = error.error as AddWalletsErrorResponseDto;
                             this.invalidWallets = addWalletsErrorResponseDto.invalidAddresses;
                             if (addWalletsErrorResponseDto.duplicatedAddresses.length > 0) {
                                 if (requestContainsMultipleWallets) {
-                                    this.toastService.warning('Some addresses were skipped as already existing in your wallets')
+                                    this.toastService.warning('Some addresses were skipped as already existing in your wallets');
                                 } else {
-                                    this.toastService.warning('Address was skipped as already existing in your wallets')
+                                    this.toastService.warning('Address was skipped as already existing in your wallets');
                                 }
                             }
-                            this.clearInputs();
+                            if (this.invalidWallets.length == 0) {
+                                this.goBackToWalletsView();
+                            }
                         } else {
-                            this.toastService.warning('Something went wrong, could not add wallets')
+                            this.toastService.warning('Something went wrong, could not add wallets');
                         }
-                        this.goBackToWalletsView();
                     }
                 );
         }
     }
-
-    private
 
     goBackToWalletsView() {
         this.router.navigate(['/balances/wallets']);
@@ -118,4 +143,40 @@ export class BlockchainWalletAddComponent implements OnInit {
         this.isAddingMultipleWallets = !this.isAddingMultipleWallets;
     }
 
+    saveWallet() {
+        if (!this.isRequestPending && this.areAddWalletsInputValid()) {
+            this.isRequestPending = true;
+            const updateWalletsRequest: UpdateWalletRequestDto = {
+                id: this.walletId,
+                walletAddress: this.walletAddressInput,
+                currency: this.currencyInput,
+                description: this.walletAddressDescriptionInput
+            } as UpdateWalletRequestDto;
+            this.balanceMonitorService.updateWallet(updateWalletsRequest)
+                .subscribe(
+                    () => {
+                        this.clearInputs();
+                        this.isRequestPending = false;
+                        this.goBackToWalletsView();
+                        this.toastService.success('Wallet saved');
+                    },
+                    (error: HttpErrorResponse) => {
+                        this.isRequestPending = false;
+                        console.error(error);
+                        if (error.status == 400) {
+                            const updateWalletErrorResponseDto: UpdateWalletErrorResponseDto = error.error as UpdateWalletErrorResponseDto;
+                            if (updateWalletErrorResponseDto.isAddressInvalid) {
+                                this.toastService.warning('Wallet was not saved because given address is not a valid blockchain address');
+                            } else if (updateWalletErrorResponseDto.isAddressDuplicated) {
+                                this.toastService.warning('Wallet was not saved because given address is already existing in your wallets');
+                            } else if (updateWalletErrorResponseDto.isIdInvalid) {
+                                this.toastService.warning('Wallet was not saved because given address is already existing in your wallets');
+                            }
+                        } else {
+                            this.toastService.warning('Something went wrong, could not save wallet');
+                        }
+                    }
+                );
+        }
+    }
 }
