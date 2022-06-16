@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {routerTransition} from '../../../router.animations';
-import {BalanceMonitorService, WalletResponseDto} from "../../../services/balance-monitor.service";
+import {BalanceMonitorService, UserCurrencyBalanceResponseDto, WalletResponseDto} from "../../../services/balance-monitor.service";
 import {WalletsInputParser} from "./wallets-input-parser";
 import {ToastService} from "../../../services/toast.service";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -35,6 +35,7 @@ export class BlockchainWalletBalanceComponent implements OnInit {
 
     isRequestPending: boolean = false;
     wallets: Array<WalletResponseDto> = [];
+    currencyBalances: Array<UserCurrencyBalanceResponseDto> = [];
 
     constructor(private balanceMonitorService: BalanceMonitorService,
                 private walletsInputParser: WalletsInputParser,
@@ -43,7 +44,12 @@ export class BlockchainWalletBalanceComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.refreshData();
+    }
+
+    refreshData() {
         this.fetchWallets();
+        this.fetchCurrencyBalances();
     }
 
     fetchWallets() {
@@ -58,6 +64,22 @@ export class BlockchainWalletBalanceComponent implements OnInit {
                     console.error(error);
                     this.isRequestPending = false;
                     this.toastService.danger('Something went wrong, could not get your wallets');
+                }
+            );
+    }
+
+    fetchCurrencyBalances() {
+        this.isRequestPending = true;
+        this.balanceMonitorService.getCurrencyBalance()
+            .subscribe(
+                (currencyBalances: Array<UserCurrencyBalanceResponseDto>) => {
+                    this.isRequestPending = false;
+                    this.currencyBalances = currencyBalances;
+                },
+                (error: HttpErrorResponse) => {
+                    console.error(error);
+                    this.isRequestPending = false;
+                    this.toastService.danger('Something went wrong, could not get summary of your wallets');
                 }
             );
     }
@@ -131,7 +153,7 @@ export class BlockchainWalletBalanceComponent implements OnInit {
                     () => {
                         this.isRequestPending = false;
                         this.toastService.success('Wallet deleted');
-                        this.fetchWallets();
+                        this.refreshData();
                     },
                     (error: HttpErrorResponse) => {
                         console.log(error);

@@ -11,6 +11,39 @@
                 New wallets to track
             </div>
         </div>
+        <div class="card mb-3">
+            <div class="card-header">
+                <i class="fa fa-usd" aria-hidden="true"></i>
+                Currency balances of all wallets
+            </div>
+            <div class="card-body">
+                <h6 *ngIf="currencyBalances.length ==0">No wallets added yet</h6>
+                <div *ngIf="currencyBalances.length > 0" class="table-responsive">
+                    <table class="table table-striped table-sm table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">Currency</th>
+                            <th scope="col">Balance</th>
+                            <th scope="col">USD value</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let currencyBalance of currencyBalances">
+                            <th scope="row">
+                                {{currencyBalance.currency}}
+                            </th>
+                            <td>
+                                {{currencyBalance.balance}}
+                            </td>
+                            <td>
+                                {{currencyBalance.usdBalance}}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
         <div class="card">
             <div class="card-header">
                 <button (click)="refreshWalletsBalance()" class="btn btn-primary btn-sm">
@@ -74,4 +107,5 @@
         </div>
     </div>
 </div>
+
 <app-text-dialog #yesNoConfirmation></app-text-dialog>
