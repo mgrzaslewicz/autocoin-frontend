@@ -22,12 +22,12 @@
                     <div class="form-content">
                         <div class="form-group">
                             <label for="currencySelector">Currency</label>
-                            <input type="text"
-                                   class="form-control"
-                                   name="currencyInput"
-                                   [(ngModel)]="currencyInput"
-                                   disabled
-                                   id="currencySelector">
+                            <select class="form-control"
+                                    [(ngModel)]="selectedCurrency"
+                                    id="currencySelector"
+                                    name="selectedCurrency">
+                                <option *ngFor="let currency of currencies" [ngValue]="currency" [selected]="currency == selectedCurrency">{{currency}}</option>
+                            </select>
                         </div>
                         <div *ngIf="!isInUpdateMode" class="form-group">
                             <button (click)="toggleAddSingleWalletForm()" class="btn btn-sm mr-1 mb-1" type="button">
@@ -44,7 +44,7 @@
                                       id="walletsCsvInput"
                                       aria-describedby="walletsCsvInputHelp"></textarea>
                             <small id="walletsCsvInputHelp" class="form-text text-muted">
-                                One wallet address per line with optional description after coma, e.g. '0x445c9d791b782a7b181194950e0c0ee8c14468f1,savings'
+                                One wallet address per line with optional description after coma, e.g. '{{getSampleWalletAddress()}},savings'
                             </small>
                         </div>
                         <ng-container *ngIf="!isAddingMultipleWallets">
@@ -56,7 +56,7 @@
                                        name="walletAddressInput"
                                        aria-describedby="walletAddressInputHelp">
                                 <small id="walletAddressInputHelp" class="form-text text-muted">
-                                    e.g. '0x445c9d791b782a7b181194950e0c0ee8c14468f1'
+                                    e.g. '{{getSampleWalletAddress()}}'
                                 </small>
                             </div>
                             <div class="form-group">

@@ -36,7 +36,8 @@ import {ActivatedRoute, Router} from "@angular/router";
     ]
 })
 export class BlockchainWalletAddComponent implements OnInit {
-    currencyInput: string = 'ETH';
+    currencies = ['BTC', 'ETH'];
+    selectedCurrency: string = 'BTC';
     walletsCsvInput: string;
     walletAddressInput: string;
     walletAddressDescriptionInput: string;
@@ -46,8 +47,8 @@ export class BlockchainWalletAddComponent implements OnInit {
 
     isAddingMultipleWallets = false;
 
-    isInUpdateMode: boolean = false;
-    private walletId = null;
+    readonly isInUpdateMode: boolean = false;
+    private readonly walletId = null;
 
     constructor(private balanceMonitorService: BalanceMonitorService,
                 private walletsInputParser: WalletsInputParser,
@@ -64,7 +65,7 @@ export class BlockchainWalletAddComponent implements OnInit {
                 .subscribe(
                     (response: WalletResponseDto) => {
                         this.walletAddressInput = response.walletAddress;
-                        this.currencyInput = response.currency;
+                        this.selectedCurrency = response.currency;
                         this.walletAddressDescriptionInput = response.description;
                     },
                     (error: HttpErrorResponse) => {
@@ -83,7 +84,7 @@ export class BlockchainWalletAddComponent implements OnInit {
 
     areAddWalletsInputValid(): boolean {
         if (this.isAddingMultipleWallets) {
-            return this.walletsInputParser.linesToDto(this.currencyInput, this.walletsCsvInput).length > 0;
+            return this.walletsInputParser.linesToDto(this.selectedCurrency, this.walletsCsvInput).length > 0;
         } else {
             return this.walletAddressInput != null && this.walletAddressInput.length > 0;
         }
@@ -94,11 +95,11 @@ export class BlockchainWalletAddComponent implements OnInit {
             this.isRequestPending = true;
             let addWalletsRequest: Array<AddWalletRequestDto> = [];
             if (this.isAddingMultipleWallets) {
-                addWalletsRequest = this.walletsInputParser.linesToDto(this.currencyInput, this.walletsCsvInput);
+                addWalletsRequest = this.walletsInputParser.linesToDto(this.selectedCurrency, this.walletsCsvInput);
             } else {
                 addWalletsRequest.push({
                     walletAddress: this.walletAddressInput,
-                    currency: this.currencyInput,
+                    currency: this.selectedCurrency,
                     description: this.walletAddressDescriptionInput
                 } as AddWalletRequestDto);
             }
@@ -149,7 +150,7 @@ export class BlockchainWalletAddComponent implements OnInit {
             const updateWalletsRequest: UpdateWalletRequestDto = {
                 id: this.walletId,
                 walletAddress: this.walletAddressInput,
-                currency: this.currencyInput,
+                currency: this.selectedCurrency,
                 description: this.walletAddressDescriptionInput
             } as UpdateWalletRequestDto;
             this.balanceMonitorService.updateWallet(updateWalletsRequest)
@@ -177,6 +178,17 @@ export class BlockchainWalletAddComponent implements OnInit {
                         }
                     }
                 );
+        }
+    }
+
+    getSampleWalletAddress(): string {
+        switch (this.selectedCurrency) {
+            case 'BTC':
+                return 'bc1qhq66uyw53n7sfk200czg556mdmdg8t7nvgdkdd'
+                break;
+            case 'ETH':
+                return '0x445c9d791b782a7b181194950e0c0ee8c14468f1';
+                break;
         }
     }
 }
