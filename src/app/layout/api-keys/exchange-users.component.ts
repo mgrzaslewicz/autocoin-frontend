@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ExchangeUsersService} from '../../services/api';
-import {Exchange, ExchangeKeyCapabilityResponseDto, ExchangeKeyExistenceResponseDto, ExchangeUser} from '../../models';
+import {ExchangeDto, ExchangeKeyCapabilityResponseDto, ExchangeKeyExistenceResponseDto, ExchangeUserDto} from '../../models';
 import {ToastService} from '../../services/toast.service';
 import {forkJoin} from 'rxjs';
 import {ExchangeKeyCapabilityService} from '../../services/exchange-key-capability.service';
@@ -13,8 +13,8 @@ import {AuthService} from '../../services/auth.service';
 })
 export class ExchangeUsersComponent implements OnInit {
     public isLoading = true;
-    public exchangeUsers: ExchangeUser[] = [];
-    public exchanges: Exchange[];
+    public exchangeUsers: ExchangeUserDto[] = [];
+    public exchanges: ExchangeDto[];
     public exchangesKeyExistenceList: ExchangeKeyExistenceResponseDto[];
     private exchangeUserToExchangesKeyCapabilityList: Map<string, ExchangeKeyCapabilityResponseDto[]> = new Map();
     private exchangeUserIdToIsFetchingKeysCapabilityInProgress: Map<string, boolean> = new Map();
@@ -52,7 +52,7 @@ export class ExchangeUsersComponent implements OnInit {
         });
     }
 
-    getExchangesOfExchangeUser(exchangeUser: ExchangeUser): Exchange[] {
+    getExchangesOfExchangeUser(exchangeUser: ExchangeUserDto): ExchangeDto[] {
         const exchanges = [];
         const exchangesKeys = this.exchangesKeyExistenceList.filter(exchangesKey => exchangesKey.exchangeUserId === exchangeUser.id);
         exchangesKeys.forEach(exchangesKey => {
@@ -62,14 +62,14 @@ export class ExchangeUsersComponent implements OnInit {
         return exchanges.sort((a, b) => a.name.localeCompare(b.name));
     }
 
-    isFetchingKeysCapability(exchangeUser: ExchangeUser): boolean {
+    isFetchingKeysCapability(exchangeUser: ExchangeUserDto): boolean {
         const key = exchangeUser.id;
         const result = this.exchangeUserIdToIsFetchingKeysCapabilityInProgress.has(key)
             && this.exchangeUserIdToIsFetchingKeysCapabilityInProgress.get(key);
         return result;
     }
 
-    fetchExchangeUserKeysCapability(exchangeUser: ExchangeUser) {
+    fetchExchangeUserKeysCapability(exchangeUser: ExchangeUserDto) {
         this.exchangeUserIdToIsFetchingKeysCapabilityInProgress.set(exchangeUser.id, true);
         this.exchangeUserToExchangesKeyCapabilityList.clear();
         this.exchangeKeyCapabilityService.getExchangeKeysValidity(exchangeUser.id).subscribe(exchangeKeysValidity => {
@@ -81,11 +81,11 @@ export class ExchangeUsersComponent implements OnInit {
         });
     }
 
-    isNotCheckedIfApiKeyIsWorking(exchangeUser: ExchangeUser, exchange: Exchange): boolean {
+    isNotCheckedIfApiKeyIsWorking(exchangeUser: ExchangeUserDto, exchange: ExchangeDto): boolean {
         return (!this.isApiKeyWorking(exchangeUser, exchange) && !this.isApiKeyNotWorking(exchangeUser, exchange));
     }
 
-    isApiKeyNotWorking(exchangeUser: ExchangeUser, exchange: Exchange): boolean {
+    isApiKeyNotWorking(exchangeUser: ExchangeUserDto, exchange: ExchangeDto): boolean {
         const exchangeUserKeyCapabilityList = this.exchangeUserToExchangesKeyCapabilityList.get(exchangeUser.id);
         if (exchangeUserKeyCapabilityList !== undefined) {
             const exchangeKeyCapability = exchangeUserKeyCapabilityList.find(it =>
@@ -99,7 +99,7 @@ export class ExchangeUsersComponent implements OnInit {
         return false;
     }
 
-    isApiKeyWorking(exchangeUser: ExchangeUser, exchange: Exchange): boolean {
+    isApiKeyWorking(exchangeUser: ExchangeUserDto, exchange: ExchangeDto): boolean {
         const exchangeUserKeyValidityList = this.exchangeUserToExchangesKeyCapabilityList.get(exchangeUser.id);
         if (exchangeUserKeyValidityList !== undefined) {
             const exchangeKeyValidity = exchangeUserKeyValidityList.find(it =>

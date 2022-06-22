@@ -33,8 +33,8 @@ export class ExchangeWalletService {
     ) {
     }
 
-    getAccountBalances(clientId: string): Observable<ExchangeCurrencyBalancesResponseDto> {
-        return this.http.get<ExchangeCurrencyBalancesResponseDto>(this.walletCurrencyBalancesUrl + clientId);
+    getAccountBalances(exchangeUserId: string): Observable<ExchangeCurrencyBalancesResponseDto> {
+        return this.http.get<ExchangeCurrencyBalancesResponseDto>(this.walletCurrencyBalancesUrl + exchangeUserId);
     }
 
 }

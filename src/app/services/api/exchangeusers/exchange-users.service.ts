@@ -1,5 +1,5 @@
 import {Inject, Injectable} from '@angular/core';
-import {Exchange, ExchangeKeyExistenceResponseDto, ExchangeUser} from '../../../models';
+import {CreateExchangeUserRequestDto, ExchangeDto, ExchangeKeyExistenceResponseDto, ExchangeUserDto, UpdateExchangeKeyRequestDto} from '../../../models';
 import * as _ from 'underscore';
 import {FeatureToggle, FeatureToggleToken} from '../../feature.toogle.service';
 import {HttpClient} from '@angular/common/http';
@@ -16,34 +16,19 @@ export class ExchangeUsersService {
     ) {
     }
 
-    getExchanges(): Observable<Exchange[]> {
-        return this.http.get(`${this.exchangeUsersApiUrl}/exchanges`)
-            .map(response => Object.values(response).map(data => this.toExchange(data)));
+    getExchanges(): Observable<ExchangeDto[]> {
+        return this.http.get<ExchangeDto[]>(`${this.exchangeUsersApiUrl}/exchanges`);
     }
 
-    getExchangeUsers(): Observable<ExchangeUser[]> {
-        return this.http.get(`${this.exchangeUsersApiUrl}/exchange-users`)
-            .map(response => Object.values(response).map(data => this.toExchangeUser(data)));
+    getExchangeUsers(): Observable<ExchangeUserDto[]> {
+        return this.http.get<ExchangeUserDto[]>(`${this.exchangeUsersApiUrl}/exchange-users`);
     }
 
     getExchangesKeysExistence(): Observable<ExchangeKeyExistenceResponseDto[]> {
-        return this.http.get<ExchangeKeyExistenceResponseDto[]>(`${this.exchangeUsersApiUrl}/exchange-keys/existence`)
-            .map(response => Object.values(response).map(data => this.toExchangeKey(data)));
+        return this.http.get<ExchangeKeyExistenceResponseDto[]>(`${this.exchangeUsersApiUrl}/exchange-keys/existence`);
     }
 
-    private toExchangeUser(data): ExchangeUser {
-        return new ExchangeUser(data.id, data.name);
-    }
-
-    private toExchange(data): Exchange {
-        return new Exchange(data.id, data.name);
-    }
-
-    private toExchangeKey(data): ExchangeKeyExistenceResponseDto {
-        return new ExchangeKeyExistenceResponseDto(data.exchangeId, data.exchangeUserId);
-    }
-
-    createExchangeUser(data) {
+    createExchangeUser(data: CreateExchangeUserRequestDto) {
         return this.http.put(`${this.exchangeUsersApiUrl}/exchange-users`, data, {responseType: 'text'});
     }
 
@@ -55,26 +40,20 @@ export class ExchangeUsersService {
         return this.http.delete(`${this.exchangeUsersApiUrl}/exchange-keys/${exchangeId}/${exchangeUserId}`, {responseType: 'text'});
     }
 
-    findExchangeUser(exchangeUserId): Observable<ExchangeUser> {
-        return this.http.get<ExchangeUser[]>(`${this.exchangeUsersApiUrl}/exchange-users`)
-            .map(response => {
-                const data = _(response).find({id: exchangeUserId});
-
-                return this.toExchangeUser(data);
-            });
+    getExchangeUser(exchangeUserId): Observable<ExchangeUserDto> {
+        return this.http.get<ExchangeUserDto>(`${this.exchangeUsersApiUrl}/exchange-users/${exchangeUserId}`);
     }
 
     getExchangeKeysExistenceForExchangeUser(exchangeUserId): Observable<ExchangeKeyExistenceResponseDto[]> {
-        return this.http.get(`${this.exchangeUsersApiUrl}/exchange-keys/existence/${exchangeUserId}`)
-            .map(response => Object.values(response).map(data => this.toExchangeKey(data)));
+        return this.http.get<ExchangeKeyExistenceResponseDto[]>(`${this.exchangeUsersApiUrl}/exchange-keys/existence/${exchangeUserId}`);
     }
 
     updateExchangeUser(exchangeUserId, data) {
         return this.http.post(`${this.exchangeUsersApiUrl}/exchange-users/${exchangeUserId}`, data, {responseType: 'text'});
     }
 
-    updateExchangeKeys(exchangeUserId, exchangeId, data) {
-        return this.http.put(`${this.exchangeUsersApiUrl}/exchange-keys/${exchangeId}/${exchangeUserId}`, data, {responseType: 'text'});
+    updateExchangeKeys(exchangeUserId, exchangeId, requestDto: UpdateExchangeKeyRequestDto) {
+        return this.http.put(`${this.exchangeUsersApiUrl}/exchange-keys/${exchangeId}/${exchangeUserId}`, requestDto, {responseType: 'text'});
     }
 
 }

@@ -13,12 +13,7 @@ export class ExchangeKeyCapabilityService {
     }
 
     getExchangeKeysValidity(exchangeUserId): Observable<ExchangeKeyCapabilityResponseDto[]> {
-        return this.http.get(`${this.exchangeKeysCapabilityEndpointUrl}/exchange-keys-capability/${exchangeUserId}`)
-            .map(response => Object.values(response).map(data => this.toExchangeKeyValidity(data)));
-    }
-
-    private toExchangeKeyValidity(data): ExchangeKeyCapabilityResponseDto {
-        return new ExchangeKeyCapabilityResponseDto(data.exchangeId, data.exchangeUserId, data.canReadWallet);
+        return this.http.get<ExchangeKeyCapabilityResponseDto[]>(`${this.exchangeKeysCapabilityEndpointUrl}/exchange-keys-capability/${exchangeUserId}`);
     }
 
 }

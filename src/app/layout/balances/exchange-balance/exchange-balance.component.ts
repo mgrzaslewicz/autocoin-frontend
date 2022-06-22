@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {routerTransition} from '../../../router.animations';
-import {ExchangeUser} from '../../../models';
+import {ExchangeUserDto} from '../../../models';
 import {ToastService} from '../../../services/toast.service';
 import * as _ from 'underscore';
 import {CurrencyPriceDto, PriceService} from '../../../services/price.service';
@@ -9,10 +9,8 @@ import {forkJoin, Subscription} from 'rxjs';
 import {CurrencyBalanceDto, ExchangeBalanceDto, ExchangeWalletService} from '../../../services/exchange-wallet.service';
 import {AuthService} from '../../../services/auth.service';
 
-export class ExchangeUserWithBalance extends ExchangeUser {
-    constructor(id: string, name: string, public exchangeBalances: ExchangeBalanceDto[] = []) {
-        super(id, name);
-    }
+export interface ExchangeUserWithBalance extends ExchangeUserDto {
+    exchangeBalances: ExchangeBalanceDto[];
 }
 
 interface CurrencyBalanceTableRow {
@@ -61,7 +59,13 @@ export class ExchangeBalanceComponent implements OnInit, OnDestroy {
                     this.exchangeUsersService.getExchangeUsers()
                 )
                     .subscribe(([exchangeUsers]) => {
-                        this.exchangeUsers = exchangeUsers.map(eu => new ExchangeUserWithBalance(eu.id, eu.name));
+                        this.exchangeUsers = exchangeUsers.map(it => {
+                            return {
+                                id: it.id,
+                                name: it.name,
+                                exchangeBalances: []
+                            } as ExchangeUserWithBalance
+                        });
                         this.calculateAllExchangeUsersBalances();
                         this.restorePricesFromLocalStorage();
                     }, () => {
@@ -104,11 +108,11 @@ export class ExchangeBalanceComponent implements OnInit, OnDestroy {
                 this.totalBalancesForExchangeUser(exchangeUser));
     }
 
-    private exchangeBalancesForExchangeUser(exchangeUser: ExchangeUser): ExchangeBalanceDto[] {
+    private exchangeBalancesForExchangeUser(exchangeUser: ExchangeUserDto): ExchangeBalanceDto[] {
         return JSON.parse(localStorage.getItem('exchange-user-portfolio-balances-' + exchangeUser.id)) || [];
     }
 
-    private totalBalancesForExchangeUser(exchangeUser: ExchangeUser): ExchangeBalanceDto[] {
+    private totalBalancesForExchangeUser(exchangeUser: ExchangeUserDto): ExchangeBalanceDto[] {
         const currencyBalancesMap = this.exchangeBalancesForExchangeUser(exchangeUser)
             .map(dto => new Map(dto.currencyBalances.map<[string, CurrencyBalanceDto]>(balance => [balance.currencyCode, balance])))
             .reduce((acc, next) => {
@@ -138,7 +142,7 @@ export class ExchangeBalanceComponent implements OnInit, OnDestroy {
             .toString());
     }
 
-    private fetchExchangeBalancesForExchangeUser(exchangeUser: ExchangeUser) {
+    private fetchExchangeBalancesForExchangeUser(exchangeUser: ExchangeUserDto) {
         this.exchangeWalletService.getAccountBalances(exchangeUser.id)
             .subscribe(
                 accountBalances => {
@@ -213,7 +217,7 @@ export class ExchangeBalanceComponent implements OnInit, OnDestroy {
         }
     }
 
-    getTotalExchangeUserBtcValue(exchangeUser: ExchangeUser): number {
+    getTotalExchangeUserBtcValue(exchangeUser: ExchangeUserDto): number {
         let totalBtc = 0.0;
         _.filter(this.exchangeBalancesForExchangeUser(exchangeUser), exchange => exchange != null)
             .forEach(exchange => {
@@ -222,7 +226,7 @@ export class ExchangeBalanceComponent implements OnInit, OnDestroy {
         return totalBtc;
     }
 
-    getTotalExchangeUserUsdValue(exchangeUser: ExchangeUser): number {
+    getTotalExchangeUserUsdValue(exchangeUser: ExchangeUserDto): number {
         const totalBtcValue = this.getTotalExchangeUserBtcValue(exchangeUser);
         if (this.currencyPairPrices.has(this.btcUsd) && totalBtcValue !== null) {
             const usdBtcPrice = this.currencyPairPrices.get(this.btcUsd);

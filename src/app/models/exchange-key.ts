@@ -1,21 +1,17 @@
-export class UpdateExchangeKeyRequestDto {
+export interface UpdateExchangeKeyRequestDto {
     userName?: String;
     apiKey: String;
     secretKey: String;
-    exchangeSpecificKeyParameters: any;
+    exchangeSpecificKeyParameters?: Map<string, string>;
 }
 
-export class ExchangeKeyExistenceResponseDto {
-    constructor(
-        public exchangeId: string,
-        public exchangeUserId: string) {
-    }
+export interface ExchangeKeyExistenceResponseDto {
+    exchangeId: string;
+    exchangeUserId: string;
 }
 
-export class ExchangeKeyCapabilityResponseDto {
-    constructor(
-        public exchangeId: string,
-        public exchangeUserId: string,
-        public canReadWallet: boolean) {
-    }
+export interface ExchangeKeyCapabilityResponseDto {
+    exchangeId: string;
+    exchangeUserId: string;
+    canReadWallet: boolean;
 }

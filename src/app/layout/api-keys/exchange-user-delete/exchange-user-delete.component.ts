@@ -1,5 +1,5 @@
 import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
-import {ExchangeUser} from '../../../models';
+import {ExchangeUserDto} from '../../../models';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToastService} from '../../../services/toast.service';
 import {ExchangeUsersService} from '../../../services/api/index';
@@ -11,7 +11,7 @@ import {ExchangeUsersService} from '../../../services/api/index';
 })
 export class ExchangeUserDeleteComponent implements OnInit {
 
-    private exchangeUser: ExchangeUser;
+    private exchangeUser: ExchangeUserDto;
 
     @ViewChild('content', { static: true })
     content;
@@ -29,7 +29,7 @@ export class ExchangeUserDeleteComponent implements OnInit {
     ngOnInit() {
     }
 
-    deleteExchangeUserWithConfirmation(exchangeUser: ExchangeUser) {
+    deleteExchangeUserWithConfirmation(exchangeUser: ExchangeUserDto) {
         this.exchangeUser = exchangeUser;
 
         this.modalService.open(this.content).result.then(result => {
@@ -40,7 +40,7 @@ export class ExchangeUserDeleteComponent implements OnInit {
         });
     }
 
-    private doDeleteExchangeUser(exchangeUser: ExchangeUser) {
+    private doDeleteExchangeUser(exchangeUser: ExchangeUserDto) {
         this.exchangeUsersService.deleteExchangeUser(exchangeUser.id)
             .subscribe(() => {
                 this.toastService.success('User has been deleted.');
