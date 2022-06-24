@@ -32,3 +32,10 @@
 .hide-balances {
     filter: blur(0.5rem);
 }
+.hide-balances span {
+    //visibility: hidden;
+    display: none;
+}
+.hide-balances:after {
+    content: '*****************';
+}

@@ -9,17 +9,18 @@ import {FeatureToggleToken, LocalStorageFeatureToggle} from './feature.toogle.se
 import {ExchangeUsersService} from './api';
 import {UserAccountService} from './user-account.service';
 import {ExchangeKeyCapabilityService} from './exchange-key-capability.service';
-import {ExchangeWalletService} from './exchange-wallet.service';
 import {
-    ArbitrageMonitorEndpointUrlToken, BalanceMonitorApiBaseUrlToken,
-    ChangePasswordEndpointUrlToken, ChangePasswordWithResetPasswordTokenEndpointUrlToken,
+    ArbitrageMonitorEndpointUrlToken,
+    BalanceMonitorApiBaseUrlToken,
+    ChangePasswordEndpointUrlToken,
+    ChangePasswordWithResetPasswordTokenEndpointUrlToken,
     ExchangeKeysCapabilityEndpointUrlToken,
     ExchangeUsersEndpointUrlToken,
-    ExchangeWalletEndpointUrlToken,
     HealthEndpointUrlToken,
     OauthEndpointUrlToken,
     OrdersEndpointUrlToken,
-    PricesEndpointUrlToken, RequestEmailWithResetPasswordTokenEndpointUrlToken,
+    PricesEndpointUrlToken,
+    RequestEmailWithResetPasswordTokenEndpointUrlToken,
     SignupEndpointUrlToken,
     StrategiesEndpointUrlToken,
     TwoFactorAuthenticationEndpointUrlToken
@@ -46,7 +47,6 @@ import {BalanceMonitorService} from "./balance-monitor.service";
         {provide: ChangePasswordEndpointUrlToken, useValue: environment.changePasswordEndpointUrl},
         {provide: RequestEmailWithResetPasswordTokenEndpointUrlToken, useValue: environment.requestEmailWithResetPasswordTokenEndpointUrl},
         {provide: ChangePasswordWithResetPasswordTokenEndpointUrlToken, useValue: environment.changePasswordWithResetPasswordTokenEndpointUrl},
-        {provide: ExchangeWalletEndpointUrlToken, useValue: environment.exchangeWalletEndpointUrl},
         {provide: OrdersEndpointUrlToken, useValue: environment.ordersEndpointUrl},
         {provide: ExchangeKeysCapabilityEndpointUrlToken, useValue: environment.exchangeKeysCapabilityEndpointUrl},
         {provide: PricesEndpointUrlToken, useValue: environment.pricesEndpointUrl},
@@ -58,7 +58,6 @@ import {BalanceMonitorService} from "./balance-monitor.service";
         AuthService,
         UserAccountService,
         ExchangeUsersService,
-        ExchangeWalletService,
         ExchangeKeyCapabilityService,
         PriceService,
         ToastService,

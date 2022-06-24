@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {routerTransition} from '../../../router.animations';
-import {BalanceMonitorService, UserCurrencyBalanceResponseDto, WalletResponseDto} from "../../../services/balance-monitor.service";
+import {BalanceMonitorService, UserCurrencyBalanceResponseDto, BlockchainWalletResponseDto} from "../../../services/balance-monitor.service";
 import {WalletsInputParser} from "./wallets-input-parser";
 import {ToastService} from "../../../services/toast.service";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -34,7 +34,7 @@ export class BlockchainWalletBalanceComponent implements OnInit {
     private walletMenuVisibilityToggleClass = 'wallet-dropdown-menu-visible';
 
     isRequestPending: boolean = false;
-    wallets: Array<WalletResponseDto> = [];
+    wallets: Array<BlockchainWalletResponseDto> = [];
     currencyBalances: Array<UserCurrencyBalanceResponseDto> = [];
 
     constructor(private balanceMonitorService: BalanceMonitorService,
@@ -54,9 +54,9 @@ export class BlockchainWalletBalanceComponent implements OnInit {
 
     fetchWallets() {
         this.isRequestPending = true;
-        this.balanceMonitorService.getWallets()
+        this.balanceMonitorService.getBlockchainWallets()
             .subscribe(
-                (wallets: Array<WalletResponseDto>) => {
+                (wallets: Array<BlockchainWalletResponseDto>) => {
                     this.isRequestPending = false;
                     this.wallets = wallets;
                 },
@@ -70,7 +70,7 @@ export class BlockchainWalletBalanceComponent implements OnInit {
 
     fetchCurrencyBalances() {
         this.isRequestPending = true;
-        this.balanceMonitorService.getCurrencyBalance()
+        this.balanceMonitorService.getBlockchainCurrencyBalance()
             .subscribe(
                 (currencyBalances: Array<UserCurrencyBalanceResponseDto>) => {
                     this.isRequestPending = false;
@@ -91,9 +91,9 @@ export class BlockchainWalletBalanceComponent implements OnInit {
     refreshWalletsBalance() {
         if (!this.isRequestPending) {
             this.isRequestPending = true;
-            this.balanceMonitorService.refreshWalletsBalance()
+            this.balanceMonitorService.refreshBlockchainWalletsBalance()
                 .subscribe(
-                    (response: Array<WalletResponseDto>) => {
+                    (response: Array<BlockchainWalletResponseDto>) => {
                         this.wallets = response;
                         this.isRequestPending = false;
                         this.toastService.success('Wallets refreshed');
@@ -134,21 +134,21 @@ export class BlockchainWalletBalanceComponent implements OnInit {
         }
     }
 
-    editWallet(wallet: WalletResponseDto) {
+    editWallet(wallet: BlockchainWalletResponseDto) {
         this.router.navigate([`/balances/wallets/edit/${wallet.id}`]);
     }
 
-    confirmRemoveWallet(hideWalletMenuLayer: HTMLDivElement, yesNoConfirmation: TextDialog, wallet: WalletResponseDto) {
+    confirmRemoveWallet(hideWalletMenuLayer: HTMLDivElement, yesNoConfirmation: TextDialog, wallet: BlockchainWalletResponseDto) {
         this.hideWalletMenuIfAnyOpen(hideWalletMenuLayer);
         yesNoConfirmation.showYesNoConfirmation('Confirm your action', 'Do you want to remove this wallet address?', () => {
             this.deleteWallet(wallet);
         });
     }
 
-    deleteWallet(wallet: WalletResponseDto) {
+    deleteWallet(wallet: BlockchainWalletResponseDto) {
         if (!this.isRequestPending) {
             this.isRequestPending = true;
-            this.balanceMonitorService.deleteWallet(wallet.walletAddress)
+            this.balanceMonitorService.deleteBlockchainWallet(wallet.walletAddress)
                 .subscribe(
                     () => {
                         this.isRequestPending = false;

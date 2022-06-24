@@ -3,12 +3,12 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {routerTransition} from "../../../../router.animations";
 import {
-    AddWalletRequestDto,
-    AddWalletsErrorResponseDto,
+    AddBlockchainWalletRequestDto,
+    AddBlockchainWalletsErrorResponseDto,
     BalanceMonitorService,
-    UpdateWalletErrorResponseDto,
-    UpdateWalletRequestDto,
-    WalletResponseDto
+    UpdateBlockchainWalletErrorResponseDto,
+    UpdateBlockchainWalletRequestDto,
+    BlockchainWalletResponseDto
 } from "../../../../services/balance-monitor.service";
 import {WalletsInputParser} from "../wallets-input-parser";
 import {ToastService} from "../../../../services/toast.service";
@@ -61,9 +61,9 @@ export class BlockchainWalletAddComponent implements OnInit {
 
     ngOnInit() {
         if (this.isInUpdateMode) {
-            this.balanceMonitorService.getWallet(this.walletId)
+            this.balanceMonitorService.getBlockchainWallet(this.walletId)
                 .subscribe(
-                    (response: WalletResponseDto) => {
+                    (response: BlockchainWalletResponseDto) => {
                         this.walletAddressInput = response.walletAddress;
                         this.selectedCurrency = response.currency;
                         this.walletAddressDescriptionInput = response.description;
@@ -93,7 +93,7 @@ export class BlockchainWalletAddComponent implements OnInit {
     addWallets() {
         if (!this.isRequestPending && this.areAddWalletsInputValid()) {
             this.isRequestPending = true;
-            let addWalletsRequest: Array<AddWalletRequestDto> = [];
+            let addWalletsRequest: Array<AddBlockchainWalletRequestDto> = [];
             if (this.isAddingMultipleWallets) {
                 addWalletsRequest = this.walletsInputParser.linesToDto(this.selectedCurrency, this.walletsCsvInput);
             } else {
@@ -101,10 +101,10 @@ export class BlockchainWalletAddComponent implements OnInit {
                     walletAddress: this.walletAddressInput,
                     currency: this.selectedCurrency,
                     description: this.walletAddressDescriptionInput
-                } as AddWalletRequestDto);
+                } as AddBlockchainWalletRequestDto);
             }
             const requestContainsMultipleWallets = addWalletsRequest.length > 1;
-            this.balanceMonitorService.addWallets(addWalletsRequest)
+            this.balanceMonitorService.addBlockchainWallets(addWalletsRequest)
                 .subscribe(
                     () => {
                         this.clearInputs();
@@ -116,7 +116,7 @@ export class BlockchainWalletAddComponent implements OnInit {
                         this.isRequestPending = false;
                         console.error(error);
                         if (error.status == 400) {
-                            const addWalletsErrorResponseDto: AddWalletsErrorResponseDto = error.error as AddWalletsErrorResponseDto;
+                            const addWalletsErrorResponseDto: AddBlockchainWalletsErrorResponseDto = error.error as AddBlockchainWalletsErrorResponseDto;
                             this.invalidWallets = addWalletsErrorResponseDto.invalidAddresses;
                             if (addWalletsErrorResponseDto.duplicatedAddresses.length > 0) {
                                 if (requestContainsMultipleWallets) {
@@ -147,13 +147,13 @@ export class BlockchainWalletAddComponent implements OnInit {
     saveWallet() {
         if (!this.isRequestPending && this.areAddWalletsInputValid()) {
             this.isRequestPending = true;
-            const updateWalletsRequest: UpdateWalletRequestDto = {
+            const updateWalletsRequest: UpdateBlockchainWalletRequestDto = {
                 id: this.walletId,
                 walletAddress: this.walletAddressInput,
                 currency: this.selectedCurrency,
                 description: this.walletAddressDescriptionInput
-            } as UpdateWalletRequestDto;
-            this.balanceMonitorService.updateWallet(updateWalletsRequest)
+            } as UpdateBlockchainWalletRequestDto;
+            this.balanceMonitorService.updateBlockchainWallet(updateWalletsRequest)
                 .subscribe(
                     () => {
                         this.clearInputs();
@@ -165,7 +165,7 @@ export class BlockchainWalletAddComponent implements OnInit {
                         this.isRequestPending = false;
                         console.error(error);
                         if (error.status == 400) {
-                            const updateWalletErrorResponseDto: UpdateWalletErrorResponseDto = error.error as UpdateWalletErrorResponseDto;
+                            const updateWalletErrorResponseDto: UpdateBlockchainWalletErrorResponseDto = error.error as UpdateBlockchainWalletErrorResponseDto;
                             if (updateWalletErrorResponseDto.isAddressInvalid) {
                                 this.toastService.warning('Wallet was not saved because given address is not a valid blockchain address');
                             } else if (updateWalletErrorResponseDto.isAddressDuplicated) {

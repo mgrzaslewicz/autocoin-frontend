@@ -7,7 +7,6 @@ export const TwoFactorAuthenticationEndpointUrlToken = new InjectionToken('TwoFa
 export const ChangePasswordEndpointUrlToken = new InjectionToken('ChangePasswordEndpointUrlToken');
 export const RequestEmailWithResetPasswordTokenEndpointUrlToken = new InjectionToken('RequestEmailWithResetPasswordTokenEndpointUrlToken');
 export const ChangePasswordWithResetPasswordTokenEndpointUrlToken = new InjectionToken('ChangePasswordWithResetPasswordTokenEndpointUrlToken ');
-export const ExchangeWalletEndpointUrlToken = new InjectionToken('ExchangeWalletEndpointUrlToken');
 export const OrdersEndpointUrlToken = new InjectionToken('OrdersEndpointUrlToken');
 export const ExchangeKeysCapabilityEndpointUrlToken = new InjectionToken('ExchangeKeysCapabilityEndpointUrlToken');
 export const PricesEndpointUrlToken = new InjectionToken('PricesEndpointUrlToken');

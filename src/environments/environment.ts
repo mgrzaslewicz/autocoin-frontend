@@ -19,7 +19,6 @@ export const environment = {
     changePasswordEndpointUrl: `${authServiceUrl}/user-accounts/password`,
     requestEmailWithResetPasswordTokenEndpointUrl: `${authServiceUrl}/user-accounts/password/reset-with-token/step-1-send-email-with-token`,
     changePasswordWithResetPasswordTokenEndpointUrl: `${authServiceUrl}/user-accounts/password/reset-with-token/step-2-change-password`,
-    exchangeWalletEndpointUrl: exchangeMediatorServiceUrl,
     ordersEndpointUrl: exchangeMediatorServiceUrl,
     exchangeKeysCapabilityEndpointUrl: exchangeMediatorServiceUrl,
     pricesEndpointUrl: `${exchangeMediatorServiceUrl}/prices`,

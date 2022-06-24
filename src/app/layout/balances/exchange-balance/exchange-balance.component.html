@@ -7,16 +7,16 @@
 </div>
 <div class="row">
     <div class="col-12">
-        <button class="btn btn-sm btn-info mr-1 mb-1" (click)="refreshAllWallets()"
+        <button class="btn btn-sm btn-info mr-1 mb-1" (click)="refreshExchangeWallets()"
                 [disabled]="pending">
             <i class="fa fa-refresh" [class.is-pending]="pending"></i> Refresh wallets
         </button>
         <button type="button" class="btn btn-sm mr-1 mb-1"
-                (click)="flipBalancesViewType()">
-            Show summary per user <i class="fa" [class.fa-toggle-on]="!showBalancesPerExchange"
-                                     [class.fa-toggle-off]="showBalancesPerExchange"></i>
+                (click)="toggleBalancesViewType()">
+            Show summary per api key group <i class="fa" [class.fa-toggle-on]="showGroupedBalancesPerExchangeUser"
+                                              [class.fa-toggle-off]="!showGroupedBalancesPerExchangeUser"></i>
         </button>
-        <button (click)="flipShowingUnderOneDollar()" type="button" class="btn btn-sm mr-1 mb-1">
+        <button (click)="toggleShowUnderOneDollar()" type="button" class="btn btn-sm mr-1 mb-1">
             Show small amounts <i class="fa" [class.fa-toggle-on]="showUnder1Dollar"
                                   [class.fa-toggle-off]="!showUnder1Dollar"></i>
         </button>
@@ -26,86 +26,156 @@
         </button>
         <div class="text-muted ml-auto mb-1">
             <small>
-                Last refresh: {{ (getLastWalletsRefreshTime() | date: 'y-MM-dd HH:mm:ss') || '-' }}
+                Last refresh: {{ (exchangeWalletBalances.refreshTimeMillis | date: 'y-MM-dd HH:mm:ss') || '-' }}
             </small>
         </div>
     </div>
 </div>
-<div>
-    <div *ngFor="let exchangeUser of exchangeUsers" class="card mb-3 exchange-user-wallet">
-        <div class="card-header">
-            <div class="d-flex flex-row mb-2">
-                <h3><i class="fa fa-user"></i> {{ exchangeUser.name }}</h3>
-            </div>
+<ng-container *ngIf="exchangeWalletBalances != null">
+    <div *ngIf="totalExchangeWalletBalances != null" class="row">
+        <div class="col-12">
             <h5>
-            <span class="badge bg-secondary text-light m-1 p-1">
-                    Total BTC: <span
-                [className]="hideBalances ?'hide-balances' : ''">{{ getTotalExchangeUserBtcValue(exchangeUser) | number : '1.8' || '-' }}</span>
-                    <i class="fa fa-btc"></i>
-            </span>
-                <span class="badge bg-secondary text-light m-1 p-1">
-                    Total USD:
-                <span [className]="hideBalances ?'hide-balances' : ''">
-                {{ getTotalExchangeUserUsdValue(exchangeUser) | number : '1.2' || '-' }}
-            </span>
-                    <i class="fa fa-usd"></i>
-            </span>
-                <span class="badge bg-secondary m-1 p-1 text-light">
-                1 <i class="fa fa-btc"></i> = <i class="fa fa-usd"></i> <span>{{ get1BtcValue() | number : '1.2' || '-' }}</span>
+            <span class="badge badge-info">
+                Total value: <span [class.hide-balances]="hideBalances"><span>${{ totalUsdValue | number : '1.2-2' }}</span></span>
             </span>
             </h5>
-        </div>
-        <div class="card-body">
-            <ng-container *ngFor="let exchangeBalance of exchangeUser.exchangeBalances">
-                <h4>{{ exchangeBalance.exchangeName }}</h4>
-                <span *ngIf="exchangeBalance.errorMessage != null" class="badge badge-warning">
-                    {{ exchangeBalance.errorMessage }}
-                </span>
-                <span *ngIf="exchangeBalance.currencyBalances.length == 0 && exchangeBalance.errorMessage == null"
-                      class="alert balance-table mt-3">No currencies held</span>
-                <div *ngIf="exchangeBalance.currencyBalances.length > 0 && exchangeBalance.errorMessage == null"
-                     class="table-responsive mb-3">
+            <div class="card mb-3 exchange-user-wallet">
+                <div class="card-header">Summary of all exchange wallets</div>
+                <div class="card-body">
                     <table class="table table-sm table-hover balance-table">
                         <thead>
                         <tr>
                             <th>Currency</th>
-                            <th class="text-right">Available</th>
-                            <th class="text-right">Frozen</th>
                             <th class="text-right">Total</th>
-                            <th class="text-right">BTC Price</th>
-                            <th class="text-right">BTC value <i class="fa fa-sort-amount-desc" aria-hidden="true"></i></th>
-                            <th class="text-right">USD value</th>
+                            <th class="text-right">USD value <i class="fa fa-sort-amount-desc" aria-hidden="true"></i></th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr *ngFor="let currencyBalance of getSortedBalances(exchangeBalance.currencyBalances)">
-                            <td>{{ currencyBalance.currencyCode }}</td>
-                            <td class="text-right" [className]="hideBalances ?'hide-balances' : ''">{{ currencyBalance.available | number : '1.8-8' }}</td>
-                            <td class="text-right" [className]="hideBalances ?'hide-balances' : ''">{{ currencyBalance.frozen | number : '1.8-8' }}</td>
-                            <td class="text-right" [className]="hideBalances ?'hide-balances' : ''">{{ currencyBalance.total | number : '1.8-8' }}</td>
-                            <td class="text-right" [className]="hideBalances ?'hide-balances' : ''">{{ currencyBalance.btcPrice | number : '1.8-8' }}</td>
-                            <td class="text-right" [className]="hideBalances ?'hide-balances' : ''">{{ currencyBalance.btcValue | number : '1.8' || '-' }}
+                        <tr *ngFor="let totalExchangeWalletBalance of getSortedCurrencyTableRows(totalExchangeWalletBalances)">
+                            <td>{{ totalExchangeWalletBalance.currencyCode }}</td>
+                            <td class="text-right" [class.hide-balances]="hideBalances"><span>{{ totalExchangeWalletBalance.total | number : '1.8-8' }}</span></td>
+                            <td *ngIf="totalExchangeWalletBalance.usdValue != null" class="text-right" [class.hide-balances]="hideBalances">
+                                <span>${{ totalExchangeWalletBalance.usdValue | number : '1.2-2' || '-' }}</span>
                             </td>
-                            <td class="text-right" [className]="hideBalances ?'hide-balances' : ''">{{ currencyBalance.usdValue | number : '1.2' || '-' }}
+                            <td *ngIf="totalExchangeWalletBalance.usdValue == null" class="text-right text-muted" [class.hide-balances]="hideBalances">
+                                <span>N/A</span>
                             </td>
                         </tr>
                         <tr>
                             <td></td>
                             <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td class="text-right font-weight-bold" [className]="hideBalances ?'hide-balances' : ''">
-                                {{ getTotalExchangeBtcValue(exchangeBalance) | number : '1.8' }}
-                            </td>
-                            <td class="text-right font-weight-bold" [className]="hideBalances ?'hide-balances' : ''">
-                                {{ getTotalExchangeUsdValue(exchangeBalance) | number : '1.2' }}
+                            <td class="text-right font-weight-bold" [class.hide-balances]="hideBalances">
+                                <span>${{ totalUsdValue | number : '1.2' }}</span>
                             </td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
-            </ng-container>
+            </div>
         </div>
     </div>
-</div>
+    <div class="row">
+        <div class="col-12">
+            <div *ngFor="let exchangeCurrencyBalance of exchangeWalletBalances.exchangeCurrencyBalances" class="card mb-3 exchange-user-wallet">
+                <div class="card-header">
+                    <div class="d-flex flex-row mb-2">
+                        <h3><i class="fa fa-user"></i> {{ exchangeCurrencyBalance.exchangeUserName }}</h3>
+                    </div>
+                    <h5 class="badge bg-secondary text-light m-1 p-1">
+                        Total:
+                        <span [class.hide-balances]="hideBalances">
+                        <span>${{ getTotalExchangeUserUsdValue(exchangeCurrencyBalance) | number : '1.2-2' || '-' }}</span>
+                    </span>
+                    </h5>
+                    <h5 class="badge bg-secondary text-light m-1 p-1">
+                        {{ exchangeCurrencyBalance.exchangeBalances.length }} exchanges
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <ng-container *ngIf="showGroupedBalancesPerExchangeUser">
+                        <h4>Summary</h4>
+                        <div class="table-responsive mb-3">
+                            <table class="table table-sm table-hover balance-table">
+                                <thead>
+                                <tr>
+                                    <th>Currency</th>
+                                    <th class="text-right">Available</th>
+                                    <th class="text-right">Blocked in orders</th>
+                                    <th class="text-right">Total</th>
+                                    <th class="text-right">USD value <i class="fa fa-sort-amount-desc" aria-hidden="true"></i></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let currencyBalance of getSortedCurrencyTableRows(getBalancesGroupedByExchangeUser(exchangeCurrencyBalance.exchangeBalances))">
+                                    <td>{{ currencyBalance.currencyCode }}</td>
+                                    <td class="text-right" [class.hide-balances]="hideBalances"><span>{{ currencyBalance.available | number : '1.8-8' }}</span></td>
+                                    <td class="text-right" [class.hide-balances]="hideBalances"><span>{{ currencyBalance.blockedInOrders | number : '1.8-8' }}</span></td>
+                                    <td class="text-right" [class.hide-balances]="hideBalances"><span>{{ currencyBalance.total | number : '1.8-8' }}</span></td>
+                                    <td class="text-right" [class.hide-balances]="hideBalances">
+                                        <span *ngIf="currencyBalance.usdValue != null">${{ currencyBalance.usdValue | number : '1.2-2' || '-' }}</span>
+                                        <span *ngIf="currencyBalance.usdValue == null" class="text-muted">N/A</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="text-right font-weight-bold" [class.hide-balances]="hideBalances">
+                                        <span>${{ getTotalExchangeUserUsdValue(exchangeCurrencyBalance) | number : '1.2-2' || '-' }}</span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="!showGroupedBalancesPerExchangeUser">
+                        <ng-container *ngFor="let exchangeBalance of exchangeCurrencyBalance.exchangeBalances">
+                            <h4>{{ exchangeBalance.exchangeName }}</h4>
+                            <span *ngIf="exchangeBalance.errorMessage != null" class="badge badge-warning">
+                    {{ exchangeBalance.errorMessage }}
+                </span>
+                            <span *ngIf="exchangeBalance.currencyBalances.length == 0 && exchangeBalance.errorMessage == null"
+                                  class="alert balance-table mt-3">No currencies held</span>
+                            <div *ngIf="exchangeBalance.currencyBalances.length > 0 && exchangeBalance.errorMessage == null"
+                                 class="table-responsive mb-3">
+                                <table class="table table-sm table-hover balance-table">
+                                    <thead>
+                                    <tr>
+                                        <th>Currency</th>
+                                        <th class="text-right">Available</th>
+                                        <th class="text-right">Blocked in orders</th>
+                                        <th class="text-right">Total</th>
+                                        <th class="text-right">USD value <i class="fa fa-sort-amount-desc" aria-hidden="true"></i></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr *ngFor="let currencyBalance of getSortedBalances(exchangeBalance.currencyBalances)">
+                                        <td>{{ currencyBalance.currencyCode }}</td>
+                                        <td class="text-right" [class.hide-balances]="hideBalances"><span>{{ currencyBalance.available | number : '1.8-8' }}</span></td>
+                                        <td class="text-right" [class.hide-balances]="hideBalances"><span>{{ currencyBalance.blockedInOrders | number : '1.8-8' }}</span></td>
+                                        <td class="text-right" [class.hide-balances]="hideBalances"><span>{{ currencyBalance.total | number : '1.8-8' }}</span></td>
+                                        <td class="text-right" [class.hide-balances]="hideBalances">
+                                            <span *ngIf="currencyBalance.usdValue != null">${{ currencyBalance.usdValue | number : '1.2-2' || '-' }}</span>
+                                            <span *ngIf="currencyBalance.usdValue == null" class="text-muted">N/A</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td class="text-right font-weight-bold" [class.hide-balances]="hideBalances">
+                                            <span>${{ getTotalExchangeUsdValue(exchangeBalance) | number : '1.2' }}</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-container>

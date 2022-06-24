@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
-import {AddWalletRequestDto} from "../../../services/balance-monitor.service";
+import {AddBlockchainWalletRequestDto} from "../../../services/balance-monitor.service";
 
 
 @Injectable()
 export class WalletsInputParser {
 
-    linesToDto(currency: string, multiLineString: string): Array<AddWalletRequestDto> {
+    linesToDto(currency: string, multiLineString: string): Array<AddBlockchainWalletRequestDto> {
         if (multiLineString == undefined) {
             return [];
         }
@@ -27,7 +27,7 @@ export class WalletsInputParser {
                         currency: currency,
                         description: description,
                         walletAddress: walletAddress
-                    } as AddWalletRequestDto;
+                    } as AddBlockchainWalletRequestDto;
                 } else {
                     return null;
                 }

@@ -7,7 +7,10 @@ export interface UpdateExchangeKeyRequestDto {
 
 export interface ExchangeKeyExistenceResponseDto {
     exchangeId: string;
+    exchangeName: string;
+
     exchangeUserId: string;
+    exchangeUserName: string;
 }
 
 export interface ExchangeKeyCapabilityResponseDto {

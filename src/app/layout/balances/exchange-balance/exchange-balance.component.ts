@@ -1,25 +1,21 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {routerTransition} from '../../../router.animations';
-import {ExchangeUserDto} from '../../../models';
 import {ToastService} from '../../../services/toast.service';
-import * as _ from 'underscore';
-import {CurrencyPriceDto, PriceService} from '../../../services/price.service';
-import {ExchangeUsersService} from '../../../services/api';
-import {forkJoin, Subscription} from 'rxjs';
-import {CurrencyBalanceDto, ExchangeBalanceDto, ExchangeWalletService} from '../../../services/exchange-wallet.service';
 import {AuthService} from '../../../services/auth.service';
-
-export interface ExchangeUserWithBalance extends ExchangeUserDto {
-    exchangeBalances: ExchangeBalanceDto[];
-}
+import {HttpErrorResponse} from "@angular/common/http";
+import {
+    BalanceMonitorService,
+    ExchangeBalanceDto,
+    ExchangeCurrencyBalanceDto,
+    ExchangeCurrencyBalancesResponseDto,
+    ExchangeWalletBalancesResponseDto
+} from "../../../services/balance-monitor.service";
 
 interface CurrencyBalanceTableRow {
     currencyCode: string;
     available: number;
-    frozen: number;
+    blockedInOrders: number;
     total: number;
-    btcPrice: number;
-    btcValue: number;
     usdValue: number;
 }
 
@@ -30,24 +26,17 @@ interface CurrencyBalanceTableRow {
     animations: [routerTransition()]
 })
 export class ExchangeBalanceComponent implements OnInit, OnDestroy {
-    exchangeUsers: ExchangeUserWithBalance[] = [];
+    exchangeWalletBalances: ExchangeWalletBalancesResponseDto = null;
     pending = false;
-    showBalancesPerExchange = true;
+    showGroupedBalancesPerExchangeUser = false;
     showUnder1Dollar = false;
     hideBalances = false;
-    private exchangeUsersSubscription: Subscription;
-    private currencyPairPrices: Map<string, number> = new Map();
-    private btcUsd = 'BTC-USD';
-    private usdBtc = 'USD-BTC';
-    private btcUsdPriceKey = 'price-BTC-USD';
-    private usdBtcPriceKey = 'price-USD-BTC';
-    private lastWalletsRefreshTimeKey = 'lastWalletsRefreshTime';
+    totalUsdValue: number;
+    totalExchangeWalletBalances: CurrencyBalanceTableRow[] = null;
 
     constructor(
-        private exchangeUsersService: ExchangeUsersService,
-        private exchangeWalletService: ExchangeWalletService,
+        private balanceMonitorService: BalanceMonitorService,
         private toastService: ToastService,
-        private priceService: PriceService,
         private authService: AuthService
     ) {
     }
@@ -55,282 +44,176 @@ export class ExchangeBalanceComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.authService.refreshTokenIfExpiringSoon()
             .subscribe(() => {
-                this.exchangeUsersSubscription = forkJoin(
-                    this.exchangeUsersService.getExchangeUsers()
-                )
-                    .subscribe(([exchangeUsers]) => {
-                        this.exchangeUsers = exchangeUsers.map(it => {
-                            return {
-                                id: it.id,
-                                name: it.name,
-                                exchangeBalances: []
-                            } as ExchangeUserWithBalance
-                        });
-                        this.calculateAllExchangeUsersBalances();
-                        this.restorePricesFromLocalStorage();
-                    }, () => {
-                        this.exchangeUsers = [];
-                        this.toastService.danger('Sorry, something went wrong. Could not get exchange user list');
-                    });
+                this.fetchExchangeWallets();
             });
     }
 
-    getLastWalletsRefreshTime(): Date {
-        return this.getLocalStorageKeyAsDate(this.lastWalletsRefreshTimeKey);
-    }
-
-    private getLocalStorageKeyAsDate(key: string): Date {
-        const timeString = localStorage.getItem(key);
-        if (timeString != null) {
-            const timeMs = Number(timeString);
-            const date: Date = new Date();
-            date.setTime(timeMs);
-            return date;
-        } else {
-            return null;
-        }
-    }
-
-    flipShowingUnderOneDollar() {
+    toggleShowUnderOneDollar() {
         this.showUnder1Dollar = !this.showUnder1Dollar;
-        this.calculateAllExchangeUsersBalances();
     }
 
-    flipBalancesViewType() {
-        this.showBalancesPerExchange = !this.showBalancesPerExchange;
-        this.calculateAllExchangeUsersBalances();
+    toggleBalancesViewType() {
+        this.showGroupedBalancesPerExchangeUser = !this.showGroupedBalancesPerExchangeUser;
     }
 
-    private calculateAllExchangeUsersBalances() {
-        this.exchangeUsers.forEach(exchangeUser =>
-            exchangeUser.exchangeBalances = this.showBalancesPerExchange ?
-                this.exchangeBalancesForExchangeUser(exchangeUser) :
-                this.totalBalancesForExchangeUser(exchangeUser));
+    private setExchangeWalletBalances(balances: ExchangeWalletBalancesResponseDto) {
+        this.exchangeWalletBalances = balances;
+        this.totalUsdValue = this.getTotalUsdValue();
+        this.totalExchangeWalletBalances = this.getBalancesGroupedByCurrency(this.exchangeWalletBalances.exchangeCurrencyBalances);
     }
 
-    private exchangeBalancesForExchangeUser(exchangeUser: ExchangeUserDto): ExchangeBalanceDto[] {
-        return JSON.parse(localStorage.getItem('exchange-user-portfolio-balances-' + exchangeUser.id)) || [];
-    }
-
-    private totalBalancesForExchangeUser(exchangeUser: ExchangeUserDto): ExchangeBalanceDto[] {
-        const currencyBalancesMap = this.exchangeBalancesForExchangeUser(exchangeUser)
-            .map(dto => new Map(dto.currencyBalances.map<[string, CurrencyBalanceDto]>(balance => [balance.currencyCode, balance])))
-            .reduce((acc, next) => {
-                next.forEach(balance => {
-                    if (acc.has(balance.currencyCode)) {
-                        acc.get(balance.currencyCode).available += balance.available;
-                        acc.get(balance.currencyCode).frozen += balance.frozen;
-                        acc.get(balance.currencyCode).total += balance.total;
-                    } else {
-                        acc.set(balance.currencyCode, balance);
-                    }
-                });
-                return acc;
-            }, new Map());
-        return [{
-            exchangeName: 'Total',
-            currencyBalances: Array.from(currencyBalancesMap.values())
-        }];
-    }
-
-    refreshAllWallets() {
+    fetchExchangeWallets() {
         this.pending = true;
-        this.exchangeUsers.forEach((exchangeUser, index) => {
-            this.fetchExchangeBalancesForExchangeUser(exchangeUser);
-        });
-        localStorage.setItem(this.lastWalletsRefreshTimeKey, new Date().getTime()
-            .toString());
+        this.balanceMonitorService.getExchangeWallets()
+            .subscribe(
+                (response: ExchangeWalletBalancesResponseDto) => {
+                    this.pending = false;
+                    this.setExchangeWalletBalances(response);
+                    if (this.exchangeWalletBalances.refreshTimeMillis == null) {
+                        this.refreshExchangeWallets();
+                    }
+                },
+                (error: HttpErrorResponse) => {
+                    this.pending = false;
+                    this.toastService.danger('Something went wrong, could not get exchange balances');
+                }
+            );
     }
 
-    private fetchExchangeBalancesForExchangeUser(exchangeUser: ExchangeUserDto) {
-        this.exchangeWalletService.getAccountBalances(exchangeUser.id)
+    refreshExchangeWallets() {
+        this.pending = true;
+        this.balanceMonitorService.refreshExchangeWalletsBalance()
             .subscribe(
-                accountBalances => {
-                    const accountBalancesSortedByExchangeAZ = accountBalances.exchangeBalances
-                        .sort((a, b) => a.exchangeName.localeCompare(b.exchangeName));
-                    localStorage.setItem('exchange-user-portfolio-balances-' + exchangeUser.id, JSON.stringify(accountBalancesSortedByExchangeAZ));
-                    this.fetchPrices();
-                }, () => {
-                    this.toastService.danger(`Sorry, something went wrong. Could not get wallet balance for user ${exchangeUser.name}`);
+                (response: ExchangeWalletBalancesResponseDto) => {
+                    this.pending = false;
+                    this.setExchangeWalletBalances(response)
+                },
+                (error: HttpErrorResponse) => {
+                    this.pending = false;
+                    this.toastService.danger('Something went wrong, could not refresh exchange balances');
                 }
             );
     }
 
     ngOnDestroy() {
-        this.exchangeUsersSubscription.unsubscribe();
     }
 
-    getBtcPrice(currencyBalance: CurrencyBalanceDto): number {
-        const currencyPair = `${currencyBalance.currencyCode}-BTC`;
-        if (this.currencyPairPrices.has(currencyPair)) {
-            const currencyPrice = this.currencyPairPrices.get(currencyPair);
-            return 1 / currencyPrice;
-        } else {
-            return null;
-        }
+    getSortedBalances(currencyBalances: ExchangeCurrencyBalanceDto[]): CurrencyBalanceTableRow[] {
+        return this.getSortedCurrencyTableRows(currencyBalances
+            .map(currencyBalance => this.toCurrencyBalanceTableRow(currencyBalance))
+        );
     }
 
-    getBtcValue(currencyBalance: CurrencyBalanceDto): number {
-        const currencyPair = `${currencyBalance.currencyCode}-BTC`;
-        if (this.currencyPairPrices.has(currencyPair)) {
-            const currencyPrice = this.currencyPairPrices.get(currencyPair);
-            if (currencyPrice !== 0) {
-                return (currencyBalance.total / currencyPrice);
+    getSortedCurrencyTableRows(currencyTableRows: CurrencyBalanceTableRow[]): CurrencyBalanceTableRow[] {
+        return currencyTableRows
+            .filter(row => this.showUnder1Dollar || row.usdValue == null || row.usdValue > 1)
+            .sort((a, b) => b.usdValue - a.usdValue);
+    }
+
+    private toCurrencyBalanceTableRow(currencyBalance: ExchangeCurrencyBalanceDto): CurrencyBalanceTableRow {
+        return {
+            currencyCode: currencyBalance.currencyCode,
+            available: Number(currencyBalance.amountAvailable),
+            blockedInOrders: Number(currencyBalance.amountInOrders),
+            total: Number(currencyBalance.totalAmount),
+            usdValue: Number(currencyBalance.valueInOtherCurrency["USD"])
+        };
+    }
+
+    getTotalUsdValue(): number {
+        let totalUsd = 0;
+        this.exchangeWalletBalances.exchangeCurrencyBalances.forEach(it => {
+            const usdValue = this.getTotalExchangeUserUsdValue(it);
+            if (usdValue != null) {
+                totalUsd += usdValue;
             } else {
-                return 0.0;
+                return null;
             }
-        } else {
-            return null;
-        }
-    }
-
-    getUsdValue(currencyBalance: CurrencyBalanceDto): number {
-        const currencyBtcValue = this.getBtcValue(currencyBalance);
-        if (this.currencyPairPrices.has(this.btcUsd) && currencyBtcValue !== null) {
-            const usdBtcPrice = this.currencyPairPrices.get(this.btcUsd);
-            return currencyBtcValue * usdBtcPrice;
-        } else {
-            console.log(`No BTC-USD price when calculating value of currency ${currencyBalance.currencyCode}`);
-            return null;
-        }
-    }
-
-    get1BtcValue() {
-        return this.currencyPairPrices.get(this.btcUsd);
-    }
-
-    getTotalExchangeBtcValue(exchangeBalance: ExchangeBalanceDto): number {
-        let totalBtc = 0.0;
-        exchangeBalance.currencyBalances.forEach(item => {
-            totalBtc += this.getBtcValue(item);
         });
-        return totalBtc;
+        return totalUsd;
+    }
+
+    getTotalExchangeUserUsdValue(exchangeCurrencyBalances: ExchangeCurrencyBalancesResponseDto): number {
+        let totalUsd = 0.0;
+        exchangeCurrencyBalances.exchangeBalances.forEach(it => {
+            const usdValue = this.getTotalExchangeUsdValue(it);
+            if (usdValue == null) {
+                return null;
+            } else {
+                totalUsd += usdValue;
+            }
+        });
+        return totalUsd;
     }
 
     getTotalExchangeUsdValue(exchangeBalance: ExchangeBalanceDto): number {
-        const totalBtcValue = this.getTotalExchangeBtcValue(exchangeBalance);
-        if (this.currencyPairPrices.has(this.btcUsd) && totalBtcValue !== null) {
-            const usdBtcPrice = this.currencyPairPrices.get(this.btcUsd);
-            return totalBtcValue * usdBtcPrice;
-        } else {
-            return null;
-        }
-    }
-
-    getTotalExchangeUserBtcValue(exchangeUser: ExchangeUserDto): number {
-        let totalBtc = 0.0;
-        _.filter(this.exchangeBalancesForExchangeUser(exchangeUser), exchange => exchange != null)
-            .forEach(exchange => {
-                totalBtc += this.getTotalExchangeBtcValue(exchange);
-            });
-        return totalBtc;
-    }
-
-    getTotalExchangeUserUsdValue(exchangeUser: ExchangeUserDto): number {
-        const totalBtcValue = this.getTotalExchangeUserBtcValue(exchangeUser);
-        if (this.currencyPairPrices.has(this.btcUsd) && totalBtcValue !== null) {
-            const usdBtcPrice = this.currencyPairPrices.get(this.btcUsd);
-            return totalBtcValue * usdBtcPrice;
-        } else {
-            return null;
-        }
-    }
-
-    private getDistinctCurrencyCodesInWallets(): string[] {
-        return Array.from(new Set(this.exchangeUsers
-            .reduce((acc, next) => acc.concat(next.exchangeBalances), [] as ExchangeBalanceDto[])
-            .reduce((acc, next) => acc.concat(next.currencyBalances), [] as CurrencyBalanceDto[])
-            .map(balance => balance.currencyCode)))
-            .sort((a, b) => a.localeCompare(b));
-    }
-
-    private restorePricesFromLocalStorage() {
-        console.log('Restoring prices from local storage');
-        this.currencyPairPrices.clear();
-        const distinctCurrencyCodesString = localStorage.getItem('wallet-distinct-currency-codes');
-        if (distinctCurrencyCodesString != null) {
-            const btcUsdPrice = Number(localStorage.getItem(this.btcUsdPriceKey));
-            const usdBtcPrice = Number(localStorage.getItem(this.usdBtcPriceKey));
-            this.currencyPairPrices.set(this.btcUsd, btcUsdPrice);
-            this.currencyPairPrices.set(this.usdBtc, usdBtcPrice);
-            const distinctCurrencyCodes: string[] = JSON.parse(distinctCurrencyCodesString);
-            console.log(`Found ${distinctCurrencyCodes.length} prices to restore`);
-            distinctCurrencyCodes.forEach(currencyCode => {
-                const currencyBtcPrice = Number(localStorage.getItem(`price-${currencyCode}-BTC`));
-                this.currencyPairPrices.set(`${currencyCode}-BTC`, currencyBtcPrice);
-            });
-        }
-        console.log('Prices restored');
-        console.log(this.currencyPairPrices);
-    }
-
-    fetchPrices() {
-        console.log('Fetching prices');
-        const distinctCurrencyCodes: string[] = this.getDistinctCurrencyCodesInWallets();
-        console.log(distinctCurrencyCodes);
-
-        localStorage.setItem('wallet-distinct-currency-codes', JSON.stringify(distinctCurrencyCodes));
-
-        this.pending = true;
-        this.priceService.getPrices(distinctCurrencyCodes)
-            .subscribe(
-                (currencyPrices: CurrencyPriceDto[]) => {
-                    currencyPrices.forEach(it => {
-                        this.savePrice(it);
-                        console.log(`Next price for ${it.baseCurrency} is ${1 / it.price}${it.counterCurrency}`);
-                    });
-                },
-                err => {
-                    console.log(`Failed to refresh prices.`, err);
-                    this.pending = false;
-                },
-                () => {
-                    console.log('Refresh prices complete');
-                    this.calculateAllExchangeUsersBalances();
-                    this.pending = false;
-                }
-            );
-        return distinctCurrencyCodes;
-    }
-
-    private savePrice(currencyPrice: CurrencyPriceDto) {
-        // This assumes all prices are in relation to BTC and USD. If other fiat or other crypto is to be used this needs to change
-        if (currencyPrice.baseCurrency === 'BTC' && currencyPrice.counterCurrency === 'USD') {
-            localStorage.setItem(this.btcUsdPriceKey, currencyPrice.price.toString());
-            localStorage.setItem(this.usdBtcPriceKey, currencyPrice.price.toString());
-
-            this.currencyPairPrices.set(this.btcUsd, currencyPrice.price);
-            this.currencyPairPrices.set(this.usdBtc, currencyPrice.price);
-        } else {
-            const currencyKey = `price-${currencyPrice.baseCurrency}-${currencyPrice.counterCurrency}`;
-            const price = 1 / currencyPrice.price;
-            localStorage.setItem(currencyKey, price.toString());
-            this.currencyPairPrices.set(`${currencyPrice.baseCurrency}-${currencyPrice.counterCurrency}`, price);
-        }
-    }
-
-    getSortedBalances(currencyBalances: CurrencyBalanceDto[]): CurrencyBalanceTableRow[] {
-        return currencyBalances
-            .map(currencyBalance => this.toCurrencyBalanceTableRow(currencyBalance))
-            // row.usdValue == null to avoid odd situation where you have nothing shown after you log first time and refresh amounts
-            // but have not refreshed prices yet and the list is empty
-            .filter(row => this.showUnder1Dollar || row.usdValue == null || row.usdValue > 1)
-            .sort((a, b) => b.btcValue - a.btcValue);
-    }
-
-    private toCurrencyBalanceTableRow(currencyBalance: CurrencyBalanceDto): CurrencyBalanceTableRow {
-        return {
-            currencyCode: currencyBalance.currencyCode,
-            available: currencyBalance.available,
-            frozen: currencyBalance.frozen,
-            total: currencyBalance.total,
-            btcPrice: this.getBtcPrice(currencyBalance),
-            btcValue: this.getBtcValue(currencyBalance),
-            usdValue: this.getUsdValue(currencyBalance)
-        };
+        let usdValueSum = 0;
+        exchangeBalance.currencyBalances.forEach(it => {
+            if (it.valueInOtherCurrency["USD"] != null) {
+                const usdValue = Number(it.valueInOtherCurrency["USD"]);
+                usdValueSum += usdValue;
+            } else {
+                return null;
+            }
+        });
+        return usdValueSum;
     }
 
     toggleHideBalances() {
         this.hideBalances = !this.hideBalances;
+    }
+
+    private getBalancesGroupedByCurrency(exchangeCurrencyBalances: ExchangeCurrencyBalancesResponseDto[]): CurrencyBalanceTableRow[] {
+        let result: Map<string, CurrencyBalanceTableRow> = new Map();
+        exchangeCurrencyBalances.forEach(exchangeCurrencyBalances => {
+            exchangeCurrencyBalances.exchangeBalances.forEach(exchangeBalance => {
+                exchangeBalance.currencyBalances.forEach(currencyBalance => {
+                    if (result.has(currencyBalance.currencyCode)) {
+                        const existingRow = result.get(currencyBalance.currencyCode);
+                        const usdValue = existingRow.usdValue != null && currencyBalance.valueInOtherCurrency["USD"] != null ? existingRow.usdValue + Number(currencyBalance.valueInOtherCurrency["USD"]) : null;
+                        existingRow.total = existingRow.total + Number(currencyBalance.totalAmount);
+                        existingRow.blockedInOrders = existingRow.blockedInOrders + Number(currencyBalance.amountInOrders);
+                        existingRow.usdValue = usdValue;
+                        existingRow.available = existingRow.available + Number(currencyBalance.amountAvailable);
+                    } else {
+                        const usdValue = currencyBalance.valueInOtherCurrency["USD"] != null ? Number(currencyBalance.valueInOtherCurrency["USD"]) : null;
+                        result.set(currencyBalance.currencyCode, {
+                            currencyCode: currencyBalance.currencyCode,
+                            total: Number(currencyBalance.totalAmount),
+                            usdValue: usdValue,
+                            available: Number(currencyBalance.amountAvailable),
+                            blockedInOrders: Number(currencyBalance.amountInOrders)
+                        });
+                    }
+                });
+            });
+        });
+        return Array.from(result.values());
+    }
+
+    private getBalancesGroupedByExchangeUser(exchangeBalances: ExchangeBalanceDto[]): CurrencyBalanceTableRow[] {
+        let result: Map<string, CurrencyBalanceTableRow> = new Map();
+        exchangeBalances.forEach(exchangeBalance => {
+            exchangeBalance.currencyBalances.forEach(currencyBalance => {
+                if (result.has(currencyBalance.currencyCode)) {
+                    const existingRow = result.get(currencyBalance.currencyCode);
+                    const usdValue = existingRow.usdValue != null && currencyBalance.valueInOtherCurrency["USD"] != null ? existingRow.usdValue + Number(currencyBalance.valueInOtherCurrency["USD"]) : null;
+                    existingRow.total = existingRow.total + Number(currencyBalance.totalAmount);
+                    existingRow.blockedInOrders = existingRow.blockedInOrders + Number(currencyBalance.amountInOrders);
+                    existingRow.usdValue = usdValue;
+                    existingRow.available = existingRow.available + Number(currencyBalance.amountAvailable);
+                } else {
+                    const usdValue = currencyBalance.valueInOtherCurrency["USD"] != null ? Number(currencyBalance.valueInOtherCurrency["USD"]) : null;
+                    result.set(currencyBalance.currencyCode, {
+                        currencyCode: currencyBalance.currencyCode,
+                        total: Number(currencyBalance.totalAmount),
+                        usdValue: usdValue,
+                        available: Number(currencyBalance.amountAvailable),
+                        blockedInOrders: Number(currencyBalance.amountInOrders)
+                    });
+                }
+            });
+        });
+        return Array.from(result.values());
     }
 }

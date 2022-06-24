@@ -4,7 +4,7 @@ import {BalanceMonitorApiBaseUrlToken} from "../../environments/endpoint-tokens"
 import {FeatureToggle, FeatureToggleToken} from "./feature.toogle.service";
 import {Observable} from "rxjs";
 
-export interface WalletResponseDto {
+export interface BlockchainWalletResponseDto {
     id: string;
     walletAddress: string;
     currency: string;
@@ -13,35 +13,62 @@ export interface WalletResponseDto {
     usdBalance?: string;
 }
 
-export interface AddWalletsErrorResponseDto {
+export interface AddBlockchainWalletsErrorResponseDto {
     duplicatedAddresses: Array<string>;
     invalidAddresses: Array<string>;
 }
 
-export interface AddWalletRequestDto {
+export interface AddBlockchainWalletRequestDto {
     walletAddress: string;
     currency: string;
     description?: string;
 }
 
-export interface UpdateWalletRequestDto {
+export interface UpdateBlockchainWalletRequestDto {
     id: string;
     walletAddress: string;
     currency: string;
     description?: string;
 }
 
-export interface UpdateWalletErrorResponseDto {
+export interface UpdateBlockchainWalletErrorResponseDto {
     isAddressDuplicated: boolean;
     isAddressInvalid: boolean;
     isIdInvalid: boolean;
 }
 
-export interface UserCurrencyBalanceResponseDto{
+export interface UserCurrencyBalanceResponseDto {
     currency: string;
     balance: string;
     usdBalance: string;
 }
+
+export interface ExchangeCurrencyBalancesResponseDto {
+    exchangeUserId: string;
+    exchangeUserName: string;
+    exchangeBalances: ExchangeBalanceDto[];
+}
+
+export interface ExchangeWalletBalancesResponseDto {
+    refreshTimeMillis?: number;
+    exchangeCurrencyBalances: ExchangeCurrencyBalancesResponseDto[];
+}
+
+export interface ExchangeCurrencyBalanceDto {
+    currencyCode: string;
+    amountAvailable: string;
+    amountInOrders: string;
+    totalAmount: string;
+    valueInOtherCurrency?: Map<string, string>;
+    priceInOtherCurrency?: Map<string, string>;
+}
+
+export interface ExchangeBalanceDto {
+    exchangeName: string;
+    currencyBalances: ExchangeCurrencyBalanceDto[];
+    errorMessage?: string;
+}
+
 
 @Injectable()
 export class BalanceMonitorService {
@@ -52,31 +79,40 @@ export class BalanceMonitorService {
     ) {
     }
 
-    getWallets(): Observable<Array<WalletResponseDto>> {
-        return this.http.get<Array<WalletResponseDto>>(`${this.balanceMonitorApiBaseUrl}/wallets`);
+    getBlockchainWallets(): Observable<Array<BlockchainWalletResponseDto>> {
+        return this.http.get<Array<BlockchainWalletResponseDto>>(`${this.balanceMonitorApiBaseUrl}/blockchain/wallets`);
     }
 
-    getCurrencyBalance(): Observable<Array<UserCurrencyBalanceResponseDto>> {
-        return this.http.get<Array<UserCurrencyBalanceResponseDto>>(`${this.balanceMonitorApiBaseUrl}/wallets/currency/balance`);
+    getBlockchainCurrencyBalance(): Observable<Array<UserCurrencyBalanceResponseDto>> {
+        return this.http.get<Array<UserCurrencyBalanceResponseDto>>(`${this.balanceMonitorApiBaseUrl}/blockchain/wallets/currency/balance`);
     }
 
-    getWallet(walletId: string): Observable<WalletResponseDto> {
-        return this.http.get<WalletResponseDto>(`${this.balanceMonitorApiBaseUrl}/wallets/${walletId}`);
+    getBlockchainWallet(walletId: string): Observable<BlockchainWalletResponseDto> {
+        return this.http.get<BlockchainWalletResponseDto>(`${this.balanceMonitorApiBaseUrl}/blockchain/wallets/${walletId}`);
     }
 
-    addWallets(addWalletRequest: Array<AddWalletRequestDto>): Observable<string> {
-        return this.http.post<string>(`${this.balanceMonitorApiBaseUrl}/wallets`, addWalletRequest);
+    addBlockchainWallets(addWalletRequest: Array<AddBlockchainWalletRequestDto>): Observable<string> {
+        return this.http.post<string>(`${this.balanceMonitorApiBaseUrl}/blockchain/wallets`, addWalletRequest);
     }
 
-    updateWallet(updateWalletRequest: UpdateWalletRequestDto): Observable<UpdateWalletErrorResponseDto> {
-        return this.http.put<UpdateWalletErrorResponseDto>(`${this.balanceMonitorApiBaseUrl}/wallet`, updateWalletRequest);
+    updateBlockchainWallet(updateWalletRequest: UpdateBlockchainWalletRequestDto): Observable<UpdateBlockchainWalletErrorResponseDto> {
+        return this.http.put<UpdateBlockchainWalletErrorResponseDto>(`${this.balanceMonitorApiBaseUrl}/blockchain/wallet`, updateWalletRequest);
     }
 
-    deleteWallet(walletAddress: string): Observable<string> {
-        return this.http.delete<string>(`${this.balanceMonitorApiBaseUrl}/wallet/${walletAddress}`);
+    deleteBlockchainWallet(walletAddress: string): Observable<string> {
+        return this.http.delete<string>(`${this.balanceMonitorApiBaseUrl}/blockchain/wallet/${walletAddress}`);
     }
 
-    refreshWalletsBalance(): Observable<Array<AddWalletRequestDto>> {
-        return this.http.post<Array<AddWalletRequestDto>>(`${this.balanceMonitorApiBaseUrl}/wallets/balance/refresh`, null);
+    refreshBlockchainWalletsBalance(): Observable<Array<AddBlockchainWalletRequestDto>> {
+        return this.http.post<Array<AddBlockchainWalletRequestDto>>(`${this.balanceMonitorApiBaseUrl}/blockchain/wallets/balance/refresh`, null);
     }
+
+    getExchangeWallets(): Observable<ExchangeWalletBalancesResponseDto> {
+        return this.http.get<ExchangeWalletBalancesResponseDto>(`${this.balanceMonitorApiBaseUrl}/exchange/wallets`);
+    }
+
+    refreshExchangeWalletsBalance(): Observable<ExchangeWalletBalancesResponseDto> {
+        return this.http.post<ExchangeWalletBalancesResponseDto>(`${this.balanceMonitorApiBaseUrl}/exchange/wallets/balance/refresh`, null);
+    }
+
 }
