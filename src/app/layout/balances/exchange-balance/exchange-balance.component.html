@@ -8,8 +8,8 @@
 <div class="row">
     <div class="col-12">
         <button class="btn btn-sm btn-info mr-1 mb-1" (click)="refreshExchangeWallets()"
-                [disabled]="pending">
-            <i class="fa fa-refresh" [class.is-pending]="pending"></i> Refresh wallets
+                [disabled]="isRequestPending">
+            <i class="fa fa-refresh" [class.is-pending]="isRequestPending"></i> Refresh wallets
         </button>
         <button type="button" class="btn btn-sm mr-1 mb-1"
                 (click)="toggleBalancesViewType()">
@@ -136,7 +136,7 @@
                     {{ exchangeBalance.errorMessage }}
                 </span>
                             <span *ngIf="exchangeBalance.currencyBalances.length == 0 && exchangeBalance.errorMessage == null"
-                                  class="alert balance-table mt-3">No currencies held</span>
+                                  class="alert balance-table mt-3">No currencies here</span>
                             <div *ngIf="exchangeBalance.currencyBalances.length > 0 && exchangeBalance.errorMessage == null"
                                  class="table-responsive mb-3">
                                 <table class="table table-sm table-hover balance-table">

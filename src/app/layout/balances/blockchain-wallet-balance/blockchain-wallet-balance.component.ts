@@ -33,7 +33,8 @@ export class BlockchainWalletBalanceComponent implements OnInit {
     private lastVisibleMenu: HTMLDivElement = null;
     private walletMenuVisibilityToggleClass = 'wallet-dropdown-menu-visible';
 
-    isRequestPending: boolean = false;
+    isFetchWalletsRequestPending: boolean = false;
+    isFetchCurrencyBalancesRequestPending: boolean = false;
     wallets: BlockchainWalletResponseDto[] = [];
     currencyBalances: UserCurrencyBalanceResponseDto[] = [];
 
@@ -53,32 +54,32 @@ export class BlockchainWalletBalanceComponent implements OnInit {
     }
 
     fetchWallets() {
-        this.isRequestPending = true;
+        this.isFetchWalletsRequestPending = true;
         this.balanceMonitorService.getBlockchainWallets()
             .subscribe(
                 (wallets: Array<BlockchainWalletResponseDto>) => {
-                    this.isRequestPending = false;
+                    this.isFetchWalletsRequestPending = false;
                     this.wallets = wallets.sort((a, b) => a.currency.localeCompare(b.currency));
                 },
                 (error: HttpErrorResponse) => {
                     console.error(error);
-                    this.isRequestPending = false;
+                    this.isFetchWalletsRequestPending = false;
                     this.toastService.danger('Something went wrong, could not get your wallets');
                 }
             );
     }
 
     fetchCurrencyBalances() {
-        this.isRequestPending = true;
+        this.isFetchCurrencyBalancesRequestPending = true;
         this.balanceMonitorService.getBlockchainCurrencyBalance()
             .subscribe(
                 (currencyBalances: UserCurrencyBalanceResponseDto[]) => {
-                    this.isRequestPending = false;
+                    this.isFetchCurrencyBalancesRequestPending = false;
                     this.currencyBalances = currencyBalances.sort((a, b) => a.currency.localeCompare(b.currency));
                 },
                 (error: HttpErrorResponse) => {
                     console.error(error);
-                    this.isRequestPending = false;
+                    this.isFetchCurrencyBalancesRequestPending = false;
                     this.toastService.danger('Something went wrong, could not get summary of your wallets');
                 }
             );
@@ -89,19 +90,19 @@ export class BlockchainWalletBalanceComponent implements OnInit {
     }
 
     refreshWalletsBalance() {
-        if (!this.isRequestPending) {
-            this.isRequestPending = true;
+        if (!this.isFetchWalletsRequestPending) {
+            this.isFetchWalletsRequestPending = true;
             this.balanceMonitorService.refreshBlockchainWalletsBalance()
                 .subscribe(
                     (response: Array<BlockchainWalletResponseDto>) => {
                         this.wallets = response;
-                        this.isRequestPending = false;
+                        this.isFetchWalletsRequestPending = false;
                         this.toastService.success('Wallets refreshed');
                     },
                     (error: HttpErrorResponse) => {
                         console.log(error);
                         this.toastService.danger('Something went wrong, could not refresh wallets balance');
-                        this.isRequestPending = false;
+                        this.isFetchWalletsRequestPending = false;
 
                     }
                 )
@@ -146,19 +147,19 @@ export class BlockchainWalletBalanceComponent implements OnInit {
     }
 
     deleteWallet(wallet: BlockchainWalletResponseDto) {
-        if (!this.isRequestPending) {
-            this.isRequestPending = true;
+        if (!this.isFetchWalletsRequestPending) {
+            this.isFetchWalletsRequestPending = true;
             this.balanceMonitorService.deleteBlockchainWallet(wallet.walletAddress)
                 .subscribe(
                     () => {
-                        this.isRequestPending = false;
+                        this.isFetchWalletsRequestPending = false;
                         this.toastService.success('Wallet deleted');
                         this.refreshData();
                     },
                     (error: HttpErrorResponse) => {
                         console.log(error);
                         this.toastService.danger('Something went wrong, could not delete the wallet')
-                        this.isRequestPending = false;
+                        this.isFetchWalletsRequestPending = false;
                     }
                 );
         }

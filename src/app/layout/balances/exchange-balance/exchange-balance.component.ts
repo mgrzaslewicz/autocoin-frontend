@@ -28,7 +28,7 @@ interface CurrencyBalanceTableRow {
 export class ExchangeBalanceComponent implements OnInit, OnDestroy {
     exchangeCurrencyBalances: ExchangeCurrencyBalancesResponseDto[] = null;
     refreshTimeMillis: number = null;
-    pending = false;
+    isRequestPending = false;
     showGroupedBalancesPerExchangeUser = false;
     showUnder1Dollar = false;
     hideBalances = false;
@@ -65,33 +65,33 @@ export class ExchangeBalanceComponent implements OnInit, OnDestroy {
     }
 
     fetchExchangeWallets() {
-        this.pending = true;
+        this.isRequestPending = true;
         this.balanceMonitorService.getExchangeWallets()
             .subscribe(
                 (response: ExchangeWalletBalancesResponseDto) => {
-                    this.pending = false;
+                    this.isRequestPending = false;
                     this.setExchangeWalletBalances(response);
                     if (this.refreshTimeMillis == null) {
                         this.refreshExchangeWallets();
                     }
                 },
                 (error: HttpErrorResponse) => {
-                    this.pending = false;
+                    this.isRequestPending = false;
                     this.toastService.danger('Something went wrong, could not get exchange balances');
                 }
             );
     }
 
     refreshExchangeWallets() {
-        this.pending = true;
+        this.isRequestPending = true;
         this.balanceMonitorService.refreshExchangeWalletsBalance()
             .subscribe(
                 (response: ExchangeWalletBalancesResponseDto) => {
-                    this.pending = false;
+                    this.isRequestPending = false;
                     this.setExchangeWalletBalances(response)
                 },
                 (error: HttpErrorResponse) => {
-                    this.pending = false;
+                    this.isRequestPending = false;
                     this.toastService.danger('Something went wrong, could not refresh exchange balances');
                 }
             );
