@@ -36,8 +36,13 @@
                                 {{currencyBalance.balance }}
                             </td>
                             <td>
-                                {{currencyBalance.usdBalance | number : '1.2'}}
+                                {{currencyBalance.usdBalance | number : '1.2-2'}}
                             </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="font-weight-bold">{{ getTotalUsdBalance(currencyBalances) | number : '1.2-2' || '-' }}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -97,7 +102,7 @@
                                 {{wallet.balance}}
                             </td>
                             <td>
-                                {{wallet.usdBalance | number : '1.2'}}
+                                {{wallet.usdBalance | number : '1.2-2'}}
                             </td>
                         </tr>
                         </tbody>
