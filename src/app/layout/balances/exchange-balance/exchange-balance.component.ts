@@ -26,7 +26,8 @@ interface CurrencyBalanceTableRow {
     animations: [routerTransition()]
 })
 export class ExchangeBalanceComponent implements OnInit, OnDestroy {
-    exchangeWalletBalances: ExchangeWalletBalancesResponseDto = null;
+    exchangeCurrencyBalances: ExchangeCurrencyBalancesResponseDto[] = null;
+    refreshTimeMillis: number = null;
     pending = false;
     showGroupedBalancesPerExchangeUser = false;
     showUnder1Dollar = false;
@@ -56,10 +57,11 @@ export class ExchangeBalanceComponent implements OnInit, OnDestroy {
         this.showGroupedBalancesPerExchangeUser = !this.showGroupedBalancesPerExchangeUser;
     }
 
-    private setExchangeWalletBalances(balances: ExchangeWalletBalancesResponseDto) {
-        this.exchangeWalletBalances = balances;
+    private setExchangeWalletBalances(exchangeWalletBalancesResponse: ExchangeWalletBalancesResponseDto) {
+        this.exchangeCurrencyBalances = exchangeWalletBalancesResponse.exchangeCurrencyBalances;
+        this.refreshTimeMillis = exchangeWalletBalancesResponse.refreshTimeMillis;
         this.totalUsdValue = this.getTotalUsdValue();
-        this.totalExchangeWalletBalances = this.getBalancesGroupedByCurrency(this.exchangeWalletBalances.exchangeCurrencyBalances);
+        this.totalExchangeWalletBalances = this.getBalancesGroupedByCurrency(this.exchangeCurrencyBalances);
     }
 
     fetchExchangeWallets() {
@@ -69,7 +71,7 @@ export class ExchangeBalanceComponent implements OnInit, OnDestroy {
                 (response: ExchangeWalletBalancesResponseDto) => {
                     this.pending = false;
                     this.setExchangeWalletBalances(response);
-                    if (this.exchangeWalletBalances.refreshTimeMillis == null) {
+                    if (this.refreshTimeMillis == null) {
                         this.refreshExchangeWallets();
                     }
                 },
@@ -122,7 +124,7 @@ export class ExchangeBalanceComponent implements OnInit, OnDestroy {
 
     getTotalUsdValue(): number {
         let totalUsd = 0;
-        this.exchangeWalletBalances.exchangeCurrencyBalances.forEach(it => {
+        this.exchangeCurrencyBalances.forEach(it => {
             const usdValue = this.getTotalExchangeUserUsdValue(it);
             if (usdValue != null) {
                 totalUsd += usdValue;

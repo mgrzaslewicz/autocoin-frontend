@@ -26,12 +26,12 @@
         </button>
         <div class="text-muted ml-auto mb-1">
             <small>
-                Last refresh: {{ (exchangeWalletBalances.refreshTimeMillis | date: 'y-MM-dd HH:mm:ss') || '-' }}
+                Last refresh: {{ (refreshTimeMillis | date: 'y-MM-dd HH:mm:ss') || '-' }}
             </small>
         </div>
     </div>
 </div>
-<ng-container *ngIf="exchangeWalletBalances != null">
+<ng-container *ngIf="exchangeCurrencyBalances != null">
     <div *ngIf="totalExchangeWalletBalances != null" class="row">
         <div class="col-12">
             <h5>
@@ -76,7 +76,7 @@
     </div>
     <div class="row">
         <div class="col-12">
-            <div *ngFor="let exchangeCurrencyBalance of exchangeWalletBalances.exchangeCurrencyBalances" class="card mb-3 exchange-user-wallet">
+            <div *ngFor="let exchangeCurrencyBalance of exchangeCurrencyBalances" class="card mb-3 exchange-user-wallet">
                 <div class="card-header">
                     <div class="d-flex flex-row mb-2">
                         <h3><i class="fa fa-user"></i> {{ exchangeCurrencyBalance.exchangeUserName }}</h3>

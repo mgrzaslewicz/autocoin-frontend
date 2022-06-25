@@ -34,8 +34,8 @@ export class BlockchainWalletBalanceComponent implements OnInit {
     private walletMenuVisibilityToggleClass = 'wallet-dropdown-menu-visible';
 
     isRequestPending: boolean = false;
-    wallets: Array<BlockchainWalletResponseDto> = [];
-    currencyBalances: Array<UserCurrencyBalanceResponseDto> = [];
+    wallets: BlockchainWalletResponseDto[] = [];
+    currencyBalances: UserCurrencyBalanceResponseDto[] = [];
 
     constructor(private balanceMonitorService: BalanceMonitorService,
                 private walletsInputParser: WalletsInputParser,
@@ -58,7 +58,7 @@ export class BlockchainWalletBalanceComponent implements OnInit {
             .subscribe(
                 (wallets: Array<BlockchainWalletResponseDto>) => {
                     this.isRequestPending = false;
-                    this.wallets = wallets;
+                    this.wallets = wallets.sort((a, b) => a.currency.localeCompare(b.currency));
                 },
                 (error: HttpErrorResponse) => {
                     console.error(error);
@@ -72,9 +72,9 @@ export class BlockchainWalletBalanceComponent implements OnInit {
         this.isRequestPending = true;
         this.balanceMonitorService.getBlockchainCurrencyBalance()
             .subscribe(
-                (currencyBalances: Array<UserCurrencyBalanceResponseDto>) => {
+                (currencyBalances: UserCurrencyBalanceResponseDto[]) => {
                     this.isRequestPending = false;
-                    this.currencyBalances = currencyBalances;
+                    this.currencyBalances = currencyBalances.sort((a, b) => a.currency.localeCompare(b.currency));
                 },
                 (error: HttpErrorResponse) => {
                     console.error(error);
