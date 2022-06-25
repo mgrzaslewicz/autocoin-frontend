@@ -184,7 +184,7 @@ export class BlockchainWalletAddComponent implements OnInit {
     getSampleWalletAddress(): string {
         switch (this.selectedCurrency) {
             case 'BTC':
-                return 'bc1qhq66uyw53n7sfk200czg556mdmdg8t7nvgdkdd'
+                return 'bc1qhxycdau56zv7duqm020lllahjxzam8ypvmavgu'
                 break;
             case 'ETH':
                 return '0x445c9d791b782a7b181194950e0c0ee8c14468f1';
