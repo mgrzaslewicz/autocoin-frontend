@@ -28,7 +28,8 @@ interface CurrencyBalanceTableRow {
 export class ExchangeBalanceComponent implements OnInit, OnDestroy {
     exchangeCurrencyBalances: ExchangeCurrencyBalancesResponseDto[] = null;
     refreshTimeMillis: number = null;
-    isRequestPending = false;
+    isFetchWalletsRequestPending = false;
+    isRefreshWalletsRequestPending = false;
     showGroupedBalancesPerExchangeUser = false;
     showUnder1Dollar = false;
     hideBalances = false;
@@ -65,39 +66,50 @@ export class ExchangeBalanceComponent implements OnInit, OnDestroy {
     }
 
     fetchExchangeWallets() {
-        this.isRequestPending = true;
+        this.isFetchWalletsRequestPending = true;
         this.balanceMonitorService.getExchangeWallets()
             .subscribe(
                 (response: ExchangeWalletBalancesResponseDto) => {
-                    this.isRequestPending = false;
+                    this.isFetchWalletsRequestPending = false;
                     this.setExchangeWalletBalances(response);
                     if (this.refreshTimeMillis == null) {
                         this.refreshExchangeWallets();
                     }
                 },
                 (error: HttpErrorResponse) => {
-                    this.isRequestPending = false;
+                    this.isFetchWalletsRequestPending = false;
                     this.toastService.danger('Something went wrong, could not get exchange balances');
                 }
             );
     }
 
     refreshExchangeWallets() {
-        this.isRequestPending = true;
+        this.isRefreshWalletsRequestPending = true;
         this.balanceMonitorService.refreshExchangeWalletsBalance()
             .subscribe(
                 (response: ExchangeWalletBalancesResponseDto) => {
-                    this.isRequestPending = false;
+                    this.isRefreshWalletsRequestPending = false;
                     this.setExchangeWalletBalances(response)
                 },
                 (error: HttpErrorResponse) => {
-                    this.isRequestPending = false;
+                    console.error(error);
+                    this.isRefreshWalletsRequestPending = false;
                     this.toastService.danger('Something went wrong, could not refresh exchange balances');
                 }
             );
     }
 
     ngOnDestroy() {
+    }
+
+    countApiKeys(): number {
+        let sum = 0;
+        this.exchangeCurrencyBalances.forEach(it => {
+            it.exchangeBalances.forEach(() => {
+                sum++;
+            });
+        });
+        return sum;
     }
 
     getSortedBalances(currencyBalances: ExchangeCurrencyBalanceDto[]): CurrencyBalanceTableRow[] {
