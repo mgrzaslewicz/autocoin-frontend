@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {routerTransition} from '../../../router.animations';
-import {BalanceMonitorService, BlockchainWalletResponseDto, UserCurrencyBalanceResponseDto} from "../../../services/balance-monitor.service";
+import {BalanceMonitorService, BlockchainWalletResponseDto, BlockchainWalletCurrencyBalanceResponseDto} from "../../../services/balance-monitor.service";
 import {WalletsInputParser} from "./wallets-input-parser";
 import {ToastService} from "../../../services/toast.service";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -36,7 +36,7 @@ export class BlockchainWalletBalanceComponent implements OnInit {
     isFetchWalletsRequestPending: boolean = false;
     isFetchCurrencyBalancesRequestPending: boolean = false;
     wallets: BlockchainWalletResponseDto[] = [];
-    currencyBalances: UserCurrencyBalanceResponseDto[] = [];
+    currencyBalances: BlockchainWalletCurrencyBalanceResponseDto[] = [];
 
     constructor(private balanceMonitorService: BalanceMonitorService,
                 private walletsInputParser: WalletsInputParser,
@@ -73,7 +73,7 @@ export class BlockchainWalletBalanceComponent implements OnInit {
         this.isFetchCurrencyBalancesRequestPending = true;
         this.balanceMonitorService.getBlockchainCurrencyBalance()
             .subscribe(
-                (currencyBalances: UserCurrencyBalanceResponseDto[]) => {
+                (currencyBalances: BlockchainWalletCurrencyBalanceResponseDto[]) => {
                     this.isFetchCurrencyBalancesRequestPending = false;
                     this.currencyBalances = currencyBalances.sort((a, b) => a.currency.localeCompare(b.currency));
                 },
@@ -165,7 +165,7 @@ export class BlockchainWalletBalanceComponent implements OnInit {
         }
     }
 
-    getTotalUsdBalance(currencyBalances: UserCurrencyBalanceResponseDto[]): number {
+    getTotalUsdBalance(currencyBalances: BlockchainWalletCurrencyBalanceResponseDto[]): number {
         return currencyBalances
             .map(it => Number(it.usdBalance))
             .reduce((acc, val) => acc + val);

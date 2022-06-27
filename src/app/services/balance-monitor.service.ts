@@ -37,10 +37,10 @@ export interface UpdateBlockchainWalletErrorResponseDto {
     isIdInvalid: boolean;
 }
 
-export interface UserCurrencyBalanceResponseDto {
+export interface BlockchainWalletCurrencyBalanceResponseDto {
     currency: string;
-    balance: string;
-    usdBalance: string;
+    balance?: string;
+    usdBalance?: string;
 }
 
 export interface ExchangeCurrencyBalancesResponseDto {
@@ -52,6 +52,35 @@ export interface ExchangeCurrencyBalancesResponseDto {
 export interface ExchangeWalletBalancesResponseDto {
     refreshTimeMillis?: number;
     exchangeCurrencyBalances: ExchangeCurrencyBalancesResponseDto[];
+}
+
+export interface ExchangeWalletBalancesResponseDto {
+    refreshTimeMillis?: number;
+    exchangeCurrencyBalances: ExchangeCurrencyBalancesResponseDto[];
+}
+
+export interface ExchangeCurrencySummaryDto {
+    exchangeName: string;
+    balance: string;
+    valueInOtherCurrency?: Map<string, string>;
+}
+
+export interface BlockchainWalletCurrencySummaryDto {
+    walletAddress: string;
+    balance?: string;
+    valueInOtherCurrency?: Map<string, string>;
+}
+
+export interface CurrencyBalanceSummaryDto {
+    currency: string;
+    balance: string;
+    valueInOtherCurrency?: Map<string, string>;
+    exchanges: ExchangeCurrencySummaryDto[];
+    wallets: BlockchainWalletCurrencySummaryDto[];
+}
+
+export interface BalanceSummaryResponseDto {
+    currencyBalances: CurrencyBalanceSummaryDto[];
 }
 
 export interface ExchangeCurrencyBalanceDto {
@@ -83,8 +112,8 @@ export class BalanceMonitorService {
         return this.http.get<Array<BlockchainWalletResponseDto>>(`${this.balanceMonitorApiBaseUrl}/blockchain/wallets`);
     }
 
-    getBlockchainCurrencyBalance(): Observable<Array<UserCurrencyBalanceResponseDto>> {
-        return this.http.get<Array<UserCurrencyBalanceResponseDto>>(`${this.balanceMonitorApiBaseUrl}/blockchain/wallets/currency/balance`);
+    getBlockchainCurrencyBalance(): Observable<Array<BlockchainWalletCurrencyBalanceResponseDto>> {
+        return this.http.get<Array<BlockchainWalletCurrencyBalanceResponseDto>>(`${this.balanceMonitorApiBaseUrl}/blockchain/wallets/currency/balance`);
     }
 
     getBlockchainWallet(walletId: string): Observable<BlockchainWalletResponseDto> {
@@ -109,6 +138,14 @@ export class BalanceMonitorService {
 
     getExchangeWallets(): Observable<ExchangeWalletBalancesResponseDto> {
         return this.http.get<ExchangeWalletBalancesResponseDto>(`${this.balanceMonitorApiBaseUrl}/exchange/wallets`);
+    }
+
+    getBalanceSummary(): Observable<BalanceSummaryResponseDto> {
+        return this.http.get<BalanceSummaryResponseDto>(`${this.balanceMonitorApiBaseUrl}/balance/summary`);
+    }
+
+    refreshBalanceSummary(): Observable<BalanceSummaryResponseDto> {
+        return this.http.post<BalanceSummaryResponseDto>(`${this.balanceMonitorApiBaseUrl}/balance/summary`, null);
     }
 
     refreshExchangeWalletsBalance(): Observable<ExchangeWalletBalancesResponseDto> {

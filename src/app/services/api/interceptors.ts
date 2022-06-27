@@ -35,7 +35,7 @@ export class Oauth2TokenInterceptor implements HttpInterceptor {
 
     private handleExpiredToken(response: any) {
         if (response instanceof HttpErrorResponse) {
-            console.log(response);
+            console.error(response);
             // eg {error: "invalid_token", error_description: "Access token expired: 280a56ce-cc30-4627-81fa-ced664d7863f"}
             // {"error":"unauthorized","error_description":"Full authentication is required to access this resource"}
             if (response.status === 401) {

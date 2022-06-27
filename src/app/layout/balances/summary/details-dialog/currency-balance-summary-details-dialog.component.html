@@ -1,0 +1,54 @@
+<ng-template #content let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title">{{ currencySummaryDetails.currency }}</h4>
+    </div>
+    <div class="modal-body">
+        <div class="border-bottom-1">
+            <h5>{{ currencySummaryDetails.wallets.length }} wallets</h5>
+            <table *ngIf="currencySummaryDetails.wallets.length > 0" class="table table-sm table-hover">
+                <thead>
+                <th>Address</th>
+                <th>Balance</th>
+                <th>USD value</th>
+                </thead>
+                <tbody>
+                <tr *ngFor="let wallet of currencySummaryDetails.wallets">
+                    <td class="wallet-address">{{ wallet.walletAddress }}</td>
+                    <td>{{ wallet.balance | number : '1.8-8' }}</td>
+                    <td>${{ getWalletUsdBalance(wallet) | number : '1.2-2' }}</td>
+                </tr>
+                <tr *ngIf="currencySummaryDetails.wallets.length > 1">
+                    <td></td>
+                    <td class="font-weight-bold">{{ getTotalWalletsBalance() | number : '1.8-8' }}</td>
+                    <td class="font-weight-bold">${{ getTotalWalletsUsdValue() | number : '1.2-2' }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="padding-top-1">
+            <h5>{{ currencySummaryDetails.exchanges.length }} exchanges</h5>
+            <table *ngIf="currencySummaryDetails.exchanges.length > 0" class="table table-sm table-hover">
+                <thead>
+                <th>Exchange</th>
+                <th>Balance</th>
+                <th>USD value</th>
+                </thead>
+                <tbody>
+                <tr *ngFor="let exchange of currencySummaryDetails.exchanges">
+                    <td>{{ exchange.exchangeName }}</td>
+                    <td>{{ exchange.balance | number : '1.8-8' }}</td>
+                    <td>${{ getExchangeUsdBalance(exchange) | number : '1.2-2' }}</td>
+                </tr>
+                <tr *ngIf="currencySummaryDetails.exchanges.length > 1">
+                    <td></td>
+                    <td class="font-weight-bold">{{ getTotalExchangesBalance() | number : '1.8-8' }}</td>
+                    <td class="font-weight-bold">${{ getTotalExchangesUsdValue() | number : '1.2-2' }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="c('close')">Close</button>
+    </div>
+</ng-template>

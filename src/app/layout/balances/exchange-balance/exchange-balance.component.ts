@@ -27,11 +27,11 @@ interface CurrencyBalanceTableRow {
 })
 export class ExchangeBalanceComponent implements OnInit, OnDestroy {
     exchangeCurrencyBalances: ExchangeCurrencyBalancesResponseDto[] = null;
-    refreshTimeMillis: number = null;
+    synchronizationTimeMillis: number = null;
     isFetchWalletsRequestPending = false;
     isRefreshWalletsRequestPending = false;
-    showGroupedBalancesPerExchangeUser = false;
-    showUnder1Dollar = false;
+    groupBalancesPerExchangeUser = false;
+    hideUnder1Dollar = false;
     hideBalances = false;
     totalUsdValue: number;
     totalExchangeWalletBalances: CurrencyBalanceTableRow[] = null;
@@ -50,17 +50,17 @@ export class ExchangeBalanceComponent implements OnInit, OnDestroy {
             });
     }
 
-    toggleShowUnderOneDollar() {
-        this.showUnder1Dollar = !this.showUnder1Dollar;
+    toggleHideUnderOneDollar() {
+        this.hideUnder1Dollar = !this.hideUnder1Dollar;
     }
 
     toggleBalancesViewType() {
-        this.showGroupedBalancesPerExchangeUser = !this.showGroupedBalancesPerExchangeUser;
+        this.groupBalancesPerExchangeUser = !this.groupBalancesPerExchangeUser;
     }
 
     private setExchangeWalletBalances(exchangeWalletBalancesResponse: ExchangeWalletBalancesResponseDto) {
         this.exchangeCurrencyBalances = exchangeWalletBalancesResponse.exchangeCurrencyBalances;
-        this.refreshTimeMillis = exchangeWalletBalancesResponse.refreshTimeMillis;
+        this.synchronizationTimeMillis = exchangeWalletBalancesResponse.refreshTimeMillis;
         this.totalUsdValue = this.getTotalUsdValue();
         this.totalExchangeWalletBalances = this.getBalancesGroupedByCurrency(this.exchangeCurrencyBalances);
     }
@@ -72,7 +72,7 @@ export class ExchangeBalanceComponent implements OnInit, OnDestroy {
                 (response: ExchangeWalletBalancesResponseDto) => {
                     this.isFetchWalletsRequestPending = false;
                     this.setExchangeWalletBalances(response);
-                    if (this.refreshTimeMillis == null) {
+                    if (this.synchronizationTimeMillis == null) {
                         this.refreshExchangeWallets();
                     }
                 },
@@ -120,7 +120,7 @@ export class ExchangeBalanceComponent implements OnInit, OnDestroy {
 
     getSortedCurrencyTableRows(currencyTableRows: CurrencyBalanceTableRow[]): CurrencyBalanceTableRow[] {
         return currencyTableRows
-            .filter(row => this.showUnder1Dollar || row.usdValue == null || row.usdValue > 1)
+            .filter(row => !this.hideUnder1Dollar || row.usdValue == null || row.usdValue > 1)
             .sort((a, b) => b.usdValue - a.usdValue);
     }
 

@@ -1,0 +1,183 @@
+<app-balances-menu></app-balances-menu>
+<div class="row">
+    <div class="col-12">
+        <h5>Summary of your cryptocurrencies</h5>
+        <h6>Requires API keys for exchanges balance</h6>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <button class="btn btn-sm btn-info mr-1 mb-1" (click)="refreshBalance()"
+                [disabled]="isRefreshBalanceRequestPending || isFetchBalanceRequestPending">
+            <i class="fa fa-refresh" [class.is-pending]="isRefreshBalanceRequestPending"></i> Synchronize with wallets and exchanges
+        </button>
+        <button (click)="toggleHideUnderOneDollar()" type="button" class="btn btn-sm mr-1 mb-1">
+            Hide < $1 <i class="fa" [class.fa-toggle-on]="hideUnder1Dollar"
+                         [class.fa-toggle-off]="!hideUnder1Dollar"></i>
+        </button>
+        <button (click)="toggleHideBalances()" type="button" class="btn btn-sm mb-1">
+            Hide values <i class="fa" [class.fa-toggle-on]="hideBalances"
+                           [class.fa-toggle-off]="!hideBalances"></i>
+        </button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-3 exchange-user-wallet">
+            <div class="card-header">
+                <div *ngIf="isFetchBalanceRequestPending" class="progress mb-2">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
+                         style="width: 100%;"></div>
+                </div>
+                <div>All your cryptocurrencies</div>
+                <ng-container *ngIf="currencyBalances != null">
+                    <h5 class="badge bg-info text-light mr-1 p-1">
+                        Total:
+                        <span [class.hide-balances]="hideBalances"><span>${{ totalUsdValue | number : '1.2-2' }}</span></span>
+                    </h5>
+                </ng-container>
+            </div>
+            <div class="card-body">
+                <h5 *ngIf="currencyBalances == null || currencyBalances.length == 0">Nothing to display. Synchronize with wallets and exchanges</h5>
+                <table *ngIf="currencyBalances != null && currencyBalances.length > 0" class="table table-sm table-hover">
+                    <thead>
+                    <tr>
+                        <th>Details</th>
+                        <th>Currency</th>
+                        <th>
+                            <div>
+                                <span class="badge bg-primary text-light mr-1 p-1">Wallets</span>
+                                <span class="badge bg-secondary text-light mr-1 p-1">Exchanges</span>
+                            </div>
+                            Location
+                        </th>
+                        <th class="text-right">Total</th>
+                        <th class="text-right">% of value</th>
+                        <th class="text-right">USD value <i class="fa fa-sort-amount-desc" aria-hidden="true"></i></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let currencyBalance of filteredCurrencyBalances(currencyBalances)">
+                        <td>
+                            <button class="btn btn-primary btn-sm"
+                                    (click)="currencyBalanceSummaryDetailsDialog.showCurrencySummaryDetails(currencyBalance)"
+                            >
+                                <i class="fa fa-list" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                        <td>
+                            {{ currencyBalance.currency }}
+                        </td>
+                        <td>
+                            <span class="badge bg-primary text-light mr-1 p-1">{{ currencyBalance.wallets.length }} w</span>
+                            <span class="badge bg-secondary text-light mr-1 p-1">{{ currencyBalance.exchanges.length }} e</span>
+                        </td>
+                        <td class="text-right" [class.hide-balances]="hideBalances"><span>{{ currencyBalance.balance | number : '1.8-8' }}</span></td>
+                        <td class="text-right" [class.hide-balances]="hideBalances">
+                            <span>{{ getUsdValuePercent(currencyBalance) | number : '1.2-2' || '-' }}%</span>
+                        </td>
+                        <td *ngIf="getUsdValue(currencyBalance) != null" class="text-right" [class.hide-balances]="hideBalances">
+                            <span>${{ getUsdValue(currencyBalance) | number : '1.2-2' || '-' }}</span>
+                        </td>
+                        <td *ngIf="getUsdValue(currencyBalance) == null" class="text-right text-muted" [class.hide-balances]="hideBalances">
+                            <span>N/A</span>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-right font-weight-bold" [class.hide-balances]="hideBalances">
+                            <span>${{ totalUsdValue | number : '1.2-2' }}</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<ng-container *ngIf="currencyBalances != null && currencyBalances.length > 0">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-3 exchange-user-wallet">
+                <div class="card-header">
+                    <div>All your cryptocurrencies (USD value)</div>
+                </div>
+                <div class="card-body">
+                    <div #containerRef style="height: 400px">
+                        <ngx-charts-bar-vertical
+                            class="chart-horizontal-center"
+                            [view]="[containerRef.offsetWidth, containerRef.offsetHeight]"
+                            [animations]="false"
+                            [showDataLabel]="true"
+                            [scheme]="'air'"
+                            [dataLabelFormatting]="usdLabelFormatting"
+                            [legendPosition]="'below'"
+                            [legendTitle]="'USD value'"
+                            [gradient]="false"
+                            [legend]="false"
+                            [xAxis]="true"
+                            [results]="currencySummaryChartData"
+                        >
+                        </ngx-charts-bar-vertical>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div *ngIf="cryptocurrenciesUsdValueByLocationChartData != null" class="col-xs-12 col-xl-6">
+            <div class="card mb-3 exchange-user-wallet">
+                <div class="card-header">
+                    <div>Cryptocurrencies USD value by location</div>
+                </div>
+                <div class="card-body">
+                    <ngx-charts-pie-chart
+                        class="chart-horizontal-center"
+                        [view]="[400, 300]"
+                        [animations]="false"
+                        [scheme]="pieChartColorScheme"
+                        [legendPosition]="'below'"
+                        [labels]="true"
+                        [labelFormatting]="pieChartUsdBalanceLabelFormatting"
+                        [maxLabelLength]="20"
+                        [legendTitle]="'Location'"
+                        [gradient]="false"
+                        [legend]="true"
+                        [results]="cryptocurrenciesUsdValueByLocationChartData"
+                    >
+                    </ngx-charts-pie-chart>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="btcEthVsAltcoinsChartData != null" class="col-xs-12 col-xl-6">
+            <div class="card mb-3 exchange-user-wallet">
+                <div class="card-header">
+                    <div>BTC + ETH VS other coins</div>
+                </div>
+                <div class="card-body">
+                    <ngx-charts-pie-chart
+                        class="chart-horizontal-center"
+                        [view]="[400, 300]"
+                        [animations]="false"
+                        [legendPosition]="'below'"
+                        [labels]="true"
+                        [labelFormatting]="pieChartUsdBalanceLabelFormatting"
+                        [maxLabelLength]="20"
+                        [legendTitle]="'USD Value'"
+                        [gradient]="false"
+                        [legend]="true"
+                        [scheme]="pieChartColorScheme"
+                        [results]="btcEthVsAltcoinsChartData"
+                    >
+                    </ngx-charts-pie-chart>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-container>
+<app-currency-summary-details-dialog #currencyBalanceSummaryDetailsDialog></app-currency-summary-details-dialog>

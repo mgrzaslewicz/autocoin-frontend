@@ -1,0 +1,42 @@
+.fa.is-pending {
+    animation: rotating 1s linear infinite;
+}
+
+@keyframes rotating {
+    from {
+        -ms-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    to {
+        -ms-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+.exchange-user-wallet {
+    overflow-x: auto;
+}
+
+.hide-balances {
+    filter: blur(0.5rem);
+}
+
+.hide-balances span {
+    //visibility: hidden;
+    display: none;
+}
+
+.hide-balances:after {
+    content: '*****************';
+}
+
+.ngx-charts-outer {
+    text-align: center;
+    margin: auto;
+}

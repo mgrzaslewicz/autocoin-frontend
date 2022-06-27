@@ -1,14 +1,13 @@
-
-$blue:    #2980b9 !default;
-$indigo:  #8e44ad !default;
-$purple:  #9b59b6 !default;
-$pink:    #F47983 !default;
-$red:     #e74c3c !default;
-$orange:  #e67e22 !default;
-$yellow:  #f1c40f !default;
-$green:   #2ecc71 !default;
-$teal:    #1abc9c !default;
-$cyan:    #3498db !default;
+$blue: #2980b9 !default;
+$indigo: #8e44ad !default;
+$purple: #9b59b6 !default;
+$pink: #F47983 !default;
+$red: #e74c3c !default;
+$orange: #e67e22 !default;
+$yellow: #f1c40f !default;
+$green: #2ecc71 !default;
+$teal: #1abc9c !default;
+$cyan: #3498db !default;
 
 @import "bootstrap/bootstrap";
 @import "spinner";
@@ -19,4 +18,8 @@ $cyan:    #3498db !default;
 
 html, body {
     min-height: 100%;
+}
+
+.chart-horizontal-center .ngx-charts-outer {
+    margin: auto;
 }

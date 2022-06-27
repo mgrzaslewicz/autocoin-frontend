@@ -1,7 +1,7 @@
 <app-balances-menu></app-balances-menu>
 <div class="row">
     <div class="col-12">
-        <h5>View balance from many exchanges in one place</h5>
+        <h5>Balance of many exchanges in one place</h5>
         <h6>Requires API keys</h6>
     </div>
 </div>
@@ -9,24 +9,24 @@
     <div class="col-12">
         <button class="btn btn-sm btn-info mr-1 mb-1" (click)="refreshExchangeWallets()"
                 [disabled]="isRefreshWalletsRequestPending || isFetchWalletsRequestPending">
-            <i class="fa fa-refresh" [class.is-pending]="isRefreshWalletsRequestPending"></i> Refresh wallets
+            <i class="fa fa-refresh" [class.is-pending]="isRefreshWalletsRequestPending"></i> Synchronize with exchanges
         </button>
-        <button type="button" class="btn btn-sm mr-1 mb-1"
+        <button (click)="toggleHideUnderOneDollar()" type="button" class="btn btn-sm mr-1 mb-1">
+            Hide < $1 <i class="fa" [class.fa-toggle-on]="hideUnder1Dollar"
+                         [class.fa-toggle-off]="!hideUnder1Dollar"></i>
+        </button>
+        <button (click)="toggleHideBalances()" type="button" class="btn btn-sm mr-1 mb-1">
+            Hide values <i class="fa" [class.fa-toggle-on]="hideBalances"
+                           [class.fa-toggle-off]="!hideBalances"></i>
+        </button>
+        <button type="button" class="btn btn-sm mb-1"
                 (click)="toggleBalancesViewType()">
-            Show summary per api key group <i class="fa" [class.fa-toggle-on]="showGroupedBalancesPerExchangeUser"
-                                              [class.fa-toggle-off]="!showGroupedBalancesPerExchangeUser"></i>
-        </button>
-        <button (click)="toggleShowUnderOneDollar()" type="button" class="btn btn-sm mr-1 mb-1">
-            Show small amounts <i class="fa" [class.fa-toggle-on]="showUnder1Dollar"
-                                  [class.fa-toggle-off]="!showUnder1Dollar"></i>
-        </button>
-        <button (click)="toggleHideBalances()" type="button" class="btn btn-sm mb-1">
-            Hide balances <i class="fa" [class.fa-toggle-on]="hideBalances"
-                             [class.fa-toggle-off]="!hideBalances"></i>
+            Group summary per api key group <i class="fa" [class.fa-toggle-on]="groupBalancesPerExchangeUser"
+                                              [class.fa-toggle-off]="!groupBalancesPerExchangeUser"></i>
         </button>
         <div class="text-muted ml-auto mb-1">
             <small>
-                Last refresh: {{ (refreshTimeMillis | date: 'y-MM-dd HH:mm:ss') || '-' }}
+                Last synchronization: {{ (synchronizationTimeMillis | date: 'y-MM-dd HH:mm:ss') || '-' }}
             </small>
         </div>
     </div>
@@ -76,7 +76,7 @@
                         <td></td>
                         <td></td>
                         <td class="text-right font-weight-bold" [class.hide-balances]="hideBalances">
-                            <span>${{ totalUsdValue | number : '1.2' }}</span>
+                            <span>${{ totalUsdValue | number : '1.2-2' }}</span>
                         </td>
                     </tr>
                     </tbody>
@@ -103,7 +103,7 @@
                 </h5>
             </div>
             <div class="card-body">
-                <ng-container *ngIf="showGroupedBalancesPerExchangeUser">
+                <ng-container *ngIf="groupBalancesPerExchangeUser">
                     <h4>Summary</h4>
                     <div class="table-responsive mb-3">
                         <table class="table table-sm table-hover balance-table">
@@ -140,7 +140,7 @@
                         </table>
                     </div>
                 </ng-container>
-                <ng-container *ngIf="!showGroupedBalancesPerExchangeUser">
+                <ng-container *ngIf="!groupBalancesPerExchangeUser">
                     <ng-container *ngFor="let exchangeBalance of exchangeCurrencyBalance.exchangeBalances">
                         <h4>{{ exchangeBalance.exchangeName }}</h4>
                         <span *ngIf="exchangeBalance.errorMessage != null" class="badge badge-warning">
@@ -177,7 +177,7 @@
                                     <td></td>
                                     <td></td>
                                     <td class="text-right font-weight-bold" [class.hide-balances]="hideBalances">
-                                        <span>${{ getTotalExchangeUsdValue(exchangeBalance) | number : '1.2' }}</span>
+                                        <span>${{ getTotalExchangeUsdValue(exchangeBalance) | number : '1.2-2' }}</span>
                                     </td>
                                 </tr>
                                 </tbody>

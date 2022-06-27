@@ -11,6 +11,9 @@ import {WalletsInputParser} from "./blockchain-wallet-balance/wallets-input-pars
 import {DialogModule} from "../../dialog/dialog.module";
 import {BalancesMenuComponent} from "./balances-menu.component";
 import {BlockchainWalletAddComponent} from "./blockchain-wallet-balance/edit/blockchain-wallet-add.component";
+import {CurrencyBalanceSummaryComponent} from "./summary/currency-balance-summary.component";
+import {NgxChartsModule} from "@swimlane/ngx-charts";
+import {CurrencyBalanceSummaryDetailsDialog} from "./summary/details-dialog/currency-balance-summary-details-dialog.component";
 
 @NgModule({
     imports: [
@@ -19,13 +22,16 @@ import {BlockchainWalletAddComponent} from "./blockchain-wallet-balance/edit/blo
         PageHeaderModule,
         NgbModule,
         FormsModule,
-        DialogModule
+        DialogModule,
+        NgxChartsModule
     ],
     declarations: [
         BalancesMenuComponent,
         ExchangeBalanceComponent,
         BlockchainWalletBalanceComponent,
-        BlockchainWalletAddComponent
+        BlockchainWalletAddComponent,
+        CurrencyBalanceSummaryComponent,
+        CurrencyBalanceSummaryDetailsDialog
     ],
     providers: [
         WalletsInputParser
