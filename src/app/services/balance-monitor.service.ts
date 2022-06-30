@@ -56,6 +56,7 @@ export interface ExchangeWalletBalancesResponseDto {
 
 export interface ExchangeWalletBalancesResponseDto {
     refreshTimeMillis?: number;
+    isShowingRealBalance: boolean;
     exchangeCurrencyBalances: ExchangeCurrencyBalancesResponseDto[];
 }
 
@@ -80,6 +81,7 @@ export interface CurrencyBalanceSummaryDto {
 }
 
 export interface BalanceSummaryResponseDto {
+    isShowingRealBalance: boolean;
     currencyBalances: CurrencyBalanceSummaryDto[];
 }
 

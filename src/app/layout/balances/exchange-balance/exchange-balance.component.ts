@@ -35,6 +35,7 @@ export class ExchangeBalanceComponent implements OnInit, OnDestroy {
     hideBalances = false;
     totalUsdValue: number;
     totalExchangeWalletBalances: CurrencyBalanceTableRow[] = null;
+    isShowingRealBalance: boolean = null;
 
     constructor(
         private balanceMonitorService: BalanceMonitorService,
@@ -61,6 +62,7 @@ export class ExchangeBalanceComponent implements OnInit, OnDestroy {
     private setExchangeWalletBalances(exchangeWalletBalancesResponse: ExchangeWalletBalancesResponseDto) {
         this.exchangeCurrencyBalances = exchangeWalletBalancesResponse.exchangeCurrencyBalances;
         this.synchronizationTimeMillis = exchangeWalletBalancesResponse.refreshTimeMillis;
+        this.isShowingRealBalance = exchangeWalletBalancesResponse.isShowingRealBalance;
         this.totalUsdValue = this.getTotalUsdValue();
         this.totalExchangeWalletBalances = this.getBalancesGroupedByCurrency(this.exchangeCurrencyBalances);
     }
