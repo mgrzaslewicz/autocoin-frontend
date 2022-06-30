@@ -5,38 +5,41 @@
             Does not require API keys
         </div>
     </div>
-    <div class="col-xs-12 col-sm-12 col-md-10 col-xl-8">
-        <div class="card text-white bg-warning m-2">
-            <div class="card-header">
-                <div class="flex-row">
-                    <div *ngIf="isIncludingProPlanOpportunities === true" class="d-block">
-                        You're using Pro plan which shows full details for opportunities above {{freePlanProfitPercentCutOff}}%
-                    </div>
-                    <div *ngIf="isIncludingProPlanOpportunities === false" class="d-block">
-                        You're using Free plan. You're going to see all available opportunities, but full details for opportunities above {{freePlanProfitPercentCutOff}}% are not shown
-                        <ul>
-                            <li>
-                                To join Pro plan, ping @mikolaj grzaslewicz on autocoin
-                                <a href="https://t.me/joinchat/DQ56VEbfV3uIQlrJphtLbw" target="_blank">telegram group</a>
-                                or send an email to mikolaj.grzaslewicz@gmail.com
-                            </li>
-                            <li>
-                                What's the pricing?
-                                <button
-                                    (click)="textDialog.showWithoutHeader('Currently Pro plan is 10 USDT/month. You can make a decision up to 7 days after payment - to stay with Pro plan or have a refund and stay with Free one.')"
-                                    class="btn btn-sm btn-info">
-                                    <i class="fa fa-question" aria-hidden="true"></i>
-                                </button>
-                            </li>
-                            <li>
-                                Honestly, what to expect from using arbitrage opportunities?
-                                <button
-                                    (click)="textDialog.showWithoutHeader('You can earn some money from time to time. There are people on telegram group that have earned hundreds of dollars per opportunity. But that happens rarely. Don\'t expect to make a living out of doing the arbitrage')"
-                                    class="btn btn-sm btn-info">
-                                    <i class="fa fa-question" aria-hidden="true"></i>
-                                </button>
-                            </li>
-                        </ul>
+    <div *ngIf="isIncludingProPlanOpportunities != null" class="row">
+        <div class="col-12">
+            <div class="card text-white bg-warning mt-2 mb-2">
+                <div class="card-header">
+                    <div class="flex-row">
+                        <div *ngIf="isIncludingProPlanOpportunities === true" class="d-block">
+                            You're using Pro plan which shows full details for opportunities above {{freePlanProfitPercentCutOff}}%
+                        </div>
+                        <div *ngIf="isIncludingProPlanOpportunities === false" class="d-block">
+                            You're using Free plan. You're going to see all available opportunities, but full details for opportunities above {{freePlanProfitPercentCutOff}}% are
+                            not shown
+                            <ul>
+                                <li>
+                                    To join Pro plan, ping @mikolaj grzaslewicz on autocoin
+                                    <a href="https://t.me/joinchat/DQ56VEbfV3uIQlrJphtLbw" target="_blank">telegram group</a>
+                                    or send an email to mikolaj.grzaslewicz@gmail.com
+                                </li>
+                                <li>
+                                    What's the pricing?
+                                    <button
+                                        (click)="textDialog.showWithoutHeader('Currently Pro plan is 10 USDT/month. You can make a decision up to 7 days after payment - to stay with Pro plan or have a refund and stay with Free one.')"
+                                        class="btn btn-sm btn-info">
+                                        <i class="fa fa-question" aria-hidden="true"></i>
+                                    </button>
+                                </li>
+                                <li>
+                                    Honestly, what to expect from using arbitrage opportunities?
+                                    <button
+                                        (click)="textDialog.showWithoutHeader('You can earn some money from time to time. There are people on telegram group that have earned hundreds of dollars per opportunity. But that happens rarely. Don\'t expect to make a living out of doing the arbitrage')"
+                                        class="btn btn-sm btn-info">
+                                        <i class="fa fa-question" aria-hidden="true"></i>
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
