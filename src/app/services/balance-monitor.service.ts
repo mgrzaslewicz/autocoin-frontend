@@ -100,6 +100,37 @@ export interface ExchangeBalanceDto {
     errorMessage?: string;
 }
 
+export interface UserCurrencyAssetResponseDto {
+    id: string;
+    currency: string;
+    description: string;
+    balance: string;
+    valueInOtherCurrency?: Map<string, string>;
+}
+
+export interface UserCurrencyAssetSummaryResponseDto {
+    currency: string;
+    balance: string;
+    valueInOtherCurrency?: Map<string, string>;
+}
+
+export interface UserCurrencyAssetsResponseDto {
+    userCurrencyAssets: UserCurrencyAssetResponseDto[];
+    userCurrencyAssetsSummary: UserCurrencyAssetSummaryResponseDto[];
+}
+
+export interface UpdateUserCurrencyAssetRequestDto {
+    id: string;
+    currency: string;
+    balance: string;
+    description?: string;
+}
+
+export interface AddUserCurrencyAssetRequestDto {
+    currency: string;
+    balance: string;
+    description?: string;
+}
 
 @Injectable()
 export class BalanceMonitorService {
@@ -152,6 +183,26 @@ export class BalanceMonitorService {
 
     refreshExchangeWalletsBalance(): Observable<ExchangeWalletBalancesResponseDto> {
         return this.http.post<ExchangeWalletBalancesResponseDto>(`${this.balanceMonitorApiBaseUrl}/exchange/wallets/balance/refresh`, null);
+    }
+
+    getUserCurrencyAssetsBalance(): Observable<UserCurrencyAssetsResponseDto> {
+        return this.http.get<UserCurrencyAssetsResponseDto>(`${this.balanceMonitorApiBaseUrl}/user-currency-assets`);
+    }
+
+    deleteUserCurrencyAsset(userCurrencyAssetId: string): Observable<string> {
+        return this.http.delete<string>(`${this.balanceMonitorApiBaseUrl}/user-currency-assets/${userCurrencyAssetId}`);
+    }
+
+    getUserCurrencyAsset(userCurrencyAssetId: string): Observable<UserCurrencyAssetResponseDto> {
+        return this.http.get<UserCurrencyAssetResponseDto>(`${this.balanceMonitorApiBaseUrl}/user-currency-assets/${userCurrencyAssetId}`);
+    }
+
+    updateUserCurrencyAsset(updateUserCurrencyAssetRequest: UpdateUserCurrencyAssetRequestDto): Observable<UpdateBlockchainWalletErrorResponseDto> {
+        return this.http.put<UpdateBlockchainWalletErrorResponseDto>(`${this.balanceMonitorApiBaseUrl}/user-currency-assets/${updateUserCurrencyAssetRequest.id}`, updateUserCurrencyAssetRequest);
+    }
+
+    addUserCurrencyAssets(addUserCurrencyAssetsRequestDtos: Array<AddUserCurrencyAssetRequestDto>): Observable<string> {
+        return this.http.post<string>(`${this.balanceMonitorApiBaseUrl}/user-currency-assets`, addUserCurrencyAssetsRequestDtos);
     }
 
 }

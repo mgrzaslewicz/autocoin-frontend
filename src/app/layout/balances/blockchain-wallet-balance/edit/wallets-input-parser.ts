@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {AddBlockchainWalletRequestDto} from "../../../services/balance-monitor.service";
+import {AddBlockchainWalletRequestDto} from "../../../../services/balance-monitor.service";
 
 
 @Injectable()
@@ -15,13 +15,7 @@ export class WalletsInputParser {
             .map((it) => {
                 const walletAndDescription = it.split(',');
                 const walletAddress = walletAndDescription[0].trim();
-                let description: string = null;
-                if (walletAndDescription.length == 2) {
-                    const tmpDescription = walletAndDescription[1].trim();
-                    if (tmpDescription.length > 0) {
-                        description = tmpDescription;
-                    }
-                }
+                const description = walletAndDescription[1]?.trim() ?? null;
                 if (walletAddress.length > 1) {
                     return {
                         currency: currency,

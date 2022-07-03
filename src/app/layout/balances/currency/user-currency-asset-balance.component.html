@@ -1,0 +1,122 @@
+<app-balances-menu></app-balances-menu>
+<div #hideUserCurrencyMenuLayer (click)="hideUserCurrencyMenuIfAnyOpen(hideUserCurrencyMenuLayer)" class="d-none layer-for-hiding-add-wallet-menu"></div>
+<div class="row">
+    <div class="col-12">
+        <h5>Your currencies balance</h5>
+        <div class="card mb-3">
+            <div (click)="goToAddNewUserCurrencyAssetView()" class="card-header currency-asset-add-header">
+                <button class="btn btn-primary btn-sm">
+                    <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                </button>
+                Add currency asset
+            </div>
+        </div>
+        <div class="card mb-3">
+            <div class="card-header">
+                <div *ngIf="isFetchCurrencyBalancesRequestPending" class="progress mb-2">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
+                         style="width: 100%;"></div>
+                </div>
+                <i class="fa fa-usd" aria-hidden="true"></i>
+                Summary of your currency assets
+            </div>
+            <div class="card-body">
+                <h6 *ngIf="summarizedUserCurrencyBalances.length ==0">No currency assets added yet</h6>
+                <div *ngIf="summarizedUserCurrencyBalances.length > 0" class="table-responsive">
+                    <table class="table table-striped table-sm table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">Currency</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">USD value</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let userCurrencyBalance of summarizedUserCurrencyBalances">
+                            <th scope="row">
+                                {{userCurrencyBalance.currency}}
+                            </th>
+                            <td>
+                                {{userCurrencyBalance.balance }}
+                            </td>
+                            <td>
+                                {{getUsdValue(userCurrencyBalance) | number : '1.2-2'}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="font-weight-bold">{{ getTotalUsdBalance(summarizedUserCurrencyBalances) | number : '1.2-2' || '-' }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <div *ngIf="isFetchUserCurrenciesRequestPending" class="progress mb-2">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
+                         style="width: 100%;"></div>
+                </div>
+                <button (click)="fetchUserCurrencies()" class="btn btn-primary btn-sm" [disabled]="isFetchUserCurrenciesRequestPending">
+                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                </button>
+                Your currency assets
+            </div>
+            <div class="card-body">
+                <h6 *ngIf="userCurrencyAssets.length ==0; else hasUserCurrencies">No currency assets added yet</h6>
+                <ng-template #hasUserCurrencies>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-sm table-hover">
+                            <thead>
+                            <tr>
+                                <th scope="col">Action</th>
+                                <th scope="col">Currency</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Balance</th>
+                                <th scope="col">USD value</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let userCurrencyAsset of userCurrencyAssets">
+                                <td>
+                                    <div style="position: relative">
+                                        <button (click)="toggleUserCurrencyMenuVisibility(menu, hideUserCurrencyMenuLayer)" class="btn btn-sm btn-primary">
+                                            <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                                        </button>
+                                        <div #menu class="dropdown-menu" [attr.user-currency-id]="userCurrencyAsset.id">
+                                            <button (click)="editUserCurrency(userCurrencyAsset)" class="ml-2 mr-2 btn btn-sm btn-success">
+                                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                            </button>
+                                            <button
+                                                (click)="confirmRemoveUserCurrency(hideUserCurrencyMenuLayer, yesNoConfirmation, userCurrencyAsset)"
+                                                class="btn btn-sm btn-danger">
+                                                <i class="fa fa-times" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+                                <th scope="row">
+                                    {{userCurrencyAsset.currency}}
+                                </th>
+                                <td>
+                                    {{userCurrencyAsset.description}}
+                                </td>
+                                <td>
+                                    {{userCurrencyAsset.balance}}
+                                </td>
+                                <td>
+                                    {{getUsdValue(userCurrencyAsset) | number : '1.2-2'}}
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-text-dialog #yesNoConfirmation></app-text-dialog>

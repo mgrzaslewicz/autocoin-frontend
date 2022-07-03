@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {routerTransition} from '../../../router.animations';
 import {BalanceMonitorService, BlockchainWalletResponseDto, BlockchainWalletCurrencyBalanceResponseDto} from "../../../services/balance-monitor.service";
-import {WalletsInputParser} from "./wallets-input-parser";
+import {WalletsInputParser} from "./edit/wallets-input-parser";
 import {ToastService} from "../../../services/toast.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {animate, state, style, transition, trigger} from "@angular/animations";

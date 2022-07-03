@@ -7,11 +7,11 @@
                class="btn">
                 Wallets
             </a>
-            <a routerLink="/balances/currencies" [routerLinkActive]="['router-link-active']"
-               [class.btn-primary]="router.url.startsWith('/balances/currencies')"
-               [class.btn-outline-secondary]="!router.url.startsWith('/balances/currencies')"
-               class="btn disabled">
-                Currencies (not available yet)
+            <a routerLink="/balances/currency-assets" [routerLinkActive]="['router-link-active']"
+               [class.btn-primary]="router.url.startsWith('/balances/currency-assets')"
+               [class.btn-outline-secondary]="!router.url.startsWith('/balances/currency-assets')"
+               class="btn">
+                Currency assets
             </a>
             <a routerLink="/balances/exchanges" [routerLinkActive]="['router-link-active']"
                [class.btn-primary]="router.url.startsWith('/balances/exchanges')"

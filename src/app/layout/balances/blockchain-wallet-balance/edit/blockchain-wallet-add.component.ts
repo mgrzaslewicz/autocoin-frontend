@@ -10,7 +10,7 @@ import {
     UpdateBlockchainWalletRequestDto,
     BlockchainWalletResponseDto
 } from "../../../../services/balance-monitor.service";
-import {WalletsInputParser} from "../wallets-input-parser";
+import {WalletsInputParser} from "./wallets-input-parser";
 import {ToastService} from "../../../../services/toast.service";
 import {ActivatedRoute, Router} from "@angular/router";
 
@@ -70,7 +70,7 @@ export class BlockchainWalletAddComponent implements OnInit {
                     },
                     (error: HttpErrorResponse) => {
                         console.error(error);
-                        this.toastService.warning('Something went wrong, could not get wallet');
+                        this.toastService.danger('Something went wrong, could not get wallet');
                     }
                 );
         }
@@ -129,7 +129,7 @@ export class BlockchainWalletAddComponent implements OnInit {
                                 this.goBackToWalletsView();
                             }
                         } else {
-                            this.toastService.warning('Something went wrong, could not add wallets');
+                            this.toastService.danger('Something went wrong, could not add wallets');
                         }
                     }
                 );
@@ -174,7 +174,7 @@ export class BlockchainWalletAddComponent implements OnInit {
                                 this.toastService.warning('Wallet was not saved because given address is already existing in your wallets');
                             }
                         } else {
-                            this.toastService.warning('Something went wrong, could not save wallet');
+                            this.toastService.danger('Something went wrong, could not save wallet');
                         }
                     }
                 );

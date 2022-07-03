@@ -1,4 +1,4 @@
-.layer-for-hiding-add-wallet-menu {
+.layer-for-hiding-add-user-currency-menu {
     z-index: 999; // 1 less than dropdown-menu
     position: fixed;
     width: 100%;
@@ -8,15 +8,11 @@
     top: 0;
 }
 
-.wallet-address {
-    font-family: monospace;
-}
-
 .currency-asset-add-header {
     cursor: pointer;
 }
 
-.wallet-dropdown-menu-visible {
+.user-currency-asset-dropdown-menu-visible {
     display: inline-flex;
     left: 2rem;
     top: -0.5rem;

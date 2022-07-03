@@ -1,0 +1,99 @@
+<app-balances-menu></app-balances-menu>
+<div class="row">
+    <div class="col-12">
+        <h5>Add currency assets</h5>
+        <div class="card mb-3">
+            <div class="card-header">
+                <div *ngIf="isRequestPending" class="progress mb-3">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
+                         style="width: 100%;"></div>
+                </div>
+                <ng-container *ngIf="!isInUpdateMode">
+                    <button disabled class="btn btn-sm btn-default">
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </button>
+                    <span> Add currencies you have to track</span>
+                </ng-container>
+                <ng-container *ngIf="isInUpdateMode">
+                    <button disabled class="btn btn-sm btn-default">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    </button>
+                    <span>Edit your currency asset</span>
+                </ng-container>
+            </div>
+            <div class="card-body">
+                <form role="form">
+                    <div class="form-content">
+                        <div *ngIf="!isInUpdateMode" class="form-group">
+                            <button (click)="toggleAddSingleCurrencyForm()" class="btn btn-sm mr-1 mb-1" type="button">
+                                Add multiple currency assets
+                                <i class="fa" [class.fa-toggle-on]="isAddingMultipleCurrencies"
+                                   [class.fa-toggle-off]="!isAddingMultipleCurrencies"></i>
+                            </button>
+                        </div>
+                        <div *ngIf="isAddingMultipleCurrencies" class="form-group">
+                            <label for="currencyCsvInput">Currencies with balances</label>
+                            <textarea class="form-control"
+                                      [(ngModel)]="currencyCsvInput"
+                                      name="currencyCsvInput"
+                                      id="currencyCsvInput"
+                                      aria-describedby="currencyCsvInputHelp"></textarea>
+                            <small id="currencyCsvInputHelp" class="form-text text-muted">
+                                One currency per line with balance plus optional description coma separated, e.g. 'YLD,100.4697,staked at yield app'
+                            </small>
+                        </div>
+                        <ng-container *ngIf="!isAddingMultipleCurrencies">
+                            <div class="form-group">
+                                <label for="currencyInput">Currency</label>
+                                <input type="text" class="form-control"
+                                       oninput="this.value = this.value.toUpperCase()"
+                                       [(ngModel)]="currencyInput"
+                                       id="currencyInput"
+                                       name="currencyInput"
+                                       aria-describedby="currencyInputHelp">
+                                <small id="currencyInputHelp" class="form-text text-muted">
+                                    e.g. 'YLD'
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <label for="userCurrencyBalanceInput">Balance</label>
+                                <input type="text" class="form-control"
+                                       [(ngModel)]="userCurrencyBalanceInput"
+                                       id="userCurrencyBalanceInput"
+                                       name="userCurrencyBalanceInput"
+                                       aria-describedby="userCurrencyBalanceInputHelp">
+                                <small id="userCurrencyBalanceInputHelp" class="form-text text-muted">e.g. '6.56'</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="userCurrencyDescriptionInput">Description</label>
+                                <input type="text" class="form-control"
+                                       [(ngModel)]="userCurrencyDescriptionInput"
+                                       id="userCurrencyDescriptionInput"
+                                       name="userCurrencyDescriptionInput"
+                                       aria-describedby="userCurrencyDescriptionInputHelp">
+                                <small id="userCurrencyDescriptionInputHelp" class="form-text text-muted">Optional, e.g. 'staked at yield app', 'at binance'</small>
+                            </div>
+                        </ng-container>
+
+                        <div class="form-group">
+                            <button *ngIf="!isInUpdateMode" class="btn btn-success mr-2" (click)="addUserCurrencies()"
+                                    [disabled]="isRequestPending || !areAddCurrenciesInputsValid()">
+                                <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                                <span *ngIf="isAddingMultipleCurrencies"> Add currency assets</span>
+                                <span *ngIf="!isAddingMultipleCurrencies"> Add currency asset</span>
+                            </button>
+                            <button *ngIf="isInUpdateMode" class="btn btn-success mr-2" (click)="saveUserCurrency()" [disabled]="isRequestPending || !areAddCurrenciesInputsValid()">
+                                <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                                <span> Save currency asset</span>
+                            </button>
+                            <button class="btn btn-default" (click)="goBackToUserCurrencyBalancesView()">
+                                <i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Go back
+                            </button>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
