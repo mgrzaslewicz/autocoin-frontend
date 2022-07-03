@@ -32,7 +32,7 @@
                         <div>
                             Transfer status
                             <button
-                                (click)="textDialog.showWithoutHeader('When withdrawal or deposit status is unknown, make sure to check it yourself. If withdrawal or deposit is disabled at exchange, you will not be able to use this opportunity.')"
+                                (click)="textDialog.showWithoutHeader('When it\'s green - it means withdrawal or deposit is enabled (depending which side is green). Yellow means withdrawal or deposit status is unknown, make sure to check it yourself - use the opportunity only when checked to be enabled. Exchanges with deposit or withdrawal known to be disabled are already excluded.')"
                                 class="btn btn-sm btn-info info-button">
                                 <i class="fa fa-question" aria-hidden="true"></i>
                             </button>
