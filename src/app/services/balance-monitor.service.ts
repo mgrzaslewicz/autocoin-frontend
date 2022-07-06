@@ -4,12 +4,19 @@ import {BalanceMonitorApiBaseUrlToken} from "../../environments/endpoint-tokens"
 import {FeatureToggle, FeatureToggleToken} from "./feature.toogle.service";
 import {Observable} from "rxjs";
 
-export interface BlockchainWalletResponseDto {
+export interface HasValueInOtherCurrency {
+    valueInOtherCurrency?: Map<string, string>;
+}
+
+export interface HasBalance {
+    balance?: string;
+}
+
+export interface BlockchainWalletResponseDto extends HasBalance {
     id: string;
     walletAddress: string;
     currency: string;
     description?: string;
-    balance?: string;
     usdBalance?: string;
 }
 
@@ -37,9 +44,8 @@ export interface UpdateBlockchainWalletErrorResponseDto {
     isIdInvalid: boolean;
 }
 
-export interface BlockchainWalletCurrencyBalanceResponseDto {
+export interface BlockchainWalletCurrencyBalanceResponseDto extends HasBalance {
     currency: string;
-    balance?: string;
     usdBalance?: string;
 }
 
@@ -60,24 +66,23 @@ export interface ExchangeWalletBalancesResponseDto {
     exchangeCurrencyBalances: ExchangeCurrencyBalancesResponseDto[];
 }
 
-export interface ExchangeCurrencySummaryDto {
+export interface ExchangeCurrencySummaryDto extends HasValueInOtherCurrency, HasBalance {
     exchangeName: string;
-    balance: string;
-    valueInOtherCurrency?: Map<string, string>;
 }
 
-export interface BlockchainWalletCurrencySummaryDto {
+export interface BlockchainWalletCurrencySummaryDto extends HasValueInOtherCurrency, HasBalance {
     walletAddress: string;
-    balance?: string;
-    valueInOtherCurrency?: Map<string, string>;
 }
 
-export interface CurrencyBalanceSummaryDto {
+export interface CurrencyAssetSummaryDto extends HasValueInOtherCurrency, HasBalance {
+    description?: string;
+}
+
+export interface CurrencyBalanceSummaryDto extends HasValueInOtherCurrency, HasBalance {
     currency: string;
-    balance: string;
-    valueInOtherCurrency?: Map<string, string>;
     exchanges: ExchangeCurrencySummaryDto[];
     wallets: BlockchainWalletCurrencySummaryDto[];
+    currencyAssets: CurrencyAssetSummaryDto[];
 }
 
 export interface BalanceSummaryResponseDto {
@@ -85,12 +90,11 @@ export interface BalanceSummaryResponseDto {
     currencyBalances: CurrencyBalanceSummaryDto[];
 }
 
-export interface ExchangeCurrencyBalanceDto {
+export interface ExchangeCurrencyBalanceDto extends HasValueInOtherCurrency {
     currencyCode: string;
     amountAvailable: string;
     amountInOrders: string;
     totalAmount: string;
-    valueInOtherCurrency?: Map<string, string>;
     priceInOtherCurrency?: Map<string, string>;
 }
 
@@ -100,18 +104,14 @@ export interface ExchangeBalanceDto {
     errorMessage?: string;
 }
 
-export interface UserCurrencyAssetResponseDto {
+export interface UserCurrencyAssetResponseDto extends HasValueInOtherCurrency, HasBalance {
     id: string;
     currency: string;
     description: string;
-    balance: string;
-    valueInOtherCurrency?: Map<string, string>;
 }
 
-export interface UserCurrencyAssetSummaryResponseDto {
+export interface UserCurrencyAssetSummaryResponseDto extends HasValueInOtherCurrency, HasBalance {
     currency: string;
-    balance: string;
-    valueInOtherCurrency?: Map<string, string>;
 }
 
 export interface UserCurrencyAssetsResponseDto {
@@ -119,16 +119,14 @@ export interface UserCurrencyAssetsResponseDto {
     userCurrencyAssetsSummary: UserCurrencyAssetSummaryResponseDto[];
 }
 
-export interface UpdateUserCurrencyAssetRequestDto {
+export interface UpdateUserCurrencyAssetRequestDto extends HasBalance {
     id: string;
     currency: string;
-    balance: string;
     description?: string;
 }
 
-export interface AddUserCurrencyAssetRequestDto {
+export interface AddUserCurrencyAssetRequestDto extends HasBalance {
     currency: string;
-    balance: string;
     description?: string;
 }
 

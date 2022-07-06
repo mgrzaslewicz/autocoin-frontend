@@ -18,7 +18,7 @@ export class CurrencyBalanceSummaryComponent implements OnInit {
     totalUsdValue: number;
     currencyBalances: CurrencyBalanceSummaryDto[] = null;
     pieChartColorScheme: any = {
-        domain: ['#01579b', '#29b6f6']
+        domain: ['#01579b', '#29b6f6', '#05364d']
     };
 
     currencySummaryChartData: any[] = null;
@@ -79,28 +79,42 @@ export class CurrencyBalanceSummaryComponent implements OnInit {
 
     private getCryptocurrenciesUsdValueByLocationChartData(currencyBalances: CurrencyBalanceSummaryDto[]): any[] {
         let blockchainWalletsTotalBalance = 0;
+        let currencyAssetsTotalBalance = 0;
         let exchangesTotalBalance = 0;
 
         currencyBalances.forEach(it => {
-            it.exchanges.forEach(exchange => {
-                exchangesTotalBalance += Number(exchange.valueInOtherCurrency['USD']);
-            });
             it.wallets.forEach(wallet => {
                 blockchainWalletsTotalBalance += Number(wallet.valueInOtherCurrency['USD']);
             });
+            it.currencyAssets.forEach(currencyAsset => {
+                currencyAssetsTotalBalance += Number(currencyAsset.valueInOtherCurrency['USD']);
+            });
+            it.exchanges.forEach(exchange => {
+                exchangesTotalBalance += Number(exchange.valueInOtherCurrency['USD']);
+            });
         });
-        const sum = blockchainWalletsTotalBalance + exchangesTotalBalance;
-        let exchangesPercent = exchangesTotalBalance * 100 / sum;
-        let blockchainWalletsPercent = blockchainWalletsTotalBalance * 100 / sum;
+        const sum = blockchainWalletsTotalBalance + currencyAssetsTotalBalance + exchangesTotalBalance;
+        const blockchainWalletsPercent = blockchainWalletsTotalBalance * 100 / sum;
+        const currencyAssetsPercent = currencyAssetsTotalBalance * 100 / sum;
+        const exchangesPercent = exchangesTotalBalance * 100 / sum;
 
         const blockchainWalletsPieSliceName = new String(`Blockchain wallets: ${blockchainWalletsPercent.toFixed(2)}%`);
         (blockchainWalletsPieSliceName as any).usdBalance = this.usdFormatter.format(blockchainWalletsTotalBalance);
+
+        const currencyAssetsPieSliceName = new String(`Currency assets: ${currencyAssetsPercent.toFixed(2)}%`);
+        (currencyAssetsPieSliceName as any).usdBalance = this.usdFormatter.format(currencyAssetsTotalBalance);
+
         const exchangesPieSliceName = new String(`Exchanges: ${exchangesPercent.toFixed(2)}%`);
         (exchangesPieSliceName as any).usdBalance = this.usdFormatter.format(exchangesTotalBalance);
+
         return [
             {
                 "name": blockchainWalletsPieSliceName,
                 "value": blockchainWalletsTotalBalance
+            },
+            {
+                "name": currencyAssetsPieSliceName,
+                "value": currencyAssetsTotalBalance
             },
             {
                 "name": exchangesPieSliceName,

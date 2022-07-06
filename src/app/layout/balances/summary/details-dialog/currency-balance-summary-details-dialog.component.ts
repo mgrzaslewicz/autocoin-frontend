@@ -1,6 +1,6 @@
 import {Component, EventEmitter, OnDestroy, Output, ViewChild} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {BlockchainWalletCurrencySummaryDto, CurrencyBalanceSummaryDto, ExchangeCurrencySummaryDto} from "../../../../services/balance-monitor.service";
+import {CurrencyBalanceSummaryDto, HasBalance, HasValueInOtherCurrency} from "../../../../services/balance-monitor.service";
 
 @Component({
     selector: 'app-currency-summary-details-dialog',
@@ -30,36 +30,20 @@ export class CurrencyBalanceSummaryDetailsDialog implements OnDestroy {
         this.modalService.open(this.content);
     }
 
-    getTotalWalletsBalance(): number {
-        return this.currencySummaryDetails.wallets
+    getTotalBalance(items: HasBalance[]): number {
+        return items
             .map(it => Number(it.balance))
             .reduce((acc, val) => acc + val);
     }
 
-    getTotalWalletsUsdValue(): number {
-        return this.currencySummaryDetails.wallets
+    getTotalUsdValue(items: HasValueInOtherCurrency[]): number {
+        return items
             .map(it => Number(it.valueInOtherCurrency['USD']))
             .reduce((acc, val) => acc + val);
     }
 
-    getTotalExchangesBalance(): number {
-        return this.currencySummaryDetails.exchanges
-            .map(it => Number(it.balance))
-            .reduce((acc, val) => acc + val);
-    }
-
-    getTotalExchangesUsdValue(): number {
-        return this.currencySummaryDetails.exchanges
-            .map(it => Number(it.valueInOtherCurrency['USD']))
-            .reduce((acc, val) => acc + val);
-    }
-
-    getWalletUsdBalance(wallet: BlockchainWalletCurrencySummaryDto): number {
-        return Number(wallet.valueInOtherCurrency['USD']);
-    }
-
-    getExchangeUsdBalance(exchange: ExchangeCurrencySummaryDto): number {
-        return Number(exchange.valueInOtherCurrency['USD']);
+    getUsdBalance(item: HasValueInOtherCurrency): number {
+        return Number(item.valueInOtherCurrency['USD']);
     }
 
 }

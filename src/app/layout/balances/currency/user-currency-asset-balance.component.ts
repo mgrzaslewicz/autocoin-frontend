@@ -1,5 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {BalanceMonitorService, UserCurrencyAssetResponseDto, UserCurrencyAssetsResponseDto, UserCurrencyAssetSummaryResponseDto} from "../../../services/balance-monitor.service";
+import {
+    BalanceMonitorService,
+    HasValueInOtherCurrency,
+    UserCurrencyAssetResponseDto,
+    UserCurrencyAssetsResponseDto,
+    UserCurrencyAssetSummaryResponseDto
+} from "../../../services/balance-monitor.service";
 import {ToastService} from "../../../services/toast.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {TextDialog} from "../../../dialog/text-dialog";
@@ -106,13 +112,13 @@ export class UserCurrencyAssetBalanceComponent implements OnInit {
         }
     }
 
-    getTotalUsdBalance(currencyBalances: UserCurrencyAssetResponseDto[]): number {
-        return currencyBalances
+    getTotalUsdBalance(items: HasValueInOtherCurrency[]): number {
+        return items
             .map(it => Number(it.valueInOtherCurrency['USD']))
             .reduce((acc, val) => acc + val);
     }
 
-    getUsdValue(userCurrencyBalance: UserCurrencyAssetResponseDto): number {
-        return Number(userCurrencyBalance.valueInOtherCurrency['USD']);
+    getUsdValue(it: HasValueInOtherCurrency): number {
+        return Number(it.valueInOtherCurrency['USD']);
     }
 }

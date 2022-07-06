@@ -73,16 +73,16 @@
                 <table *ngIf="currencyBalances != null && currencyBalances.length > 0" class="table table-sm table-hover">
                     <thead>
                     <tr>
-                        <th>Details</th>
                         <th>Currency</th>
-                        <th>
+                        <th class="d-none d-md-table-cell">
                             <div>
                                 <span class="badge bg-primary text-light mr-1 p-1">Wallets</span>
-                                <span class="badge bg-secondary text-light mr-1 p-1">Exchanges</span>
+                                <span class="badge bg-secondary text-light mr-1 p-1">Currency assets</span>
+                                <span class="badge bg-info text-light mr-1 p-1">Exchanges</span>
                             </div>
                             Location
                         </th>
-                        <th class="text-right">Total</th>
+                        <th class="text-right d-none d-sm-table-cell">Total</th>
                         <th class="text-right">% of value</th>
                         <th class="text-right">USD value <i class="fa fa-sort-amount-desc" aria-hidden="true"></i></th>
                     </tr>
@@ -95,15 +95,14 @@
                             >
                                 <i class="fa fa-list" aria-hidden="true"></i>
                             </button>
-                        </td>
-                        <td>
                             {{ currencyBalance.currency }}
                         </td>
-                        <td>
+                        <td class="d-none d-md-table-cell">
                             <span class="badge bg-primary text-light mr-1 p-1">{{ currencyBalance.wallets.length }} w</span>
-                            <span class="badge bg-secondary text-light mr-1 p-1">{{ currencyBalance.exchanges.length }} e</span>
+                            <span class="badge bg-secondary text-light mr-1 p-1">{{ currencyBalance.currencyAssets.length }} c</span>
+                            <span class="badge bg-info text-light mr-1 p-1">{{ currencyBalance.exchanges.length }} e</span>
                         </td>
-                        <td class="text-right" [class.hide-balances]="hideBalances"><span>{{ currencyBalance.balance | number : '1.8-8' }}</span></td>
+                        <td class="text-right d-none d-sm-table-cell" [class.hide-balances]="hideBalances"><span>{{ currencyBalance.balance | number : '1.8-8' }}</span></td>
                         <td class="text-right" [class.hide-balances]="hideBalances">
                             <span>{{ getUsdValuePercent(currencyBalance) | number : '1.2-2' || '-' }}%</span>
                         </td>
@@ -116,9 +115,8 @@
 
                     </tr>
                     <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td class="d-none d-md-table-cell"></td>
+                        <td class="d-none d-sm-table-cell"></td>
                         <td></td>
                         <td></td>
                         <td class="text-right font-weight-bold" [class.hide-balances]="hideBalances">
@@ -164,19 +162,19 @@
         <div *ngIf="cryptocurrenciesUsdValueByLocationChartData != null" class="col-xs-12 col-xl-6">
             <div class="card mb-3 exchange-user-wallet">
                 <div class="card-header">
-                    <div>Cryptocurrencies USD value by location</div>
+                    <div>USD value by source</div>
                 </div>
                 <div class="card-body">
                     <ngx-charts-pie-chart
                         class="chart-horizontal-center"
-                        [view]="[400, 300]"
+                        [view]="[500, 300]"
                         [animations]="false"
                         [scheme]="pieChartColorScheme"
                         [legendPosition]="'below'"
                         [labels]="true"
                         [labelFormatting]="pieChartUsdBalanceLabelFormatting"
                         [maxLabelLength]="20"
-                        [legendTitle]="'Location'"
+                        [legendTitle]="'Source'"
                         [gradient]="false"
                         [legend]="true"
                         [results]="cryptocurrenciesUsdValueByLocationChartData"
