@@ -14,7 +14,6 @@ import {BalanceMonitorService, BalanceSummaryResponseDto, CurrencyBalanceSummary
 export class CurrencyBalanceSummaryComponent implements OnInit {
     isFetchBalanceRequestPending = false;
     isRefreshBalanceRequestPending = false;
-    hideBalances = false;
     totalUsdValue: number;
     currencyBalances: CurrencyBalanceSummaryDto[] = null;
     pieChartColorScheme: any = {
@@ -26,6 +25,8 @@ export class CurrencyBalanceSummaryComponent implements OnInit {
     cryptocurrenciesUsdValueByLocationChartData: any[] = null;
 
     hideUnder1Dollar = false;
+    showOnlyTop10 = false;
+    hideBalances = false;
 
     isShowingRealBalance: boolean = null;
 
@@ -50,18 +51,13 @@ export class CurrencyBalanceSummaryComponent implements OnInit {
             });
     }
 
-    toggleHideUnderOneDollar() {
-        this.hideUnder1Dollar = !this.hideUnder1Dollar;
-        this.currencySummaryChartData = this.getCurrencySummaryChartData();
-    }
-
     private getCurrencySummaryChartData(): any[] {
         let usdSum: number = 0;
         if (this.currencyBalances != null && this.currencyBalances.length > 0) {
             usdSum = this.currencyBalances.map(it => Number(it.valueInOtherCurrency['USD']))
                 .reduce((acc, val) => acc + val);
         }
-        return this.currencyBalances.map(it => {
+        const result = this.currencyBalances.map(it => {
             const usdValue = this.getUsdValue(it);
             return {
                 "name": it.currency + ` ${(this.getUsdValue(it) * 100 / usdSum).toFixed(2)}%`,
@@ -75,6 +71,11 @@ export class CurrencyBalanceSummaryComponent implements OnInit {
                     return true;
                 }
             });
+        if (this.showOnlyTop10) {
+           return result.slice(0, 10);
+        } else {
+           return result;
+        }
     }
 
     private getCryptocurrenciesUsdValueByLocationChartData(currencyBalances: CurrencyBalanceSummaryDto[]): any[] {
@@ -195,6 +196,16 @@ export class CurrencyBalanceSummaryComponent implements OnInit {
             );
     }
 
+    toggleHideUnder1Dollar() {
+        this.hideUnder1Dollar = !this.hideUnder1Dollar;
+        this.currencySummaryChartData = this.getCurrencySummaryChartData();
+    }
+
+    toggleShowOnlyTop10() {
+        this.showOnlyTop10 = !this.showOnlyTop10;
+        this.currencySummaryChartData = this.getCurrencySummaryChartData();
+    }
+
     toggleHideBalances() {
         this.hideBalances = !this.hideBalances;
     }
@@ -233,7 +244,7 @@ export class CurrencyBalanceSummaryComponent implements OnInit {
     }
 
     filteredCurrencyBalances(currencyBalances: CurrencyBalanceSummaryDto[]): CurrencyBalanceSummaryDto[] {
-        return currencyBalances.filter(it => {
+        const result = currencyBalances.filter(it => {
             const usdValue = it.valueInOtherCurrency['USD'];
             if (this.hideUnder1Dollar) {
                 return usdValue != null && usdValue > 1;
@@ -241,5 +252,10 @@ export class CurrencyBalanceSummaryComponent implements OnInit {
                 return true;
             }
         });
+        if (this.showOnlyTop10) {
+            return result.slice(0, 10);
+        } else {
+            return result;
+        }
     }
 }

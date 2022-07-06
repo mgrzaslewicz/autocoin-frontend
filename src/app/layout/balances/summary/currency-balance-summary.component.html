@@ -42,9 +42,13 @@
                 [disabled]="isRefreshBalanceRequestPending || isFetchBalanceRequestPending">
             <i class="fa fa-refresh" [class.is-pending]="isRefreshBalanceRequestPending"></i> Synchronize with wallets and exchanges
         </button>
-        <button (click)="toggleHideUnderOneDollar()" type="button" class="btn btn-sm mr-1 mb-1">
+        <button (click)="toggleHideUnder1Dollar()" type="button" class="btn btn-sm mr-1 mb-1">
             Hide < $1 <i class="fa" [class.fa-toggle-on]="hideUnder1Dollar"
                          [class.fa-toggle-off]="!hideUnder1Dollar"></i>
+        </button>
+        <button (click)="toggleShowOnlyTop10()" type="button" class="btn btn-sm mr-1 mb-1">
+            Show top 10 only <i class="fa" [class.fa-toggle-on]="showOnlyTop10"
+                         [class.fa-toggle-off]="!showOnlyTop10"></i>
         </button>
         <button (click)="toggleHideBalances()" type="button" class="btn btn-sm mb-1">
             Hide values <i class="fa" [class.fa-toggle-on]="hideBalances"
