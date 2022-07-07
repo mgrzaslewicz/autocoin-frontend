@@ -164,6 +164,14 @@ export class CurrencyBalanceSummaryComponent implements OnInit {
         }
     }
 
+    private getUsdPrice(currencyBalanceSummary: CurrencyBalanceSummaryDto): number {
+        if (currencyBalanceSummary.priceInOtherCurrency['USD'] != null) {
+            return Number(currencyBalanceSummary.priceInOtherCurrency['USD']);
+        } else {
+            return null;
+        }
+    }
+
     private setBalanceSummary(balanceSummaryResponse: BalanceSummaryResponseDto) {
         this.isShowingRealBalance = balanceSummaryResponse.isShowingRealBalance;
         const sortedCurrencyBalances = balanceSummaryResponse.currencyBalances.sort((a, b) => this.getUsdValue(b) - this.getUsdValue(a));

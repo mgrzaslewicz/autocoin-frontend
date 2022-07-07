@@ -89,6 +89,7 @@
                     <tr>
                         <th>Currency</th>
                         <th class="text-right">Total</th>
+                        <th class="text-right">USD price</th>
                         <th class="text-right">USD value <i class="fa fa-sort-amount-desc" aria-hidden="true"></i></th>
                     </tr>
                     </thead>
@@ -96,14 +97,24 @@
                     <tr *ngFor="let totalExchangeWalletBalance of getSortedCurrencyTableRows(totalExchangeWalletBalances)">
                         <td>{{ totalExchangeWalletBalance.currencyCode }}</td>
                         <td class="text-right" [class.hide-balances]="hideBalances"><span>{{ totalExchangeWalletBalance.total | number : '1.8-8' }}</span></td>
+
+                        <td *ngIf="totalExchangeWalletBalance.usdPrice != null" class="text-right" [class.hide-balances]="hideBalances">
+                            <span>${{ totalExchangeWalletBalance.usdPrice | number : '1.2-2' || '-' }}</span>
+                        </td>
+                        <td *ngIf="totalExchangeWalletBalance.usdPrice == null" class="text-right text-muted" [class.hide-balances]="hideBalances">
+                            <span>N/A</span>
+                        </td>
+
                         <td *ngIf="totalExchangeWalletBalance.usdValue != null" class="text-right" [class.hide-balances]="hideBalances">
                             <span>${{ totalExchangeWalletBalance.usdValue | number : '1.2-2' || '-' }}</span>
                         </td>
                         <td *ngIf="totalExchangeWalletBalance.usdValue == null" class="text-right text-muted" [class.hide-balances]="hideBalances">
                             <span>N/A</span>
                         </td>
+
                     </tr>
                     <tr>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td class="text-right font-weight-bold" [class.hide-balances]="hideBalances">

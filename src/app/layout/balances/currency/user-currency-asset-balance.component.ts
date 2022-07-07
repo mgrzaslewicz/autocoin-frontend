@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {
     BalanceMonitorService,
+    HasPriceInOtherCurrency,
     HasValueInOtherCurrency,
     UserCurrencyAssetResponseDto,
     UserCurrencyAssetsResponseDto,
@@ -120,5 +121,9 @@ export class UserCurrencyAssetBalanceComponent implements OnInit {
 
     getUsdValue(it: HasValueInOtherCurrency): number {
         return Number(it.valueInOtherCurrency['USD']);
+    }
+
+    getUsdPrice(it: HasPriceInOtherCurrency): number {
+        return Number(it.priceInOtherCurrency['USD']);
     }
 }

@@ -16,7 +16,8 @@ interface CurrencyBalanceTableRow {
     available: number;
     blockedInOrders: number;
     total: number;
-    usdValue: number;
+    usdValue?: number;
+    usdPrice?: number;
 }
 
 @Component({
@@ -27,6 +28,7 @@ interface CurrencyBalanceTableRow {
 })
 export class ExchangeBalanceComponent implements OnInit, OnDestroy {
     exchangeCurrencyBalances: ExchangeCurrencyBalancesResponseDto[] = null;
+    pricesInOtherCurrencies: Map<string, Map<string, string>> = null;
     synchronizationTimeMillis: number = null;
     isFetchWalletsRequestPending = false;
     isRefreshWalletsRequestPending = false;
@@ -61,6 +63,7 @@ export class ExchangeBalanceComponent implements OnInit, OnDestroy {
 
     private setExchangeWalletBalances(exchangeWalletBalancesResponse: ExchangeWalletBalancesResponseDto) {
         this.exchangeCurrencyBalances = exchangeWalletBalancesResponse.exchangeCurrencyBalances;
+        this.pricesInOtherCurrencies = exchangeWalletBalancesResponse.pricesInOtherCurrencies;
         this.synchronizationTimeMillis = exchangeWalletBalancesResponse.refreshTimeMillis;
         this.isShowingRealBalance = exchangeWalletBalancesResponse.isShowingRealBalance;
         this.totalUsdValue = this.getTotalUsdValue();
@@ -179,6 +182,15 @@ export class ExchangeBalanceComponent implements OnInit, OnDestroy {
         this.hideBalances = !this.hideBalances;
     }
 
+    private getUsdPrice(currency: string): number {
+        const priceInOtherCurrencies = this.pricesInOtherCurrencies[currency];
+        if (priceInOtherCurrencies != null && priceInOtherCurrencies["USD"] != null) {
+            return Number(priceInOtherCurrencies["USD"]);
+        } else {
+            return null;
+        }
+    }
+
     private getBalancesGroupedByCurrency(exchangeCurrencyBalances: ExchangeCurrencyBalancesResponseDto[]): CurrencyBalanceTableRow[] {
         let result: Map<string, CurrencyBalanceTableRow> = new Map();
         exchangeCurrencyBalances.forEach(exchangeCurrencyBalances => {
@@ -197,9 +209,10 @@ export class ExchangeBalanceComponent implements OnInit, OnDestroy {
                             currencyCode: currencyBalance.currencyCode,
                             total: Number(currencyBalance.totalAmount),
                             usdValue: usdValue,
+                            usdPrice: this.getUsdPrice(currencyBalance.currencyCode),
                             available: Number(currencyBalance.amountAvailable),
                             blockedInOrders: Number(currencyBalance.amountInOrders)
-                        });
+                        } as CurrencyBalanceTableRow);
                     }
                 });
             });

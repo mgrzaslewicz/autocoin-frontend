@@ -28,6 +28,7 @@
                         <tr>
                             <th scope="col">Currency</th>
                             <th scope="col">Total</th>
+                            <th scope="col">USD price</th>
                             <th scope="col">USD value</th>
                         </tr>
                         </thead>
@@ -40,10 +41,14 @@
                                 {{userCurrencyBalance.balance }}
                             </td>
                             <td>
+                                {{getUsdPrice(userCurrencyBalance) | number : '1.2-2'}}
+                            </td>
+                            <td>
                                 {{getUsdValue(userCurrencyBalance) | number : '1.2-2'}}
                             </td>
                         </tr>
                         <tr>
+                            <td></td>
                             <td></td>
                             <td></td>
                             <td class="font-weight-bold">{{ getTotalUsdBalance(summarizedUserCurrencyBalances) | number : '1.2-2' || '-' }}</td>

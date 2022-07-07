@@ -88,6 +88,7 @@
                         </th>
                         <th class="text-right d-none d-sm-table-cell">Total</th>
                         <th class="text-right">% of value</th>
+                        <th class="text-right">USD price</th>
                         <th class="text-right">USD value <i class="fa fa-sort-amount-desc" aria-hidden="true"></i></th>
                     </tr>
                     </thead>
@@ -110,6 +111,14 @@
                         <td class="text-right" [class.hide-balances]="hideBalances">
                             <span>{{ getUsdValuePercent(currencyBalance) | number : '1.2-2' || '-' }}%</span>
                         </td>
+
+                        <td *ngIf="getUsdPrice(currencyBalance) != null" class="text-right" [class.hide-balances]="hideBalances">
+                            <span>${{ getUsdPrice(currencyBalance) | number : '1.2-2' || '-' }}</span>
+                        </td>
+                        <td *ngIf="getUsdPrice(currencyBalance) == null" class="text-right text-muted" [class.hide-balances]="hideBalances">
+                            <span>N/A</span>
+                        </td>
+
                         <td *ngIf="getUsdValue(currencyBalance) != null" class="text-right" [class.hide-balances]="hideBalances">
                             <span>${{ getUsdValue(currencyBalance) | number : '1.2-2' || '-' }}</span>
                         </td>
@@ -121,6 +130,7 @@
                     <tr>
                         <td class="d-none d-md-table-cell"></td>
                         <td class="d-none d-sm-table-cell"></td>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td class="text-right font-weight-bold" [class.hide-balances]="hideBalances">

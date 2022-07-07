@@ -8,6 +8,10 @@ export interface HasValueInOtherCurrency {
     valueInOtherCurrency?: Map<string, string>;
 }
 
+export interface HasPriceInOtherCurrency {
+    priceInOtherCurrency?: Map<string, string>;
+}
+
 export interface HasBalance {
     balance?: string;
 }
@@ -47,6 +51,7 @@ export interface UpdateBlockchainWalletErrorResponseDto {
 export interface BlockchainWalletCurrencyBalanceResponseDto extends HasBalance {
     currency: string;
     usdBalance?: string;
+    usdPrice?: string;
 }
 
 export interface ExchangeCurrencyBalancesResponseDto {
@@ -63,6 +68,7 @@ export interface ExchangeWalletBalancesResponseDto {
 export interface ExchangeWalletBalancesResponseDto {
     refreshTimeMillis?: number;
     isShowingRealBalance: boolean;
+    pricesInOtherCurrencies: Map<string, Map<string, string>>;
     exchangeCurrencyBalances: ExchangeCurrencyBalancesResponseDto[];
 }
 
@@ -78,7 +84,7 @@ export interface CurrencyAssetSummaryDto extends HasValueInOtherCurrency, HasBal
     description?: string;
 }
 
-export interface CurrencyBalanceSummaryDto extends HasValueInOtherCurrency, HasBalance {
+export interface CurrencyBalanceSummaryDto extends HasValueInOtherCurrency, HasBalance, HasPriceInOtherCurrency {
     currency: string;
     exchanges: ExchangeCurrencySummaryDto[];
     wallets: BlockchainWalletCurrencySummaryDto[];
@@ -110,7 +116,7 @@ export interface UserCurrencyAssetResponseDto extends HasValueInOtherCurrency, H
     description: string;
 }
 
-export interface UserCurrencyAssetSummaryResponseDto extends HasValueInOtherCurrency, HasBalance {
+export interface UserCurrencyAssetSummaryResponseDto extends HasValueInOtherCurrency, HasBalance, HasPriceInOtherCurrency {
     currency: string;
 }
 
