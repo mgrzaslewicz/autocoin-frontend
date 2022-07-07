@@ -20,6 +20,10 @@ html, body {
     min-height: 100%;
 }
 
-.chart-horizontal-center .ngx-charts-outer {
+.chart.horizontal-center .ngx-charts-outer {
     margin: auto;
+}
+
+.chart.hide-balances {
+    filter: blur(0.5rem);
 }

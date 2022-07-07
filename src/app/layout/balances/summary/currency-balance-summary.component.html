@@ -153,7 +153,8 @@
                 <div class="card-body">
                     <div #containerRef style="height: 400px">
                         <ngx-charts-bar-vertical
-                            class="chart-horizontal-center"
+                            class="chart horizontal-center"
+                            [class.hide-balances]="hideBalances"
                             [view]="[containerRef.offsetWidth, containerRef.offsetHeight]"
                             [animations]="false"
                             [showDataLabel]="true"
@@ -180,7 +181,8 @@
                 </div>
                 <div class="card-body">
                     <ngx-charts-pie-chart
-                        class="chart-horizontal-center"
+                        class="chart horizontal-center"
+                        [class.hide-balances]="hideBalances"
                         [view]="[500, 300]"
                         [animations]="false"
                         [scheme]="pieChartColorScheme"
@@ -204,7 +206,8 @@
                 </div>
                 <div class="card-body">
                     <ngx-charts-pie-chart
-                        class="chart-horizontal-center"
+                        class="chart horizontal-center"
+                        [class.hide-balances]="hideBalances"
                         [view]="[400, 300]"
                         [animations]="false"
                         [legendPosition]="'below'"
