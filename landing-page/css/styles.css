@@ -11516,3 +11516,7 @@ html {
 .row.equal-column-height .col-md-6 .card-body {
     height: 150px;
 }
+
+img.customer-feedback {
+    min-width: 325px;
+}
