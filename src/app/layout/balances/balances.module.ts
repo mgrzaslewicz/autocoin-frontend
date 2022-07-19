@@ -17,6 +17,7 @@ import {CurrencyBalanceSummaryDetailsDialog} from "./summary/details-dialog/curr
 import {UserCurrencyAssetAddComponent} from "./currency/edit/user-currency-asset-add.component";
 import {UserCurrencyAssetBalanceComponent} from "./currency/user-currency-asset-balance.component";
 import {CurrencyAssetsInputParser} from "./currency/edit/currency-assets-input-parser.service";
+import {LinkifyModule} from "../../pipes/linkify.module";
 
 @NgModule({
     imports: [
@@ -26,7 +27,8 @@ import {CurrencyAssetsInputParser} from "./currency/edit/currency-assets-input-p
         NgbModule,
         FormsModule,
         DialogModule,
-        NgxChartsModule
+        NgxChartsModule,
+        LinkifyModule
     ],
     declarations: [
         BalancesMenuComponent,
