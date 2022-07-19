@@ -22,6 +22,7 @@ export interface BlockchainWalletResponseDto extends HasBalance {
     currency: string;
     description?: string;
     usdBalance?: string;
+    blockChainExplorerUrl?: string;
 }
 
 export interface AddBlockchainWalletsErrorResponseDto {
