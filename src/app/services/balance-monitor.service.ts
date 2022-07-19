@@ -114,6 +114,8 @@ export interface ExchangeBalanceDto {
 export interface UserCurrencyAssetResponseDto extends HasValueInOtherCurrency, HasBalance {
     id: string;
     currency: string;
+    walletAddress?: string;
+    blockChainExplorerUrl?: string;
     description: string;
 }
 

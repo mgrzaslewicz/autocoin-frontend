@@ -84,6 +84,7 @@
                             <tr>
                                 <th scope="col">Action</th>
                                 <th scope="col">Currency</th>
+                                <th scope="col">Wallet</th>
                                 <th scope="col">Description</th>
                                 <th scope="col">Balance</th>
                                 <th scope="col">USD value</th>
@@ -111,6 +112,14 @@
                                 <th scope="row">
                                     {{userCurrencyAsset.currency}}
                                 </th>
+                                <td>
+                                <span *ngIf="userCurrencyAsset.blockChainExplorerUrl == null" class="wallet-address">
+                                    {{userCurrencyAsset.walletAddress}}
+                                </span>
+                                    <span *ngIf="userCurrencyAsset.blockChainExplorerUrl != null" class="wallet-address">
+                                    <a target="_blank" href="{{userCurrencyAsset.blockChainExplorerUrl}}">{{userCurrencyAsset.walletAddress}}</a>
+                                </span>
+                                </td>
                                 <td [innerHTML]="userCurrencyAsset.description | linkify">
                                 </td>
                                 <td>
