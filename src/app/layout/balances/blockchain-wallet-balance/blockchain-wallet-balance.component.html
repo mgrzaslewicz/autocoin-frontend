@@ -41,10 +41,16 @@
                                 {{currencyBalance.balance }}
                             </td>
                             <td>
-                                {{currencyBalance.usdPrice | number : '1.2-2'}}
+                                <span *ngIf="currencyBalance.usdPrice != null; else displayNotAvailable">{{currencyBalance.usdPrice | number : '1.2-2'}}</span>
+                                <ng-template #displayNotAvailable>
+                                    <span class="text-muted">N/A</span>
+                                </ng-template>
                             </td>
                             <td>
-                                {{currencyBalance.usdBalance | number : '1.2-2'}}
+                                <span *ngIf="currencyBalance.usdBalance != null; else displayNotAvailable">{{currencyBalance.usdBalance | number : '1.2-2'}}</span>
+                                <ng-template #displayNotAvailable>
+                                    <span class="text-muted">N/A</span>
+                                </ng-template>
                             </td>
                         </tr>
                         <tr>
@@ -120,7 +126,10 @@
                                 {{wallet.balance}}
                             </td>
                             <td>
-                                {{wallet.usdBalance | number : '1.2-2'}}
+                                <span *ngIf="wallet.usdBalance != null; else displayNotAvailable">{{wallet.usdBalance | number : '1.2-2'}}</span>
+                                <ng-template #displayNotAvailable>
+                                    <span class="text-muted">N/A</span>
+                                </ng-template>
                             </td>
                         </tr>
                         </tbody>

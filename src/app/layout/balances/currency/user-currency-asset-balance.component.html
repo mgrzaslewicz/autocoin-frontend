@@ -41,10 +41,16 @@
                                 {{userCurrencyBalance.balance }}
                             </td>
                             <td>
-                                {{getUsdPrice(userCurrencyBalance) | number : '1.2-2'}}
+                                <span *ngIf="hasUsdPrice(userCurrencyBalance); else displayNotAvailable">{{getUsdPrice(userCurrencyBalance) | number : '1.2-2'}}</span>
+                                <ng-template #displayNotAvailable>
+                                    <span class="text-muted">N/A</span>
+                                </ng-template>
                             </td>
                             <td>
-                                {{getUsdValue(userCurrencyBalance) | number : '1.2-2'}}
+                                <span *ngIf="hasUsdValue(userCurrencyBalance); else displayNotAvailable">{{getUsdValue(userCurrencyBalance) | number : '1.2-2'}}</span>
+                                <ng-template #displayNotAvailable>
+                                    <span class="text-muted">N/A</span>
+                                </ng-template>
                             </td>
                         </tr>
                         <tr>
@@ -111,7 +117,10 @@
                                     {{userCurrencyAsset.balance}}
                                 </td>
                                 <td>
-                                    {{getUsdValue(userCurrencyAsset) | number : '1.2-2'}}
+                                    <span *ngIf="hasUsdValue(userCurrencyAsset); else displayNotAvailable">{{getUsdValue(userCurrencyAsset) | number : '1.2-2'}}</span>
+                                    <ng-template #displayNotAvailable>
+                                        <span class="text-muted">N/A</span>
+                                    </ng-template>
                                 </td>
                             </tr>
                             </tbody>

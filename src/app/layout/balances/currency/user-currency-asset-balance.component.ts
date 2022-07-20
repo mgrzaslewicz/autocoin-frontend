@@ -119,8 +119,16 @@ export class UserCurrencyAssetBalanceComponent implements OnInit {
             .reduce((acc, val) => acc + val);
     }
 
+    hasUsdValue(it: HasValueInOtherCurrency): boolean {
+        return it.valueInOtherCurrency['USD'] != null;
+    }
+
     getUsdValue(it: HasValueInOtherCurrency): number {
         return Number(it.valueInOtherCurrency['USD']);
+    }
+
+    hasUsdPrice(it: HasPriceInOtherCurrency): boolean {
+        return it.priceInOtherCurrency['USD'] != null;
     }
 
     getUsdPrice(it: HasPriceInOtherCurrency): number {
