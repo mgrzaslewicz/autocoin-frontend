@@ -22,6 +22,7 @@ export class CurrencyAssetsInputParser {
                         currency: currency,
                         balance: balance,
                         description: description,
+                        walletAddress: null,
                     } as AddUserCurrencyAssetRequestDto;
                 } else {
                     return null;

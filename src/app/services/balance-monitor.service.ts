@@ -132,11 +132,13 @@ export interface UpdateUserCurrencyAssetRequestDto extends HasBalance {
     id: string;
     currency: string;
     description?: string;
+    walletAddress?: string;
 }
 
 export interface AddUserCurrencyAssetRequestDto extends HasBalance {
     currency: string;
     description?: string;
+    walletAddress?: string;
 }
 
 @Injectable()

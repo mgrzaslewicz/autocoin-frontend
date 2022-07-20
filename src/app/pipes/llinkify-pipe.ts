@@ -19,11 +19,15 @@ export class LinkifyPipe implements PipeTransform {
     }
 
     transform(value?: string, args?: any): any {
-        let replacedText = value
-            ?.replace(this.urlPattern, '<a href="$&">$&</a>')
-            ?.replace(this.pseudoUrlPattern, '$1<a href="http://$2">$2</a>')
-            ?.replace(this.emailAddressPattern, '<a href="mailto:$&">$&</a>');
-        return this._domSanitizer.bypassSecurityTrustHtml(replacedText);
+        if (value == null) {
+            return null;
+        } else {
+            let replacedText = value
+                ?.replace(this.urlPattern, '<a href="$&">$&</a>')
+                ?.replace(this.pseudoUrlPattern, '$1<a href="http://$2">$2</a>')
+                ?.replace(this.emailAddressPattern, '<a href="mailto:$&">$&</a>');
+            return this._domSanitizer.bypassSecurityTrustHtml(replacedText);
+        }
     }
 
 }

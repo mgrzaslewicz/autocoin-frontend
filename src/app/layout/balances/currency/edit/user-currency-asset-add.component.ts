@@ -14,8 +14,9 @@ import {CurrencyAssetsInputParser} from "./currency-assets-input-parser.service"
 export class UserCurrencyAssetAddComponent implements OnInit {
     currencyCsvInput: string;
     currencyInput: string;
-    userCurrencyDescriptionInput: string;
+    userCurrencyDescriptionInput?: string;
     userCurrencyBalanceInput: string;
+    walletAddressInput?: string;
     isRequestPending: boolean = false;
 
     isAddingMultipleCurrencies = false;
@@ -39,6 +40,7 @@ export class UserCurrencyAssetAddComponent implements OnInit {
                     (response: UserCurrencyAssetResponseDto) => {
                         this.currencyInput = response.currency;
                         this.userCurrencyDescriptionInput = response.description;
+                        this.walletAddressInput = response.walletAddress;
                         this.userCurrencyBalanceInput = response.balance;
                     },
                     (error: HttpErrorResponse) => {
@@ -51,7 +53,8 @@ export class UserCurrencyAssetAddComponent implements OnInit {
 
     private clearInputs() {
         this.currencyCsvInput = '';
-        this.userCurrencyDescriptionInput = '';
+        this.userCurrencyDescriptionInput = null;
+        this.walletAddressInput = null;
         this.currencyInput = '';
     }
 
@@ -69,7 +72,8 @@ export class UserCurrencyAssetAddComponent implements OnInit {
                 addRequestDtos.push({
                     currency: this.currencyInput,
                     balance: this.userCurrencyBalanceInput,
-                    description: this.userCurrencyDescriptionInput
+                    description: this.userCurrencyDescriptionInput,
+                    walletAddress: this.walletAddressInput,
                 } as AddUserCurrencyAssetRequestDto);
             }
             this.balanceMonitorService.addUserCurrencyAssets(addRequestDtos)
@@ -105,7 +109,8 @@ export class UserCurrencyAssetAddComponent implements OnInit {
                 id: this.userCurrencyId,
                 currency: this.currencyInput,
                 description: this.userCurrencyDescriptionInput,
-                balance: this.userCurrencyBalanceInput
+                balance: this.userCurrencyBalanceInput,
+                walletAddress: this.walletAddressInput,
             } as UpdateUserCurrencyAssetRequestDto;
             this.balanceMonitorService.updateUserCurrencyAsset(updateUserCurrencyRequest)
                 .subscribe(
