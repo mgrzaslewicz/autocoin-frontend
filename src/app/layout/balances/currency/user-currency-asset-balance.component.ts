@@ -27,6 +27,8 @@ export class UserCurrencyAssetBalanceComponent implements OnInit {
     summarizedUserCurrencyBalances: UserCurrencyAssetSummaryResponseDto[] = [];
     userCurrencyAssets: UserCurrencyAssetResponseDto[] = [];
 
+    private totalUsdValue: number;
+
     constructor(private balanceMonitorService: BalanceMonitorService,
                 private toastService: ToastService,
                 private router: Router) {
@@ -44,6 +46,7 @@ export class UserCurrencyAssetBalanceComponent implements OnInit {
                     this.isFetchCurrencyBalancesRequestPending = false;
                     this.userCurrencyAssets = response.userCurrencyAssets.sort((a, b) => a.currency.localeCompare(b.currency));
                     this.summarizedUserCurrencyBalances = response.userCurrencyAssetsSummary.sort((a, b) => a.currency.localeCompare(b.currency));
+                    this.totalUsdValue = this.getTotalUsdValue(this.summarizedUserCurrencyBalances);
                 },
                 (error: HttpErrorResponse) => {
                     console.error(error);
@@ -133,5 +136,15 @@ export class UserCurrencyAssetBalanceComponent implements OnInit {
 
     getUsdPrice(it: HasPriceInOtherCurrency): number {
         return Number(it.priceInOtherCurrency['USD']);
+    }
+
+    private getTotalUsdValue(currencyBalances: HasValueInOtherCurrency[]): number {
+        return currencyBalances
+            .map(it => Number(it.valueInOtherCurrency['USD']))
+            .reduce((acc, val) => acc + val);
+    }
+
+    getUsdValuePercent(currencyBalance: HasValueInOtherCurrency): number {
+        return Number(currencyBalance.valueInOtherCurrency['USD']) * 100 / this.totalUsdValue;
     }
 }

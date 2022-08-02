@@ -97,12 +97,11 @@ export interface BalanceSummaryResponseDto {
     currencyBalances: CurrencyBalanceSummaryDto[];
 }
 
-export interface ExchangeCurrencyBalanceDto extends HasValueInOtherCurrency {
+export interface ExchangeCurrencyBalanceDto extends HasValueInOtherCurrency, HasPriceInOtherCurrency {
     currencyCode: string;
     amountAvailable: string;
     amountInOrders: string;
     totalAmount: string;
-    priceInOtherCurrency?: Map<string, string>;
 }
 
 export interface ExchangeBalanceDto {

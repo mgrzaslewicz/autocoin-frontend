@@ -26,10 +26,11 @@
                     <table class="table table-striped table-sm table-hover">
                         <thead>
                         <tr>
-                            <th scope="col">Currency</th>
-                            <th scope="col">Total</th>
-                            <th scope="col">USD price</th>
-                            <th scope="col">USD value</th>
+                            <th>Currency</th>
+                            <th>Total</th>
+                            <th class="text-right">% of value</th>
+                            <th class="text-right">USD price</th>
+                            <th class="text-right">USD value</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -40,14 +41,21 @@
                             <td>
                                 {{currencyBalance.balance }}
                             </td>
-                            <td>
-                                <span *ngIf="currencyBalance.usdPrice != null; else displayNotAvailable">{{currencyBalance.usdPrice | number : '1.2-2'}}</span>
+                            <td class="text-right">
+                                <span>{{ getUsdValuePercent(currencyBalance) | number : '1.2-2' || '-' }}%</span>
+                            </td>
+                            <td class="text-right">
+                                <span *ngIf="currencyBalance.usdPrice != null; else displayNotAvailable">
+                                    {{currencyBalance.usdPrice | number : '1.2-2'}}
+                                </span>
                                 <ng-template #displayNotAvailable>
                                     <span class="text-muted">N/A</span>
                                 </ng-template>
                             </td>
-                            <td>
-                                <span *ngIf="currencyBalance.usdBalance != null; else displayNotAvailable">{{currencyBalance.usdBalance | number : '1.2-2'}}</span>
+                            <td class="text-right">
+                                <span *ngIf="currencyBalance.usdBalance != null; else displayNotAvailable">
+                                    {{currencyBalance.usdBalance | number : '1.2-2'}}
+                                </span>
                                 <ng-template #displayNotAvailable>
                                     <span class="text-muted">N/A</span>
                                 </ng-template>
@@ -57,7 +65,8 @@
                             <td></td>
                             <td></td>
                             <td></td>
-                            <td class="font-weight-bold">{{ getTotalUsdBalance(currencyBalances) | number : '1.2-2' || '-' }}</td>
+                            <td></td>
+                            <td class="font-weight-bold text-right">{{ getTotalUsdBalance(currencyBalances) | number : '1.2-2' || '-' }}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -81,12 +90,12 @@
                     <table class="table table-striped table-sm table-hover">
                         <thead>
                         <tr>
-                            <th scope="col">Action</th>
-                            <th scope="col">Currency</th>
-                            <th scope="col">Wallet</th>
-                            <th scope="col">Description</th>
-                            <th scope="col">Balance</th>
-                            <th scope="col">USD value</th>
+                            <th>Action</th>
+                            <th>Currency</th>
+                            <th>Wallet</th>
+                            <th class="d-none d-md-table-cell">Description</th>
+                            <th>Balance</th>
+                            <th class="text-right d-none d-sm-table-cell">USD value</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -120,12 +129,12 @@
                                     <a target="_blank" href="{{wallet.blockChainExplorerUrl}}">{{wallet.walletAddress}}</a>
                                 </span>
                             </td>
-                            <td [innerHTML]="wallet.description | linkify">
+                            <td [innerHTML]="wallet.description | linkify" class="d-none d-md-table-cell">
                             </td>
                             <td>
                                 {{wallet.balance}}
                             </td>
-                            <td>
+                            <td class="text-right d-none d-sm-table-cell">
                                 <span *ngIf="wallet.usdBalance != null; else displayNotAvailable">{{wallet.usdBalance | number : '1.2-2'}}</span>
                                 <ng-template #displayNotAvailable>
                                     <span class="text-muted">N/A</span>

@@ -17,6 +17,7 @@ interface CurrencyBalanceTableRow {
     blockedInOrders: number;
     total: number;
     usdValue?: number;
+    usdValuePercent?: number;
     usdPrice?: number;
 }
 
@@ -117,9 +118,10 @@ export class ExchangeBalanceComponent implements OnInit, OnDestroy {
         return sum;
     }
 
-    getSortedBalances(currencyBalances: ExchangeCurrencyBalanceDto[]): CurrencyBalanceTableRow[] {
-        return this.getSortedCurrencyTableRows(currencyBalances
-            .map(currencyBalance => this.toCurrencyBalanceTableRow(currencyBalance))
+    getSortedCurrencyBalances(exchangeBalance: ExchangeBalanceDto): CurrencyBalanceTableRow[] {
+        const totalExchangeUsdValue = this.getTotalExchangeUsdValue(exchangeBalance);
+        return this.getSortedCurrencyTableRows(exchangeBalance.currencyBalances
+            .map(currencyBalance => this.toCurrencyBalanceTableRow(currencyBalance, totalExchangeUsdValue))
         );
     }
 
@@ -129,13 +131,14 @@ export class ExchangeBalanceComponent implements OnInit, OnDestroy {
             .sort((a, b) => b.usdValue - a.usdValue);
     }
 
-    private toCurrencyBalanceTableRow(currencyBalance: ExchangeCurrencyBalanceDto): CurrencyBalanceTableRow {
+    private toCurrencyBalanceTableRow(currencyBalance: ExchangeCurrencyBalanceDto, totalExchangeUsdValue: number): CurrencyBalanceTableRow {
         return {
             currencyCode: currencyBalance.currencyCode,
             available: Number(currencyBalance.amountAvailable),
             blockedInOrders: Number(currencyBalance.amountInOrders),
             total: Number(currencyBalance.totalAmount),
-            usdValue: Number(currencyBalance.valueInOtherCurrency["USD"])
+            usdValue: Number(currencyBalance.valueInOtherCurrency["USD"]),
+            usdValuePercent: totalExchangeUsdValue > 0 ? Number(currencyBalance.valueInOtherCurrency["USD"]) / totalExchangeUsdValue * 100 : null,
         };
     }
 
@@ -217,10 +220,14 @@ export class ExchangeBalanceComponent implements OnInit, OnDestroy {
                 });
             });
         });
+        result.forEach((value, key) => {
+            value.usdValuePercent = value.usdValue != null ? value.usdValue / this.totalUsdValue * 100 : null;
+        });
         return Array.from(result.values());
     }
 
-    private getBalancesGroupedByExchangeUser(exchangeBalances: ExchangeBalanceDto[]): CurrencyBalanceTableRow[] {
+    private getBalancesGroupedByExchangeUser(exchangeCurrencyBalances: ExchangeCurrencyBalancesResponseDto): CurrencyBalanceTableRow[] {
+        const exchangeBalances: ExchangeBalanceDto[] = exchangeCurrencyBalances.exchangeBalances;
         let result: Map<string, CurrencyBalanceTableRow> = new Map();
         exchangeBalances.forEach(exchangeBalance => {
             exchangeBalance.currencyBalances.forEach(currencyBalance => {
@@ -242,6 +249,10 @@ export class ExchangeBalanceComponent implements OnInit, OnDestroy {
                     });
                 }
             });
+        });
+        const totalExchangeUserUsdValue = this.getTotalExchangeUserUsdValue(exchangeCurrencyBalances);
+        result.forEach((value, key) => {
+            value.usdValuePercent = value.usdValue != null ? value.usdValue / totalExchangeUserUsdValue * 100 : null;
         });
         return Array.from(result.values());
     }

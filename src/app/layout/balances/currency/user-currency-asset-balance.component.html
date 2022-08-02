@@ -26,10 +26,11 @@
                     <table class="table table-striped table-sm table-hover">
                         <thead>
                         <tr>
-                            <th scope="col">Currency</th>
-                            <th scope="col">Total</th>
-                            <th scope="col">USD price</th>
-                            <th scope="col">USD value</th>
+                            <th>Currency</th>
+                            <th>Total</th>
+                            <th class="text-right">% of value</th>
+                            <th class="text-right">USD price</th>
+                            <th class="text-right">USD value</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -40,13 +41,16 @@
                             <td>
                                 {{userCurrencyBalance.balance }}
                             </td>
-                            <td>
+                            <td class="text-right">
+                                <span>{{ getUsdValuePercent(userCurrencyBalance) | number : '1.2-2' || '-' }}%</span>
+                            </td>
+                            <td class="text-right">
                                 <span *ngIf="hasUsdPrice(userCurrencyBalance); else displayNotAvailable">{{getUsdPrice(userCurrencyBalance) | number : '1.2-2'}}</span>
                                 <ng-template #displayNotAvailable>
                                     <span class="text-muted">N/A</span>
                                 </ng-template>
                             </td>
-                            <td>
+                            <td class="text-right">
                                 <span *ngIf="hasUsdValue(userCurrencyBalance); else displayNotAvailable">{{getUsdValue(userCurrencyBalance) | number : '1.2-2'}}</span>
                                 <ng-template #displayNotAvailable>
                                     <span class="text-muted">N/A</span>
@@ -57,7 +61,8 @@
                             <td></td>
                             <td></td>
                             <td></td>
-                            <td class="font-weight-bold">{{ getTotalUsdBalance(summarizedUserCurrencyBalances) | number : '1.2-2' || '-' }}</td>
+                            <td></td>
+                            <td class="font-weight-bold text-right">{{ getTotalUsdBalance(summarizedUserCurrencyBalances) | number : '1.2-2' || '-' }}</td>
                         </tr>
                         </tbody>
                     </table>

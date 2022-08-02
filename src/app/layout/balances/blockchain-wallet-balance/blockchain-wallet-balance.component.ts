@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {routerTransition} from '../../../router.animations';
-import {BalanceMonitorService, BlockchainWalletResponseDto, BlockchainWalletCurrencyBalanceResponseDto} from "../../../services/balance-monitor.service";
+import {BalanceMonitorService, BlockchainWalletCurrencyBalanceResponseDto, BlockchainWalletResponseDto} from "../../../services/balance-monitor.service";
 import {WalletsInputParser} from "./edit/wallets-input-parser";
 import {ToastService} from "../../../services/toast.service";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -37,6 +37,7 @@ export class BlockchainWalletBalanceComponent implements OnInit {
     isFetchCurrencyBalancesRequestPending: boolean = false;
     wallets: BlockchainWalletResponseDto[] = [];
     currencyBalances: BlockchainWalletCurrencyBalanceResponseDto[] = [];
+    private totalUsdValue: number;
 
     constructor(private balanceMonitorService: BalanceMonitorService,
                 private walletsInputParser: WalletsInputParser,
@@ -76,6 +77,7 @@ export class BlockchainWalletBalanceComponent implements OnInit {
                 (currencyBalances: BlockchainWalletCurrencyBalanceResponseDto[]) => {
                     this.isFetchCurrencyBalancesRequestPending = false;
                     this.currencyBalances = currencyBalances.sort((a, b) => a.currency.localeCompare(b.currency));
+                    this.totalUsdValue = this.getTotalUsdValue(this.currencyBalances);
                 },
                 (error: HttpErrorResponse) => {
                     console.error(error);
@@ -83,6 +85,16 @@ export class BlockchainWalletBalanceComponent implements OnInit {
                     this.toastService.danger('Something went wrong, could not get summary of your wallets');
                 }
             );
+    }
+
+    getUsdValuePercent(currencyBalance: BlockchainWalletCurrencyBalanceResponseDto): number {
+        return Number(currencyBalance.usdBalance) * 100 / this.totalUsdValue;
+    }
+
+    private getTotalUsdValue(currencyBalances: BlockchainWalletCurrencyBalanceResponseDto[]): number {
+        return currencyBalances
+            .map(it => Number(it.usdBalance))
+            .reduce((acc, val) => acc + val);
     }
 
     goToAddNewWalletView() {
