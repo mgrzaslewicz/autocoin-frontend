@@ -129,7 +129,9 @@
                                     <a target="_blank" href="{{wallet.blockChainExplorerUrl}}">{{wallet.walletAddress}}</a>
                                 </span>
                             </td>
-                            <td [innerHTML]="wallet.description | linkify" class="d-none d-md-table-cell">
+                            <td class="d-none d-md-table-cell">
+                                <span *ngIf="wallet.description != null" [innerHTML]="wallet.description | linkify"></span>
+                                <span *ngIf="wallet.description == null" class="text-muted">N/A</span>
                             </td>
                             <td>
                                 {{wallet.balance}}
