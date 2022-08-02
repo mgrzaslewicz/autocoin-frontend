@@ -118,9 +118,14 @@
                                     {{userCurrencyAsset.currency}}
                                 </th>
                                 <td>
-                                <span *ngIf="userCurrencyAsset.blockChainExplorerUrl == null" class="wallet-address">
-                                    {{userCurrencyAsset.walletAddress}}
-                                </span>
+                                    <ng-container *ngIf="userCurrencyAsset.blockChainExplorerUrl == null" class="wallet-address">
+                                        <ng-container *ngIf="userCurrencyAsset.walletAddress != null">
+                                            <span>{{userCurrencyAsset.walletAddress}}</span>
+                                        </ng-container>
+                                        <ng-container *ngIf="userCurrencyAsset.walletAddress == null">
+                                            <span class="text-muted">N/A</span>
+                                        </ng-container>
+                                    </ng-container>
                                     <span *ngIf="userCurrencyAsset.blockChainExplorerUrl != null" class="wallet-address">
                                     <a target="_blank" href="{{userCurrencyAsset.blockChainExplorerUrl}}">{{userCurrencyAsset.walletAddress}}</a>
                                 </span>
