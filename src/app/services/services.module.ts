@@ -11,6 +11,7 @@ import {UserAccountService} from './user-account.service';
 import {ExchangeKeyCapabilityService} from './exchange-key-capability.service';
 import {
     ArbitrageMonitorEndpointUrlToken,
+    AuthServiceBaseUrlToken,
     BalanceMonitorApiBaseUrlToken,
     ChangePasswordEndpointUrlToken,
     ChangePasswordWithResetPasswordTokenEndpointUrlToken,
@@ -46,6 +47,7 @@ import {BalanceMonitorService} from "./balance-monitor.service";
         {provide: BalanceMonitorApiBaseUrlToken, useValue: environment.balanceMonitorApiBaseUrl},
         {provide: ChangePasswordEndpointUrlToken, useValue: environment.changePasswordEndpointUrl},
         {provide: RequestEmailWithResetPasswordTokenEndpointUrlToken, useValue: environment.requestEmailWithResetPasswordTokenEndpointUrl},
+        {provide: AuthServiceBaseUrlToken, useValue: environment.authServiceEndpointUrl},
         {provide: ChangePasswordWithResetPasswordTokenEndpointUrlToken, useValue: environment.changePasswordWithResetPasswordTokenEndpointUrl},
         {provide: OrdersEndpointUrlToken, useValue: environment.ordersEndpointUrl},
         {provide: ExchangeKeysCapabilityEndpointUrlToken, useValue: environment.exchangeKeysCapabilityEndpointUrl},

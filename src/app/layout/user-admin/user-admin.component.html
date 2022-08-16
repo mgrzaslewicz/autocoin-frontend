@@ -1,0 +1,31 @@
+<app-page-header [heading]="'User admin'"></app-page-header>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">Add or remove role to user</div>
+            <div class="card-body">
+                <div class="col is-2 pr-0">
+                    <div class="form-group">
+                        <label>User email address</label>
+                        <input [(ngModel)]="userEmailAddress" required type="text" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Role name</label>
+                        <input [(ngModel)]="roleNameToAddOrRemove" required type="text" class="form-control">
+                    </div>
+                    <button (click)="addRole()" [disabled]="isOperationInProgress"
+                            class="btn btn-success mr-1">
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i> Add role
+                    </button>
+                    <button (click)="removeRole()" [disabled]="isOperationInProgress"
+                            class="btn btn-danger">
+                        <i class="fa fa-minus-circle" aria-hidden="true"></i> Remove role
+                    </button>
+                    <div *ngFor="let errorMessage of errorMessages">
+                        <span class="badge badge-warning">{{ errorMessage }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

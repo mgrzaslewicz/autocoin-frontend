@@ -4,6 +4,7 @@ import {FeatureToggle, FeatureToggleToken} from './feature.toogle.service';
 import {Observable} from 'rxjs';
 import {AuthService, ClientTokenResponseDto} from './auth.service';
 import {
+    AuthServiceBaseUrlToken,
     ChangePasswordEndpointUrlToken,
     ChangePasswordWithResetPasswordTokenEndpointUrlToken,
     RequestEmailWithResetPasswordTokenEndpointUrlToken,
@@ -28,6 +29,16 @@ export interface ResetUserAccountPasswordWithTokenRequestDto {
     resetPasswordToken: string;
 }
 
+export interface AddRoleToUserRequestDto {
+    userEmailAddress: string;
+    roleName: string;
+}
+
+export interface RemoveRoleFromUserRequestDto {
+    userEmailAddress: string;
+    roleName: string;
+}
+
 @Injectable()
 export class UserAccountService {
 
@@ -36,6 +47,7 @@ export class UserAccountService {
         @Inject(TwoFactorAuthenticationEndpointUrlToken) private twoFactorAuthenticationEndpointUrl: string,
         @Inject(ChangePasswordEndpointUrlToken) private changePasswordEndpointUrl: string,
         @Inject(RequestEmailWithResetPasswordTokenEndpointUrlToken) private requestEmailWithResetPasswordTokenEndpointUrlToken: string,
+        @Inject(AuthServiceBaseUrlToken) private authServiceBaseUrl: string,
         @Inject(ChangePasswordWithResetPasswordTokenEndpointUrlToken) private changePasswordWithResetPasswordTokenEndpointUrlToken: string,
         @Inject(FeatureToggleToken) private featureToggle: FeatureToggle,
         private authService: AuthService,
@@ -112,6 +124,28 @@ export class UserAccountService {
                 console.error('Request to get client token failed');
                 this.toastService.warning('Something went wrong, please try again later');
             });
+    }
+
+    public addRoleToUser(role: string, userEmailAddress: string): Observable<string> {
+        return this.http.put(`${this.authServiceBaseUrl}/user-accounts/role`, {
+                userEmailAddress: userEmailAddress,
+                roleName: role
+            } as AddRoleToUserRequestDto,
+            {responseType: 'text'}
+        );
+    }
+
+    public removeRoleFromUser(role: string, userEmailAddress: string): Observable<string> {
+        return this.http.request('delete', `${this.authServiceBaseUrl}/user-accounts/role`, {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+            }),
+            body: {
+                userEmailAddress: userEmailAddress,
+                roleName: role
+            } as RemoveRoleFromUserRequestDto,
+            responseType: 'text'
+        });
     }
 
 }

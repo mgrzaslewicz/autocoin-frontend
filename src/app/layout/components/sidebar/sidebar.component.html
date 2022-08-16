@@ -20,6 +20,10 @@
             <i class="fa fa-fw fa-heartbeat"></i>&nbsp;{{ 'Health' | translate }}
         </a>
 
+        <a routerLink="/user-admin" [routerLinkActive]="['router-link-active']" class="list-group-item" *ngIf="isUserAdminTabAvailable">
+            <i class="fa fa-users"></i>&nbsp;{{ 'User admin' | translate }}
+        </a>
+
         <a routerLink="/settings" [routerLinkActive]="['router-link-active']" class="list-group-item">
             <i class="fa fa-fw fa-cog"></i>&nbsp;{{ 'Settings' | translate }}
         </a>

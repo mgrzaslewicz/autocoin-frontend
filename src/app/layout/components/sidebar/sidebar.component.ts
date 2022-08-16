@@ -11,6 +11,7 @@ import {Router} from "@angular/router";
 export class SidebarComponent {
     isActive = false;
     isHealthTabAvailable = false;
+    isUserAdminTabAvailable = false;
     showMenu = '';
 
     constructor(
@@ -19,6 +20,7 @@ export class SidebarComponent {
         private router: Router
     ) {
         this.isHealthTabAvailable = featureToggle.isActive(FEATURE_HEALTH);
+        this.isUserAdminTabAvailable = authService.isAdmin();
     }
 
     eventCalled() {

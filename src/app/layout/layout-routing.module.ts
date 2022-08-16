@@ -35,6 +35,11 @@ const routes: Routes = [
                 canActivate: [AllowOnlyShouldNotChangePasswordGuard]
             },
             {
+                path: 'user-admin',
+                loadChildren: () => import('./user-admin/user-admin.module').then(m => m.userAdminModule),
+                canActivate: [AllowOnlyShouldNotChangePasswordGuard]
+            },
+            {
                 path: 'settings',
                 loadChildren: () => import('./settings/settings.module').then(m => m.SettingsModule)
             }

@@ -6,6 +6,7 @@ export const BalanceMonitorApiBaseUrlToken = new InjectionToken('BalanceMonitorE
 export const TwoFactorAuthenticationEndpointUrlToken = new InjectionToken('TwoFactorAuthenticationEndpointUrlToken');
 export const ChangePasswordEndpointUrlToken = new InjectionToken('ChangePasswordEndpointUrlToken');
 export const RequestEmailWithResetPasswordTokenEndpointUrlToken = new InjectionToken('RequestEmailWithResetPasswordTokenEndpointUrlToken');
+export const AuthServiceBaseUrlToken = new InjectionToken('AuthServiceBaseUrlToken');
 export const ChangePasswordWithResetPasswordTokenEndpointUrlToken = new InjectionToken('ChangePasswordWithResetPasswordTokenEndpointUrlToken ');
 export const OrdersEndpointUrlToken = new InjectionToken('OrdersEndpointUrlToken');
 export const ExchangeKeysCapabilityEndpointUrlToken = new InjectionToken('ExchangeKeysCapabilityEndpointUrlToken');

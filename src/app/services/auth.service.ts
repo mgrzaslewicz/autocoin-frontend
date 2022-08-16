@@ -210,4 +210,8 @@ export class AuthService {
         return this.getUserRoles()
             .indexOf(roleName) !== -1;
     }
+
+    isAdmin() {
+        return this.isRoleAssignedToUser('ROLE_ADMIN');
+    }
 }
