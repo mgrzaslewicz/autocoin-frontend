@@ -173,7 +173,6 @@ export class CurrencyBalanceSummaryComponent implements OnInit {
     }
 
     private setBalanceSummary(balanceSummaryResponse: BalanceSummaryResponseDto) {
-        this.isShowingRealBalance = balanceSummaryResponse.isShowingRealBalance;
         const sortedCurrencyBalances = balanceSummaryResponse.currencyBalances.sort((a, b) => this.getUsdValue(b) - this.getUsdValue(a));
         this.currencyBalances = sortedCurrencyBalances;
         this.currencySummaryChartData = this.getCurrencySummaryChartData();
