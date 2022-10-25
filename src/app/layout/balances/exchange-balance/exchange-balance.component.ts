@@ -66,7 +66,6 @@ export class ExchangeBalanceComponent implements OnInit, OnDestroy {
         this.exchangeCurrencyBalances = exchangeWalletBalancesResponse.exchangeCurrencyBalances;
         this.pricesInOtherCurrencies = exchangeWalletBalancesResponse.pricesInOtherCurrencies;
         this.synchronizationTimeMillis = exchangeWalletBalancesResponse.refreshTimeMillis;
-        this.isShowingRealBalance = exchangeWalletBalancesResponse.isShowingRealBalance;
         this.totalUsdValue = this.getTotalUsdValue();
         this.totalExchangeWalletBalances = this.getBalancesGroupedByCurrency(this.exchangeCurrencyBalances);
     }
