@@ -14,7 +14,8 @@ interface LiveOpportunitiesFilter {
     orderBookAmountThresholdIndexSelected: number;
     baseCurrencyBlackList: string[];
     counterCurrencyBlackList: string[];
-    exchangeBlackList: string[];
+    exchangeBuySideBlackList: string[];
+    exchangeSellSideBlackList: string[];
 }
 
 @Component({
@@ -41,7 +42,8 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
     selectedBaseCurrenciesMonitored: string[] = [];
     counterCurrenciesMonitored: string[] = [];
     selectedCounterCurrenciesMonitored: string[] = [];
-    selectedExchanges: string[] = [];
+    selectedBuySideExchanges: string[] = [];
+    selectedSellSideExchanges: string[] = [];
 
     orderBookUsdAmountThresholds: number[] = [];
     orderBookUsdAmountThresholdsIndexes: number[] = [];
@@ -57,7 +59,8 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
         orderBookAmountThresholdIndexSelected: 0,
         baseCurrencyBlackList: [],
         counterCurrencyBlackList: [],
-        exchangeBlackList: []
+        exchangeBuySideBlackList: [],
+        exchangeSellSideBlackList: [],
     };
 
     opportunitiesFilter: LiveOpportunitiesFilter = Object.create(this.defaultOpportunitiesFilter);
@@ -122,6 +125,41 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
         }
     }
 
+    private selectAllExchanges() {
+        this.selectedBuySideExchanges = this.exchangesSupportedForMonitoring
+            .slice(0, this.exchangesSupportedForMonitoring.length)
+            .sort((a, b) => {
+                return a.localeCompare(b);
+            });
+        this.selectedSellSideExchanges = this.exchangesSupportedForMonitoring
+            .slice(0, this.exchangesSupportedForMonitoring.length)
+            .sort((a, b) => {
+                return a.localeCompare(b);
+            });
+    }
+
+    private reflectSelectedExchangesInFilter() {
+        this.selectAllExchanges();
+        this.removeBlacklistedExchangesFromSelected();
+    }
+
+    private reflectSelectedCurrenciesInFilter() {
+        this.selectedBaseCurrenciesMonitored = this.baseCurrenciesMonitored.slice(0, this.baseCurrenciesMonitored.length);
+        this.opportunitiesFilter.baseCurrencyBlackList.forEach(item => {
+            const indexToRemove = this.selectedBaseCurrenciesMonitored.indexOf(item);
+            if (indexToRemove >= 0) {
+                this.selectedBaseCurrenciesMonitored.splice(indexToRemove, 1);
+            }
+        });
+        this.selectedCounterCurrenciesMonitored = this.counterCurrenciesMonitored.slice(0, this.counterCurrenciesMonitored.length);
+        this.opportunitiesFilter.counterCurrencyBlackList.forEach(item => {
+            const indexToRemove = this.selectedCounterCurrenciesMonitored.indexOf(item);
+            if (indexToRemove >= 0) {
+                this.selectedCounterCurrenciesMonitored.splice(indexToRemove, 1);
+            }
+        });
+    }
+
     fetchArbitrageMetadata() {
         this.arbitrageMonitorService.getArbitrageMetadata()
             .subscribe(arbitrageMetadata => {
@@ -129,34 +167,14 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
                 this.defaultTransactionFeePercent = arbitrageMetadata.defaultTransactionFeePercent;
                 this.isIncludingProPlanOpportunities = arbitrageMetadata.isIncludingProPlanOpportunities;
                 this.exchangesSupportedForMonitoring = arbitrageMetadata.exchangesMonitored;
-                this.selectedExchanges = this.exchangesSupportedForMonitoring
-                    .slice(0, this.exchangesSupportedForMonitoring.length)
-                    .sort((a, b) => {
-                        return a.localeCompare(b);
-                    });
-
-                this.removeBlacklistedExchangesFromSelected();
-
                 this.baseCurrenciesMonitored = arbitrageMetadata.baseCurrenciesMonitored.sort((a, b) => {
                     return a.localeCompare(b);
-                });
-                this.selectedBaseCurrenciesMonitored = this.baseCurrenciesMonitored.slice(0, this.baseCurrenciesMonitored.length);
-                this.opportunitiesFilter.baseCurrencyBlackList.forEach(item => {
-                    const indexToRemove = this.selectedBaseCurrenciesMonitored.indexOf(item);
-                    if (indexToRemove >= 0) {
-                        this.selectedBaseCurrenciesMonitored.splice(indexToRemove, 1);
-                    }
                 });
                 this.counterCurrenciesMonitored = arbitrageMetadata.counterCurrenciesMonitored.sort((a, b) => {
                     return a.localeCompare(b);
                 });
-                this.selectedCounterCurrenciesMonitored = this.counterCurrenciesMonitored.slice(0, this.counterCurrenciesMonitored.length);
-                this.opportunitiesFilter.counterCurrencyBlackList.forEach(item => {
-                    const indexToRemove = this.selectedCounterCurrenciesMonitored.indexOf(item);
-                    if (indexToRemove >= 0) {
-                        this.selectedCounterCurrenciesMonitored.splice(indexToRemove, 1);
-                    }
-                });
+                this.reflectSelectedExchangesInFilter();
+                this.reflectSelectedCurrenciesInFilter();
             });
     }
 
@@ -234,11 +252,19 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
         return this.orderBookUsdAmountThresholds[this.opportunitiesFilter.orderBookAmountThresholdIndexSelected];
     }
 
-    isShowingExchange(exchangeName?: string): boolean {
+    isShowingBuySideExchange(exchangeName?: string): boolean {
         if (exchangeName == null) {
             return true;
         } else {
-            return this.opportunitiesFilter.exchangeBlackList.indexOf(exchangeName.toLowerCase()) < 0;
+            return this.opportunitiesFilter.exchangeBuySideBlackList.indexOf(exchangeName.toLowerCase()) < 0;
+        }
+    }
+
+    isShowingSellSideExchange(exchangeName?: string): boolean {
+        if (exchangeName == null) {
+            return true;
+        } else {
+            return this.opportunitiesFilter.exchangeSellSideBlackList.indexOf(exchangeName.toLowerCase()) < 0;
         }
     }
 
@@ -291,29 +317,54 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
         this.saveOpportunitiesFilter();
     }
 
-    removeExchangeFromBlackList(exchangeName: string | any) {
-        const index = this.opportunitiesFilter.exchangeBlackList.indexOf(exchangeName);
+    removeExchangeBuySideFromBlackList(exchangeName: string | any) {
+        const index = this.opportunitiesFilter.exchangeBuySideBlackList.indexOf(exchangeName);
         if (index >= 0) {
-            this.opportunitiesFilter.exchangeBlackList.splice(index, 1);
+            this.opportunitiesFilter.exchangeBuySideBlackList.splice(index, 1);
             this.saveOpportunitiesFilter();
         }
     }
 
-    addExchangeToBlackList(event: any) {
-        this.opportunitiesFilter.exchangeBlackList.push(event.value);
+    removeExchangeSellSideFromBlackList(exchangeName: string | any) {
+        const index = this.opportunitiesFilter.exchangeSellSideBlackList.indexOf(exchangeName);
+        if (index >= 0) {
+            this.opportunitiesFilter.exchangeSellSideBlackList.splice(index, 1);
+            this.saveOpportunitiesFilter();
+        }
+    }
+
+    addExchangeBuySideToBlackList(event: any) {
+        this.opportunitiesFilter.exchangeBuySideBlackList.push(event.value);
         this.saveOpportunitiesFilter();
     }
 
-    addAllExchangesToBlackList() {
-        this.opportunitiesFilter.exchangeBlackList = this.exchangesSupportedForMonitoring.slice(0, this.exchangesSupportedForMonitoring.length);
+    addExchangeSellSideToBlackList(event: any) {
+        this.opportunitiesFilter.exchangeSellSideBlackList.push(event.value);
         this.saveOpportunitiesFilter();
     }
 
-    clearExchangesBlackList() {
-        this.opportunitiesFilter.exchangeBlackList = [];
-        this.selectedExchanges = this.exchangesSupportedForMonitoring.slice(0, this.exchangesSupportedForMonitoring.length);
+    addAllExchangesBuySideToBlackList() {
+        this.opportunitiesFilter.exchangeBuySideBlackList = this.exchangesSupportedForMonitoring.slice(0, this.exchangesSupportedForMonitoring.length);
         this.saveOpportunitiesFilter();
     }
+
+    addAllExchangesSellSideToBlackList() {
+        this.opportunitiesFilter.exchangeSellSideBlackList = this.exchangesSupportedForMonitoring.slice(0, this.exchangesSupportedForMonitoring.length);
+        this.saveOpportunitiesFilter();
+    }
+
+    clearExchangesBuySideBlackList() {
+        this.opportunitiesFilter.exchangeBuySideBlackList = [];
+        this.selectedBuySideExchanges = this.exchangesSupportedForMonitoring.slice(0, this.exchangesSupportedForMonitoring.length);
+        this.saveOpportunitiesFilter();
+    }
+
+    clearExchangesSellSideBlackList() {
+        this.opportunitiesFilter.exchangeSellSideBlackList = [];
+        this.selectedSellSideExchanges = this.exchangesSupportedForMonitoring.slice(0, this.exchangesSupportedForMonitoring.length);
+        this.saveOpportunitiesFilter();
+    }
+
 
     private getNumber(value: any, defaultValue: number): number {
         if (value === '' || value === null) {
@@ -378,8 +429,8 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
                 const isMeetingBaseCurrencyCriteria = this.opportunitiesFilter.baseCurrencyBlackList.indexOf(item.baseCurrency) < 0;
                 const isMeetingCounterCurrencyCriteria = this.opportunitiesFilter.counterCurrencyBlackList.indexOf(item.counterCurrency) < 0;
 
-                return this.isShowingExchange(item.sellAtExchange) &&
-                    this.isShowingExchange(item.buyAtExchange) &&
+                return this.isShowingBuySideExchange(item.buyAtExchange) &&
+                    this.isShowingSellSideExchange(item.sellAtExchange) &&
                     isMeetingMinRelativePercentCriteria &&
                     isMeetingMaxRelativePercentCriteria &&
                     isMeetingVolumeCriteria &&
@@ -392,8 +443,11 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
     }
 
     private removeBlacklistedExchangesFromSelected() {
-        this.opportunitiesFilter.exchangeBlackList.forEach(it => {
-            this.selectedExchanges.splice(this.selectedExchanges.indexOf(it), 1);
+        this.opportunitiesFilter.exchangeBuySideBlackList.forEach(it => {
+            this.selectedBuySideExchanges.splice(this.selectedBuySideExchanges.indexOf(it), 1);
+        });
+        this.opportunitiesFilter.exchangeSellSideBlackList.forEach(it => {
+            this.selectedSellSideExchanges.splice(this.selectedSellSideExchanges.indexOf(it), 1);
         });
     }
 
@@ -401,4 +455,5 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
         this.opportunitiesFilter = Object.create(this.defaultOpportunitiesFilter);
         this.saveOpportunitiesFilter();
     }
+
 }

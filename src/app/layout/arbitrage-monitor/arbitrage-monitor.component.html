@@ -51,33 +51,64 @@
                 <div class="card-body">
                     <h5 class="card-title">Exchanges</h5>
                     <div>
+                        <div>
             <span>
-                Selected {{selectedExchanges.length}} of {{exchangesSupportedForMonitoring.length}} exchanges
-                 <button [class.invisible]="selectedExchanges.length === exchangesSupportedForMonitoring.length" class="btn btn-sm btn-light"
-                         (click)="clearExchangesBlackList()">select all</button>
+                Selected {{selectedBuySideExchanges.length}} of {{exchangesSupportedForMonitoring.length}} buy exchanges
+                 <button [class.invisible]="selectedBuySideExchanges.length === exchangesSupportedForMonitoring.length" class="btn btn-sm btn-light"
+                         (click)="clearExchangesBuySideBlackList()">select all</button>
             </span>
-                        <ng-select
-                            class="select-currencies mt-1 mb-1"
-                            [items]="exchangesSupportedForMonitoring"
-                            [virtualScroll]="true"
-                            [multiple]="true"
-                            (add)="removeExchangeFromBlackList($event)"
-                            (remove)="addExchangeToBlackList($event)"
-                            (clear)="addAllExchangesToBlackList()"
-                            bindLabel="exchange"
-                            bindValue="exchange"
-                            placeholder="Select exchanges"
-                            [(ngModel)]="selectedExchanges">
-                            <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
-                                <div class="ng-value" *ngFor="let exchange of items | slice:0:3">
-                                    <span class="ng-value-label">{{exchange}}</span>
-                                    <span class="ng-value-icon right" (click)="clear(exchange)" aria-hidden="true">×</span>
-                                </div>
-                                <div class="ng-value" *ngIf="items.length > 3">
-                                    <span class="ng-value-label">{{items.length - 3}} more...</span>
-                                </div>
-                            </ng-template>
-                        </ng-select>
+                            <ng-select
+                                class="select-currencies mt-1 mb-1"
+                                [items]="exchangesSupportedForMonitoring"
+                                [virtualScroll]="true"
+                                [multiple]="true"
+                                (add)="removeExchangeBuySideFromBlackList($event)"
+                                (remove)="addExchangeBuySideToBlackList($event)"
+                                (clear)="addAllExchangesBuySideToBlackList()"
+                                bindLabel="exchange"
+                                bindValue="exchange"
+                                placeholder="Select exchanges"
+                                [(ngModel)]="selectedBuySideExchanges">
+                                <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+                                    <div class="ng-value" *ngFor="let exchange of items | slice:0:3">
+                                        <span class="ng-value-label">{{exchange}}</span>
+                                        <span class="ng-value-icon right" (click)="clear(exchange)" aria-hidden="true">×</span>
+                                    </div>
+                                    <div class="ng-value" *ngIf="items.length > 3">
+                                        <span class="ng-value-label">{{items.length - 3}} more...</span>
+                                    </div>
+                                </ng-template>
+                            </ng-select>
+                        </div>
+                        <div>
+            <span>
+                Selected {{selectedSellSideExchanges.length}} of {{exchangesSupportedForMonitoring.length}} sell exchanges
+                 <button [class.invisible]="selectedSellSideExchanges.length === exchangesSupportedForMonitoring.length" class="btn btn-sm btn-light"
+                         (click)="clearExchangesSellSideBlackList()">select all</button>
+            </span>
+                            <ng-select
+                                class="select-currencies mt-1 mb-1"
+                                [items]="exchangesSupportedForMonitoring"
+                                [virtualScroll]="true"
+                                [multiple]="true"
+                                (add)="removeExchangeSellSideFromBlackList($event)"
+                                (remove)="addExchangeSellSideToBlackList($event)"
+                                (clear)="addAllExchangesSellSideToBlackList()"
+                                bindLabel="exchange"
+                                bindValue="exchange"
+                                placeholder="Select exchanges"
+                                [(ngModel)]="selectedSellSideExchanges">
+                                <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+                                    <div class="ng-value" *ngFor="let exchange of items | slice:0:3">
+                                        <span class="ng-value-label">{{exchange}}</span>
+                                        <span class="ng-value-icon right" (click)="clear(exchange)" aria-hidden="true">×</span>
+                                    </div>
+                                    <div class="ng-value" *ngIf="items.length > 3">
+                                        <span class="ng-value-label">{{items.length - 3}} more...</span>
+                                    </div>
+                                </ng-template>
+                            </ng-select>
+                        </div>
                         <div>
                             <div class="input-group">
                                 <button (click)="toggleMinUsd24hVolumeFilter()" class="btn btn-sm mr-1 mb-1" type="button">
