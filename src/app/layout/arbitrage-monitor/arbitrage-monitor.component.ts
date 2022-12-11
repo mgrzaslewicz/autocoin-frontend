@@ -8,6 +8,9 @@ interface LiveOpportunitiesFilter {
     isMinRelativePercentFilterOn: boolean;
     minRelativePercentFilterValue: number;
     isMaxRelativePercentFilterOn: boolean;
+    isShowingUnknownWithdrawalStatus: boolean;
+    isShowingUnknownDepositStatus: boolean;
+    isShowingNotAvailableTransferFee: boolean;
     maxRelativePercentFilterValue: number;
     min24hUsdVolume: number;
     isMin24hUsdVolumeFilterOn: boolean;
@@ -56,6 +59,9 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
         minRelativePercentFilterValue: null,
         min24hUsdVolume: 1000,
         isMin24hUsdVolumeFilterOn: false,
+        isShowingUnknownDepositStatus: true,
+        isShowingUnknownWithdrawalStatus: true,
+        isShowingNotAvailableTransferFee: true,
         orderBookAmountThresholdIndexSelected: 0,
         baseCurrencyBlackList: [],
         counterCurrencyBlackList: [],
@@ -278,6 +284,21 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
         this.saveOpportunitiesFilter();
     }
 
+    toggleShowUnknownWithdrawalStatusFilter() {
+        this.opportunitiesFilter.isShowingUnknownWithdrawalStatus = !this.opportunitiesFilter.isShowingUnknownWithdrawalStatus;
+        this.saveOpportunitiesFilter();
+    }
+
+    toggleShowUnknownDepositStatusFilter() {
+        this.opportunitiesFilter.isShowingUnknownDepositStatus = !this.opportunitiesFilter.isShowingUnknownDepositStatus;
+        this.saveOpportunitiesFilter();
+    }
+
+    toggleShowNotAvailableTransferFeeFilter() {
+        this.opportunitiesFilter.isShowingNotAvailableTransferFee = !this.opportunitiesFilter.isShowingNotAvailableTransferFee;
+        this.saveOpportunitiesFilter();
+    }
+
     private cancelOpportunitiesRefresh() {
         clearInterval(this.scheduledLiveOpportunitiesRefresh);
         this.scheduledLiveOpportunitiesRefresh = null;
@@ -302,6 +323,18 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
 
     isFilteringOpportunitiesByMaxRelativePercent(): boolean {
         return this.opportunitiesFilter.isMaxRelativePercentFilterOn;
+    }
+
+    isFilteringOutOpportunitiesWithUnknownDepositStatus(): boolean {
+        return this.opportunitiesFilter.isShowingUnknownDepositStatus;
+    }
+
+    isFilteringOutOpportunitiesWithUnknownWithdrawalStatus(): boolean {
+        return this.opportunitiesFilter.isShowingUnknownWithdrawalStatus;
+    }
+
+    isFilteringOutOpportunitiesWithNotAvailableTransferFee(): boolean {
+        return this.opportunitiesFilter.isShowingNotAvailableTransferFee;
     }
 
     isFilteringByMin24hVolume(): boolean {
@@ -429,13 +462,22 @@ export class ArbitrageMonitorComponent implements OnInit, OnDestroy {
                 const isMeetingBaseCurrencyCriteria = this.opportunitiesFilter.baseCurrencyBlackList.indexOf(item.baseCurrency) < 0;
                 const isMeetingCounterCurrencyCriteria = this.opportunitiesFilter.counterCurrencyBlackList.indexOf(item.counterCurrency) < 0;
 
+
+                const isMeetingWithdrawalStatusCriteria = (item.withdrawalEnabled !== null || this.opportunitiesFilter.isShowingUnknownWithdrawalStatus);
+                const isMeetingDepositStatusCriteria = (item.depositEnabled !== null || this.opportunitiesFilter.isShowingUnknownDepositStatus);
+
+                const isMeetingTransferFeeCriteria = item.profitOpportunityHistogram[orderBookAmountThresholdIndexSelected].fees.withdrawalFee !== null || this.opportunitiesFilter.isShowingNotAvailableTransferFee;
+
                 return this.isShowingBuySideExchange(item.buyAtExchange) &&
                     this.isShowingSellSideExchange(item.sellAtExchange) &&
                     isMeetingMinRelativePercentCriteria &&
                     isMeetingMaxRelativePercentCriteria &&
                     isMeetingVolumeCriteria &&
                     isMeetingBaseCurrencyCriteria &&
-                    isMeetingCounterCurrencyCriteria;
+                    isMeetingCounterCurrencyCriteria &&
+                    isMeetingWithdrawalStatusCriteria &&
+                    isMeetingDepositStatusCriteria &&
+                    isMeetingTransferFeeCriteria;
             })
             .sort((a, b) => {
                 return b.profitOpportunityHistogram[orderBookAmountThresholdIndexSelected].relativeProfitPercent - a.profitOpportunityHistogram[orderBookAmountThresholdIndexSelected].relativeProfitPercent;

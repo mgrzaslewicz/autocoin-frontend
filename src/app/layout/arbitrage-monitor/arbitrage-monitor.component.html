@@ -196,7 +196,31 @@
                 </div>
             </div>
         </div>
-
+        <div class="col-md-12 col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Fees & transfer status</h5>
+                    Include opportunities with
+                    <div class="input-group">
+                        <button (click)="toggleShowUnknownWithdrawalStatusFilter()" class="btn btn-sm mr-1 mb-1" type="button">
+                            Unknown withdrawal status
+                            <i class="fa" [class.fa-toggle-on]="isFilteringOutOpportunitiesWithUnknownWithdrawalStatus()"
+                               [class.fa-toggle-off]="!isFilteringOutOpportunitiesWithUnknownWithdrawalStatus()"></i>
+                        </button>
+                        <button (click)="toggleShowUnknownDepositStatusFilter()" class="btn btn-sm mr-1 mb-1" type="button">
+                            Unknown deposit status
+                            <i class="fa" [class.fa-toggle-on]="isFilteringOutOpportunitiesWithUnknownDepositStatus()"
+                               [class.fa-toggle-off]="!isFilteringOutOpportunitiesWithUnknownDepositStatus()"></i>
+                        </button>
+                        <button (click)="toggleShowNotAvailableTransferFeeFilter()" class="btn btn-sm mr-1 mb-1" type="button">
+                            Not available transfer fee
+                            <i class="fa" [class.fa-toggle-on]="isFilteringOutOpportunitiesWithNotAvailableTransferFee()"
+                               [class.fa-toggle-off]="!isFilteringOutOpportunitiesWithNotAvailableTransferFee()"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="col-md-12 col-lg-6">
             <div class="card">
                 <div class="card-body">
@@ -252,7 +276,9 @@
                 </div>
             </div>
         </div>
+
     </div>
+
 
     <div class="row">
         <div *ngIf="twoLegArbitrageProfitOpportunities.length === 0" class="col-12 mt-1">
