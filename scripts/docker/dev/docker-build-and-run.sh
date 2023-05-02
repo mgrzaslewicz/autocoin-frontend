@@ -2,8 +2,8 @@
 
 ALREADY_RUNNING_CONTAINER="$(docker ps -a -q  --filter ancestor=autocoin-trader-frontend)"
 
-buildFrontend() {
-    echo "Building docker container"
+buildDockerImage() {
+    echo "Building docker container..."
     docker build . -t autocoin-trader-frontend
 }
 
@@ -23,4 +23,4 @@ startContainer() {
     docker run -d -p 127.0.0.1:4280:80 --restart=always autocoin-trader-frontend
 }
 
-buildFrontend && removeOldContainer && startContainer
+buildDockerImage && removeOldContainer && startContainer

@@ -35,4 +35,11 @@ RUN rm -rf /usr/share/nginx/html/*
 COPY --from=builder /autocoin-trader-frontend/dist /usr/share/nginx/html
 COPY landing-page/ /usr/share/nginx/html/landing-page
 
+RUN mkdir -p /scripts/run
+ADD docker/copy-run-scripts.sh /scripts/
+ADD scripts/docker/run/*.sh /scripts/run/
+RUN chmod -R +x /scripts/copy-run-scripts.sh
+
+RUN mkdir -p /app/run
+
 CMD ["nginx", "-g", "daemon off;"]
