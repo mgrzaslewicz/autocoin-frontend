@@ -14,7 +14,6 @@ export const environment = {
     ...defaultEnvironment,
     production: false,
     authServiceUrl: authServiceUrl,
-    exchangeUsersApiUrl: authServiceUrl,
     ordersEndpointUrl: exchangeMediatorServiceUrl,
     exchangeKeysCapabilityEndpointUrl: exchangeMediatorServiceUrl,
     pricesEndpointUrl: `${exchangeMediatorServiceUrl}/prices`,

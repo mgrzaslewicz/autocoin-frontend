@@ -1,7 +1,6 @@
 import {InjectionToken} from '@angular/core';
 
 export const AuthServiceUrlToken = new InjectionToken('AuthServiceUrl');
-export const ExchangeUsersEndpointUrlToken = new InjectionToken('ExchangeUsersEndpointUrlToken');
 export const BalanceMonitorApiBaseUrlToken = new InjectionToken('BalanceMonitorEndpointUrlToken');
 export const OrdersEndpointUrlToken = new InjectionToken('OrdersEndpointUrlToken');
 export const ExchangeKeysCapabilityEndpointUrlToken = new InjectionToken('ExchangeKeysCapabilityEndpointUrlToken');
