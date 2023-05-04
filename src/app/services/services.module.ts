@@ -13,9 +13,7 @@ import {
     ArbitrageMonitorEndpointUrlToken,
     AuthServiceUrlToken,
     BalanceMonitorApiBaseUrlToken,
-    ExchangeKeysCapabilityEndpointUrlToken,
-    HealthEndpointUrlToken,
-    PricesEndpointUrlToken,
+    ExchangeMediatorUrlToken,
     StrategiesEndpointUrlToken
 } from '../../environments/endpoint-tokens';
 import {environment} from '../../environments/environment';
@@ -36,10 +34,8 @@ import {BalanceMonitorService} from "./balance-monitor.service";
         {provide: FeatureToggleToken, useClass: LocalStorageFeatureToggle},
         {provide: AuthServiceUrlToken, useValue: environment.authServiceUrl},
         {provide: BalanceMonitorApiBaseUrlToken, useValue: environment.balanceMonitorApiBaseUrl},
-        {provide: ExchangeKeysCapabilityEndpointUrlToken, useValue: environment.exchangeKeysCapabilityEndpointUrl},
-        {provide: PricesEndpointUrlToken, useValue: environment.pricesEndpointUrl},
+        {provide: ExchangeMediatorUrlToken, useValue: environment.exchangeMediatorUrl},
         {provide: StrategiesEndpointUrlToken, useValue: environment.strategiesEndpointUrl},
-        {provide: HealthEndpointUrlToken, useValue: environment.healthEndpointUrl},
         {provide: ArbitrageMonitorEndpointUrlToken, useValue: environment.arbitrageMonitorEndpointUrl},
         AuthService,
         UserAccountService,

@@ -14,10 +14,8 @@ export const environment = {
     ...defaultEnvironment,
     production: false,
     authServiceUrl: authServiceUrl,
-    exchangeKeysCapabilityEndpointUrl: exchangeMediatorUrl,
-    pricesEndpointUrl: `${exchangeMediatorUrl}/prices`,
+    exchangeMediatorUrl: exchangeMediatorUrl,
     strategiesEndpointUrl: strategyExecutorServiceUrl,
-    healthEndpointUrl: `${exchangeMediatorUrl}/health`,
     arbitrageMonitorEndpointUrl: arbitrageMonitorUrl,
     balanceMonitorApiBaseUrl: balanceMonitorUrl
 };
