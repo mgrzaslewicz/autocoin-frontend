@@ -6,7 +6,6 @@ import {defaultEnvironment} from './environment.default';
 
 const authServiceUrl = 'http://localhost:9002';
 const exchangeMediatorUrl = 'http://localhost:9001';
-const strategyExecutorServiceUrl = 'http://localhost:9021';
 const arbitrageMonitorUrl = 'http://localhost:10021';
 const balanceMonitorUrl = 'http://localhost:10022'
 
@@ -15,7 +14,6 @@ export const environment = {
     production: false,
     authServiceUrl: authServiceUrl,
     exchangeMediatorUrl: exchangeMediatorUrl,
-    strategiesEndpointUrl: strategyExecutorServiceUrl,
     arbitrageMonitorEndpointUrl: arbitrageMonitorUrl,
     balanceMonitorApiBaseUrl: balanceMonitorUrl
 };

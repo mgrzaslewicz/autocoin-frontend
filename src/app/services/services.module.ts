@@ -9,13 +9,7 @@ import {FeatureToggleToken, LocalStorageFeatureToggle} from './feature.toogle.se
 import {ExchangeUsersService} from './api';
 import {UserAccountService} from './user-account.service';
 import {ExchangeKeyCapabilityService} from './exchange-key-capability.service';
-import {
-    ArbitrageMonitorEndpointUrlToken,
-    AuthServiceUrlToken,
-    BalanceMonitorApiBaseUrlToken,
-    ExchangeMediatorUrlToken,
-    StrategiesEndpointUrlToken
-} from '../../environments/endpoint-tokens';
+import {ArbitrageMonitorEndpointUrlToken, AuthServiceUrlToken, BalanceMonitorApiBaseUrlToken, ExchangeMediatorUrlToken} from '../../environments/endpoint-tokens';
 import {environment} from '../../environments/environment';
 import {SignupService} from './signup.service';
 import {ArbitrageMonitorService} from './arbitrage-monitor.service';
@@ -35,7 +29,6 @@ import {BalanceMonitorService} from "./balance-monitor.service";
         {provide: AuthServiceUrlToken, useValue: environment.authServiceUrl},
         {provide: BalanceMonitorApiBaseUrlToken, useValue: environment.balanceMonitorApiBaseUrl},
         {provide: ExchangeMediatorUrlToken, useValue: environment.exchangeMediatorUrl},
-        {provide: StrategiesEndpointUrlToken, useValue: environment.strategiesEndpointUrl},
         {provide: ArbitrageMonitorEndpointUrlToken, useValue: environment.arbitrageMonitorEndpointUrl},
         AuthService,
         UserAccountService,

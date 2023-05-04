@@ -2,7 +2,6 @@ import {defaultEnvironment} from './environment.default';
 
 const authServiceUrl = 'https://users-apiv2.autocoin-trader.com';
 const exchangeMediatorUrl = 'https://orders-api.autocoin-trader.com';
-const strategyExecutorServiceUrl = 'https://strategies-api.autocoin-trader.com';
 const arbitrageMonitorUrl = 'https://arbitrage-monitor.autocoin-trader.com';
 const balanceMonitorUrl = 'https://balance-monitor.autocoin-trader.com';
 
@@ -28,7 +27,6 @@ export const environment = {
     production: true,
     authServiceUrl: authServiceUrl,
     exchangeMediatorUrl: exchangeMediatorUrl,
-    strategiesEndpointUrl: strategyExecutorServiceUrl,
     arbitrageMonitorEndpointUrl: arbitrageMonitorUrl,
     balanceMonitorApiBaseUrl: balanceMonitorUrl,
     ...fetchConfig(),
