@@ -7,16 +7,6 @@ const arbitrageMonitorHost = 'https://arbitrage-monitor.autocoin-trader.com';
 const balanceMonitorHost = 'https://balance-monitor.autocoin-trader.com';
 
 async function fetchConfig() {
-    // const response = await fetch('/assets/configs/config.json');
-    // return await response.json();
-    // .then((response) => {
-    //     if (response.ok) {
-    //         return response.json();
-    //     }
-    //     throw new Error('config.json not Found');
-    // })
-    // .catch((err) => console.log('error', err))
-    // use XMLHttpRequest instead of fetch
     const request = new XMLHttpRequest();
     request.open('GET', '/assets/config.json', false);
     request.send(null);
