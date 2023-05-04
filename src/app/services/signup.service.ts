@@ -2,13 +2,13 @@ import {Inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {FeatureToggle, FeatureToggleToken} from './feature.toogle.service';
-import {SignupEndpointUrlToken} from '../../environments/endpoint-tokens';
+import {AuthServiceUrlToken} from '../../environments/endpoint-tokens';
 
 @Injectable()
 export class SignupService {
 
     constructor(private http: HttpClient,
-                @Inject(SignupEndpointUrlToken) private signupEndpointUrl: string,
+                @Inject(AuthServiceUrlToken) private authServiceUrl: string,
                 @Inject(FeatureToggleToken) private featureToggle: FeatureToggle) {
     }
 
@@ -16,7 +16,7 @@ export class SignupService {
         const body: SignupRequestDto = {
             emailAddress: emailAddress
         };
-        return this.http.put<SignupResponseDto>(this.signupEndpointUrl, body);
+        return this.http.put<SignupResponseDto>(`${this.authServiceUrl}/user-accounts`, body);
     }
 
 }

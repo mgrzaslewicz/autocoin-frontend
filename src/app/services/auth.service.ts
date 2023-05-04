@@ -1,6 +1,6 @@
 import {Inject, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {OauthEndpointUrlToken} from '../../environments/endpoint-tokens';
+import {AuthServiceUrlToken} from '../../environments/endpoint-tokens';
 import {Observable} from 'rxjs';
 
 interface UserAccountDto {
@@ -30,9 +30,10 @@ export class AuthService {
     private userRolesKey = 'userRoles';
     private userNameKey = 'userName';
     private userAccount: UserAccountDto = null;
+    private oauthTokenEndpointUrl = `${this.authServiceUrl}/oauth/token`;
 
     constructor(
-        @Inject(OauthEndpointUrlToken) private oauthTokenEndpointUrl,
+        @Inject(AuthServiceUrlToken) private authServiceUrl,
         private http: HttpClient
     ) {
     }

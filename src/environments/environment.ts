@@ -13,19 +13,13 @@ const balanceMonitorUrl = 'http://localhost:10022'
 export const environment = {
     ...defaultEnvironment,
     production: false,
-    oauthEndpointUrl: `${authServiceUrl}/oauth/token`,
+    authServiceUrl: authServiceUrl,
     exchangeUsersApiUrl: authServiceUrl,
-    twoFactorAuthenticationEndpointUrl: `${authServiceUrl}/user-accounts/2fa`,
-    changePasswordEndpointUrl: `${authServiceUrl}/user-accounts/password`,
-    requestEmailWithResetPasswordTokenEndpointUrl: `${authServiceUrl}/user-accounts/password/reset-with-token/step-1-send-email-with-token`,
-    authServiceEndpointUrl: authServiceUrl,
-    changePasswordWithResetPasswordTokenEndpointUrl: `${authServiceUrl}/user-accounts/password/reset-with-token/step-2-change-password`,
     ordersEndpointUrl: exchangeMediatorServiceUrl,
     exchangeKeysCapabilityEndpointUrl: exchangeMediatorServiceUrl,
     pricesEndpointUrl: `${exchangeMediatorServiceUrl}/prices`,
     strategiesEndpointUrl: strategyExecutorServiceUrl,
     healthEndpointUrl: `${exchangeMediatorServiceUrl}/health`,
-    signupEndpointUrl: `${authServiceUrl}/user-accounts`,
     arbitrageMonitorEndpointUrl: arbitrageMonitorUrl,
     balanceMonitorApiBaseUrl: balanceMonitorUrl
 };

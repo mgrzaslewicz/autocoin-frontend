@@ -3,13 +3,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {FeatureToggle, FeatureToggleToken} from './feature.toogle.service';
 import {Observable} from 'rxjs';
 import {AuthService, ClientTokenResponseDto} from './auth.service';
-import {
-    AuthServiceBaseUrlToken,
-    ChangePasswordEndpointUrlToken,
-    ChangePasswordWithResetPasswordTokenEndpointUrlToken,
-    RequestEmailWithResetPasswordTokenEndpointUrlToken,
-    TwoFactorAuthenticationEndpointUrlToken
-} from '../../environments/endpoint-tokens';
+import {AuthServiceUrlToken,} from '../../environments/endpoint-tokens';
 import {ToastService} from "./toast.service";
 
 export interface ChangePasswordResponseDto {
@@ -44,11 +38,7 @@ export class UserAccountService {
 
     constructor(
         private http: HttpClient,
-        @Inject(TwoFactorAuthenticationEndpointUrlToken) private twoFactorAuthenticationEndpointUrl: string,
-        @Inject(ChangePasswordEndpointUrlToken) private changePasswordEndpointUrl: string,
-        @Inject(RequestEmailWithResetPasswordTokenEndpointUrlToken) private requestEmailWithResetPasswordTokenEndpointUrlToken: string,
-        @Inject(AuthServiceBaseUrlToken) private authServiceBaseUrl: string,
-        @Inject(ChangePasswordWithResetPasswordTokenEndpointUrlToken) private changePasswordWithResetPasswordTokenEndpointUrlToken: string,
+        @Inject(AuthServiceUrlToken) private authServiceUrl: string,
         @Inject(FeatureToggleToken) private featureToggle: FeatureToggle,
         private authService: AuthService,
         private toastService: ToastService
@@ -56,24 +46,24 @@ export class UserAccountService {
     }
 
     public is2FAEnabled(): Observable<boolean> {
-        return this.http.get<boolean>(this.twoFactorAuthenticationEndpointUrl);
+        return this.http.get<boolean>(`${this.authServiceUrl}/user-accounts/2fa`);
     }
 
     public generateSecret2FACode(): Observable<string> {
-        return this.http.post(`${this.twoFactorAuthenticationEndpointUrl}/step1-generate-secret-code`, null, {responseType: 'text'});
+        return this.http.post(`${this.authServiceUrl}/user-accounts/2fa/step1-generate-secret-code`, null, {responseType: 'text'});
     }
 
     public enableTwoFactorAuthentication(twoFactorAuthenticationCode: number): Observable<string> {
-        return this.http.post(`${this.twoFactorAuthenticationEndpointUrl}/step2-enable/${twoFactorAuthenticationCode}`, null, {responseType: 'text'});
+        return this.http.post(`${this.authServiceUrl}/user-accounts/2fa/step2-enable/${twoFactorAuthenticationCode}`, null, {responseType: 'text'});
     }
 
     public disableTwoFactorAuthentication(twoFactorAuthenticationCode: number): Observable<string> {
-        return this.http.post(`${this.twoFactorAuthenticationEndpointUrl}/disable/${twoFactorAuthenticationCode}`, null, {responseType: 'text'}
+        return this.http.post(`${this.authServiceUrl}/user-accounts/2fa/disable/${twoFactorAuthenticationCode}`, null, {responseType: 'text'}
         );
     }
 
     public changePassword(oldPassword: string, newPassword: string, confirmPassword: string, twoFactorAuthenticationCode: number): Observable<ChangePasswordResponseDto> {
-        return this.http.post<ChangePasswordResponseDto>(this.changePasswordEndpointUrl, {
+        return this.http.post<ChangePasswordResponseDto>(`${this.authServiceUrl}/user-accounts/password`, {
             oldPassword: oldPassword,
             newPassword: newPassword,
             confirmPassword: confirmPassword,
@@ -91,7 +81,7 @@ export class UserAccountService {
             .subscribe((clientToken: ClientTokenResponseDto) => {
                 console.log('Received client access token');
                 const headers = new HttpHeaders({'Authorization': `Bearer ${clientToken.access_token}`});
-                callback(this.http.post(`${this.requestEmailWithResetPasswordTokenEndpointUrlToken}?email=${emailAddress}`,
+                callback(this.http.post(`${this.authServiceUrl}/user-accounts/password/reset-with-token/step-1-send-email-with-token?email=${emailAddress}`,
                     null,
                     {
                         headers: headers,
@@ -110,7 +100,7 @@ export class UserAccountService {
             .subscribe((clientToken: ClientTokenResponseDto) => {
                 console.log('Received client access token');
                 const headers = new HttpHeaders({'Authorization': `Bearer ${clientToken.access_token}`});
-                callback(this.http.post(this.changePasswordWithResetPasswordTokenEndpointUrlToken, {
+                callback(this.http.post(`${this.authServiceUrl}/user-accounts/password/reset-with-token/step-2-change-password`, {
                             newPassword: newPassword,
                             resetPasswordToken: resetPasswordToken
                         } as ResetUserAccountPasswordWithTokenRequestDto,
@@ -127,7 +117,7 @@ export class UserAccountService {
     }
 
     public addRoleToUser(role: string, userEmailAddress: string): Observable<string> {
-        return this.http.put(`${this.authServiceBaseUrl}/user-accounts/role`, {
+        return this.http.put(`${this.authServiceUrl}/user-accounts/role`, {
                 userEmailAddress: userEmailAddress,
                 roleName: role
             } as AddRoleToUserRequestDto,
@@ -136,7 +126,7 @@ export class UserAccountService {
     }
 
     public removeRoleFromUser(role: string, userEmailAddress: string): Observable<string> {
-        return this.http.request('delete', `${this.authServiceBaseUrl}/user-accounts/role`, {
+        return this.http.request('delete', `${this.authServiceUrl}/user-accounts/role`, {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json',
             }),
