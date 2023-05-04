@@ -1,6 +1,6 @@
 import {HttpClient} from "@angular/common/http";
 import {Inject, Injectable} from "@angular/core";
-import {BalanceMonitorApiBaseUrlToken} from "../../environments/endpoint-tokens";
+import {BalanceMonitorUrlToken} from "../../environments/endpoint-tokens";
 import {FeatureToggle, FeatureToggleToken} from "./feature.toogle.service";
 import {Observable} from "rxjs";
 
@@ -144,7 +144,7 @@ export interface AddUserCurrencyAssetRequestDto extends HasBalance {
 export class BalanceMonitorService {
     constructor(
         private http: HttpClient,
-        @Inject(BalanceMonitorApiBaseUrlToken) private balanceMonitorApiBaseUrl: string,
+        @Inject(BalanceMonitorUrlToken) private balanceMonitorApiBaseUrl: string,
         @Inject(FeatureToggleToken) private featureToggle: FeatureToggle
     ) {
     }

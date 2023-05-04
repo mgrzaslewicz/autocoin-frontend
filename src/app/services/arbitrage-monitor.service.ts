@@ -2,13 +2,13 @@ import {Inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {FeatureToggle, FeatureToggleToken} from './feature.toogle.service';
-import {ArbitrageMonitorEndpointUrlToken} from '../../environments/endpoint-tokens';
+import {ArbitrageMonitorUrlToken} from '../../environments/endpoint-tokens';
 
 @Injectable()
 export class ArbitrageMonitorService {
 
     constructor(private http: HttpClient,
-                @Inject(ArbitrageMonitorEndpointUrlToken) private arbitrageMonitorEndpointUrl: string,
+                @Inject(ArbitrageMonitorUrlToken) private arbitrageMonitorEndpointUrl: string,
                 @Inject(FeatureToggleToken) private featureToggle: FeatureToggle) {
     }
 

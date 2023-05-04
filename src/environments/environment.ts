@@ -14,6 +14,6 @@ export const environment = {
     production: false,
     authServiceUrl: authServiceUrl,
     exchangeMediatorUrl: exchangeMediatorUrl,
-    arbitrageMonitorEndpointUrl: arbitrageMonitorUrl,
-    balanceMonitorApiBaseUrl: balanceMonitorUrl
+    arbitrageMonitorUrl: arbitrageMonitorUrl,
+    balanceMonitorUrl: balanceMonitorUrl
 };
