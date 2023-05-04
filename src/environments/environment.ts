@@ -4,16 +4,7 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 import {defaultEnvironment} from './environment.default';
 
-const authServiceUrl = 'http://localhost:9002';
-const exchangeMediatorUrl = 'http://localhost:9001';
-const arbitrageMonitorUrl = 'http://localhost:10021';
-const balanceMonitorUrl = 'http://localhost:10022'
-
 export const environment = {
     ...defaultEnvironment,
     production: false,
-    authServiceUrl: authServiceUrl,
-    exchangeMediatorUrl: exchangeMediatorUrl,
-    arbitrageMonitorUrl: arbitrageMonitorUrl,
-    balanceMonitorUrl: balanceMonitorUrl
 };

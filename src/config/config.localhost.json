@@ -1,1 +1,6 @@
-{}
+{
+    "authServiceUrl": "http://localhost:9002",
+    "exchangeMediatorUrl": "http://localhost:9001",
+    "arbitrageMonitorUrl": "http://localhost:10021",
+    "balanceMonitorUrl": "http://localhost:10022"
+}
