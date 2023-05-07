@@ -5,7 +5,7 @@ const exchangeMediatorUrl = 'https://orders-api.autocoin-trader.com';
 const arbitrageMonitorUrl = 'https://arbitrage-monitor.autocoin-trader.com';
 const balanceMonitorUrl = 'https://balance-monitor.autocoin-trader.com';
 
-async function fetchConfig() {
+function fetchConfig() {
     const request = new XMLHttpRequest();
     request.open('GET', '/assets/config.json', false);
     request.send(null);
