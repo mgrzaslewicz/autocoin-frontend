@@ -45,4 +45,7 @@ import {BalanceMonitorService} from "./balance-monitor.service";
     ]
 })
 export class ServicesModule {
+    constructor() {
+        console.log('[ServicesModule()] Loaded environment: ', environment);
+    }
 }
