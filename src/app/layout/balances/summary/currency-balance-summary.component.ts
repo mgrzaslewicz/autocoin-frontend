@@ -29,6 +29,8 @@ export class CurrencyBalanceSummaryComponent implements OnInit {
     hideBalances = false;
 
     isShowingRealBalance: boolean = null;
+    shouldShowSampleWalletProposal: boolean = false;
+    showingSampleWallet: boolean = false;
 
     private usdFormatter = new Intl.NumberFormat('en-US', {
         style: 'currency',

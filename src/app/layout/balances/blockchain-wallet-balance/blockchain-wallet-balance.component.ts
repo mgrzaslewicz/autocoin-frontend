@@ -1,6 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {routerTransition} from '../../../router.animations';
-import {BalanceMonitorService, BlockchainWalletCurrencyBalanceResponseDto, BlockchainWalletResponseDto} from "../../../services/balance-monitor.service";
+import {
+    BalanceMonitorService,
+    BlockchainWalletCurrencyBalanceResponseDto,
+    BlockchainWalletResponseDto
+} from "../../../services/balance-monitor.service";
 import {WalletsInputParser} from "./edit/wallets-input-parser";
 import {ToastService} from "../../../services/toast.service";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -30,13 +34,15 @@ import {Router} from "@angular/router";
     ]
 })
 export class BlockchainWalletBalanceComponent implements OnInit {
-    private lastVisibleMenu: HTMLDivElement = null;
-    private walletMenuVisibilityToggleClass = 'wallet-dropdown-menu-visible';
-
     isFetchWalletsRequestPending: boolean = false;
     isFetchCurrencyBalancesRequestPending: boolean = false;
     wallets: BlockchainWalletResponseDto[] = [];
     currencyBalances: BlockchainWalletCurrencyBalanceResponseDto[] = [];
+    shouldShowSampleWalletProposal: boolean = false;
+    showingSampleWallet: boolean = false;
+
+    private lastVisibleMenu: HTMLDivElement = null;
+    private walletMenuVisibilityToggleClass = 'wallet-dropdown-menu-visible';
     private totalUsdValue: number;
 
     constructor(private balanceMonitorService: BalanceMonitorService,
@@ -54,11 +60,36 @@ export class BlockchainWalletBalanceComponent implements OnInit {
         this.fetchCurrencyBalances();
     }
 
+    showSampleWallets() {
+        this.shouldShowSampleWalletProposal = false;
+        this.fetchSampleWallets();
+        this.fetchSampleCurrencyBalances();
+    }
+
+    fetchSampleWallets() {
+        this.balanceMonitorService.getSampleBlockchainWallets()
+            .subscribe(
+                (wallets: Array<BlockchainWalletResponseDto>) => {
+                    this.showingSampleWallet = true;
+                    this.isFetchWalletsRequestPending = false;
+                    this.wallets = wallets.sort((a, b) => a.currency.localeCompare(b.currency));
+                },
+                (error: HttpErrorResponse) => {
+                    console.error(error);
+                    this.isFetchWalletsRequestPending = false;
+                    this.toastService.danger('Something went wrong, could not get your wallets');
+                }
+            )
+    }
+
     fetchWallets() {
         this.isFetchWalletsRequestPending = true;
         this.balanceMonitorService.getBlockchainWallets()
             .subscribe(
                 (wallets: Array<BlockchainWalletResponseDto>) => {
+                    if (wallets.length == 0) {
+                        this.shouldShowSampleWalletProposal = true;
+                    }
                     this.isFetchWalletsRequestPending = false;
                     this.wallets = wallets.sort((a, b) => a.currency.localeCompare(b.currency));
                 },
@@ -76,8 +107,28 @@ export class BlockchainWalletBalanceComponent implements OnInit {
             .subscribe(
                 (currencyBalances: BlockchainWalletCurrencyBalanceResponseDto[]) => {
                     this.isFetchCurrencyBalancesRequestPending = false;
-                    this.currencyBalances = currencyBalances.sort((a, b) => a.currency.localeCompare(b.currency));
-                    this.totalUsdValue = this.getTotalUsdValue(this.currencyBalances);
+                    this.onNewCurrencyBalances(currencyBalances);
+                },
+                (error: HttpErrorResponse) => {
+                    console.error(error);
+                    this.isFetchCurrencyBalancesRequestPending = false;
+                    this.toastService.danger('Something went wrong, could not get summary of your wallets');
+                }
+            );
+    }
+
+    private onNewCurrencyBalances(currencyBalances: BlockchainWalletCurrencyBalanceResponseDto[]) {
+        this.currencyBalances = currencyBalances.sort((a, b) => a.currency.localeCompare(b.currency));
+        this.totalUsdValue = this.getTotalUsdValue(this.currencyBalances);
+    }
+
+    fetchSampleCurrencyBalances() {
+        this.isFetchCurrencyBalancesRequestPending = true;
+        this.balanceMonitorService.getSampleBlockchainCurrencyBalance()
+            .subscribe(
+                (currencyBalances: BlockchainWalletCurrencyBalanceResponseDto[]) => {
+                    this.isFetchCurrencyBalancesRequestPending = false;
+                    this.onNewCurrencyBalances(currencyBalances);
                 },
                 (error: HttpErrorResponse) => {
                     console.error(error);
@@ -148,14 +199,18 @@ export class BlockchainWalletBalanceComponent implements OnInit {
     }
 
     editWallet(wallet: BlockchainWalletResponseDto) {
-        this.router.navigate([`/balances/wallets/edit/${wallet.id}`]);
+        if (!this.showingSampleWallet) {
+            this.router.navigate([`/balances/wallets/edit/${wallet.id}`]);
+        }
     }
 
     confirmRemoveWallet(hideWalletMenuLayer: HTMLDivElement, yesNoConfirmation: TextDialog, wallet: BlockchainWalletResponseDto) {
         this.hideWalletMenuIfAnyOpen(hideWalletMenuLayer);
-        yesNoConfirmation.showYesNoConfirmation('Confirm your action', 'Do you want to remove this wallet address?', () => {
-            this.deleteWallet(wallet);
-        });
+        if (!this.showingSampleWallet) {
+            yesNoConfirmation.showYesNoConfirmation('Confirm your action', 'Do you want to remove this wallet address?', () => {
+                this.deleteWallet(wallet);
+            });
+        }
     }
 
     deleteWallet(wallet: BlockchainWalletResponseDto) {

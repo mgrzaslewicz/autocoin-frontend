@@ -1,8 +1,18 @@
 <app-balances-menu></app-balances-menu>
-<div #hideWalletMenuLayer (click)="hideWalletMenuIfAnyOpen(hideWalletMenuLayer)" class="d-none layer-for-hiding-add-wallet-menu"></div>
+<div #hideWalletMenuLayer (click)="hideWalletMenuIfAnyOpen(hideWalletMenuLayer)"
+     class="d-none layer-for-hiding-add-wallet-menu"></div>
 <div class="row">
     <div class="col-12">
         <h5>Track wallet balances automatically</h5>
+        <div *ngIf="shouldShowSampleWalletProposal" class="card mb-3">
+            <div class="card-header">
+                You don't have any wallet. Would you like to try a sample one?
+                <button (click)="showSampleWallets()" class="btn btn-primary btn-sm">Yes</button>
+            </div>
+        </div>
+        <div *ngIf="showingSampleWallet" class="card mb-3 badge badge-warning">
+            What you see is a sample set of wallets
+        </div>
         <div class="card mb-3">
             <div (click)="goToAddNewWalletView()" class="card-header wallet-add-header">
                 <button class="btn btn-primary btn-sm">
@@ -14,7 +24,8 @@
         <div class="card mb-3">
             <div class="card-header">
                 <div *ngIf="isFetchCurrencyBalancesRequestPending" class="progress mb-2">
-                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                         aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
                          style="width: 100%;"></div>
                 </div>
                 <i class="fa fa-usd" aria-hidden="true"></i>
@@ -76,10 +87,12 @@
         <div class="card">
             <div class="card-header">
                 <div *ngIf="isFetchWalletsRequestPending" class="progress mb-2">
-                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                         aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
                          style="width: 100%;"></div>
                 </div>
-                <button (click)="refreshWalletsBalance()" class="btn btn-primary btn-sm" [disabled]="isFetchWalletsRequestPending">
+                <button (click)="refreshWalletsBalance()" class="btn btn-primary btn-sm"
+                        [disabled]="isFetchWalletsRequestPending">
                     <i class="fa fa-refresh" aria-hidden="true"></i>
                 </button>
                 Your wallets
@@ -102,16 +115,18 @@
                         <tr *ngFor="let wallet of wallets">
                             <td>
                                 <div style="position: relative">
-                                    <button (click)="toggleWalletMenuVisibility(menu, hideWalletMenuLayer)" class="btn btn-sm btn-primary">
+                                    <button (click)="toggleWalletMenuVisibility(menu, hideWalletMenuLayer)"
+                                            class="btn btn-sm btn-primary" [class.disabled]="showingSampleWallet">
                                         <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
                                     </button>
                                     <div #menu class="dropdown-menu" [attr.wallet-address]="wallet.walletAddress">
-                                        <button (click)="editWallet(wallet)" class="ml-2 mr-2 btn btn-sm btn-success">
+                                        <button (click)="editWallet(wallet)" class="ml-2 mr-2 btn btn-sm btn-success"
+                                                [class.disabled]="showingSampleWallet">
                                             <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                         </button>
                                         <button
                                             (click)="confirmRemoveWallet(hideWalletMenuLayer, yesNoConfirmation, wallet)"
-                                            class="btn btn-sm btn-danger">
+                                            class="btn btn-sm btn-danger" [class.disabled]="showingSampleWallet">
                                             <i class="fa fa-times" aria-hidden="true"></i>
                                         </button>
                                     </div>
@@ -126,18 +141,21 @@
                                 </span>
 
                                 <span *ngIf="wallet.blockChainExplorerUrl != null" class="wallet-address">
-                                    <a target="_blank" href="{{wallet.blockChainExplorerUrl}}">{{wallet.walletAddress}}</a>
+                                    <a target="_blank"
+                                       href="{{wallet.blockChainExplorerUrl}}">{{wallet.walletAddress}}</a>
                                 </span>
                             </td>
                             <td class="d-none d-md-table-cell">
-                                <span *ngIf="wallet.description != null" [innerHTML]="wallet.description | linkify"></span>
+                                <span *ngIf="wallet.description != null"
+                                      [innerHTML]="wallet.description | linkify"></span>
                                 <span *ngIf="wallet.description == null" class="text-muted">N/A</span>
                             </td>
                             <td>
                                 {{wallet.balance}}
                             </td>
                             <td class="text-right d-none d-sm-table-cell">
-                                <span *ngIf="wallet.usdBalance != null; else displayNotAvailable">{{wallet.usdBalance | number : '1.2-2'}}</span>
+                                <span
+                                    *ngIf="wallet.usdBalance != null; else displayNotAvailable">{{wallet.usdBalance | number : '1.2-2'}}</span>
                                 <ng-template #displayNotAvailable>
                                     <span class="text-muted">N/A</span>
                                 </ng-template>
