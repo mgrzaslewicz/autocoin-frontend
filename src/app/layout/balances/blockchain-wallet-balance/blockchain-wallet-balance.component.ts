@@ -143,9 +143,13 @@ export class BlockchainWalletBalanceComponent implements OnInit {
     }
 
     private getTotalUsdValue(currencyBalances: BlockchainWalletCurrencyBalanceResponseDto[]): number {
-        return currencyBalances
-            .map(it => Number(it.usdBalance))
-            .reduce((acc, val) => acc + val);
+        if (currencyBalances.length == 0) {
+            return 0;
+        } else {
+            return currencyBalances
+                .map(it => Number(it.usdBalance))
+                .reduce((acc, val) => acc + val);
+        }
     }
 
     goToAddNewWalletView() {
@@ -233,8 +237,12 @@ export class BlockchainWalletBalanceComponent implements OnInit {
     }
 
     getTotalUsdBalance(currencyBalances: BlockchainWalletCurrencyBalanceResponseDto[]): number {
-        return currencyBalances
-            .map(it => Number(it.usdBalance))
-            .reduce((acc, val) => acc + val);
+        if (currencyBalances.length == 0) {
+            return 0;
+        } else {
+            return currencyBalances
+                .map(it => Number(it.usdBalance))
+                .reduce((acc, val) => acc + val);
+        }
     }
 }
