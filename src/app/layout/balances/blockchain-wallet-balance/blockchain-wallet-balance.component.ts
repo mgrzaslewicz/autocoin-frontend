@@ -39,7 +39,7 @@ export class BlockchainWalletBalanceComponent implements OnInit {
     wallets: BlockchainWalletResponseDto[] = [];
     currencyBalances: BlockchainWalletCurrencyBalanceResponseDto[] = [];
     shouldShowSampleWalletProposal: boolean = false;
-    showingSampleWallet: boolean = false;
+    isShowingSampleWallet: boolean = false;
 
     private lastVisibleMenu: HTMLDivElement = null;
     private walletMenuVisibilityToggleClass = 'wallet-dropdown-menu-visible';
@@ -70,7 +70,7 @@ export class BlockchainWalletBalanceComponent implements OnInit {
         this.balanceMonitorService.getSampleBlockchainWallets()
             .subscribe(
                 (wallets: Array<BlockchainWalletResponseDto>) => {
-                    this.showingSampleWallet = true;
+                    this.isShowingSampleWallet = true;
                     this.isFetchWalletsRequestPending = false;
                     this.wallets = wallets.sort((a, b) => a.currency.localeCompare(b.currency));
                 },
@@ -199,14 +199,14 @@ export class BlockchainWalletBalanceComponent implements OnInit {
     }
 
     editWallet(wallet: BlockchainWalletResponseDto) {
-        if (!this.showingSampleWallet) {
+        if (!this.isShowingSampleWallet) {
             this.router.navigate([`/balances/wallets/edit/${wallet.id}`]);
         }
     }
 
     confirmRemoveWallet(hideWalletMenuLayer: HTMLDivElement, yesNoConfirmation: TextDialog, wallet: BlockchainWalletResponseDto) {
         this.hideWalletMenuIfAnyOpen(hideWalletMenuLayer);
-        if (!this.showingSampleWallet) {
+        if (!this.isShowingSampleWallet) {
             yesNoConfirmation.showYesNoConfirmation('Confirm your action', 'Do you want to remove this wallet address?', () => {
                 this.deleteWallet(wallet);
             });

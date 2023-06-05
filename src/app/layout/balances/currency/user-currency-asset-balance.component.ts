@@ -23,7 +23,7 @@ export class UserCurrencyAssetBalanceComponent implements OnInit {
     isFetchCurrencyBalancesRequestPending: boolean = false;
     summarizedUserCurrencyBalances: UserCurrencyAssetSummaryResponseDto[] = [];
     userCurrencyAssets: UserCurrencyAssetResponseDto[] = [];
-    shouldShowSampleWalletAsset: boolean = false;
+    shouldShowSampleWalletAssetProposal: boolean = false;
     isShowingSampleWalletAsset: boolean = false;
 
     private lastVisibleMenu: HTMLDivElement = null;
@@ -41,7 +41,6 @@ export class UserCurrencyAssetBalanceComponent implements OnInit {
 
     private onUserCurrencyAssetsFetched(userCurrencyAssetsResponseDto: UserCurrencyAssetsResponseDto) {
         this.isFetchCurrencyBalancesRequestPending = false;
-        this.shouldShowSampleWalletAsset = this.userCurrencyAssets.length === 0;
         this.userCurrencyAssets = userCurrencyAssetsResponseDto.userCurrencyAssets.sort((a, b) => a.currency.localeCompare(b.currency));
         this.summarizedUserCurrencyBalances = userCurrencyAssetsResponseDto.userCurrencyAssetsSummary.sort((a, b) => a.currency.localeCompare(b.currency));
         this.totalUsdValue = this.getTotalUsdValue(this.summarizedUserCurrencyBalances);
@@ -53,6 +52,7 @@ export class UserCurrencyAssetBalanceComponent implements OnInit {
             .subscribe(
                 (response: UserCurrencyAssetsResponseDto) => {
                     this.onUserCurrencyAssetsFetched(response);
+                    this.isShowingSampleWalletAsset = true;
                 },
                 (error: HttpErrorResponse) => {
                     console.error(error);
@@ -68,6 +68,7 @@ export class UserCurrencyAssetBalanceComponent implements OnInit {
             .subscribe(
                 (response: UserCurrencyAssetsResponseDto) => {
                     this.onUserCurrencyAssetsFetched(response);
+                    this.shouldShowSampleWalletAssetProposal = this.userCurrencyAssets.length === 0;
                 },
                 (error: HttpErrorResponse) => {
                     console.error(error);

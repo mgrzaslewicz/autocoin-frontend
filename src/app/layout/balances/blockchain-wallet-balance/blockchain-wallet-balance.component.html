@@ -10,7 +10,7 @@
                 <button (click)="showSampleWallets()" class="btn btn-primary btn-sm">Yes</button>
             </div>
         </div>
-        <div *ngIf="showingSampleWallet" class="card mb-3 badge badge-warning">
+        <div *ngIf="isShowingSampleWallet" class="card mb-3 badge badge-warning">
             What you see is a sample set of wallets
         </div>
         <div class="card mb-3">
@@ -116,17 +116,17 @@
                             <td>
                                 <div style="position: relative">
                                     <button (click)="toggleWalletMenuVisibility(menu, hideWalletMenuLayer)"
-                                            class="btn btn-sm btn-primary" [class.disabled]="showingSampleWallet">
+                                            class="btn btn-sm btn-primary" [class.disabled]="isShowingSampleWallet">
                                         <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
                                     </button>
                                     <div #menu class="dropdown-menu" [attr.wallet-address]="wallet.walletAddress">
                                         <button (click)="editWallet(wallet)" class="ml-2 mr-2 btn btn-sm btn-success"
-                                                [class.disabled]="showingSampleWallet">
+                                                [class.disabled]="isShowingSampleWallet">
                                             <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                         </button>
                                         <button
                                             (click)="confirmRemoveWallet(hideWalletMenuLayer, yesNoConfirmation, wallet)"
-                                            class="btn btn-sm btn-danger" [class.disabled]="showingSampleWallet">
+                                            class="btn btn-sm btn-danger" [class.disabled]="isShowingSampleWallet">
                                             <i class="fa fa-times" aria-hidden="true"></i>
                                         </button>
                                     </div>
