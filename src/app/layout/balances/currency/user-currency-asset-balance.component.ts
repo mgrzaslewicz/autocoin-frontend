@@ -53,6 +53,7 @@ export class UserCurrencyAssetBalanceComponent implements OnInit {
                 (response: UserCurrencyAssetsResponseDto) => {
                     this.onUserCurrencyAssetsFetched(response);
                     this.isShowingSampleWalletAsset = true;
+                    this.shouldShowSampleWalletAssetProposal = false;
                 },
                 (error: HttpErrorResponse) => {
                     console.error(error);
