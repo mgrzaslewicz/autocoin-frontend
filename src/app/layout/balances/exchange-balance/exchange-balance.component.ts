@@ -38,7 +38,8 @@ export class ExchangeBalanceComponent implements OnInit, OnDestroy {
     hideBalances = false;
     totalUsdValue: number;
     totalExchangeWalletBalances: CurrencyBalanceTableRow[] = null;
-    isShowingRealBalance: boolean = null;
+    isShowingSampleBalance: boolean = false;
+    shouldShowSampleBalanceProposal: boolean = false;
 
     constructor(
         private balanceMonitorService: BalanceMonitorService,
@@ -70,8 +71,26 @@ export class ExchangeBalanceComponent implements OnInit, OnDestroy {
         this.totalExchangeWalletBalances = this.getBalancesGroupedByCurrency(this.exchangeCurrencyBalances);
     }
 
+    showSampleBalance() {
+        this.isFetchWalletsRequestPending = true;
+        this.balanceMonitorService.getSampleExchangeWallets()
+            .subscribe(
+                (response: ExchangeWalletBalancesResponseDto) => {
+                    this.isFetchWalletsRequestPending = false;
+                    this.setExchangeWalletBalances(response);
+                    this.shouldShowSampleBalanceProposal = false;
+                    this.isShowingSampleBalance = true;
+                },
+                (error: HttpErrorResponse) => {
+                    this.isFetchWalletsRequestPending = false;
+                    this.toastService.danger('Something went wrong, could not get exchange balances');
+                }
+            );
+    }
+
     fetchExchangeWallets() {
         this.isFetchWalletsRequestPending = true;
+        this.isShowingSampleBalance = false;
         this.balanceMonitorService.getExchangeWallets()
             .subscribe(
                 (response: ExchangeWalletBalancesResponseDto) => {
@@ -79,6 +98,9 @@ export class ExchangeBalanceComponent implements OnInit, OnDestroy {
                     this.setExchangeWalletBalances(response);
                     if (this.synchronizationTimeMillis == null) {
                         this.refreshExchangeWallets();
+                    }
+                    if (this.exchangeCurrencyBalances.length == 0) {
+                        this.shouldShowSampleBalanceProposal = true;
                     }
                 },
                 (error: HttpErrorResponse) => {
@@ -94,7 +116,7 @@ export class ExchangeBalanceComponent implements OnInit, OnDestroy {
             .subscribe(
                 (response: ExchangeWalletBalancesResponseDto) => {
                     this.isRefreshWalletsRequestPending = false;
-                    this.setExchangeWalletBalances(response)
+                    this.setExchangeWalletBalances(response);
                 },
                 (error: HttpErrorResponse) => {
                     console.error(error);

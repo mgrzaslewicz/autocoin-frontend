@@ -3,35 +3,15 @@
     <div class="col-12">
         <h5>Balance of many exchanges in one place</h5>
         <h6>Requires API keys</h6>
-    </div>
-</div>
-<div *ngIf="isShowingRealBalance != null" class="row">
-    <div class="col-12">
-        <div class="card text-white bg-warning mt-2 mb-2">
-            <div class="card-header">
-                <div class="flex-row">
-                    <div *ngIf="isShowingRealBalance === true" class="d-block">
-                        You're using Pro plan which gets your exchange balances using your API keys
-                    </div>
-                    <div *ngIf="isShowingRealBalance === false" class="d-block">
-                        You're using Free plan. You're going to see a demonstration balance from exchanges.
-                        <ul>
-                            <li>
-                                To join Pro plan, ping @mikolaj grzaslewicz on autocoin
-                                <a href="https://t.me/joinchat/DQ56VEbfV3uIQlrJphtLbw" target="_blank">telegram group</a>
-                                or send an email to mikolaj.grzaslewicz@gmail.com
-                            </li>
-                            <li>
-                                What's the pricing?
-                                <button
-                                    (click)="textDialog.showWithoutHeader('Currently Pro plan is 10 USDT/month. You can make a decision up to 7 days after payment - to stay with Pro plan or have a refund and stay with Free one.')"
-                                    class="btn btn-sm btn-info">
-                                    <i class="fa fa-question" aria-hidden="true"></i>
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
+        <div>
+            <div *ngIf="shouldShowSampleBalanceProposal" class="card mb-3">
+                <div class="card-header">
+                    There is nothing to show. Would you like to see a sample balance?
+                    <button (click)="showSampleBalance()" class="btn btn-primary btn-sm">Yes</button>
                 </div>
+            </div>
+            <div *ngIf="isShowingSampleBalance" class="card mb-3 badge badge-warning">
+                What you see is a sample balance
             </div>
         </div>
     </div>

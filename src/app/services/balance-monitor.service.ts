@@ -189,6 +189,10 @@ export class BalanceMonitorService {
         return this.http.get<ExchangeWalletBalancesResponseDto>(`${this.balanceMonitorApiUrl}/exchange/wallets`);
     }
 
+    getSampleExchangeWallets(): Observable<ExchangeWalletBalancesResponseDto> {
+        return this.http.get<ExchangeWalletBalancesResponseDto>(`${this.balanceMonitorApiUrl}/exchange/wallets/sample`);
+    }
+
     getBalanceSummary(): Observable<BalanceSummaryResponseDto> {
         return this.http.get<BalanceSummaryResponseDto>(`${this.balanceMonitorApiUrl}/balance/summary`);
     }
