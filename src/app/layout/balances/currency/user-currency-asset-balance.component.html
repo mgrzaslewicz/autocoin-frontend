@@ -1,8 +1,20 @@
 <app-balances-menu></app-balances-menu>
-<div #hideUserCurrencyMenuLayer (click)="hideUserCurrencyMenuIfAnyOpen(hideUserCurrencyMenuLayer)" class="d-none layer-for-hiding-add-wallet-menu"></div>
+<div #hideUserCurrencyMenuLayer (click)="hideUserCurrencyMenuIfAnyOpen(hideUserCurrencyMenuLayer)"
+     class="d-none layer-for-hiding-add-wallet-menu"></div>
 <div class="row">
     <div class="col-12">
         <h5>Track your currency assets with balances provided by you</h5>
+        <div>
+            <div *ngIf="shouldShowSampleWalletAsset" class="card mb-3">
+                <div class="card-header">
+                    You don't have any asset. Would you like to try a sample one?
+                    <button (click)="showSampleWalletAsset()" class="btn btn-primary btn-sm">Yes</button>
+                </div>
+            </div>
+            <div *ngIf="isShowingSampleWalletAsset" class="card mb-3 badge badge-warning">
+                What you see is a sample set of assets
+            </div>
+        </div>
         <div class="card mb-3">
             <div (click)="goToAddNewUserCurrencyAssetView()" class="card-header currency-asset-add-header">
                 <button class="btn btn-primary btn-sm">
@@ -14,7 +26,8 @@
         <div class="card mb-3">
             <div class="card-header">
                 <div *ngIf="isFetchCurrencyBalancesRequestPending" class="progress mb-2">
-                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                         aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
                          style="width: 100%;"></div>
                 </div>
                 <i class="fa fa-usd" aria-hidden="true"></i>
@@ -45,13 +58,15 @@
                                 <span>{{ getUsdValuePercent(userCurrencyBalance) | number : '1.2-2' || '-' }}%</span>
                             </td>
                             <td class="text-right">
-                                <span *ngIf="hasUsdPrice(userCurrencyBalance); else displayNotAvailable">{{getUsdPrice(userCurrencyBalance) | number : '1.2-2'}}</span>
+                                <span
+                                    *ngIf="hasUsdPrice(userCurrencyBalance); else displayNotAvailable">{{getUsdPrice(userCurrencyBalance) | number : '1.2-2'}}</span>
                                 <ng-template #displayNotAvailable>
                                     <span class="text-muted">N/A</span>
                                 </ng-template>
                             </td>
                             <td class="text-right">
-                                <span *ngIf="hasUsdValue(userCurrencyBalance); else displayNotAvailable">{{getUsdValue(userCurrencyBalance) | number : '1.2-2'}}</span>
+                                <span
+                                    *ngIf="hasUsdValue(userCurrencyBalance); else displayNotAvailable">{{getUsdValue(userCurrencyBalance) | number : '1.2-2'}}</span>
                                 <ng-template #displayNotAvailable>
                                     <span class="text-muted">N/A</span>
                                 </ng-template>
@@ -72,10 +87,12 @@
         <div class="card">
             <div class="card-header">
                 <div *ngIf="isFetchUserCurrenciesRequestPending" class="progress mb-2">
-                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                         aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
                          style="width: 100%;"></div>
                 </div>
-                <button (click)="fetchUserCurrencies()" class="btn btn-primary btn-sm" [disabled]="isFetchUserCurrenciesRequestPending">
+                <button (click)="fetchUserCurrencies()" class="btn btn-primary btn-sm"
+                        [disabled]="isFetchUserCurrenciesRequestPending">
                     <i class="fa fa-refresh" aria-hidden="true"></i>
                 </button>
                 Your currency assets
@@ -99,11 +116,14 @@
                             <tr *ngFor="let userCurrencyAsset of userCurrencyAssets">
                                 <td>
                                     <div style="position: relative">
-                                        <button (click)="toggleUserCurrencyMenuVisibility(menu, hideUserCurrencyMenuLayer)" class="btn btn-sm btn-primary">
+                                        <button
+                                            (click)="toggleUserCurrencyMenuVisibility(menu, hideUserCurrencyMenuLayer)"
+                                            class="btn btn-sm btn-primary">
                                             <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
                                         </button>
                                         <div #menu class="dropdown-menu" [attr.user-currency-id]="userCurrencyAsset.id">
-                                            <button (click)="editUserCurrency(userCurrencyAsset)" class="ml-2 mr-2 btn btn-sm btn-success">
+                                            <button (click)="editUserCurrency(userCurrencyAsset)"
+                                                    class="ml-2 mr-2 btn btn-sm btn-success">
                                                 <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                             </button>
                                             <button
@@ -118,7 +138,8 @@
                                     {{userCurrencyAsset.currency}}
                                 </th>
                                 <td>
-                                    <ng-container *ngIf="userCurrencyAsset.blockChainExplorerUrl == null" class="wallet-address">
+                                    <ng-container *ngIf="userCurrencyAsset.blockChainExplorerUrl == null"
+                                                  class="wallet-address">
                                         <ng-container *ngIf="userCurrencyAsset.walletAddress != null">
                                             <span>{{userCurrencyAsset.walletAddress}}</span>
                                         </ng-container>
@@ -126,19 +147,23 @@
                                             <span class="text-muted">N/A</span>
                                         </ng-container>
                                     </ng-container>
-                                    <span *ngIf="userCurrencyAsset.blockChainExplorerUrl != null" class="wallet-address">
-                                    <a target="_blank" href="{{userCurrencyAsset.blockChainExplorerUrl}}">{{userCurrencyAsset.walletAddress}}</a>
+                                    <span *ngIf="userCurrencyAsset.blockChainExplorerUrl != null"
+                                          class="wallet-address">
+                                    <a target="_blank"
+                                       href="{{userCurrencyAsset.blockChainExplorerUrl}}">{{userCurrencyAsset.walletAddress}}</a>
                                 </span>
                                 </td>
                                 <td>
-                                    <span *ngIf="userCurrencyAsset.description != null" [innerHTML]="userCurrencyAsset.description | linkify"></span>
+                                    <span *ngIf="userCurrencyAsset.description != null"
+                                          [innerHTML]="userCurrencyAsset.description | linkify"></span>
                                     <span *ngIf="userCurrencyAsset.description == null" class="text-muted">N/A</span>
                                 </td>
                                 <td>
                                     {{userCurrencyAsset.balance}}
                                 </td>
                                 <td>
-                                    <span *ngIf="hasUsdValue(userCurrencyAsset); else displayNotAvailable">{{getUsdValue(userCurrencyAsset) | number : '1.2-2'}}</span>
+                                    <span
+                                        *ngIf="hasUsdValue(userCurrencyAsset); else displayNotAvailable">{{getUsdValue(userCurrencyAsset) | number : '1.2-2'}}</span>
                                     <ng-template #displayNotAvailable>
                                         <span class="text-muted">N/A</span>
                                     </ng-template>

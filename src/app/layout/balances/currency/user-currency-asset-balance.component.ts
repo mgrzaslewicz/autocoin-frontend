@@ -19,14 +19,15 @@ import {Router} from "@angular/router";
     styleUrls: ['./user-currency-asset-balance.component.scss']
 })
 export class UserCurrencyAssetBalanceComponent implements OnInit {
-    private lastVisibleMenu: HTMLDivElement = null;
-    private dropDownMenuVisibilityToggleClass = 'user-currency-asset-dropdown-menu-visible';
-
     isFetchUserCurrenciesRequestPending: boolean = false;
     isFetchCurrencyBalancesRequestPending: boolean = false;
     summarizedUserCurrencyBalances: UserCurrencyAssetSummaryResponseDto[] = [];
     userCurrencyAssets: UserCurrencyAssetResponseDto[] = [];
+    shouldShowSampleWalletAsset: boolean = false;
+    isShowingSampleWalletAsset: boolean = false;
 
+    private lastVisibleMenu: HTMLDivElement = null;
+    private dropDownMenuVisibilityToggleClass = 'user-currency-asset-dropdown-menu-visible';
     private totalUsdValue: number;
 
     constructor(private balanceMonitorService: BalanceMonitorService,
@@ -38,15 +39,35 @@ export class UserCurrencyAssetBalanceComponent implements OnInit {
         this.fetchUserCurrencies();
     }
 
+    private onUserCurrencyAssetsFetched(userCurrencyAssetsResponseDto: UserCurrencyAssetsResponseDto) {
+        this.isFetchCurrencyBalancesRequestPending = false;
+        this.shouldShowSampleWalletAsset = this.userCurrencyAssets.length === 0;
+        this.userCurrencyAssets = userCurrencyAssetsResponseDto.userCurrencyAssets.sort((a, b) => a.currency.localeCompare(b.currency));
+        this.summarizedUserCurrencyBalances = userCurrencyAssetsResponseDto.userCurrencyAssetsSummary.sort((a, b) => a.currency.localeCompare(b.currency));
+        this.totalUsdValue = this.getTotalUsdValue(this.summarizedUserCurrencyBalances);
+    }
+
+    showSampleWalletAsset() {
+        this.isFetchCurrencyBalancesRequestPending = true;
+        this.balanceMonitorService.getSampleUserCurrencyAssetsBalance()
+            .subscribe(
+                (response: UserCurrencyAssetsResponseDto) => {
+                    this.onUserCurrencyAssetsFetched(response);
+                },
+                (error: HttpErrorResponse) => {
+                    console.error(error);
+                    this.isFetchCurrencyBalancesRequestPending = false;
+                    this.toastService.danger('Something went wrong, could not get your currency assets');
+                }
+            );
+    }
+
     fetchUserCurrencies() {
         this.isFetchCurrencyBalancesRequestPending = true;
         this.balanceMonitorService.getUserCurrencyAssetsBalance()
             .subscribe(
                 (response: UserCurrencyAssetsResponseDto) => {
-                    this.isFetchCurrencyBalancesRequestPending = false;
-                    this.userCurrencyAssets = response.userCurrencyAssets.sort((a, b) => a.currency.localeCompare(b.currency));
-                    this.summarizedUserCurrencyBalances = response.userCurrencyAssetsSummary.sort((a, b) => a.currency.localeCompare(b.currency));
-                    this.totalUsdValue = this.getTotalUsdValue(this.summarizedUserCurrencyBalances);
+                    this.onUserCurrencyAssetsFetched(response);
                 },
                 (error: HttpErrorResponse) => {
                     console.error(error);
@@ -147,4 +168,5 @@ export class UserCurrencyAssetBalanceComponent implements OnInit {
     getUsdValuePercent(currencyBalance: HasValueInOtherCurrency): number {
         return Number(currencyBalance.valueInOtherCurrency['USD']) * 100 / this.totalUsdValue;
     }
+
 }

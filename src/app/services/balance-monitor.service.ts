@@ -205,6 +205,10 @@ export class BalanceMonitorService {
         return this.http.get<UserCurrencyAssetsResponseDto>(`${this.balanceMonitorApiUrl}/user-currency-assets`);
     }
 
+    getSampleUserCurrencyAssetsBalance(): Observable<UserCurrencyAssetsResponseDto> {
+        return this.http.get<UserCurrencyAssetsResponseDto>(`${this.balanceMonitorApiUrl}/user-currency-assets/sample`);
+    }
+
     deleteUserCurrencyAsset(userCurrencyAssetId: string): Observable<string> {
         return this.http.delete<string>(`${this.balanceMonitorApiUrl}/user-currency-assets/${userCurrencyAssetId}`);
     }
