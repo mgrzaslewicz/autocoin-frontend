@@ -139,9 +139,13 @@ export class UserCurrencyAssetBalanceComponent implements OnInit {
     }
 
     getTotalUsdBalance(items: HasValueInOtherCurrency[]): number {
-        return items
-            .map(it => Number(it.valueInOtherCurrency['USD']))
-            .reduce((acc, val) => acc + val);
+        if (items.length === 0) {
+            return 0;
+        } else {
+            return items
+                .map(it => Number(it.valueInOtherCurrency['USD']))
+                .reduce((acc, val) => acc + val);
+        }
     }
 
     hasUsdValue(it: HasValueInOtherCurrency): boolean {
@@ -161,9 +165,13 @@ export class UserCurrencyAssetBalanceComponent implements OnInit {
     }
 
     private getTotalUsdValue(currencyBalances: HasValueInOtherCurrency[]): number {
-        return currencyBalances
-            .map(it => Number(it.valueInOtherCurrency['USD']))
-            .reduce((acc, val) => acc + val);
+        if (currencyBalances.length === 0) {
+            return 0;
+        } else {
+            return currencyBalances
+                .map(it => Number(it.valueInOtherCurrency['USD']))
+                .reduce((acc, val) => acc + val);
+        }
     }
 
     getUsdValuePercent(currencyBalance: HasValueInOtherCurrency): number {
