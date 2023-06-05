@@ -197,6 +197,10 @@ export class BalanceMonitorService {
         return this.http.get<BalanceSummaryResponseDto>(`${this.balanceMonitorApiUrl}/balance/summary`);
     }
 
+    getSampleBalanceSummary(): Observable<BalanceSummaryResponseDto> {
+        return this.http.get<BalanceSummaryResponseDto>(`${this.balanceMonitorApiUrl}/balance/summary/sample`);
+    }
+
     refreshBalanceSummary(): Observable<BalanceSummaryResponseDto> {
         return this.http.post<BalanceSummaryResponseDto>(`${this.balanceMonitorApiUrl}/balance/summary`, null);
     }

@@ -28,9 +28,8 @@ export class CurrencyBalanceSummaryComponent implements OnInit {
     showOnlyTop10 = false;
     hideBalances = false;
 
-    isShowingRealBalance: boolean = null;
-    shouldShowSampleWalletProposal: boolean = false;
-    showingSampleWallet: boolean = false;
+    shouldShowSampleBalanceProposal: boolean = false;
+    isShowingSampleBalance: boolean = false;
 
     private usdFormatter = new Intl.NumberFormat('en-US', {
         style: 'currency',
@@ -189,6 +188,24 @@ export class CurrencyBalanceSummaryComponent implements OnInit {
             .reduce((acc, val) => acc + val);
     }
 
+    showSampleBalance() {
+        this.isFetchBalanceRequestPending = true;
+        this.balanceMonitorService.getSampleBalanceSummary()
+            .subscribe(
+                (response: BalanceSummaryResponseDto) => {
+                    this.isFetchBalanceRequestPending = false;
+                    this.setBalanceSummary(response);
+                    this.shouldShowSampleBalanceProposal = false;
+                    this.isShowingSampleBalance = true;
+                },
+                (error: HttpErrorResponse) => {
+                    console.error(error);
+                    this.isFetchBalanceRequestPending = false;
+                    this.toastService.danger('Something went wrong, could not get balances');
+                }
+            );
+    }
+
     fetchBalanceSummary() {
         this.isFetchBalanceRequestPending = true;
         this.balanceMonitorService.getBalanceSummary()
@@ -196,6 +213,7 @@ export class CurrencyBalanceSummaryComponent implements OnInit {
                 (response: BalanceSummaryResponseDto) => {
                     this.isFetchBalanceRequestPending = false;
                     this.setBalanceSummary(response);
+                    this.shouldShowSampleBalanceProposal = response.currencyBalances.length == 0;
                 },
                 (error: HttpErrorResponse) => {
                     console.error(error);
