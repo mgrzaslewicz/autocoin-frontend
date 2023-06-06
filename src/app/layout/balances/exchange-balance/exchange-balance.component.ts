@@ -117,6 +117,8 @@ export class ExchangeBalanceComponent implements OnInit, OnDestroy {
                 (response: ExchangeWalletBalancesResponseDto) => {
                     this.isRefreshWalletsRequestPending = false;
                     this.setExchangeWalletBalances(response);
+                    this.shouldShowSampleBalanceProposal = response.exchangeCurrencyBalances.length == 0;
+                    this.isShowingSampleBalance = false;
                 },
                 (error: HttpErrorResponse) => {
                     console.error(error);
