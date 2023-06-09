@@ -3,7 +3,11 @@ import {routerTransition} from '../../../router.animations';
 import {ToastService} from '../../../services/toast.service';
 import {AuthService} from '../../../services/auth.service';
 import {HttpErrorResponse} from "@angular/common/http";
-import {BalanceMonitorService, BalanceSummaryResponseDto, CurrencyBalanceSummaryDto} from "../../../services/balance-monitor.service";
+import {
+    BalanceMonitorService,
+    BalanceSummaryResponseDto,
+    CurrencyBalanceSummaryDto
+} from "../../../services/balance-monitor.service";
 
 @Component({
     selector: 'app-balance-analytics',
@@ -73,9 +77,9 @@ export class CurrencyBalanceSummaryComponent implements OnInit {
                 }
             });
         if (this.showOnlyTop10) {
-           return result.slice(0, 10);
+            return result.slice(0, 10);
         } else {
-           return result;
+            return result;
         }
     }
 
@@ -183,9 +187,13 @@ export class CurrencyBalanceSummaryComponent implements OnInit {
     }
 
     getTotalUsdValue(currencyBalances: CurrencyBalanceSummaryDto[]): number {
-        return currencyBalances
-            .map(it => Number(it.valueInOtherCurrency['USD']))
-            .reduce((acc, val) => acc + val);
+        if (currencyBalances.length === 0) {
+            return 0;
+        } else {
+            return currencyBalances
+                .map(it => Number(it.valueInOtherCurrency['USD']))
+                .reduce((acc, val) => acc + val);
+        }
     }
 
     showSampleBalance() {
