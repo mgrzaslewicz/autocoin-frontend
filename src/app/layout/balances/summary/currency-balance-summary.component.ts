@@ -251,6 +251,7 @@ export class CurrencyBalanceSummaryComponent implements OnInit {
             .subscribe(
                 (response: BalanceSummaryResponseDto) => {
                     this.isFetchBalanceRequestPending = false;
+                    this.isShowingSampleBalance = false;
                     this.setBalanceSummary(response);
                 },
                 (error: HttpErrorResponse) => {
