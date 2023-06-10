@@ -1,6 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {ExchangeUsersService} from '../../services/api';
-import {ExchangeDto, ExchangeKeyCapabilityResponseDto, ExchangeKeyExistenceResponseDto, ExchangeUserDto} from '../../models';
+import {
+    ExchangeDto,
+    ExchangeKeyCapabilityResponseDto,
+    ExchangeKeyExistenceResponseDto,
+    ExchangeUserDto
+} from '../../models';
 import {ToastService} from '../../services/toast.service';
 import {forkJoin} from 'rxjs';
 import {ExchangeKeyCapabilityService} from '../../services/exchange-key-capability.service';
@@ -72,13 +77,14 @@ export class ExchangeUsersComponent implements OnInit {
     fetchExchangeUserKeysCapability(exchangeUser: ExchangeUserDto) {
         this.exchangeUserIdToIsFetchingKeysCapabilityInProgress.set(exchangeUser.id, true);
         this.exchangeUserToExchangesKeyCapabilityList.clear();
-        this.exchangeKeyCapabilityService.getExchangeKeysValidity(exchangeUser.id).subscribe(exchangeKeysValidity => {
-            this.exchangeUserToExchangesKeyCapabilityList.set(exchangeUser.id, exchangeKeysValidity);
-            this.exchangeUserIdToIsFetchingKeysCapabilityInProgress.set(exchangeUser.id, false);
-        }, error => {
-            this.toastService.warning('Something went wrong, could not check API keys');
-            this.exchangeUserIdToIsFetchingKeysCapabilityInProgress.set(exchangeUser.id, false);
-        });
+        this.exchangeKeyCapabilityService.getExchangeKeysCapability(exchangeUser.id)
+            .subscribe(exchangeKeysCapability => {
+                this.exchangeUserToExchangesKeyCapabilityList.set(exchangeUser.id, exchangeKeysCapability);
+                this.exchangeUserIdToIsFetchingKeysCapabilityInProgress.set(exchangeUser.id, false);
+            }, error => {
+                this.toastService.warning('Something went wrong, could not check API keys');
+                this.exchangeUserIdToIsFetchingKeysCapabilityInProgress.set(exchangeUser.id, false);
+            });
     }
 
     isNotCheckedIfApiKeyIsWorking(exchangeUser: ExchangeUserDto, exchange: ExchangeDto): boolean {

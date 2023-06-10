@@ -9,10 +9,11 @@ import {ExchangeMediatorUrlToken} from '../../environments/endpoint-tokens';
 export class ExchangeKeyCapabilityService {
 
     constructor(private http: HttpClient,
-                @Inject(ExchangeMediatorUrlToken) private exchangeMediatorUrl: string) {
+                @Inject(ExchangeMediatorUrlToken) private exchangeMediatorUrl: string
+    ) {
     }
 
-    getExchangeKeysValidity(exchangeUserId): Observable<ExchangeKeyCapabilityResponseDto[]> {
+    getExchangeKeysCapability(exchangeUserId): Observable<ExchangeKeyCapabilityResponseDto[]> {
         return this.http.get<ExchangeKeyCapabilityResponseDto[]>(`${this.exchangeMediatorUrl}/exchange-keys-capability/${exchangeUserId}`);
     }
 
