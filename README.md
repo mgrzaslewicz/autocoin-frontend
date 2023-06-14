@@ -2,15 +2,10 @@
 
 ### Production deploy
 
-Run commands below as **autocoin** user on the production server:
-
 ```bash
-$ cd /var/www/autocoin-trader-frontend
-$ ./production-deploy.sh
+./scripts/docker/build/docker-build.sh
+./scripts/docker/deploy/docker-deploy.sh
 ```
-
-The script pulls from master branch and builds fresh docker container. 
-Type password if necessary to allow sudo commands.
 
 ### Run locally
 npm run start
