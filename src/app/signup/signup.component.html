@@ -56,7 +56,8 @@
             </div>
             <div *ngIf="isShowingThankYou">
                 <h1>Thank you</h1>
-                Please check your email, you should get message with first time login password soon. If you can't find the email, check the spam folder
+                Please check your email, you should get message with first time login password soon. If you can't find
+                the email, check the spam folder
             </div>
         </div>
     </div>
@@ -70,18 +71,7 @@
     <!-- what would you like to automate most -->
     <input id="googleFormQ2" type="hidden" name="entry.1397752312"> <!-- questions? -->
 </form>
-<form id="autoresponderForm" class="d-none"
-      action="https://sr24app.pl/form.php?form=151"
-      style="display: none;" method="post"
-      target="autoresponderFormIframe">
-    <input id="autoresponderEmailAddress" type="hidden" name="email">
-    <input type="hidden" name="format" value="h"/>
-</form>
 <iframe #iframe width="0" height="0" border="none"
         class="d-none"
         id="googleFormIframe"
         name="googleFormIframe"></iframe>
-<iframe width="0" height="0" border="none"
-        class="d-none"
-        id="autoresponderFormIframe"
-        name="autoresponderFormIframe"></iframe>

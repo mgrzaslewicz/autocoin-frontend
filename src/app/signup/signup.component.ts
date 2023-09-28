@@ -14,7 +14,7 @@ import {ToastService} from '../services/toast.service';
 export class SignupComponent implements OnInit {
     @ViewChild('signupForm')
     public signupForm: NgForm;
-    @ViewChild('iframe', { static: true })
+    @ViewChild('iframe', {static: true})
     public iframe: any;
     public isShowingThankYou = false;
     public isSubmitInProgress = false;
@@ -52,7 +52,6 @@ export class SignupComponent implements OnInit {
             this.iframe.nativeElement.addEventListener('load', this.onGoogleIframeLoad.bind(this));
             this.isSubmitInProgress = true;
             this.copyInputsToHiddenGoogleFormAndSubmit();
-            this.copyInputsToHiddenAutoresponderFormAndSubmit();
             this.signupService.signup(this.email).subscribe(() => {
                 this.showThankYou();
             }, error => {
@@ -81,11 +80,6 @@ export class SignupComponent implements OnInit {
         document.getElementById('googleFormQ1').setAttribute('value', this.questionOne);
         document.getElementById('googleFormQ2').setAttribute('value', (<HTMLInputElement>document.getElementById('question2')).value);
         (<HTMLFormElement>document.getElementById('googleForm')).submit();
-    }
-
-    private copyInputsToHiddenAutoresponderFormAndSubmit() {
-        document.getElementById('autoresponderEmailAddress').setAttribute('value', this.email);
-        (<HTMLFormElement>document.getElementById('autoresponderForm')).submit();
     }
 
 }
