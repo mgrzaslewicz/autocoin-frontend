@@ -3,6 +3,12 @@ set -e
 set -x
 
 SERVICE_NAME="autocoin-trader-frontend"
+
+getLatestLocalImageVersion() {
+  echo $(docker inspect "${SERVICE_NAME}:latest" -f '{{ .RepoTags }}' | tr -d '[]' | cut -d' ' -f1 | cut -d':' -f2)
+}
+
+VERSION="${VERSION:=$(getLatestLocalImageVersion)}"
 TMP="/tmp"
 TAR_NAME="${SERVICE_NAME}-${VERSION}.tar"
 TAR_GZ_NAME="${SERVICE_NAME}-${VERSION}.tar.gz"
@@ -20,7 +26,6 @@ preconditions() {
     "DESTINATION_HOST"
     "SSH_USER"
     "SSH_KEY"
-    "VERSION"
   )
 
   echo "Expecting variables ${requiredVariables[*]} to be provided by the environment"
@@ -33,6 +38,12 @@ preconditions() {
   done
 }
 
+checkIfVersionExists() {
+  if [[ $(docker images -q "${SERVICE_NAME}:${VERSION}" 2>/dev/null) == "" ]]; then
+    echo "Image ${SERVICE_NAME}:${VERSION} does not exist. Please build it first."
+    exit 1
+  fi
+}
 
 prepareImageArchive() {
   echo "Preparing image archive"
@@ -70,6 +81,7 @@ updateVersionOnDestinationHost() {
 
 
 preconditions
+checkIfVersionExists
 prepareImageArchive
 uploadImageArchive
 unpackImageArchiveOnDestinationHost
